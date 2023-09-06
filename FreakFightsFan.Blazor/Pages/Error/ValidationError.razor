@@ -1,0 +1,20 @@
+﻿@page "/error/validation-error"
+@inject ValidationErrors ValidationErrors
+
+<PageTitle>Validation error</PageTitle>
+
+<h1>Validation error</h1>
+
+@foreach (var propName in ValidationErrors.Errors.Keys)
+{
+    <p>@propName:</p>
+
+    @foreach (var error in ValidationErrors.Errors[propName])
+    {
+        <li>@error</li>
+    }
+}
+
+@code {
+
+}
