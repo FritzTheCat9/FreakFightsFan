@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34004.107
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreakFightsFan.Blazor", "FreakFightsFan.Blazor\FreakFightsFan.Blazor.csproj", "{CA5FCF00-1C91-43E8-B89D-26B1359DF9C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Blazor", "FreakFightsFan.Blazor\FreakFightsFan.Blazor.csproj", "{CA5FCF00-1C91-43E8-B89D-26B1359DF9C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreakFightsFan.Shared", "FreakFightsFan.Shared\FreakFightsFan.Shared.csproj", "{4996E55D-E15B-40EE-832B-368256D86289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Shared", "FreakFightsFan.Shared\FreakFightsFan.Shared.csproj", "{4996E55D-E15B-40EE-832B-368256D86289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreakFightsFan.Api", "FreakFightsFan.Api\FreakFightsFan.Api.csproj", "{44C78D1A-1CD8-4582-AA1F-9760AD131680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Api", "FreakFightsFan.Api\FreakFightsFan.Api.csproj", "{44C78D1A-1CD8-4582-AA1F-9760AD131680}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
