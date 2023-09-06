@@ -1,0 +1,60 @@
+﻿@page "/fighters"
+@inject IExceptionHandler ExceptionHandler
+@inject IFighterHttpService FighterHttpService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Fighters</PageTitle>
+
+<h3>Fighters</h3>
+
+@if (FightersPagedList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Nickname</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fighter in FightersPagedList.Items)
+            {
+                <tr>
+                    <td>@fighter.FirstName</td>
+                    <td>@fighter.LastName</td>
+                    <td>@fighter.Nickname</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public GetAllFightersRequest GetAllFightersRequest { get; set; } = new GetAllFightersRequest
+        {
+            Page = 1,
+            PageSize = 0,
+            SortColumn = "nickname",
+            SortOrder = SortOrder.Ascending,
+            SearchTerm = ""
+        };
+
+    public PagedList<FighterDto> FightersPagedList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            FightersPagedList = await FighterHttpService.GetAllFighters(GetAllFightersRequest);
+        }
+        catch (CustomException ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+}
