@@ -1,11 +1,13 @@
 ﻿using FreakFightsFan.Shared.Exceptions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace FreakFightsFan.Blazor.Pages.Error
 {
     public interface IExceptionHandler
     {
         void HandleExceptions(CustomException exception);
+        void AddServerValidationErrorsToForm(MyValidationException validationException, EditContext editContext, ValidationMessageStore validationMessageStore);
     }
 
     public class ExceptionHandler : IExceptionHandler
@@ -41,6 +43,25 @@ namespace FreakFightsFan.Blazor.Pages.Error
                     _navigationManager.NavigateTo("error/server-error");
                     break;
             }
+        }
+
+        public void AddServerValidationErrorsToForm(
+            MyValidationException validationException, 
+            EditContext editContext, 
+            ValidationMessageStore validationMessageStore)
+        {
+            validationMessageStore?.Clear();
+
+            foreach (var (fieldName, errors) in validationException.Errors)
+            {
+                var fieldIdentifier = new FieldIdentifier(editContext.Model, fieldName);
+                foreach (var error in errors)
+                {
+                    validationMessageStore.Add(fieldIdentifier, error);
+                }
+            }
+
+            editContext.NotifyValidationStateChanged();
         }
     }
 }

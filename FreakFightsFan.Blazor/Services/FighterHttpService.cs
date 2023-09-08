@@ -40,12 +40,12 @@ namespace FreakFightsFan.Blazor.Services
 
         public async Task UpdateFighter(UpdateFighterRequest updateFighterRequest)
         {
-            await _httpService.Put(_url, updateFighterRequest);
+            await _httpService.Put(_url + "/" + updateFighterRequest.Id, updateFighterRequest);
         }
 
         public async Task DeleteFighter(int id)
         {
-            await _httpService.Delete(_url + id);
+            await _httpService.Delete(_url + "/" + id);
         }
     }
 }

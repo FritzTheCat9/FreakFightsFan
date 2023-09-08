@@ -1,60 +1,108 @@
 ﻿@page "/fighters"
 @inject IExceptionHandler ExceptionHandler
 @inject IFighterHttpService FighterHttpService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Fighters</PageTitle>
 
-<h3>Fighters</h3>
-
-@if (FightersPagedList == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>Nickname</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var fighter in FightersPagedList.Items)
-            {
-                <tr>
-                    <td>@fighter.FirstName</td>
-                    <td>@fighter.LastName</td>
-                    <td>@fighter.Nickname</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<MudTable ServerData="@(new Func<TableState, Task<TableData<FighterDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Fighters</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="firstname" T="FighterDto">First Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="lastname" T="FighterDto">Last Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="nickname" T="FighterDto">Nickname</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Actions</MudText></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
+        <MudTd DataLabel="LastName">@context.LastName</MudTd>
+        <MudTd DataLabel="Nickname">@context.Nickname</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFighter(@context))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFighter(@context.Id))"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
-    public GetAllFightersRequest GetAllFightersRequest { get; set; } = new GetAllFightersRequest
-        {
-            Page = 1,
-            PageSize = 0,
-            SortColumn = "nickname",
-            SortOrder = SortOrder.Ascending,
-            SearchTerm = ""
-        };
-
+    private MudTable<FighterDto> table;
+    private string searchString = "";
     public PagedList<FighterDto> FightersPagedList { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<FighterDto>> ServerReload(TableState state)
     {
+        var getAllFightersRequest = new GetAllFightersRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+            };
+
         try
         {
-            FightersPagedList = await FighterHttpService.GetAllFighters(GetAllFightersRequest);
+            FightersPagedList = await FighterHttpService.GetAllFighters(getAllFightersRequest);
         }
         catch (CustomException ex)
         {
             ExceptionHandler.HandleExceptions(ex);
+            return new TableData<FighterDto>() { TotalItems = 0, Items = new List<FighterDto>() };
+        }
+
+        return new TableData<FighterDto>()
+            {
+                TotalItems = FightersPagedList.TotalCount,
+                Items = FightersPagedList.Items
+            };
+    }
+
+    private void OnSearch(string searchText)
+    {
+        searchString = searchText;
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteFighter(int id)
+    {
+        try
+        {
+            await FighterHttpService.DeleteFighter(id);
+            await table.ReloadServerData();
+        }
+        catch (CustomException ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateFighter(FighterDto fighterDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateFighterDialog>();
+        parameters.Add(x => x.FighterDto, fighterDto);
+
+        var updateFighterDialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
+        var result = await updateFighterDialog.Result;
+        if (!result.Canceled)
+        {
+            await table.ReloadServerData();
         }
     }
 }

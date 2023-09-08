@@ -40,7 +40,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/fighters", async (
+            app.MapDelete("/api/fighters/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>

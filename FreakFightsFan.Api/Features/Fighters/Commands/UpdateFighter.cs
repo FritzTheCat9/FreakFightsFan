@@ -62,7 +62,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/fighters", async (
+            app.MapPut("/api/fighters/{id}", async (
                 int id,
                 UpdateFighterRequest updateFighterRequest,
                 IMediator mediator,

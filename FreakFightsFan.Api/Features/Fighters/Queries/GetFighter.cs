@@ -41,7 +41,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/fighters", async (
+            app.MapGet("/api/fighters/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>

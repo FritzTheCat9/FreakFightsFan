@@ -27,9 +27,7 @@ namespace FreakFightsFan.Api.Exceptions
             var errors = GetValidationErrorsDictionary(validationErrors);
 
             if (errors.Any())
-            {
                 throw new MyValidationException(errors);
-            }
 
             var result = await next();
             return result;

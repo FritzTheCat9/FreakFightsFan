@@ -1,0 +1,61 @@
+﻿@inject IFighterHttpService FighterHttpService
+@inject IExceptionHandler ExceptionHandler
+
+<EditForm EditContext="editContext">
+    <MudDialog>
+        <DialogContent>
+            <MudTextField Label="First Name" @bind-Value="FighterDto.FirstName" For="@(() => FighterDto.FirstName)"></MudTextField>
+            <ValidationMessage For="() => FighterDto.FirstName" />
+
+            <MudTextField Label="Last Name" @bind-Value="FighterDto.LastName" For="@(() => FighterDto.LastName)"></MudTextField>
+            <ValidationMessage For="() => FighterDto.LastName" />
+
+            <MudTextField Label="Nickname" @bind-Value="FighterDto.Nickname" For="@(() => FighterDto.Nickname)"></MudTextField>
+            <ValidationMessage For="() => FighterDto.Nickname" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" ButtonType="ButtonType.Submit">Update</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public FighterDto FighterDto { get; set; } = new FighterDto();
+
+    private EditContext editContext;
+    private ValidationMessageStore validationMessageStore;
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override void OnInitialized()
+    {
+        editContext = new(FighterDto);
+        validationMessageStore = new(editContext);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await FighterHttpService.UpdateFighter(new UpdateFighterRequest
+                {
+                    Id = FighterDto.Id,
+                    FirstName = FighterDto.FirstName,
+                    LastName = FighterDto.LastName,
+                    Nickname = FighterDto.Nickname,
+
+                });
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            ExceptionHandler.AddServerValidationErrorsToForm(validationException, editContext, validationMessageStore);
+        }
+        catch (CustomException ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+}
