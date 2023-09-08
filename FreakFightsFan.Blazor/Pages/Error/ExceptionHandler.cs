@@ -6,7 +6,7 @@ namespace FreakFightsFan.Blazor.Pages.Error
 {
     public interface IExceptionHandler
     {
-        void HandleExceptions(CustomException exception);
+        void HandleExceptions(Exception exception);
         void AddServerValidationErrorsToForm(MyValidationException validationException, EditContext editContext, ValidationMessageStore validationMessageStore);
     }
 
@@ -21,7 +21,7 @@ namespace FreakFightsFan.Blazor.Pages.Error
             _validationErrors = validationErrors;
         }
 
-        public void HandleExceptions(CustomException exception)
+        public void HandleExceptions(Exception exception)
         {
             switch (exception)
             {
@@ -39,7 +39,10 @@ namespace FreakFightsFan.Blazor.Pages.Error
                     _navigationManager.NavigateTo("error/validation-error");
                     break;
                 case MyServerException serverException:
+                    _navigationManager.NavigateTo("error/server-error");
+                    break;
                 default:
+                    //TODO: log other HttpService exceptions to file on the server
                     _navigationManager.NavigateTo("error/server-error");
                     break;
             }
