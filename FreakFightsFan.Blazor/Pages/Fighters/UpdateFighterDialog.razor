@@ -1,39 +1,28 @@
 ﻿@inject IFighterHttpService FighterHttpService
 @inject IExceptionHandler ExceptionHandler
 
-<EditForm EditContext="editContext">
+<MudForm Model="FighterDto" @ref="@form" Validation="ValidateValue">
     <MudDialog>
         <DialogContent>
             <MudTextField Label="First Name" @bind-Value="FighterDto.FirstName" For="@(() => FighterDto.FirstName)"></MudTextField>
-            <ValidationMessage For="() => FighterDto.FirstName" />
-
             <MudTextField Label="Last Name" @bind-Value="FighterDto.LastName" For="@(() => FighterDto.LastName)"></MudTextField>
-            <ValidationMessage For="() => FighterDto.LastName" />
-
             <MudTextField Label="Nickname" @bind-Value="FighterDto.Nickname" For="@(() => FighterDto.Nickname)"></MudTextField>
-            <ValidationMessage For="() => FighterDto.Nickname" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" ButtonType="ButtonType.Submit">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</EditForm>
+</MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public FighterDto FighterDto { get; set; } = new FighterDto();
 
-    private EditContext editContext;
-    private ValidationMessageStore validationMessageStore;
+    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private MudForm form;
 
-    void Cancel() => MudDialog.Cancel();
-
-    protected override void OnInitialized()
-    {
-        editContext = new(FighterDto);
-        validationMessageStore = new(editContext);
-    }
+    private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
     {
@@ -51,11 +40,20 @@
         }
         catch (MyValidationException validationException)
         {
-            ExceptionHandler.AddServerValidationErrorsToForm(validationException, editContext, validationMessageStore);
+            validationErrors = validationException.Errors;
+            await form.Validate();
         }
         catch (CustomException ex)
         {
             ExceptionHandler.HandleExceptions(ex);
         }
     }
+
+    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
+    {
+        if (!validationErrors.ContainsKey(propertyName))
+            validationErrors.Add(propertyName, new List<string>());
+
+        return validationErrors[propertyName];
+    };
 }
