@@ -96,11 +96,16 @@
     private async Task UpdateFighter(FighterDto fighterDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<FighterDialog>();
-        parameters.Add(x => x.FighterDto, fighterDto);
-        parameters.Add(x => x.Mode, "update");
+        var parameters = new DialogParameters<UpdateFighterDialog>();
+        parameters.Add(x => x.UpdateFighterRequest, new UpdateFighterRequest
+            {
+                Id = fighterDto.Id,
+                FirstName = fighterDto.FirstName,
+                LastName = fighterDto.LastName,
+                Nickname = fighterDto.Nickname,
+            });
 
-        var updateFighterDialog = await DialogService.ShowAsync<FighterDialog>("Update Fighter", parameters, dialogOptions);
+        var updateFighterDialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
         var result = await updateFighterDialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -109,13 +114,11 @@
     private async Task CreateFighter()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<FighterDialog>();
-        var fighterDto = new FighterDto();
-        parameters.Add(x => x.FighterDto, fighterDto);
-        parameters.Add(x => x.Mode, "create");
+        var parameters = new DialogParameters<CreateFighterDialog>();
+        parameters.Add(x => x.CreateFighterRequest, new CreateFighterRequest());
 
-        var updateFighterDialog = await DialogService.ShowAsync<FighterDialog>("Create Fighter", parameters, dialogOptions);
-        var result = await updateFighterDialog.Result;
+        var createFighterDialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, dialogOptions);
+        var result = await createFighterDialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }

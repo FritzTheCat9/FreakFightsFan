@@ -1,0 +1,125 @@
+﻿@page "/dictionary/{Id:int}"
+@inject IExceptionHandler ExceptionHandler
+@inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
+@inject IDialogService DialogService
+
+<PageTitle>Dictionary items</PageTitle>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<MyDictionaryItemDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Dictionary Items</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionaryItem())"></MudIconButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Actions</MudText></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionaryItem(@context))"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionaryItem(@context.Id))"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    @code {
+    [Parameter] public int Id { get; set; }
+
+    private string searchString = "";
+    private MudTable<MyDictionaryItemDto> table;
+    public PagedList<MyDictionaryItemDto> MyDictionaryItemsPagedList { get; set; }
+
+    private async Task<TableData<MyDictionaryItemDto>> ServerReload(TableState state)
+    {
+        var getAllMyDictionaryItemsRequest = new GetAllMyDictionaryItemsRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+                DictionaryId = Id,
+            };
+
+        try
+        {
+            MyDictionaryItemsPagedList = await MyDictionaryItemHttpService.GetAllMyDictionaryItems(getAllMyDictionaryItemsRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<MyDictionaryItemDto>() { TotalItems = 0, Items = new List<MyDictionaryItemDto>() };
+        }
+
+        return new TableData<MyDictionaryItemDto>()
+            {
+                TotalItems = MyDictionaryItemsPagedList.TotalCount,
+                Items = MyDictionaryItemsPagedList.Items
+            };
+    }
+
+    private void OnSearch(string searchText)
+    {
+        searchString = searchText;
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteDictionaryItem(int id)
+    {
+        try
+        {
+            await MyDictionaryItemHttpService.DeleteMyDictionaryItem(id);
+            await table.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateDictionaryItem(MyDictionaryItemDto myDictionaryItemDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateDictionaryItemDialog>();
+        parameters.Add(x => x.UpdateMyDictionaryItemRequest, new UpdateMyDictionaryItemRequest
+            {
+                Id = myDictionaryItemDto.Id,
+                Name = myDictionaryItemDto.Name,
+            });
+
+        var updateDictionaryItemDialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
+        var result = await updateDictionaryItemDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateDictionaryItem()
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateDictionaryItemDialog>();
+        parameters.Add(x => x.CreateMyDictionaryItemRequest, new CreateMyDictionaryItemRequest()
+            {
+                Name = "",
+                DictionaryId = Id,
+            });
+
+        var createDictionaryItemDialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);
+        var result = await createDictionaryItemDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}

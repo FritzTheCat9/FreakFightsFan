@@ -1,0 +1,68 @@
+﻿using FreakFightsFan.Api.Data.Database;
+using FreakFightsFan.Api.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace FreakFightsFan.Api.Data.Repositories
+{
+    public interface IMyDictionaryRepository
+    {
+        IQueryable<MyDictionary> AsQueryable();
+        Task<IEnumerable<MyDictionary>> GetAll();
+        Task<MyDictionary> Get(int id);
+        Task<bool> DictionaryNameExists(string name);
+        Task<bool> DictionaryNameExistsInOtherDictionariesThan(string name, int dictionaryId);
+        Task<int> Create(MyDictionary dictionary);
+        Task Update(MyDictionary dictionary);
+        Task Delete(MyDictionary dictionary);
+    }
+
+    public class MyDictionaryRepository : IMyDictionaryRepository
+    {
+        private readonly AppDbContext _dbContext;
+
+        public MyDictionaryRepository(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public IQueryable<MyDictionary> AsQueryable() => 
+            _dbContext.MyDictionaries
+                .Include(x => x.DictionaryItems)
+                .AsQueryable();
+
+        public async Task<IEnumerable<MyDictionary>> GetAll() => await _dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .ToListAsync();
+
+        public async Task<MyDictionary> Get(int id) => await _dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<bool> DictionaryNameExists(string name) => await _dbContext.MyDictionaries
+            .AnyAsync(x => x.Name == name);
+
+        public async Task<bool> DictionaryNameExistsInOtherDictionariesThan(string name, int dictionaryId) =>
+            await _dbContext.MyDictionaries
+                .Where(x => x.Id != dictionaryId)
+                .AnyAsync(x => x.Name == name);
+
+        public async Task<int> Create(MyDictionary dictionary)
+        {
+            await _dbContext.AddAsync(dictionary);
+            await _dbContext.SaveChangesAsync();
+            return dictionary.Id;
+        }
+
+        public async Task Update(MyDictionary dictionary)
+        {
+            _dbContext.Update(dictionary);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Delete(MyDictionary dictionary)
+        {
+            _dbContext.Remove(dictionary);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+}

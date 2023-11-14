@@ -77,7 +77,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                     };
 
                     return Results.Ok(await mediator.Send(command, cancellationToken));
-                });
+                })
+                .WithTags("Fighters");
         }
     }
 }

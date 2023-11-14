@@ -1,0 +1,52 @@
+﻿@inject IFighterHttpService FighterHttpService
+@inject IExceptionHandler ExceptionHandler
+
+<MudForm Model="UpdateFighterRequest" @ref="@form" Validation="ValidateValue">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField Label="First Name" @bind-Value="UpdateFighterRequest.FirstName" For="@(() => UpdateFighterRequest.FirstName)"></MudTextField>
+            <MudTextField Label="Last Name" @bind-Value="UpdateFighterRequest.LastName" For="@(() => UpdateFighterRequest.LastName)"></MudTextField>
+            <MudTextField Label="Nickname" @bind-Value="UpdateFighterRequest.Nickname" For="@(() => UpdateFighterRequest.Nickname)"></MudTextField>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateFighterRequest UpdateFighterRequest { get; set; } = new UpdateFighterRequest();
+
+    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private MudForm form;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await FighterHttpService.UpdateFighter(UpdateFighterRequest);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors = validationException.Errors;
+            await form.Validate();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
+    {
+        if (!validationErrors.ContainsKey(propertyName))
+            validationErrors.Add(propertyName, new List<string>());
+
+        return validationErrors[propertyName];
+    };
+}

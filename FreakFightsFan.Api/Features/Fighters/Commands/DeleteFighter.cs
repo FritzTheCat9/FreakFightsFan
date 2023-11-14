@@ -47,7 +47,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                 {
                     var command = new DeleteFighter.Command() { Id = id };
                     return Results.Ok(await mediator.Send(command, cancellationToken));
-                });
+                })
+                .WithTags("Fighters");
         }
     }
 }

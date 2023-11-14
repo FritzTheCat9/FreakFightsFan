@@ -1,27 +1,25 @@
 ﻿using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace FreakFightsFan.Api.Abstractions
 {
     public static class PageListExtensions<T>
     {
-        public static async Task<PagedList<T>> CreateAsync(
+        public static PagedList<T> Create(
             IQueryable<T> source, 
             int page, 
-            int pageSize, 
-            CancellationToken cancellationToken)
+            int pageSize)
         {
             if (page <= 0) 
                 throw new MyValidationException(nameof(page), "Page should be greater than 0");
             if (pageSize <= 0)
                 throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");
 
-            var totalCount = await source.CountAsync(cancellationToken);
-            var items = await source
+            var totalCount = source.Count();
+            var items = source
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync(cancellationToken);
+                .ToList();
 
             return new PagedList<T>(items, page, pageSize, totalCount);
         }

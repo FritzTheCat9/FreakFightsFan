@@ -15,5 +15,7 @@ builder.Services.AddScoped<IExceptionHandler, ExceptionHandler>();
 builder.Services.AddSingleton<ValidationErrors>();
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<IFighterHttpService, FighterHttpService>();
+builder.Services.AddScoped<IMyDictionaryHttpService, MyDictionaryHttpService>();
+builder.Services.AddScoped<IMyDictionaryItemHttpService, MyDictionaryItemHttpService>();
 
 await builder.Build().RunAsync();

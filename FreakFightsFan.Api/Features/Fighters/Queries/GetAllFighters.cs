@@ -42,13 +42,12 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 fightersQuery = fightersQuery.FilterFighters(query);
                 fightersQuery = fightersQuery.SortFighters(query);
 
-                var fightersPagedList = await PageListExtensions<FighterDto>.CreateAsync(
+                var fightersPagedList = PageListExtensions<FighterDto>.Create(
                     fightersQuery.Select(x => x.ToDto()),
                     query.Page,
-                    query.PageSize,
-                    cancellationToken);
+                    query.PageSize);
 
-                return fightersPagedList;
+                return await Task.FromResult(fightersPagedList);
             }
         }
     }
@@ -72,7 +71,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                     };
 
                     return Results.Ok(await mediator.Send(query, cancellationToken));
-                });
+                })
+                .WithTags("Fighters");
         }
     }
 }

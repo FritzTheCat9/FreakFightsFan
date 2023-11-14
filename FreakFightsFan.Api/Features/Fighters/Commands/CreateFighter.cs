@@ -78,7 +78,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
 
                     int fighterId = await mediator.Send(command, cancellationToken);
                     return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
-                });
+                })
+                .WithTags("Fighters");
         }
     }
 }

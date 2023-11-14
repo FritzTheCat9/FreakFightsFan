@@ -16,6 +16,8 @@ namespace FreakFightsFan.Api.Data.Database
             services.AddDbContext<AppDbContext>(x => x.UseSqlServer(options.ConnectionString));
 
             services.AddScoped<IFighterRepository, FighterRepository>();
+            services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
+            services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();
             services.AddHostedService<DatabaseInitializer>();
 
             return services;
