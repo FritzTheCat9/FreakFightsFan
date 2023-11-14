@@ -7,6 +7,7 @@ namespace FreakFightsFan.Api.Data.Database
     public class AppDbContext : DbContext
     {
         public DbSet<Fighter> Fighters { get; set; }
+        public DbSet<Federation> Federations { get; set; }
         public DbSet<MyDictionary> MyDictionaries { get; set; }
         public DbSet<MyDictionaryItem> MyDictionaryItems { get; set; }
 

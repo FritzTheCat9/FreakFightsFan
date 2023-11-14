@@ -1,0 +1,119 @@
+@page "/federations"
+@inject IExceptionHandler ExceptionHandler
+@inject IFederationHttpService FederationHttpService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Federations</PageTitle>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<FederationDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Federations</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFederation())"></MudIconButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Actions</MudText></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@context))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@context.Id))"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<FederationDto> table;
+    private string searchString = "";
+    public PagedList<FederationDto> FederationsPagedList { get; set; }
+
+    private async Task<TableData<FederationDto>> ServerReload(TableState state)
+    {
+        var getAllFederationsRequest = new GetAllFederationsRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+            };
+
+        try
+        {
+            FederationsPagedList = await FederationHttpService.GetAllFederations(getAllFederationsRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<FederationDto>() { TotalItems = 0, Items = new List<FederationDto>() };
+        }
+
+        return new TableData<FederationDto>()
+            {
+                TotalItems = FederationsPagedList.TotalCount,
+                Items = FederationsPagedList.Items
+            };
+    }
+
+    private void OnSearch(string searchText)
+    {
+        searchString = searchText;
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteFederation(int id)
+    {
+        try
+        {
+            await FederationHttpService.DeleteFederation(id);
+            await table.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateFederation(FederationDto federationDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateFederationDialog>();
+        parameters.Add(x => x.UpdateFederationRequest, new UpdateFederationRequest
+            {
+                Id = federationDto.Id,
+                Name = federationDto.Name,
+            });
+
+        var updateFederationDialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, dialogOptions);
+        var result = await updateFederationDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateFederation()
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateFederationDialog>();
+        parameters.Add(x => x.CreateFederationRequest, new CreateFederationRequest());
+
+        var createFederationDialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, dialogOptions);
+        var result = await createFederationDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}
