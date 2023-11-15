@@ -17,10 +17,14 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Events</MudText></MudTh>
         <MudTh><MudText>Actions</MudText></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@context.Id))"></MudIconButton>
+        </MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@context))"></MudIconButton>
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@context.Id))"></MudIconButton>
@@ -74,6 +78,11 @@
     {
         searchString = searchText;
         table.ReloadServerData();
+    }
+
+    private void RedirectToEventsPage(int id)
+    {
+        NavigationManager.NavigateTo($"/events/{id}");
     }
 
     private async Task DeleteFederation(int id)

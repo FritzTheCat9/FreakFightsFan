@@ -1,4 +1,4 @@
-﻿@page "/dictionary/{Id:int}"
+﻿@page "/dictionary/{DictionaryId:int}"
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
 @inject IDialogService DialogService
@@ -37,7 +37,7 @@
     </MudTable>
 
     @code {
-    [Parameter] public int Id { get; set; }
+    [Parameter] public int DictionaryId { get; set; }
 
     private string searchString = "";
     private MudTable<MyDictionaryItemDto> table;
@@ -52,7 +52,7 @@
                 SortColumn = state.SortLabel,
                 SortOrder = ((SortOrder)state.SortDirection),
                 SearchTerm = searchString,
-                DictionaryId = Id,
+                DictionaryId = DictionaryId,
             };
 
         try
@@ -114,7 +114,7 @@
         parameters.Add(x => x.CreateMyDictionaryItemRequest, new CreateMyDictionaryItemRequest()
             {
                 Name = "",
-                DictionaryId = Id,
+                DictionaryId = DictionaryId,
             });
 
         var createDictionaryItemDialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);

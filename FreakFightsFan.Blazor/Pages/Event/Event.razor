@@ -1,0 +1,126 @@
+@page "/events/{FederationId:int}"
+@inject IExceptionHandler ExceptionHandler
+@inject IEventHttpService EventHttpService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Events</PageTitle>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<EventDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Events</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateEvent())"></MudIconButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Actions</MudText></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateEvent(@context))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteEvent(@context.Id))"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter] public int FederationId { get; set; }
+
+    private MudTable<EventDto> table;
+    private string searchString = "";
+    public PagedList<EventDto> EventsPagedList { get; set; }
+
+    private async Task<TableData<EventDto>> ServerReload(TableState state)
+    {
+        var getAllEventsRequest = new GetAllEventsRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+                FederationId = FederationId,
+            };
+
+        try
+        {
+            EventsPagedList = await EventHttpService.GetAllEvents(getAllEventsRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<EventDto>() { TotalItems = 0, Items = new List<EventDto>() };
+        }
+
+        return new TableData<EventDto>()
+            {
+                TotalItems = EventsPagedList.TotalCount,
+                Items = EventsPagedList.Items
+            };
+    }
+
+    private void OnSearch(string searchText)
+    {
+        searchString = searchText;
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteEvent(int id)
+    {
+        try
+        {
+            await EventHttpService.DeleteEvent(id);
+            await table.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateEvent(EventDto eventDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateEventDialog>();
+        parameters.Add(x => x.UpdateEventRequest, new UpdateEventRequest
+            {
+                Id = eventDto.Id,
+                Name = eventDto.Name,
+            });
+
+        var updateEventDialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
+        var result = await updateEventDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateEvent()
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateEventDialog>();
+        parameters.Add(x => x.CreateEventRequest, new CreateEventRequest()
+            {
+                Name = "",
+                FederationId = FederationId,
+            });
+
+        var createEventDialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);
+        var result = await createEventDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}

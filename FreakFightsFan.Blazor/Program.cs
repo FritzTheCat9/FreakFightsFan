@@ -16,6 +16,7 @@ builder.Services.AddSingleton<ValidationErrors>();
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<IFighterHttpService, FighterHttpService>();
 builder.Services.AddScoped<IFederationHttpService, FederationHttpService>();
+builder.Services.AddScoped<IEventHttpService, EventHttpService>();
 builder.Services.AddScoped<IMyDictionaryHttpService, MyDictionaryHttpService>();
 builder.Services.AddScoped<IMyDictionaryItemHttpService, MyDictionaryItemHttpService>();
 
