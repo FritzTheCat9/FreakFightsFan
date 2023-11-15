@@ -31,10 +31,10 @@ namespace FreakFightsFan.Api.Data.Database
 
                 fighters = new List<Fighter>
                 {
-                    new Fighter { FirstName = "Marcin", LastName = "Dubiel", Nickname = "Dubiel", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new Fighter { FirstName = "Kacper", LastName = "Błoński", Nickname = "Crusher", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new Fighter { FirstName = "Sylwester", LastName = "Wardęga", Nickname = "Zwyrol", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new Fighter { FirstName = "Michał", LastName = "Baron", Nickname = "Boxdel" , Created = _clock.Current(), Modified =  _clock.Current()},
+                    new() { FirstName = "Marcin", LastName = "Dubiel", Nickname = "Dubiel", Created = _clock.Current(), Modified =  _clock.Current()},
+                    new() { FirstName = "Kacper", LastName = "Błoński", Nickname = "Crusher", Created = _clock.Current(), Modified =  _clock.Current()},
+                    new() { FirstName = "Sylwester", LastName = "Wardęga", Nickname = "Zwyrol", Created = _clock.Current(), Modified =  _clock.Current()},
+                    new() { FirstName = "Michał", LastName = "Baron", Nickname = "Boxdel" , Created = _clock.Current(), Modified =  _clock.Current()},
                 };
 
                 dbContext.Fighters.AddRange(fighters);
