@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public DateTime? Date { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -21,6 +22,9 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             public Validator()
             {
                 RuleFor(x => x.Name)
+                    .NotEmpty();
+
+                RuleFor(x => x.Date)
                     .NotEmpty();
             }
         }
@@ -41,6 +45,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 var myEvent = await _eventRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 myEvent.Modified = _clock.Current();
                 myEvent.Name = command.Name;
+                myEvent.Date = command.Date.GetValueOrDefault(_clock.Current());
 
                 await _eventRepository.Update(myEvent);
                 return Unit.Value;
@@ -62,6 +67,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     {
                         Id = id,
                         Name = updateEventRequest.Name,
+                        Date = updateEventRequest.Date,
                     };
 
                     return Results.Ok(await mediator.Send(command, cancellationToken));

@@ -17,10 +17,12 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="date" T="EventDto">Date</MudTableSortLabel></MudTh>
         <MudTh><MudText>Actions</MudText></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Date">@context.Date.ToString("dd/MM/yyyy")</MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateEvent(@context))"></MudIconButton>
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteEvent(@context.Id))"></MudIconButton>
@@ -100,6 +102,7 @@
             {
                 Id = eventDto.Id,
                 Name = eventDto.Name,
+                Date = eventDto.Date
             });
 
         var updateEventDialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
@@ -115,6 +118,7 @@
         parameters.Add(x => x.CreateEventRequest, new CreateEventRequest()
             {
                 Name = "",
+                Date = DateTime.UtcNow,
                 FederationId = FederationId,
             });
 

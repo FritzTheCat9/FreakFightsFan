@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
         public class Command : IRequest<int>
         {
             public string Name { get; set; }
+            public DateTime? Date { get; set; }
             public int FederationId { get; set; }
         }
 
@@ -22,6 +23,9 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             public Validator()
             {
                 RuleFor(x => x.Name)
+                    .NotEmpty();
+
+                RuleFor(x => x.Date)
                     .NotEmpty();
             }
         }
@@ -49,6 +53,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
                     Name = command.Name,
+                    Date = command.Date.GetValueOrDefault(_clock.Current()),
                     FederationId = command.FederationId
                 };
 
@@ -69,6 +74,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     var command = new CreateEvent.Command()
                     {
                         Name = createEventRequest.Name,
+                        Date = createEventRequest.Date,
                         FederationId = createEventRequest.FederationId
                     };
 

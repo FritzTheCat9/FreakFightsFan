@@ -5,6 +5,7 @@
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
             <MudTextField Label="Name" @bind-Value="CreateEventRequest.Name" For="@(() => CreateEventRequest.Name)"></MudTextField>
+            <MudDatePicker Label="Date" @bind-Date="CreateEventRequest.Date" For="@(() => CreateEventRequest.Date)" Editable="true" Placeholder="Select Date" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>

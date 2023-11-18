@@ -16,6 +16,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Created = myEvent.Created,
                 Modified = myEvent.Modified,
                 Name = myEvent.Name,
+                Date = myEvent.Date,
                 FederationId = myEvent.FederationId,
             };
         }
@@ -37,8 +38,8 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
             {
                 SortOrder.Ascending => events.OrderBy(GetEventSortProperty(query)),
                 SortOrder.Descending => events.OrderByDescending(GetEventSortProperty(query)),
-                SortOrder.None => events,
-                _ => events,
+                SortOrder.None => events.OrderByDescending(myEvent => myEvent.Date),
+                _ => events.OrderByDescending(myEvent => myEvent.Date),
             };
         }
 
@@ -47,7 +48,8 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
             return query.SortColumn.ToLowerInvariant() switch
             {
                 "name" => myEvent => myEvent.Name,
-                _ => myEvent => myEvent.Name,
+                "date" => myEvent => myEvent.Date,
+                _ => myEvent => myEvent.Date,
             };
         }
     }
