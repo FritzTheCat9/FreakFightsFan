@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public string Code { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -22,6 +23,12 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             {
                 RuleFor(x => x.Name)
                     .NotEmpty();
+
+                RuleFor(x => x.Code)
+                    .NotEmpty()
+                    .MaximumLength(30)
+                    .Matches("^[A-Z0-9_]+$")
+                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
             }
         }
 
@@ -40,11 +47,12 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             {
                 var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                var nameExists = await _myDictionaryItemRepository.DictionaryItemNameExistsInOtherDictionaryItemsInThisDictionary(command.Name, dictionaryItem.DictionaryId, command.Id);
-                if (nameExists)
-                    throw new MyValidationException("Name", "'Name' must be unique");
+                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(command.Code, dictionaryItem.DictionaryId, command.Id);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
 
                 dictionaryItem.Name = command.Name;
+                dictionaryItem.Code = command.Code;
                 dictionaryItem.Modified = _clock.Current();
 
                 await _myDictionaryItemRepository.Update(dictionaryItem);
@@ -67,6 +75,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 {
                     Id = id,
                     Name = updateMyDictionaryItemRequest.Name,
+                    Code = updateMyDictionaryItemRequest.Code,
                 };
 
                 return Results.Ok(await mediator.Send(command, cancellationToken));

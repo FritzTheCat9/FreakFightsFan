@@ -5,6 +5,7 @@
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
             <MudTextField Label="Name" @bind-Value="CreateMyDictionaryRequest.Name" For="@(() => CreateMyDictionaryRequest.Name)"></MudTextField>
+            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryRequest.Code" For="@(() => CreateMyDictionaryRequest.Code)"></MudTextField>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>

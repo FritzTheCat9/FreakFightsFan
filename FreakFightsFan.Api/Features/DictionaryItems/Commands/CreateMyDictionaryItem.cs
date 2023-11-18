@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
         public class Command : IRequest<int>
         {
             public string Name { get; set; }
+            public string Code { get; set; }
             public int DictionaryId { get; set; }
         }
 
@@ -23,6 +24,12 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             {
                 RuleFor(x => x.Name)
                     .NotEmpty();
+
+                RuleFor(x => x.Code)
+                    .NotEmpty()
+                    .MaximumLength(30)
+                    .Matches("^[A-Z0-9_]+$")
+                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
             }
         }
 
@@ -43,9 +50,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             {
                 var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ?? throw new MyNotFoundException();
 
-                var nameExists = await _myDictionaryItemRepository.DictionaryItemNameExists(command.Name, command.DictionaryId);
-                if (nameExists)
-                    throw new MyValidationException("Name", "'Name' must be unique");
+                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
 
                 var dictionaryItem = new MyDictionaryItem
                 {
@@ -53,6 +60,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
                     Name = command.Name,
+                    Code = command.Code,
                     DictionaryId = command.DictionaryId,
                 };
 
@@ -72,7 +80,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             {
                 var command = new CreateMyDictionaryItem.Command()
                 {
-                    Name = createMyDictionaryItemRequest.Name, 
+                    Name = createMyDictionaryItemRequest.Name,
+                    Code = createMyDictionaryItemRequest.Code,
                     DictionaryId = createMyDictionaryItemRequest.DictionaryId,
                 };
 

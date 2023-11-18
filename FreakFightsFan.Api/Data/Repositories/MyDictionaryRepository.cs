@@ -9,8 +9,8 @@ namespace FreakFightsFan.Api.Data.Repositories
         IQueryable<MyDictionary> AsQueryable();
         Task<IEnumerable<MyDictionary>> GetAll();
         Task<MyDictionary> Get(int id);
-        Task<bool> DictionaryNameExists(string name);
-        Task<bool> DictionaryNameExistsInOtherDictionariesThan(string name, int dictionaryId);
+        Task<bool> DictionaryCodeExists(string code);
+        Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId);
         Task<int> Create(MyDictionary dictionary);
         Task Update(MyDictionary dictionary);
         Task Delete(MyDictionary dictionary);
@@ -38,13 +38,14 @@ namespace FreakFightsFan.Api.Data.Repositories
             .Include(x => x.DictionaryItems)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<bool> DictionaryNameExists(string name) => await _dbContext.MyDictionaries
-            .AnyAsync(x => x.Name == name);
+        public async Task<bool> DictionaryCodeExists(string code) => 
+            await _dbContext.MyDictionaries
+                .AnyAsync(x => x.Code == code);
 
-        public async Task<bool> DictionaryNameExistsInOtherDictionariesThan(string name, int dictionaryId) =>
+        public async Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId) =>
             await _dbContext.MyDictionaries
                 .Where(x => x.Id != dictionaryId)
-                .AnyAsync(x => x.Name == name);
+                .AnyAsync(x => x.Code == code);
 
         public async Task<int> Create(MyDictionary dictionary)
         {

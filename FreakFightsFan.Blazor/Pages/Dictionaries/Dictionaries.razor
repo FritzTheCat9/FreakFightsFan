@@ -17,11 +17,13 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryDto">Code</MudTableSortLabel></MudTh>
         <MudTh><MudText>Dictionary Items</MudText></MudTh>
         <MudTh><MudText>Actions</MudText></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"></MudIconButton>
         </MudTd>
@@ -106,6 +108,7 @@
             {
                 Id = myDictionaryDto.Id,
                 Name = myDictionaryDto.Name,
+                Code = myDictionaryDto.Code
             });
 
         var updateDictionaryDialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, dialogOptions);

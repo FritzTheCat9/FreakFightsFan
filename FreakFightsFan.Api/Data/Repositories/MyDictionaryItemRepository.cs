@@ -9,8 +9,8 @@ namespace FreakFightsFan.Api.Data.Repositories
         IQueryable<MyDictionaryItem> AsQueryable(int dictionaryId);
         Task<IEnumerable<MyDictionaryItem>> GetAll();
         Task<MyDictionaryItem> Get(int id);
-        Task<bool> DictionaryItemNameExists(string name, int dictionaryId);
-        Task<bool> DictionaryItemNameExistsInOtherDictionaryItemsInThisDictionary(string name, int dictionaryId, int dictionaryItemId);
+        Task<bool> DictionaryItemCodeExists(string code, int dictionaryId);
+        Task<bool> DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(string code, int dictionaryId, int dictionaryItemId);
         Task<int> Create(MyDictionaryItem dictionaryItem);
         Task Update(MyDictionaryItem dictionaryItem);
         Task Delete(MyDictionaryItem dictionaryItem);
@@ -34,14 +34,14 @@ namespace FreakFightsFan.Api.Data.Repositories
 
         public async Task<MyDictionaryItem> Get(int id) => await _dbContext.MyDictionaryItems.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<bool> DictionaryItemNameExists(string name, int dictionaryId) =>
+        public async Task<bool> DictionaryItemCodeExists(string code, int dictionaryId) =>
             await _dbContext.MyDictionaryItems
-                .AnyAsync(x => x.DictionaryId == dictionaryId && x.Name == name);
+                .AnyAsync(x => x.DictionaryId == dictionaryId && x.Code == code);
 
-        public async Task<bool> DictionaryItemNameExistsInOtherDictionaryItemsInThisDictionary(string name, int dictionaryId, int dictionaryItemId) =>
+        public async Task<bool> DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(string code, int dictionaryId, int dictionaryItemId) =>
             await _dbContext.MyDictionaryItems
                 .Where(x => x.DictionaryId == dictionaryId && x.Id != dictionaryItemId)
-                .AnyAsync(x => x.Name == name);
+                .AnyAsync(x => x.Code == code);
 
         public async Task<int> Create(MyDictionaryItem dictionaryItem)
         {

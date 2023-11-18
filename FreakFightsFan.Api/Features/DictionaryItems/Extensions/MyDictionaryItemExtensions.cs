@@ -16,6 +16,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
                 Created = dictionaryItem.Created,
                 Modified = dictionaryItem.Modified,
                 Name = dictionaryItem.Name,
+                Code = dictionaryItem.Code,
                 DictionaryId = dictionaryItem.DictionaryId,
             };
         }
@@ -24,7 +25,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                dictionaryItems = dictionaryItems.Where(x => x.Name.ToLower().Contains(searchTerm));
+                dictionaryItems = dictionaryItems.Where(x => 
+                x.Name.ToLower().Contains(searchTerm) ||
+                x.Code.ToLower().Contains(searchTerm));
 
             return dictionaryItems;
         }
@@ -35,8 +38,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             {
                 SortOrder.Ascending => dictionaryItems.OrderBy(GetMyDictionaryItemsSortProperty(query)),
                 SortOrder.Descending => dictionaryItems.OrderByDescending(GetMyDictionaryItemsSortProperty(query)),
-                SortOrder.None => dictionaryItems,
-                _ => dictionaryItems,
+                SortOrder.None => dictionaryItems.OrderBy(x => x.Code),
+                _ => dictionaryItems.OrderBy(x => x.Code),
             };
         }
 
@@ -45,7 +48,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             return query.SortColumn.ToLowerInvariant() switch
             {
                 "name" => dictionaryItem => dictionaryItem.Name,
-                _ => dictionaryItem => dictionaryItem.Name,
+                "code" => dictionaryItem => dictionaryItem.Code,
+                _ => dictionaryItem => dictionaryItem.Code,
             };
         }
     }

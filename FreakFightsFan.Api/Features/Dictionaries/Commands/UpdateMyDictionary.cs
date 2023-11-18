@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public string Code { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -22,6 +23,12 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             {
                 RuleFor(x => x.Name)
                     .NotEmpty();
+
+                RuleFor(x => x.Code)
+                    .NotEmpty()
+                    .MaximumLength(30)
+                    .Matches("^[A-Z0-9_]+$")
+                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
             }
         }
 
@@ -40,11 +47,12 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             {
                 var dictionary = await _myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                var nameExists = await _myDictionaryRepository.DictionaryNameExistsInOtherDictionariesThan(command.Name, command.Id);
-                if (nameExists)
-                    throw new MyValidationException("Name", "'Name' must be unique");
+                var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
 
                 dictionary.Name = command.Name;
+                dictionary.Code = command.Code;
                 dictionary.Modified = _clock.Current();
 
                 await _myDictionaryRepository.Update(dictionary);
@@ -67,6 +75,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 {
                     Id = id,
                     Name = updateMyDictionaryRequest.Name,
+                    Code = updateMyDictionaryRequest.Code,
                 };
 
                 return Results.Ok(await mediator.Send(command, cancellationToken));

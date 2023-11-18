@@ -16,10 +16,12 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryItemDto">Code</MudTableSortLabel></MudTh>
         <MudTh><MudText>Actions</MudText></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
             <MudTd>
                 <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionaryItem(@context))"></MudIconButton>
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionaryItem(@context.Id))"></MudIconButton>
@@ -99,6 +101,7 @@
             {
                 Id = myDictionaryItemDto.Id,
                 Name = myDictionaryItemDto.Name,
+                Code = myDictionaryItemDto.Code,
             });
 
         var updateDictionaryItemDialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
@@ -114,6 +117,7 @@
         parameters.Add(x => x.CreateMyDictionaryItemRequest, new CreateMyDictionaryItemRequest()
             {
                 Name = "",
+                Code = "",
                 DictionaryId = DictionaryId,
             });
 

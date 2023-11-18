@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         public class Command : IRequest<int>
         {
             public string Name { get; set; }
+            public string Code { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -22,6 +23,12 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             {
                 RuleFor(x => x.Name)
                     .NotEmpty();
+
+                RuleFor(x => x.Code)
+                    .NotEmpty()
+                    .MaximumLength(30)
+                    .Matches("^[A-Z0-9_]+$")
+                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
             }
         }
 
@@ -38,9 +45,9 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
-                var nameExists = await _myDictionaryRepository.DictionaryNameExists(command.Name);
-                if (nameExists)
-                    throw new MyValidationException("Name", "'Name' must be unique");
+                var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
 
                 var dictionary = new MyDictionary
                 {
@@ -48,6 +55,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
                     Name = command.Name,
+                    Code = command.Code,
                 };
 
                 return await _myDictionaryRepository.Create(dictionary);
@@ -67,6 +75,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 var command = new CreateMyDictionary.Command()
                 {
                     Name = createMyDictionaryRequest.Name,
+                    Code = createMyDictionaryRequest.Code,
                 };
 
                 int dictionaryId = await mediator.Send(command, cancellationToken);
