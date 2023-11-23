@@ -1,0 +1,132 @@
+﻿@using FluentValidation
+
+@if (IsImageValid && !string.IsNullOrEmpty(ImageBase64))
+{
+    <MudImage Src="@ImageBase64" Width="400" />
+} 
+else
+{
+    <MudItem>No image loaded</MudItem>
+}
+
+<MudFileUpload T="IBrowserFile" For="@(() => File)" @bind-Files="File" OnFilesChanged="UploadFiles" AppendMultipleFiles="false"
+               Accept="@AllowedFileTypesString" Validation="@(new Func<IBrowserFile, IEnumerable<string>>(ValidateFile))">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AttachFile">
+            Upload Image
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+@code {
+    [Parameter] public string ImageBase64 { get; set; }
+    [Parameter] public EventCallback<string> ImageBase64Changed { get; set; }
+    [Parameter] public bool IsImageValid { get; set; }
+    [Parameter] public EventCallback<bool> IsImageValidChanged { get; set; }
+    [Parameter] public Dictionary<string, List<string>> ValidationErrors { get; set; }
+    [Parameter] public EventCallback<Dictionary<string, List<string>>> ValidationErrorsChanged { get; set; }
+
+    [Parameter] public int MaxFileSize { get; set; } = 1024 * 1024 * 5;                                                                // 5MB = 5 242 880 bytes
+    [Parameter] public List<string> AllowedFileTypes { get; set; } = new List<string>() { "image/jpg", "image/jpeg", "image/png" };     // "jpg", "jpeg", "png"
+
+    public string AllowedFileTypesString = "";
+    public IBrowserFile File { get; set; } = null;
+
+    protected override void OnInitialized()
+    {
+        SetIsImageValid(ImageBase64);
+        SetAllowedFileTypesString(AllowedFileTypes);
+    }
+
+    private void SetIsImageValid(string imageBase64)
+    {
+        if (!string.IsNullOrEmpty(imageBase64))
+        {
+            IsImageValid = true;
+        }
+    }
+
+    private void SetAllowedFileTypesString(List<string> allowedFileTypes)
+    {
+        for (int i = 0; i < allowedFileTypes.Count; i++)
+        {
+            var imageType = allowedFileTypes[i].Substring(6);                   // without 'image/'
+
+            AllowedFileTypesString += "." + imageType;
+            if (i != allowedFileTypes.Count - 1)
+                AllowedFileTypesString += ", ";
+        }
+    }
+
+    private IEnumerable<string> ValidateFile(IBrowserFile file)                 // bug in Mudblazor showing only one validation error?
+    {
+        if (file == null)
+            return new List<string>();
+
+        var validator = new FileFluentValidator(MaxFileSize, AllowedFileTypes, AllowedFileTypesString);
+        var result = validator.Validate(file);
+
+        var errors = new List<string>();
+        if (!result.IsValid)
+        {
+            foreach (var error in result.Errors)
+            {
+                errors.Add(error.ErrorMessage);
+            }
+        }
+        return errors;
+    }
+
+    private async void UploadFiles(InputFileChangeEventArgs e)
+    {
+        ValidationErrors = new Dictionary<string, List<string>>();
+        await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
+
+        var errors = ValidateFile(e.File);
+        if (errors.Any()) 
+        {
+            IsImageValid = false;
+            await IsImageValidChanged.InvokeAsync(IsImageValid);
+            return;
+        }
+
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(MaxFileSize).ReadAsync(buffer);
+        var imageBase64 = Convert.ToBase64String(buffer);
+        string dataUrl = $"data:{file.ContentType};base64,{imageBase64}";
+        ImageBase64 = dataUrl;
+        await ImageBase64Changed.InvokeAsync(ImageBase64);
+        
+        IsImageValid = true;
+        await IsImageValidChanged.InvokeAsync(IsImageValid);
+
+        ValidationErrors = new Dictionary<string, List<string>>();
+        await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
+    }
+
+    public class FileFluentValidator : AbstractValidator<IBrowserFile>
+    {
+        private readonly int _maxFileSize;
+        private readonly List<string> _allowedFileTypes;
+        private readonly string _allowedFileTypesString;
+
+        public FileFluentValidator(int maxFileSize, List<string> allowedFileTypes, string allowedFileTypesString)
+        {
+            _maxFileSize = maxFileSize;
+            _allowedFileTypes = allowedFileTypes;
+            _allowedFileTypesString = allowedFileTypesString;
+
+            When(x => x != null, () =>
+            {
+                RuleFor(x => x.Size)
+                .Must(x => x <= _maxFileSize)
+                .WithMessage($"The maximum file size is {_maxFileSize} bytes");
+
+                RuleFor(x => x.ContentType)
+                .Must(x => _allowedFileTypes.Contains(x))
+                .WithMessage($"Allowed image types: {allowedFileTypesString}");
+            });
+        }
+    }
+}

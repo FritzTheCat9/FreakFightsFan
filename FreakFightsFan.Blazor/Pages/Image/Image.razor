@@ -1,0 +1,112 @@
+@page "/images"
+@inject IExceptionHandler ExceptionHandler
+@inject IImageHttpService ImageHttpService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Images</PageTitle>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<ImageDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Images</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateImage())"></MudIconButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Image</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="created" T="ImageDto">Created</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="modified" T="ImageDto">Modified</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd><MudImage Src="@context.ImageBase64" Width="200" Height="150" Alt="Image" Elevation="25" Class="rounded-lg ma-4" /></MudTd>
+        <MudTd DataLabel="Created">@context.Created</MudTd>
+        <MudTd DataLabel="Modified">@context.Modified</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<ImageDto> table;
+    public PagedList<ImageDto> ImagesPagedList { get; set; }
+
+    private async Task<TableData<ImageDto>> ServerReload(TableState state)
+    {
+        var getAllImagesRequest = new GetAllImagesRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+            };
+
+        try
+        {
+            ImagesPagedList = await ImageHttpService.GetAllImages(getAllImagesRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<ImageDto>() { TotalItems = 0, Items = new List<ImageDto>() };
+        }
+
+        return new TableData<ImageDto>()
+            {
+                TotalItems = ImagesPagedList.TotalCount,
+                Items = ImagesPagedList.Items
+            };
+    }
+
+    private async Task DeleteImage(int id)
+    {
+        try
+        {
+            await ImageHttpService.DeleteImage(id);
+            await table.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateImage(ImageDto imageDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateImageDialog>();
+        parameters.Add(x => x.UpdateImageRequest, new UpdateImageRequest
+            {
+                Id = imageDto.Id,
+                ImageBase64 = imageDto.ImageBase64
+            });
+
+        var updateImageDialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
+        var result = await updateImageDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateImage()
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateImageDialog>();
+        parameters.Add(x => x.CreateImageRequest, new CreateImageRequest());
+
+        var createImageDialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
+        var result = await createImageDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}

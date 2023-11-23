@@ -3,6 +3,7 @@ using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Exceptions;
+using FreakFightsFan.Api.Features.Images.Extensions;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,8 @@ builder.Services.AddCarter();
 builder.Services.AddMssql(builder.Configuration);
 builder.Services.AddSingleton<ExceptionMiddleware>();
 builder.Services.AddSingleton<IClock, Clock>();
+
+builder.Services.Configure<ImageOptions>(builder.Configuration.GetSection("Image"));
 
 var app = builder.Build();
 

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Shared", "Fr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Api", "FreakFightsFan.Api\FreakFightsFan.Api.csproj", "{44C78D1A-1CD8-4582-AA1F-9760AD131680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreakFightsFan.FeatureGenerator", "FreakFightsFan.FeatureGenerator\FreakFightsFan.FeatureGenerator.csproj", "{4814483C-8216-4FA0-8154-556FF670BD2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.FeatureGenerator", "FreakFightsFan.FeatureGenerator\FreakFightsFan.FeatureGenerator.csproj", "{4814483C-8216-4FA0-8154-556FF670BD2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

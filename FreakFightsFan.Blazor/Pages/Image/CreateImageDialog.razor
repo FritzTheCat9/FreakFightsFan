@@ -1,0 +1,55 @@
+@inject IImageHttpService ImageHttpService
+@inject IExceptionHandler ExceptionHandler
+
+<MudForm Model="CreateImageRequest" @ref="@form" Validation="ValidateValue">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MyFileInput @bind-ImageBase64="CreateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" />
+            <MyValidationMessage T="string" For="@(() => CreateImageRequest.ImageBase64)" ValidationErrors="validationErrors" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public CreateImageRequest CreateImageRequest { get; set; } = new CreateImageRequest();
+
+    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private MudForm form;
+    private bool IsImageValid { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (!IsImageValid)
+                return;
+
+            await ImageHttpService.CreateImage(CreateImageRequest);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors = validationException.Errors;
+            await form.Validate();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
+    {
+        if (!validationErrors.ContainsKey(propertyName))
+            validationErrors.Add(propertyName, new List<string>());
+
+        return validationErrors[propertyName];
+    };
+}
