@@ -26,4 +26,8 @@
     <ProjectReference Include="..\FreakFightsFan.Shared\FreakFightsFan.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

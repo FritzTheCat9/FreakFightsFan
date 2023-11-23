@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Exceptions;
 using FreakFightsFan.Api.Features.Images.Extensions;
+using FreakFightsFan.Api.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,9 @@ builder.Services.AddMssql(builder.Configuration);
 builder.Services.AddSingleton<ExceptionMiddleware>();
 builder.Services.AddSingleton<IClock, Clock>();
 
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.Configure<ImageOptions>(builder.Configuration.GetSection("Image"));
 
 var app = builder.Build();
@@ -48,5 +52,6 @@ app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("MyCorsPolicy");
 app.MapCarter();
+app.UseFileServer();
 
 app.Run();

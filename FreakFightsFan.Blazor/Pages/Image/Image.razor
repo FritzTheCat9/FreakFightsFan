@@ -16,12 +16,18 @@
         <MudTh>Image</MudTh>
         <MudTh><MudTableSortLabel SortLabel="created" T="ImageDto">Created</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="modified" T="ImageDto">Modified</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="ImageDto">Name</MudTableSortLabel></MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd><MudImage Src="@context.ImageBase64" Width="200" Height="150" Alt="Image" Elevation="25" Class="rounded-lg ma-4" /></MudTd>
+        <MudTd>
+            <MudLink Href="@context.Url" Target="_blank">
+                <MudImage Src="@context.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+            </MudLink>
+        </MudTd>
         <MudTd DataLabel="Created">@context.Created</MudTd>
         <MudTd DataLabel="Modified">@context.Modified</MudTd>
+        <MudTd DataLabel="Modified">@context.Name</MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"></MudIconButton>
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"></MudIconButton>
@@ -89,8 +95,10 @@
         parameters.Add(x => x.UpdateImageRequest, new UpdateImageRequest
             {
                 Id = imageDto.Id,
-                ImageBase64 = imageDto.ImageBase64
+                ImageBase64 = ""
             });
+
+        parameters.Add(x => x.Url, imageDto.Url);
 
         var updateImageDialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
         var result = await updateImageDialog.Result;

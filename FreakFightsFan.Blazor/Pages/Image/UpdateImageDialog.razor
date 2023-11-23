@@ -4,7 +4,7 @@
 <MudForm Model="UpdateImageRequest" @ref="@form" Validation="ValidateValue">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="UpdateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" Url="@Url" />
             <MyValidationMessage T="string" For="@(() => UpdateImageRequest.ImageBase64)" ValidationErrors="validationErrors" />
         </DialogContent>
         <DialogActions>
@@ -17,6 +17,7 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public UpdateImageRequest UpdateImageRequest { get; set; } = new UpdateImageRequest();
+    [Parameter] public string Url { get; set; }
 
     private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
     private MudForm form;

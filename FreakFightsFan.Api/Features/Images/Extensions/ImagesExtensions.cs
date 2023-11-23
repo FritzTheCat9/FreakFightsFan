@@ -15,13 +15,9 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
                 Id = image.Id,
                 Created = image.Created,
                 Modified = image.Modified,
-                ImageBase64 = image.GetImageBase64(),
+                Name = image.Name,
+                Url = image.Url
             };
-        }
-
-        private static string GetImageBase64(this Image image)
-        {
-            return $"data:{image.ContentType};base64,{Convert.ToBase64String(image.Data)}";
         }
 
         public static IQueryable<Image> SortImages(this IQueryable<Image> images, GetAllImages.Query query)
@@ -41,6 +37,8 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
             {
                 "created" => image => image.Created,
                 "modified" => image => image.Modified,
+                "name" => image => image.Name,
+                "url" => image => image.Url,
                 _ => image => image.Created,
             };
         }

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace FreakFightsFan.Api.Features.Images.Extensions
+﻿namespace FreakFightsFan.Api.Features.Images.Extensions
 {
     public static class ImageHelpers
     {
@@ -38,8 +36,20 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
         }
 
         public static byte[] GetImageData(string imageBase64)
-        {
+        {   
             return Convert.FromBase64String(imageBase64.Split(',')[1]);
+        }
+
+        public static string GenerateNameWithExtension(string imageBase64)
+        {
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss");
+            var name = $"{timestamp}_{Path.GetRandomFileName()}";
+            return Path.ChangeExtension(name, GetImageExtension(imageBase64));
+        }
+
+        private static string GetImageExtension(string imageBase64)
+        {
+            return imageBase64.Split(';')[0].Split('/')[1];
         }
     }
 }

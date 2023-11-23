@@ -1,9 +1,13 @@
 ﻿@using FluentValidation
 
-@if (IsImageValid && !string.IsNullOrEmpty(ImageBase64))
+@if ((IsImageValid && !string.IsNullOrEmpty(ImageBase64)))
 {
     <MudImage Src="@ImageBase64" Width="400" />
-} 
+}
+else if (!string.IsNullOrEmpty(Url))
+{
+    <MudImage Src="@Url" Width="400" />
+}
 else
 {
     <MudItem>No image loaded</MudItem>
@@ -19,6 +23,7 @@ else
 </MudFileUpload>
 
 @code {
+    [Parameter] public string Url { get; set; }
     [Parameter] public string ImageBase64 { get; set; }
     [Parameter] public EventCallback<string> ImageBase64Changed { get; set; }
     [Parameter] public bool IsImageValid { get; set; }
@@ -83,7 +88,7 @@ else
         await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
 
         var errors = ValidateFile(e.File);
-        if (errors.Any()) 
+        if (errors.Any())
         {
             IsImageValid = false;
             await IsImageValidChanged.InvokeAsync(IsImageValid);
@@ -97,7 +102,7 @@ else
         string dataUrl = $"data:{file.ContentType};base64,{imageBase64}";
         ImageBase64 = dataUrl;
         await ImageBase64Changed.InvokeAsync(ImageBase64);
-        
+
         IsImageValid = true;
         await IsImageValidChanged.InvokeAsync(IsImageValid);
 

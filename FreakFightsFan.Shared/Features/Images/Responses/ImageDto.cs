@@ -6,7 +6,8 @@ namespace FreakFightsFan.Shared.Features.Images.Responses
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
 
-        public string ImageBase64 { get; set; }
+        public string Name { get; set; }
+        public string Url { get; set; }
     }
 }
 

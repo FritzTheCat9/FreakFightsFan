@@ -3,6 +3,7 @@ using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Images.Extensions;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Images.Requests;
 using MediatR;
@@ -41,19 +42,25 @@ namespace FreakFightsFan.Api.Features.Images.Commands
         {
             private readonly IImageRepository _imageRepository;
             private readonly IClock _clock;
+            private readonly IImageService _imageService;
 
-            public Handler(IImageRepository imageRepository, IClock clock)
+            public Handler(IImageRepository imageRepository, IClock clock, IImageService imageService)
             {
                 _imageRepository = imageRepository;
                 _clock = clock;
+                _imageService = imageService;
             }
 
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 var image = await _imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
+
+                string name = _imageService.SaveImage(command.ImageBase64);
+                _imageService.DeleteImage(image.Name);
+
                 image.Modified = _clock.Current();
-                image.Data = ImageHelpers.GetImageData(command.ImageBase64);
-                image.ContentType = ImageHelpers.GetImageContentType(command.ImageBase64);
+                image.Name = name;
+                image.Url = _imageService.GetImageUrl(name);
 
                 await _imageRepository.Update(image);
                 return Unit.Value;

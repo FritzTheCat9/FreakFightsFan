@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Images.Extensions;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Images.Requests;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -40,22 +41,26 @@ namespace FreakFightsFan.Api.Features.Images.Commands
         {
             private readonly IImageRepository _imageRepository;
             private readonly IClock _clock;
+            private readonly IImageService _imageService;
 
-            public Handler(IImageRepository imageRepository, IClock clock)
+            public Handler(IImageRepository imageRepository, IClock clock, IImageService imageService)
             {
                 _imageRepository = imageRepository;
                 _clock = clock;
+                _imageService = imageService;
             }
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
+                string name = _imageService.SaveImage(command.ImageBase64);
+
                 var image = new Image
                 {
                     Id = 0,
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
-                    Data = ImageHelpers.GetImageData(command.ImageBase64),
-                    ContentType = ImageHelpers.GetImageContentType(command.ImageBase64)
+                    Name = name,
+                    Url = _imageService.GetImageUrl(name)
                 };
 
                 return await _imageRepository.Create(image);
