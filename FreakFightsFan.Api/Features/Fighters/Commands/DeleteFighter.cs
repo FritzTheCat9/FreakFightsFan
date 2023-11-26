@@ -1,6 +1,7 @@
 ﻿using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using MediatR;
 
@@ -21,15 +22,20 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
         public class Handler : IRequestHandler<Command, Unit>
         {
             private readonly IFighterRepository _fighterRepository;
+            private readonly IImageService _imageService;
 
-            public Handler(IFighterRepository fighterRepository)
+            public Handler(IFighterRepository fighterRepository, IImageService imageService)
             {
                 _fighterRepository = fighterRepository;
+                _imageService = imageService;
             }
 
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 var fighter = await _fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
+
+                _imageService.DeleteEntityImage(fighter.Image);
+
                 await _fighterRepository.Delete(fighter);
                 return Unit.Value;
             }

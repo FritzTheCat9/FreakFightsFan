@@ -9,6 +9,12 @@ namespace FreakFightsFan.Api.Data.Configurations
         public void Configure(EntityTypeBuilder<Fighter> builder)
         {
             builder.HasKey(f => f.Id);
+
+            builder.HasOne(f => f.Image)
+                .WithOne(i => i.Fighter)
+                .HasForeignKey<Image>(i => i.FighterId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

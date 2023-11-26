@@ -4,6 +4,9 @@
 <MudForm Model="UpdateFighterRequest" @ref="@form" Validation="ValidateValue">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
+            <MyFileInput @bind-ImageBase64="UpdateFighterRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" Url="@Url" />
+            <MyValidationMessage T="string" For="@(() => UpdateFighterRequest.ImageBase64)" ValidationErrors="validationErrors" />
+
             <MudTextField Label="First Name" @bind-Value="UpdateFighterRequest.FirstName" For="@(() => UpdateFighterRequest.FirstName)"></MudTextField>
             <MudTextField Label="Last Name" @bind-Value="UpdateFighterRequest.LastName" For="@(() => UpdateFighterRequest.LastName)"></MudTextField>
             <MudTextField Label="Nickname" @bind-Value="UpdateFighterRequest.Nickname" For="@(() => UpdateFighterRequest.Nickname)"></MudTextField>
@@ -18,9 +21,11 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public UpdateFighterRequest UpdateFighterRequest { get; set; } = new UpdateFighterRequest();
+    [Parameter] public string Url { get; set; }
 
     private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
     private MudForm form;
+    private bool IsImageValid { get; set; }
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -28,6 +33,9 @@
     {
         try
         {
+            if (!IsImageValid)
+                UpdateFighterRequest.ImageBase64 = null;
+
             await FighterHttpService.UpdateFighter(UpdateFighterRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }

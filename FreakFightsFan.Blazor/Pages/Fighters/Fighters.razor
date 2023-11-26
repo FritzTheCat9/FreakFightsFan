@@ -16,12 +16,21 @@
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
+        <MudTh>Image</MudTh>
         <MudTh><MudTableSortLabel SortLabel="firstname" T="FighterDto">First Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="lastname" T="FighterDto">Last Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="nickname" T="FighterDto">Nickname</MudTableSortLabel></MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd>
+            @if (context.Image != null)
+            {
+                <MudLink Href="@context.Image.Url" Target="_blank">
+                    <MudImage Src="@context.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                </MudLink>
+            }
+        </MudTd>
         <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
         <MudTd DataLabel="LastName">@context.LastName</MudTd>
         <MudTd DataLabel="Nickname">@context.Nickname</MudTd>
@@ -103,7 +112,10 @@
                 FirstName = fighterDto.FirstName,
                 LastName = fighterDto.LastName,
                 Nickname = fighterDto.Nickname,
+                ImageBase64 = ""
             });
+
+        parameters.Add(x => x.Url, fighterDto.Image?.Url);
 
         var updateFighterDialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
         var result = await updateFighterDialog.Result;

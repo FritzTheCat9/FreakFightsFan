@@ -1,4 +1,6 @@
-﻿namespace FreakFightsFan.Shared.Features.Fighters.Responses
+﻿using FreakFightsFan.Shared.Features.Images.Responses;
+
+namespace FreakFightsFan.Shared.Features.Fighters.Responses
 {
     public class FighterDto
     {
@@ -9,5 +11,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Nickname { get; set; }
+        public ImageDto? Image { get; set; }
     }
 }

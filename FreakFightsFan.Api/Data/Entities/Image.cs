@@ -7,5 +7,7 @@ namespace FreakFightsFan.Api.Data.Entities
 
         public int? FederationId { get; set; }
         public Federation? Federation { get; set; }
+        public int? FighterId { get; set; }
+        public Fighter? Fighter { get; set; }
     }
 }

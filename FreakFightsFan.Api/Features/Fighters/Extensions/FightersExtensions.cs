@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.Fighters.Queries;
+using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Fighters.Responses;
 using System.Linq.Expressions;
@@ -18,6 +19,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 FirstName = fighter.FirstName,
                 LastName = fighter.LastName,
                 Nickname = fighter.Nickname,
+                Image = fighter.Image?.ToDto(),
             };
         }
 
