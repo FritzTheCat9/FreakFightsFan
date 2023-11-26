@@ -61,21 +61,19 @@ namespace FreakFightsFan.Api.Services
 
         public Image CreateEntityImage(string imageBase64)
         {
-            Image image = null;
+            if (string.IsNullOrEmpty(imageBase64))
+                return null;
 
-            if (!string.IsNullOrEmpty(imageBase64))
+            string name = SaveImage(imageBase64);
+
+            var image = new Image
             {
-                string name = SaveImage(imageBase64);
-
-                image = new Image
-                {
-                    Id = 0,
-                    Created = _clock.Current(),
-                    Modified = _clock.Current(),
-                    Name = name,
-                    Url = GetImageUrl(name)
-                };
-            }
+                Id = 0,
+                Created = _clock.Current(),
+                Modified = _clock.Current(),
+                Name = name,
+                Url = GetImageUrl(name)
+            };
 
             return image;
         }
@@ -88,29 +86,29 @@ namespace FreakFightsFan.Api.Services
 
         public Image UpdateEntityImage(Image image, string imageBase64)
         {
-            if (!string.IsNullOrEmpty(imageBase64))
+            if (string.IsNullOrEmpty(imageBase64))
+                return image;
+
+            string imageName = SaveImage(imageBase64);
+
+            if (image is not null)
             {
-                string imageName = SaveImage(imageBase64);
+                DeleteImage(image.Name);
 
-                if (image is not null)
+                image.Modified = _clock.Current();
+                image.Name = imageName;
+                image.Url = GetImageUrl(imageName);
+            }
+            else
+            {
+                image = new Image
                 {
-                    DeleteImage(image.Name);
-
-                    image.Modified = _clock.Current();
-                    image.Name = imageName;
-                    image.Url = GetImageUrl(imageName);
-                }
-                else
-                {
-                    image = new Image
-                    {
-                        Id = 0,
-                        Created = _clock.Current(),
-                        Modified = _clock.Current(),
-                        Name = imageName,
-                        Url = GetImageUrl(imageName)
-                    };
-                }
+                    Id = 0,
+                    Created = _clock.Current(),
+                    Modified = _clock.Current(),
+                    Name = imageName,
+                    Url = GetImageUrl(imageName)
+                };
             }
 
             return image;
