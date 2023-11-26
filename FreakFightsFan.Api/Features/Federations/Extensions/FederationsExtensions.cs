@@ -1,5 +1,6 @@
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.Federations.Queries;
+using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Federations.Responses;
 using System.Linq.Expressions;
@@ -15,7 +16,8 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
                 Id = federation.Id,
                 Created = federation.Created,
                 Modified = federation.Modified,
-                Name = federation.Name,
+                Name = federation.Name, 
+                Image = federation.Image?.ToDto(),
             };
         }
 

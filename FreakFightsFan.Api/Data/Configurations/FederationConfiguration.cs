@@ -8,10 +8,17 @@ namespace FreakFightsFan.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Federation> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Events)
-                .WithOne(x => x.Federation)
-                .HasForeignKey(x => x.FederationId)
+            builder.HasKey(f => f.Id);
+
+            builder.HasMany(f => f.Events)
+                .WithOne(e => e.Federation)
+                .HasForeignKey(e => e.FederationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(f => f.Image)
+                .WithOne(i => i.Federation)
+                .HasForeignKey<Image>(i => i.FederationId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -5,46 +5,46 @@
 namespace FreakFightsFan.Api.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Events : Migration
+    public partial class FederationImages : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "FederationId",
-                table: "Events",
+                table: "Images",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_FederationId",
-                table: "Events",
-                column: "FederationId");
+                name: "IX_Images_FederationId",
+                table: "Images",
+                column: "FederationId",
+                unique: true,
+                filter: "[FederationId] IS NOT NULL");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Events_Federations_FederationId",
-                table: "Events",
+                name: "FK_Images_Federations_FederationId",
+                table: "Images",
                 column: "FederationId",
                 principalTable: "Federations",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Events_Federations_FederationId",
-                table: "Events");
+                name: "FK_Images_Federations_FederationId",
+                table: "Images");
 
             migrationBuilder.DropIndex(
-                name: "IX_Events_FederationId",
-                table: "Events");
+                name: "IX_Images_FederationId",
+                table: "Images");
 
             migrationBuilder.DropColumn(
                 name: "FederationId",
-                table: "Events");
+                table: "Images");
         }
     }
 }

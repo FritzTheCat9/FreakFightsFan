@@ -16,11 +16,20 @@
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
+        <MudTh>Image</MudTh>
         <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">Name</MudTableSortLabel></MudTh>
         <MudTh>Events</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd>
+            @if (context.Image != null)
+            {
+                <MudLink Href="@context.Image.Url" Target="_blank">
+                    <MudImage Src="@context.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                </MudLink>
+            }
+        </MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@context.Id))"></MudIconButton>
@@ -106,7 +115,10 @@
             {
                 Id = federationDto.Id,
                 Name = federationDto.Name,
+                ImageBase64 = ""
             });
+
+        parameters.Add(x => x.Url, federationDto.Image?.Url);
 
         var updateFederationDialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, dialogOptions);
         var result = await updateFederationDialog.Result;

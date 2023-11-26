@@ -113,6 +113,9 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FederationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
 
@@ -123,6 +126,10 @@ namespace FreakFightsFan.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FederationId")
+                        .IsUnique()
+                        .HasFilter("[FederationId] IS NOT NULL");
 
                     b.ToTable("Images");
                 });
@@ -193,6 +200,16 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.Navigation("Federation");
                 });
 
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Image", b =>
+                {
+                    b.HasOne("FreakFightsFan.Api.Data.Entities.Federation", "Federation")
+                        .WithOne("Image")
+                        .HasForeignKey("FreakFightsFan.Api.Data.Entities.Image", "FederationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Federation");
+                });
+
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionaryItem", b =>
                 {
                     b.HasOne("FreakFightsFan.Api.Data.Entities.MyDictionary", "Dictionary")
@@ -207,6 +224,8 @@ namespace FreakFightsFan.Api.Data.Migrations
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Federation", b =>
                 {
                     b.Navigation("Events");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionary", b =>

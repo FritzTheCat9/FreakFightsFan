@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreakFightsFan.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231118222841_Dictionaries_Code")]
-    partial class Dictionaries_Code
+    [Migration("20231126155212_FederationImages2")]
+    partial class FederationImages2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,6 +105,38 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.ToTable("Fighters");
                 });
 
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FederationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FederationId")
+                        .IsUnique()
+                        .HasFilter("[FederationId] IS NOT NULL");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionary", b =>
                 {
                     b.Property<int>("Id")
@@ -171,6 +203,16 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.Navigation("Federation");
                 });
 
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Image", b =>
+                {
+                    b.HasOne("FreakFightsFan.Api.Data.Entities.Federation", "Federation")
+                        .WithOne("Image")
+                        .HasForeignKey("FreakFightsFan.Api.Data.Entities.Image", "FederationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Federation");
+                });
+
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionaryItem", b =>
                 {
                     b.HasOne("FreakFightsFan.Api.Data.Entities.MyDictionary", "Dictionary")
@@ -185,6 +227,8 @@ namespace FreakFightsFan.Api.Data.Migrations
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Federation", b =>
                 {
                     b.Navigation("Events");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionary", b =>

@@ -12,18 +12,48 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreakFightsFan.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231114185927_Federation")]
-    partial class Federation
+    [Migration("20231124204730_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FederationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FederationId");
+
+                    b.ToTable("Events");
+                });
 
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Federation", b =>
                 {
@@ -75,6 +105,31 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.ToTable("Fighters");
                 });
 
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionary", b =>
                 {
                     b.Property<int>("Id")
@@ -82,6 +137,9 @@ namespace FreakFightsFan.Api.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -105,6 +163,9 @@ namespace FreakFightsFan.Api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -124,6 +185,17 @@ namespace FreakFightsFan.Api.Data.Migrations
                     b.ToTable("MyDictionaryItems");
                 });
 
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Event", b =>
+                {
+                    b.HasOne("FreakFightsFan.Api.Data.Entities.Federation", "Federation")
+                        .WithMany("Events")
+                        .HasForeignKey("FederationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Federation");
+                });
+
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionaryItem", b =>
                 {
                     b.HasOne("FreakFightsFan.Api.Data.Entities.MyDictionary", "Dictionary")
@@ -133,6 +205,11 @@ namespace FreakFightsFan.Api.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Dictionary");
+                });
+
+            modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.Federation", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("FreakFightsFan.Api.Data.Entities.MyDictionary", b =>

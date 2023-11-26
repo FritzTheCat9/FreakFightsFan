@@ -8,10 +8,11 @@ namespace FreakFightsFan.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<MyDictionaryItem> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.HasOne(x => x.Dictionary)
-                .WithMany(x => x.DictionaryItems)
-                .HasForeignKey(x => x.DictionaryId)
+            builder.HasKey(di => di.Id);
+
+            builder.HasOne(di => di.Dictionary)
+                .WithMany(d => d.DictionaryItems)
+                .HasForeignKey(di => di.DictionaryId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

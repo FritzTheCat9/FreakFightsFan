@@ -4,6 +4,9 @@
 <MudForm Model="CreateFederationRequest" @ref="@form" Validation="ValidateValue">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
+            <MyFileInput @bind-ImageBase64="CreateFederationRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" />
+            <MyValidationMessage T="string" For="@(() => CreateFederationRequest.ImageBase64)" ValidationErrors="validationErrors" />
+
             <MudTextField Label="Name" @bind-Value="CreateFederationRequest.Name" For="@(() => CreateFederationRequest.Name)"></MudTextField>
         </DialogContent>
         <DialogActions>
@@ -19,6 +22,7 @@
 
     private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
     private MudForm form;
+    private bool IsImageValid { get; set; }
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -26,6 +30,9 @@
     {
         try
         {
+            if (!IsImageValid)
+                CreateFederationRequest.ImageBase64 = null;
+
             await FederationHttpService.CreateFederation(CreateFederationRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }

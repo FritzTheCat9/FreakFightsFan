@@ -8,7 +8,7 @@ namespace FreakFightsFan.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Fighter> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.HasKey(f => f.Id);
         }
     }
 }

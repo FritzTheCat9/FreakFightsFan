@@ -1,6 +1,7 @@
 using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using MediatR;
 
@@ -21,15 +22,20 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
         public class Handler : IRequestHandler<Command, Unit>
         {
             private readonly IFederationRepository _federationRepository;
+            private readonly IImageService _imageService;
 
-            public Handler(IFederationRepository federationRepository)
+            public Handler(IFederationRepository federationRepository, IImageService imageService)
             {
                 _federationRepository = federationRepository;
+                _imageService = imageService;
             }
 
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 var federation = await _federationRepository.Get(command.Id) ?? throw new MyNotFoundException();
+
+                _imageService.DeleteEntityImage(federation.Image);
+
                 await _federationRepository.Delete(federation);
                 return Unit.Value;
             }
