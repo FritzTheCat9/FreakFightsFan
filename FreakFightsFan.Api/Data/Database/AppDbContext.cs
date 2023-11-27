@@ -9,6 +9,7 @@ namespace FreakFightsFan.Api.Data.Database
         public DbSet<Fighter> Fighters { get; set; }
         public DbSet<Federation> Federations { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<Fight> Fights { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<MyDictionary> MyDictionaries { get; set; }
         public DbSet<MyDictionaryItem> MyDictionaryItems { get; set; }
