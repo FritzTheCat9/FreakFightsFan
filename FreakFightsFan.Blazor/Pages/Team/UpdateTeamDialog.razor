@@ -1,0 +1,50 @@
+@inject ITeamHttpService TeamHttpService
+@inject IExceptionHandler ExceptionHandler
+
+<MudForm Model="UpdateTeamRequest" @ref="@form" Validation="ValidateValue">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField Label="Name" @bind-Value="UpdateTeamRequest.Name" For="@(() => UpdateTeamRequest.Name)"></MudTextField>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateTeamRequest UpdateTeamRequest { get; set; } = new UpdateTeamRequest();
+
+    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private MudForm form;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await TeamHttpService.UpdateTeam(UpdateTeamRequest);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors = validationException.Errors;
+            await form.Validate();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
+    {
+        if (!validationErrors.ContainsKey(propertyName))
+            validationErrors.Add(propertyName, new List<string>());
+
+        return validationErrors[propertyName];
+    };
+}

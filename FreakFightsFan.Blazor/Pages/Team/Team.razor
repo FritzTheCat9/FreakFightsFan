@@ -1,0 +1,119 @@
+@page "/teams"
+@inject IExceptionHandler ExceptionHandler
+@inject ITeamHttpService TeamHttpService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Teams</PageTitle>
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<TeamDto>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Teams</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateTeam())"></MudIconButton>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="name" T="TeamDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudText>Actions</MudText></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateTeam(@context))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteTeam(@context.Id))"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<TeamDto> table;
+    private string searchString = "";
+    public PagedList<TeamDto> TeamsPagedList { get; set; }
+
+    private async Task<TableData<TeamDto>> ServerReload(TableState state)
+    {
+        var getAllTeamsRequest = new GetAllTeamsRequest
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+            };
+
+        try
+        {
+            TeamsPagedList = await TeamHttpService.GetAllTeams(getAllTeamsRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<TeamDto>() { TotalItems = 0, Items = new List<TeamDto>() };
+        }
+
+        return new TableData<TeamDto>()
+            {
+                TotalItems = TeamsPagedList.TotalCount,
+                Items = TeamsPagedList.Items
+            };
+    }
+
+    private void OnSearch(string searchText)
+    {
+        searchString = searchText;
+        table.ReloadServerData();
+    }
+
+    private async Task DeleteTeam(int id)
+    {
+        try
+        {
+            await TeamHttpService.DeleteTeam(id);
+            await table.ReloadServerData();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
+    private async Task UpdateTeam(TeamDto teamDto)
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateTeamDialog>();
+        parameters.Add(x => x.UpdateTeamRequest, new UpdateTeamRequest
+            {
+                Id = teamDto.Id,
+                Name = teamDto.Name,
+            });
+
+        var updateTeamDialog = await DialogService.ShowAsync<UpdateTeamDialog>("Update Team", parameters, dialogOptions);
+        var result = await updateTeamDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateTeam()
+    {
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateTeamDialog>();
+        parameters.Add(x => x.CreateTeamRequest, new CreateTeamRequest());
+
+        var createTeamDialog = await DialogService.ShowAsync<CreateTeamDialog>("Create Team", parameters, dialogOptions);
+        var result = await createTeamDialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}

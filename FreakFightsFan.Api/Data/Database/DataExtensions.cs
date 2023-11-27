@@ -19,6 +19,7 @@ namespace FreakFightsFan.Api.Data.Database
             services.AddScoped<IFederationRepository, FederationRepository>();
             services.AddScoped<IEventRepository, EventRepository>(); 
             services.AddScoped<IFightRepository, FightRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
             services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();
