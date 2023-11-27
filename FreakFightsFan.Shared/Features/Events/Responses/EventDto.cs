@@ -1,3 +1,5 @@
+using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
+
 namespace FreakFightsFan.Shared.Features.Events.Responses
 {
     public class EventDto
@@ -9,6 +11,7 @@ namespace FreakFightsFan.Shared.Features.Events.Responses
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public int FederationId { get; set; }
+        public MyDictionaryItemDto? City { get; set; }
     }
 }
 

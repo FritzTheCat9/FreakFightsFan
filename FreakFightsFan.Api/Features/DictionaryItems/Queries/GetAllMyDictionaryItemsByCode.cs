@@ -1,0 +1,93 @@
+﻿using Carter;
+using FluentValidation;
+using FreakFightsFan.Api.Abstractions;
+using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
+using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
+using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
+using MediatR;
+
+namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
+{
+    public static class GetAllMyDictionaryItemsByCode
+    {
+        public class Query : IRequest<PagedList<MyDictionaryItemDto>>, IPagedQuery, ISortedQuery
+        {
+            public int Page { get; set; }
+            public int PageSize { get; set; }
+            public string SortColumn { get; set; }
+            public SortOrder SortOrder { get; set; }
+            public string SearchTerm { get; set; }
+
+            public string DictionaryCode { get; set; }
+        }
+
+        public class Validator : AbstractValidator<Query>
+        {
+
+        }
+
+        public class Handler : IRequestHandler<Query, PagedList<MyDictionaryItemDto>>
+        {
+            private readonly IMyDictionaryRepository _myDictionaryRepository;
+
+            public Handler(IMyDictionaryRepository myDictionaryRepository)
+            {
+                _myDictionaryRepository = myDictionaryRepository;
+            }
+
+            public async Task<PagedList<MyDictionaryItemDto>> Handle(Query query, CancellationToken cancellationToken)
+            {
+                var dictionary = await _myDictionaryRepository.Get(query.DictionaryCode) ?? null;
+
+                if (dictionary is null)
+                {
+                    // log to file - field on frontend tried to access a non-existent dictionary
+
+                    var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(
+                        query.Page,
+                        query.PageSize);
+                    return emptyPagedList;
+                }
+
+                var dictionaryItemsQuery = dictionary.DictionaryItems.AsQueryable();
+
+                dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
+                dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
+
+                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
+                    dictionaryItemsQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
+
+                return dictionaryItemsPagedList;
+            }
+        }
+    }
+
+    public class GetAllMyDictionaryItemsByCodeEndpoint : ICarterModule
+    {
+        public void AddRoutes(IEndpointRouteBuilder app)
+        {
+            app.MapPost("/api/myDictionaryItems/allByCode", async (
+                GetAllMyDictionaryItemsByCodeRequest getAllMyDictionaryItemsByCodeRequest,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                var query = new GetAllMyDictionaryItemsByCode.Query()
+                {
+                    Page = getAllMyDictionaryItemsByCodeRequest.Page,
+                    PageSize = getAllMyDictionaryItemsByCodeRequest.PageSize,
+                    SortOrder = getAllMyDictionaryItemsByCodeRequest.SortOrder,
+                    SortColumn = getAllMyDictionaryItemsByCodeRequest.SortColumn,
+                    SearchTerm = getAllMyDictionaryItemsByCodeRequest.SearchTerm,
+                    DictionaryCode = getAllMyDictionaryItemsByCodeRequest.DictionaryCode,
+                };
+
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+                .WithTags("MyDictionaryItems");
+        }
+    }
+}

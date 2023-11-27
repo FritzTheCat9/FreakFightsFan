@@ -23,5 +23,17 @@ namespace FreakFightsFan.Api.Abstractions
 
             return new PagedList<T>(items, page, pageSize, totalCount);
         }
+
+        public static PagedList<T> CreateEmpty(
+            int page,
+            int pageSize)
+        {
+            if (page <= 0)
+                throw new MyValidationException(nameof(page), "Page should be greater than 0");
+            if (pageSize <= 0)
+                throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");
+
+            return new PagedList<T>(new List<T>(), page, pageSize, 0);
+        }
     }
 }

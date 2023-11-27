@@ -1,4 +1,5 @@
 using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Api.Features.Events.Queries;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Events.Responses;
@@ -18,6 +19,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Name = myEvent.Name,
                 Date = myEvent.Date,
                 FederationId = myEvent.FederationId,
+                City = myEvent.City?.ToDto(),
             };
         }
 

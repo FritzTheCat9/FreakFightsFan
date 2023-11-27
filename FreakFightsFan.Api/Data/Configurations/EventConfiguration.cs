@@ -1,6 +1,8 @@
 using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 
 namespace FreakFightsFan.Api.Data.Configurations
 {
@@ -14,6 +16,12 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .WithMany(f => f.Events)
                 .HasForeignKey(e => e.FederationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(e => e.City)
+                .WithMany(di => di.Events)
+                .HasForeignKey(e => e.CityId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

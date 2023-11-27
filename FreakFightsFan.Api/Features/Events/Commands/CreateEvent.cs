@@ -3,7 +3,9 @@ using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Events.Requests;
 using MediatR;
 
@@ -16,6 +18,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             public string Name { get; set; }
             public DateTime? Date { get; set; }
             public int FederationId { get; set; }
+            public int? CityId { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -35,17 +38,29 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             private readonly IEventRepository _eventRepository;
             private readonly IFederationRepository _federationRepository;
             private readonly IClock _clock;
+            private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
+            private readonly IMyDictionaryService _dictionaryService;
 
-            public Handler(IEventRepository eventRepository, IFederationRepository federationRepository, IClock clock)
+            public Handler(IEventRepository eventRepository, IFederationRepository federationRepository, IClock clock,
+                IMyDictionaryItemRepository dictionaryItemRepository, IMyDictionaryService dictionaryService)
             {
                 _eventRepository = eventRepository;
                 _federationRepository = federationRepository;
                 _clock = clock;
+                _dictionaryItemRepository = dictionaryItemRepository;
+                _dictionaryService = dictionaryService;
             }
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
                 var federation = await _federationRepository.Get(command.FederationId) ?? throw new MyNotFoundException();
+
+                if (command.CityId is not null)
+                {
+                    var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
+                    if (!isCityValid)
+                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
+                }
 
                 var myEvent = new Event
                 {
@@ -54,7 +69,8 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     Modified = _clock.Current(),
                     Name = command.Name,
                     Date = command.Date.GetValueOrDefault(_clock.Current()),
-                    FederationId = command.FederationId
+                    FederationId = command.FederationId,
+                    City = (command.CityId is not null) ? await _dictionaryItemRepository.Get(command.CityId.Value) : null
                 };
 
                 return await _eventRepository.Create(myEvent);
@@ -75,7 +91,8 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     {
                         Name = createEventRequest.Name,
                         Date = createEventRequest.Date,
-                        FederationId = createEventRequest.FederationId
+                        FederationId = createEventRequest.FederationId,
+                        CityId = createEventRequest.CityId,
                     };
 
                     int eventId = await mediator.Send(command, cancellationToken);

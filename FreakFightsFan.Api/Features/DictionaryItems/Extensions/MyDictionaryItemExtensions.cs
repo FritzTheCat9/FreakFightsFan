@@ -21,6 +21,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             };
         }
 
+        /* GetAllMyDictionaryItems.Query */
+
         public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItems.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
@@ -44,6 +46,40 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
         }
 
         private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(GetAllMyDictionaryItems.Query query)
+        {
+            return query.SortColumn.ToLowerInvariant() switch
+            {
+                "name" => dictionaryItem => dictionaryItem.Name,
+                "code" => dictionaryItem => dictionaryItem.Code,
+                _ => dictionaryItem => dictionaryItem.Code,
+            };
+        }
+
+        /* GetAllMyDictionaryItemsByCode.Query */
+
+        public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItemsByCode.Query query)
+        {
+            var searchTerm = query.SearchTerm.ToLower().Trim();
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                dictionaryItems = dictionaryItems.Where(x =>
+                x.Name.ToLower().Contains(searchTerm) ||
+                x.Code.ToLower().Contains(searchTerm));
+
+            return dictionaryItems;
+        }
+
+        public static IQueryable<MyDictionaryItem> SortMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItemsByCode.Query query)
+        {
+            return query.SortOrder switch
+            {
+                SortOrder.Ascending => dictionaryItems.OrderBy(GetMyDictionaryItemsSortProperty(query)),
+                SortOrder.Descending => dictionaryItems.OrderByDescending(GetMyDictionaryItemsSortProperty(query)),
+                SortOrder.None => dictionaryItems.OrderBy(x => x.Code),
+                _ => dictionaryItems.OrderBy(x => x.Code),
+            };
+        }
+
+        private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(GetAllMyDictionaryItemsByCode.Query query)
         {
             return query.SortColumn.ToLowerInvariant() switch
             {

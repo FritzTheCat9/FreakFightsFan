@@ -21,9 +21,16 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>
-            <MudLink Href="@context.Url" Target="_blank">
-                <MudImage Src="@context.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
-            </MudLink>
+            @if(!string.IsNullOrEmpty(context.Url))
+            {
+                <MudLink Href="@context.Url" Target="_blank">
+                    <MudImage Src="@context.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                </MudLink>
+            }
+            else
+            {
+                <MudText>-</MudText>
+            }
         </MudTd>
         <MudTd DataLabel="Created">@context.Created</MudTd>
         <MudTd DataLabel="Modified">@context.Modified</MudTd>

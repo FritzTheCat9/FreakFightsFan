@@ -3,6 +3,7 @@ using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Exceptions;
+using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using System.Reflection;
@@ -35,6 +36,7 @@ builder.Services.AddSingleton<ExceptionMiddleware>();
 builder.Services.AddSingleton<IClock, Clock>();
 
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IMyDictionaryService, MyDictionaryService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<ImageOptions>(builder.Configuration.GetSection("Image"));

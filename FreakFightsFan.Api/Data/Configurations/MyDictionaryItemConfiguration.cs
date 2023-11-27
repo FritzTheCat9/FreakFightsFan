@@ -14,6 +14,11 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .WithMany(d => d.DictionaryItems)
                 .HasForeignKey(di => di.DictionaryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(di => di.Events)
+                .WithOne(e => e.City)
+                .HasForeignKey(e => e.CityId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace FreakFightsFan.Blazor.Services
     public interface IMyDictionaryItemHttpService
     {
         Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItems(GetAllMyDictionaryItemsRequest getAllMyDictionaryItemsRequest);
+        Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItemsByCode(GetAllMyDictionaryItemsByCodeRequest getAllMyDictionaryItemsByCodeRequest);
         Task<MyDictionaryItemDto> GetMyDictionaryItem(int id);
         Task CreateMyDictionaryItem(CreateMyDictionaryItemRequest createMyDictionaryItemRequest);
         Task UpdateMyDictionaryItem(UpdateMyDictionaryItemRequest updateMyDictionaryItemRequest);
@@ -26,6 +27,11 @@ namespace FreakFightsFan.Blazor.Services
         public async Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItems(GetAllMyDictionaryItemsRequest getAllMyDictionaryItemsRequest)
         {
             return await _httpService.Post<GetAllMyDictionaryItemsRequest, PagedList<MyDictionaryItemDto>>(_url + "/all", getAllMyDictionaryItemsRequest);
+        }
+
+        public async Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItemsByCode(GetAllMyDictionaryItemsByCodeRequest getAllMyDictionaryItemsByCodeRequest)
+        {
+            return await _httpService.Post<GetAllMyDictionaryItemsByCodeRequest, PagedList<MyDictionaryItemDto>>(_url + "/allByCode", getAllMyDictionaryItemsByCodeRequest);
         }
 
         public async Task<MyDictionaryItemDto> GetMyDictionaryItem(int id)

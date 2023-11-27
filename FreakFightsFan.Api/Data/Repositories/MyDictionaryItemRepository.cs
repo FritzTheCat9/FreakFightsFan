@@ -25,7 +25,7 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<MyDictionaryItem> AsQueryable(int dictionaryId) => 
+        public IQueryable<MyDictionaryItem> AsQueryable(int dictionaryId) =>
             _dbContext.MyDictionaryItems
                 .Where(x => x.DictionaryId == dictionaryId)
                 .AsQueryable();

@@ -1,4 +1,5 @@
 @inject IEventHttpService EventHttpService
+@inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateEventRequest" @ref="@form" Validation="ValidateValue">
@@ -6,6 +7,12 @@
         <DialogContent>
             <MudTextField Label="Name" @bind-Value="UpdateEventRequest.Name" For="@(() => UpdateEventRequest.Name)"></MudTextField>
             <MudDatePicker Label="Date" @bind-Date="UpdateEventRequest.Date" For="@(() => UpdateEventRequest.Date)" Editable="true" Placeholder="Select Date" />
+            <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="@Search" Variant="Variant.Text"
+                             ShowProgressIndicator="true" ToStringFunc="DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+                <NoItemsTemplate>
+                    <MudText>No items found in dictionary with code: "@DictionaryCode.City"</MudText>
+                </NoItemsTemplate>
+            </MudAutocomplete>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -17,9 +24,38 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public UpdateEventRequest UpdateEventRequest { get; set; } = new UpdateEventRequest();
+    [Parameter] public MyDictionaryItemDto? City { get; set; } = null;
 
     private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
     private MudForm form;
+
+    private Func<MyDictionaryItemDto, string> DisplayDictionaryItem = item => item is null ? null : item.Name;
+    private async Task<IEnumerable<MyDictionaryItemDto>> Search(string value, CancellationToken token)
+    {
+        PagedList<MyDictionaryItemDto> DictionaryItemsPagedList = null;
+
+        var getAllMyDictionaryItemsByCodeRequest = new GetAllMyDictionaryItemsByCodeRequest
+            {
+                Page = 1,
+                PageSize = 10,
+                SortColumn = "name",
+                SortOrder = SortOrder.Ascending,
+                SearchTerm = value ?? "",
+                DictionaryCode = DictionaryCode.City
+            };
+
+        try
+        {
+            DictionaryItemsPagedList = await MyDictionaryItemHttpService.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new List<MyDictionaryItemDto>();
+        }
+
+        return DictionaryItemsPagedList.Items;
+    }
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -27,6 +63,8 @@
     {
         try
         {
+            UpdateEventRequest.CityId = City?.Id;
+
             await EventHttpService.UpdateEvent(UpdateEventRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
