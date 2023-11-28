@@ -5,6 +5,12 @@
 
 <PageTitle>Dictionary items</PageTitle>
 
+<MudBreadcrumbs Items="_items">
+    <ItemTemplate Context="item">
+        <MudLink Href="@item.Href">@item.Text</MudLink>
+    </ItemTemplate>
+</MudBreadcrumbs>
+
 <MudTable ServerData="@(new Func<TableState, Task<TableData<MyDictionaryItemDto>>>(ServerReload))"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
@@ -40,6 +46,12 @@
 
     @code {
     [Parameter] public int DictionaryId { get; set; }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Dictionaries", href: "/dictionaries"),
+        new BreadcrumbItem("Dictionary Items", href: null, disabled: true),
+    };
 
     private string searchString = "";
     private MudTable<MyDictionaryItemDto> table;

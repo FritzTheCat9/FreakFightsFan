@@ -6,6 +6,12 @@
 
 <PageTitle>Events</PageTitle>
 
+<MudBreadcrumbs Items="_items">
+    <ItemTemplate Context="item">
+        <MudLink Href="@item.Href">@item.Text</MudLink>
+    </ItemTemplate>
+</MudBreadcrumbs>
+
 <MudTable ServerData="@(new Func<TableState, Task<TableData<EventDto>>>(ServerReload))"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
@@ -52,6 +58,12 @@
 
 @code {
     [Parameter] public int FederationId { get; set; }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Federations", href: "/federations"),
+        new BreadcrumbItem("Events", href: null, disabled: true),
+    };
 
     private MudTable<EventDto> table;
     private string searchString = "";

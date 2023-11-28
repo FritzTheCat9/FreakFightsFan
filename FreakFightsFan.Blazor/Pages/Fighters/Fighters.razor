@@ -6,6 +6,12 @@
 
 <PageTitle>Fighters</PageTitle>
 
+<MudBreadcrumbs Items="_items">
+    <ItemTemplate Context="item">
+        <MudLink Href="@item.Href">@item.Text</MudLink>
+    </ItemTemplate>
+</MudBreadcrumbs>
+
 <MudTable ServerData="@(new Func<TableState, Task<TableData<FighterDto>>>(ServerReload))"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
@@ -55,6 +61,11 @@
 </MudTable>
 
 @code {
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Fighters", href: null, disabled: true),
+    };
+
     private MudTable<FighterDto> table;
     private string searchString = "";
     public PagedList<FighterDto> FightersPagedList { get; set; }

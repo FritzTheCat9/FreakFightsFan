@@ -6,6 +6,12 @@
 
 <PageTitle>Images</PageTitle>
 
+<MudBreadcrumbs Items="_items">
+    <ItemTemplate Context="item">
+        <MudLink Href="@item.Href">@item.Text</MudLink>
+    </ItemTemplate>
+</MudBreadcrumbs>
+
 <MudTable ServerData="@(new Func<TableState, Task<TableData<ImageDto>>>(ServerReload))"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
@@ -54,6 +60,11 @@
 @code {
     private MudTable<ImageDto> table;
     public PagedList<ImageDto> ImagesPagedList { get; set; }
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Images", href: null, disabled: true),
+    };
 
     private async Task<TableData<ImageDto>> ServerReload(TableState state)
     {
