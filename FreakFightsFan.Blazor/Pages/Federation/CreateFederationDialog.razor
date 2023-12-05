@@ -1,4 +1,4 @@
-@inject IFederationHttpService FederationHttpService
+@inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateFederationRequest" @ref="@form" Validation="ValidateValue">
@@ -33,7 +33,7 @@
             if (!IsImageValid)
                 CreateFederationRequest.ImageBase64 = null;
 
-            await FederationHttpService.CreateFederation(CreateFederationRequest);
+            await FederationApiClient.CreateFederation(CreateFederationRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

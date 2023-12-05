@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 
-namespace FreakFightsFan.Blazor.Services
+namespace FreakFightsFan.Blazor.Clients
 {
-    public interface IHttpService
+    public interface IApiClient
     {
         Task<TResponse> Get<TResponse>(string url);
         Task Post<TRequest>(string url, TRequest tRequest);
@@ -13,12 +13,12 @@ namespace FreakFightsFan.Blazor.Services
         Task Delete(string url);
     }
 
-    public class HttpService : IHttpService
+    public class ApiClient : IApiClient
     {
         private readonly HttpClient _client;
         private readonly string _baseUrl;
 
-        public HttpService(HttpClient client)
+        public ApiClient(HttpClient client)
         {
             _client = client;
             _baseUrl = client.BaseAddress.ToString();

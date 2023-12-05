@@ -2,9 +2,9 @@ using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Images.Requests;
 using FreakFightsFan.Shared.Features.Images.Responses;
 
-namespace FreakFightsFan.Blazor.Services
+namespace FreakFightsFan.Blazor.Clients
 {
-    public interface IImageHttpService
+    public interface IImageApiClient
     {
         Task<PagedList<ImageDto>> GetAllImages(GetAllImagesRequest getAllImagesRequest);
         Task<ImageDto> GetImage(int id);
@@ -13,39 +13,39 @@ namespace FreakFightsFan.Blazor.Services
         Task DeleteImage(int id);
     }
 
-    public class ImageHttpService : IImageHttpService
+    public class ImageApiClient : IImageApiClient
     {
-        private readonly IHttpService _httpService;
+        private readonly IApiClient _apiClient;
         private readonly string _url = "api/images";
 
-        public ImageHttpService(IHttpService httpService)
+        public ImageApiClient(IApiClient apiClient)
         {
-            _httpService = httpService;
+            _apiClient = apiClient;
         }
 
         public async Task<PagedList<ImageDto>> GetAllImages(GetAllImagesRequest getAllImagesRequest)
         {
-            return await _httpService.Post<GetAllImagesRequest, PagedList<ImageDto>>(_url + "/all", getAllImagesRequest);
+            return await _apiClient.Post<GetAllImagesRequest, PagedList<ImageDto>>(_url + "/all", getAllImagesRequest);
         }
 
         public async Task<ImageDto> GetImage(int id)
         {
-            return await _httpService.Get<ImageDto>(_url + id);
+            return await _apiClient.Get<ImageDto>(_url + id);
         }
 
         public async Task CreateImage(CreateImageRequest createImageRequest)
         {
-            await _httpService.Post(_url, createImageRequest);
+            await _apiClient.Post(_url, createImageRequest);
         }
 
         public async Task UpdateImage(UpdateImageRequest updateImageRequest)
         {
-            await _httpService.Put(_url + "/" + updateImageRequest.Id, updateImageRequest);
+            await _apiClient.Put(_url + "/" + updateImageRequest.Id, updateImageRequest);
         }
 
         public async Task DeleteImage(int id)
         {
-            await _httpService.Delete(_url + "/" + id);
+            await _apiClient.Delete(_url + "/" + id);
         }
     }
 }

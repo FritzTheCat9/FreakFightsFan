@@ -1,6 +1,6 @@
 ﻿@page "/dictionary/{DictionaryId:int}"
 @inject IExceptionHandler ExceptionHandler
-@inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
+@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IDialogService DialogService
 
 <PageTitle>Dictionary items</PageTitle>
@@ -71,7 +71,7 @@
 
         try
         {
-            MyDictionaryItemsPagedList = await MyDictionaryItemHttpService.GetAllMyDictionaryItems(getAllMyDictionaryItemsRequest);
+            MyDictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItems(getAllMyDictionaryItemsRequest);
         }
         catch (Exception ex)
         {
@@ -96,7 +96,7 @@
     {
         try
         {
-            await MyDictionaryItemHttpService.DeleteMyDictionaryItem(id);
+            await MyDictionaryItemApiClient.DeleteMyDictionaryItem(id);
             await table.ReloadServerData();
         }
         catch (Exception ex)

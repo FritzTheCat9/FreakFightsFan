@@ -1,6 +1,6 @@
 @page "/federations"
 @inject IExceptionHandler ExceptionHandler
-@inject IFederationHttpService FederationHttpService
+@inject IFederationApiClient FederationApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -83,7 +83,7 @@
 
         try
         {
-            FederationsPagedList = await FederationHttpService.GetAllFederations(getAllFederationsRequest);
+            FederationsPagedList = await FederationApiClient.GetAllFederations(getAllFederationsRequest);
         }
         catch (Exception ex)
         {
@@ -113,7 +113,7 @@
     {
         try
         {
-            await FederationHttpService.DeleteFederation(id);
+            await FederationApiClient.DeleteFederation(id);
             await table.ReloadServerData();
         }
         catch (Exception ex)

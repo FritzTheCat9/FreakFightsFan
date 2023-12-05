@@ -1,6 +1,6 @@
 @page "/images"
 @inject IExceptionHandler ExceptionHandler
-@inject IImageHttpService ImageHttpService
+@inject IImageApiClient ImageApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -78,7 +78,7 @@
 
         try
         {
-            ImagesPagedList = await ImageHttpService.GetAllImages(getAllImagesRequest);
+            ImagesPagedList = await ImageApiClient.GetAllImages(getAllImagesRequest);
         }
         catch (Exception ex)
         {
@@ -97,7 +97,7 @@
     {
         try
         {
-            await ImageHttpService.DeleteImage(id);
+            await ImageApiClient.DeleteImage(id);
             await table.ReloadServerData();
         }
         catch (Exception ex)

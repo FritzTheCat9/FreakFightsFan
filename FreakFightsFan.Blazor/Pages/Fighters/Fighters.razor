@@ -1,6 +1,6 @@
 ﻿@page "/fighters"
 @inject IExceptionHandler ExceptionHandler
-@inject IFighterHttpService FighterHttpService
+@inject IFighterApiClient FighterApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -83,7 +83,7 @@
 
         try
         {
-            FightersPagedList = await FighterHttpService.GetAllFighters(getAllFightersRequest);
+            FightersPagedList = await FighterApiClient.GetAllFighters(getAllFightersRequest);
         }
         catch (Exception ex)
         {
@@ -108,7 +108,7 @@
     {
         try
         {
-            await FighterHttpService.DeleteFighter(id);
+            await FighterApiClient.DeleteFighter(id);
             await table.ReloadServerData();
         }
         catch (Exception ex)

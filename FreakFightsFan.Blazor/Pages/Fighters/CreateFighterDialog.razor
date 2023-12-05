@@ -1,4 +1,4 @@
-﻿@inject IFighterHttpService FighterHttpService
+﻿@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateFighterRequest" @ref="@form" Validation="ValidateValue">
@@ -35,7 +35,7 @@
             if (!IsImageValid)
                 CreateFighterRequest.ImageBase64 = null;
 
-            await FighterHttpService.CreateFighter(CreateFighterRequest);
+            await FighterApiClient.CreateFighter(CreateFighterRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

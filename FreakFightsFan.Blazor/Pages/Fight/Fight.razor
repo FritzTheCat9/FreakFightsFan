@@ -1,6 +1,6 @@
 @page "/fights/{FederationId:int}/{EventId:int}"
 @inject IExceptionHandler ExceptionHandler
-@inject IFightHttpService FightHttpService
+@inject IFightApiClient FightApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -94,7 +94,7 @@ else
 
         try
         {
-            FightsList = (await FightHttpService.GetAllFights(getAllFightsRequest)).Items;
+            FightsList = (await FightApiClient.GetAllFights(getAllFightsRequest)).Items;
         }
         catch (Exception ex)
         {
@@ -109,7 +109,7 @@ else
     {
         try
         {
-            await FightHttpService.DeleteFight(id);
+            await FightApiClient.DeleteFight(id);
             FightsList = await GetAllFights();
         }
         catch (Exception ex)

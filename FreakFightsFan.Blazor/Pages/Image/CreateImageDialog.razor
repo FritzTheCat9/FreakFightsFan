@@ -1,4 +1,4 @@
-@inject IImageHttpService ImageHttpService
+@inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateImageRequest" @ref="@form" Validation="ValidateValue">
@@ -31,7 +31,7 @@
             if (!IsImageValid)
                 return;
 
-            await ImageHttpService.CreateImage(CreateImageRequest);
+            await ImageApiClient.CreateImage(CreateImageRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

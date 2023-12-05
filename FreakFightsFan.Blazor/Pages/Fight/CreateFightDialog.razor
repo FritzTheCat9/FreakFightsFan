@@ -1,5 +1,5 @@
-@inject IFightHttpService FightHttpService
-@inject IFighterHttpService FighterHttpService
+@inject IFightApiClient FightApiClient
+@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateFightRequest" @ref="@form" Validation="ValidateValue">
@@ -208,7 +208,7 @@
 
         try
         {
-            FightersPagedList = await FighterHttpService.GetAllFighters(getAllFightersRequest);
+            FightersPagedList = await FighterApiClient.GetAllFighters(getAllFightersRequest);
         }
         catch (Exception ex)
         {
@@ -233,7 +233,7 @@
                 CreateFightRequest.Teams.Add(createTeamModel);
             }
 
-            await FightHttpService.CreateFight(CreateFightRequest);
+            await FightApiClient.CreateFight(CreateFightRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

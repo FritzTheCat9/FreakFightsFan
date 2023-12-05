@@ -1,5 +1,5 @@
-@inject IEventHttpService EventHttpService
-@inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
+@inject IEventApiClient EventApiClient
+@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateEventRequest" @ref="@form" Validation="ValidateValue">
@@ -46,7 +46,7 @@
 
         try
         {
-            DictionaryItemsPagedList = await MyDictionaryItemHttpService.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
+            DictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
         }
         catch (Exception ex)
         {
@@ -65,7 +65,7 @@
         {
             UpdateEventRequest.CityId = City?.Id;
 
-            await EventHttpService.UpdateEvent(UpdateEventRequest);
+            await EventApiClient.UpdateEvent(UpdateEventRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

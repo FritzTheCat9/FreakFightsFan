@@ -2,9 +2,9 @@ using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Fights.Requests;
 using FreakFightsFan.Shared.Features.Fights.Responses;
 
-namespace FreakFightsFan.Blazor.Services
+namespace FreakFightsFan.Blazor.Clients
 {
-    public interface IFightHttpService
+    public interface IFightApiClient
     {
         Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest getAllFightsRequest);
         Task<FightDto> GetFight(int id);
@@ -13,39 +13,39 @@ namespace FreakFightsFan.Blazor.Services
         Task DeleteFight(int id);
     }
 
-    public class FightHttpService : IFightHttpService
+    public class FightApiClient : IFightApiClient
     {
-        private readonly IHttpService _httpService;
+        private readonly IApiClient _apiClient;
         private readonly string _url = "api/fights";
 
-        public FightHttpService(IHttpService httpService)
+        public FightApiClient(IApiClient apiClient)
         {
-            _httpService = httpService;
+            _apiClient = apiClient;
         }
 
         public async Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest getAllFightsRequest)
         {
-            return await _httpService.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", getAllFightsRequest);
+            return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", getAllFightsRequest);
         }
 
         public async Task<FightDto> GetFight(int id)
         {
-            return await _httpService.Get<FightDto>(_url + id);
+            return await _apiClient.Get<FightDto>(_url + id);
         }
 
         public async Task CreateFight(CreateFightRequest createFightRequest)
         {
-            await _httpService.Post(_url, createFightRequest);
+            await _apiClient.Post(_url, createFightRequest);
         }
 
         public async Task UpdateFight(UpdateFightRequest updateFightRequest)
         {
-            await _httpService.Put(_url + "/" + updateFightRequest.Id, updateFightRequest);
+            await _apiClient.Put(_url + "/" + updateFightRequest.Id, updateFightRequest);
         }
 
         public async Task DeleteFight(int id)
         {
-            await _httpService.Delete(_url + "/" + id);
+            await _apiClient.Delete(_url + "/" + id);
         }
     }
 }

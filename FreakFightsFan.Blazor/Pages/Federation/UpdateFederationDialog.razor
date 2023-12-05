@@ -1,4 +1,4 @@
-@inject IFederationHttpService FederationHttpService
+@inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateFederationRequest" @ref="@form" Validation="ValidateValue">
@@ -34,7 +34,7 @@
             if (!IsImageValid)
                 UpdateFederationRequest.ImageBase64 = null;
 
-            await FederationHttpService.UpdateFederation(UpdateFederationRequest);
+            await FederationApiClient.UpdateFederation(UpdateFederationRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

@@ -1,6 +1,6 @@
 @page "/events/{FederationId:int}"
 @inject IExceptionHandler ExceptionHandler
-@inject IEventHttpService EventHttpService
+@inject IEventApiClient EventApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
@@ -87,7 +87,7 @@
 
         try
         {
-            EventsPagedList = await EventHttpService.GetAllEvents(getAllEventsRequest);
+            EventsPagedList = await EventApiClient.GetAllEvents(getAllEventsRequest);
         }
         catch (Exception ex)
         {
@@ -117,7 +117,7 @@
     {
         try
         {
-            await EventHttpService.DeleteEvent(id);
+            await EventApiClient.DeleteEvent(id);
             await table.ReloadServerData();
         }
         catch (Exception ex)

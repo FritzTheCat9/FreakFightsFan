@@ -1,4 +1,4 @@
-﻿@inject IMyDictionaryItemHttpService MyDictionaryItemHttpService
+﻿@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateMyDictionaryItemRequest" @ref="@form" Validation="ValidateValue">
@@ -27,7 +27,7 @@
     {
         try
         {
-            await MyDictionaryItemHttpService.UpdateMyDictionaryItem(UpdateMyDictionaryItemRequest);
+            await MyDictionaryItemApiClient.UpdateMyDictionaryItem(UpdateMyDictionaryItemRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
