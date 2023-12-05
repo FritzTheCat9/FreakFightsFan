@@ -1,7 +1,7 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Requests;
 using MediatR;
@@ -59,28 +59,20 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class UpdateMyDictionaryEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPut("/api/myDictionaries/{id}", async (
                 int id,
-                UpdateMyDictionaryRequest updateMyDictionaryRequest,
+                UpdateMyDictionaryRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new UpdateMyDictionary.Command()
-                {
-                    Id = id,
-                    Name = updateMyDictionaryRequest.Name,
-                    Code = updateMyDictionaryRequest.Code,
-                };
-
-                return Results.Ok(await mediator.Send(command, cancellationToken));
+                return Results.Ok(await mediator.Send(request.ToUpdateMyDictionaryCommand(id), cancellationToken));
             })
                 .WithTags("MyDictionaries");
+
+            return app;
         }
     }
 }

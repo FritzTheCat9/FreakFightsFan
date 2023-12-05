@@ -1,7 +1,7 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Federations.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
@@ -70,28 +70,20 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class UpdateFederationEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPut("/api/federations/{id}", async (
                 int id,
-                UpdateFederationRequest updateFederationRequest,
+                UpdateFederationRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new UpdateFederation.Command()
-                    {
-                        Id = id,
-                        Name = updateFederationRequest.Name,
-                        ImageBase64 = updateFederationRequest.ImageBase64,
-                    };
-
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToUpdateFederationCommand(id), cancellationToken));
+            })
                 .WithTags("Federations");
+
+            return app;
         }
     }
 }

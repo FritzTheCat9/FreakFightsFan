@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Teams.Extensions;
@@ -35,22 +34,21 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
                 return team.ToDto();
             }
         }
-    }
 
-    public class GetTeamEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/teams/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetTeam.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                var query = new Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
                 .WithName("GetTeam")
                 .WithTags("Teams");
+
+            return app;
         }
     }
 }

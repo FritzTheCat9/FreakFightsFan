@@ -1,8 +1,8 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Fights.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
@@ -120,27 +120,20 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 }
             }
         }
-    }
 
-    public class CreateFightEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fights", async (
-                CreateFightRequest createFightRequest,
+                CreateFightRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateFight.Command()
-                    {
-                        EventId = createFightRequest.EventId,
-                        Teams = createFightRequest.Teams, 
-                    };
-
-                    int fightId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetFight", new { id = fightId });
-                })
+            {
+                int fightId = await mediator.Send(request.ToCreateFightCommand(), cancellationToken);
+                return Results.CreatedAtRoute("GetFight", new { id = fightId });
+            })
                 .WithTags("Fights");
+
+            return app;
         }
     }
 }

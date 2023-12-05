@@ -1,8 +1,8 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Fighters.Requests;
@@ -81,29 +81,20 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                 return await _fighterRepository.Create(fighter);
             }
         }
-    }
 
-    public class CreateFighterEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fighters", async (
-                CreateFighterRequest createFighterRequest,
+                CreateFighterRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateFighter.Command()
-                    {
-                        FirstName = createFighterRequest.FirstName,
-                        LastName = createFighterRequest.LastName,
-                        Nickname = createFighterRequest.Nickname,
-                        ImageBase64 = createFighterRequest.ImageBase64,
-                    };
-
-                    int fighterId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
-                })
+            {
+                int fighterId = await mediator.Send(request.ToCreateFighterCommand(), cancellationToken);
+                return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
+            })
                 .WithTags("Fighters");
+
+            return app;
         }
     }
 }

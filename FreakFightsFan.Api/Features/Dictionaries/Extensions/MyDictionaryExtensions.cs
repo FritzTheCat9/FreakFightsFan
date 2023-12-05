@@ -1,6 +1,8 @@
 ﻿using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.Dictionaries.Commands;
 using FreakFightsFan.Api.Features.Dictionaries.Queries;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.Dictionaries.Requests;
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
 using System.Linq.Expressions;
 
@@ -8,6 +10,17 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 {
     public static class MyDictionaryExtensions
     {
+        public static IEndpointRouteBuilder AddMyDictionaryEndpoints(this IEndpointRouteBuilder app)
+        {
+            CreateMyDictionary.Endpoint(app);
+            DeleteMyDictionary.Endpoint(app);
+            UpdateMyDictionary.Endpoint(app);
+            GetAllMyDictionaries.Endpoint(app);
+            GetMyDictionary.Endpoint(app);
+
+            return app;
+        }
+
         public static MyDictionaryDto ToDto(this MyDictionary dictionary)
         {
             return new MyDictionaryDto
@@ -17,6 +30,37 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
                 Modified = dictionary.Modified,
                 Name = dictionary.Name,
                 Code = dictionary.Code,
+            };
+        }
+
+        public static CreateMyDictionary.Command ToCreateMyDictionaryCommand(this CreateMyDictionaryRequest request)
+        {
+            return new CreateMyDictionary.Command
+            {
+                Name = request.Name,
+                Code = request.Code,
+            };
+        }
+
+        public static UpdateMyDictionary.Command ToUpdateMyDictionaryCommand(this UpdateMyDictionaryRequest request, int id)
+        {
+            return new UpdateMyDictionary.Command
+            {
+                Id = id,
+                Name = request.Name,
+                Code = request.Code,
+            };
+        }
+
+        public static GetAllMyDictionaries.Query ToGetAllMyDictionariesQuery(this GetAllMyDictionariesRequest request)
+        {
+            return new GetAllMyDictionaries.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
+                SearchTerm = request.SearchTerm,
             };
         }
 

@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
 using MediatR;
@@ -34,21 +33,20 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class DeleteMyDictionaryItemEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapDelete("/api/myDictionaryItems/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new DeleteMyDictionaryItem.Command() { Id = id };
+                var command = new Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
                 .WithTags("MyDictionaryItems");
+
+            return app;
         }
     }
 }

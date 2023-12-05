@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
@@ -50,29 +49,19 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 return await Task.FromResult(federationsPagedList);
             }
         }
-    }
 
-    public class GetAllFederationsEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/federations/all", async (
-                GetAllFederationsRequest getAllFederationsRequest,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-                {
-                    var query = new GetAllFederations.Query()
-                    {
-                        Page = getAllFederationsRequest.Page,
-                        PageSize = getAllFederationsRequest.PageSize,
-                        SortOrder = getAllFederationsRequest.SortOrder,
-                        SortColumn = getAllFederationsRequest.SortColumn,
-                        SearchTerm = getAllFederationsRequest.SearchTerm,
-                    };
+                 GetAllFederationsRequest request,
+                 IMediator mediator,
+                 CancellationToken cancellationToken) =>
+            {
+                return Results.Ok(await mediator.Send(request.ToGetAllFederationsQuery(), cancellationToken));
+            })
+                 .WithTags("Federations");
 
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
-                .WithTags("Federations");
+            return app;
         }
     }
 }

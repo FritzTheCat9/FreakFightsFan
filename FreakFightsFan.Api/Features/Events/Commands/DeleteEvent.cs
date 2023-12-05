@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
@@ -34,21 +33,20 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class DeleteEventEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapDelete("/api/events/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteEvent.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                var command = new Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
                 .WithTags("Events");
+
+            return app;
         }
     }
 }

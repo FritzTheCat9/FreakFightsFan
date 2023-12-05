@@ -1,6 +1,8 @@
 using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.Images.Commands;
 using FreakFightsFan.Api.Features.Images.Queries;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.Images.Requests;
 using FreakFightsFan.Shared.Features.Images.Responses;
 using System.Linq.Expressions;
 
@@ -8,6 +10,17 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 {
     public static class ImagesExtensions
     {
+        public static IEndpointRouteBuilder AddImageEndpoints(this IEndpointRouteBuilder app)
+        {
+            CreateImage.Endpoint(app);
+            DeleteImage.Endpoint(app);
+            UpdateImage.Endpoint(app);
+            GetAllImages.Endpoint(app);
+            GetImage.Endpoint(app);
+
+            return app;
+        }
+
         public static ImageDto ToDto(this Image image)
         {
             return new ImageDto
@@ -17,6 +30,34 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
                 Modified = image.Modified,
                 Name = image.Name,
                 Url = image.Url
+            };
+        }
+
+        public static CreateImage.Command ToCreateImageCommand(this CreateImageRequest request)
+        {
+            return new CreateImage.Command
+            {
+                ImageBase64 = request.ImageBase64,
+            };
+        }
+
+        public static UpdateImage.Command ToUpdateImageCommand(this UpdateImageRequest request, int id)
+        {
+            return new UpdateImage.Command
+            {
+                Id = id,
+                ImageBase64 = request.ImageBase64
+            };
+        }
+
+        public static GetAllImages.Query ToGetAllImagesQuery(this GetAllImagesRequest request)
+        {
+            return new GetAllImages.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
             };
         }
 

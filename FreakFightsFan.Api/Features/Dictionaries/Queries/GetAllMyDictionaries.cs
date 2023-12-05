@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
@@ -50,29 +49,19 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
                 return await Task.FromResult(dictionariesPagedList);
             }
         }
-    }
 
-    public class GetAllMyDictionariesEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaries/all", async (
-                GetAllMyDictionariesRequest getAllMyDictionariesRequest,
+                GetAllMyDictionariesRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetAllMyDictionaries.Query()
-                {
-                    Page = getAllMyDictionariesRequest.Page,
-                    PageSize = getAllMyDictionariesRequest.PageSize,
-                    SortOrder = getAllMyDictionariesRequest.SortOrder,
-                    SortColumn = getAllMyDictionariesRequest.SortColumn,
-                    SearchTerm = getAllMyDictionariesRequest.SearchTerm,
-                };
-
-                return Results.Ok(await mediator.Send(query, cancellationToken));
+                return Results.Ok(await mediator.Send(request.ToGetAllMyDictionariesQuery(), cancellationToken));
             })
                 .WithTags("MyDictionaries");
+
+            return app;
         }
     }
 }

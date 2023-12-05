@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
@@ -48,28 +47,19 @@ namespace FreakFightsFan.Api.Features.Images.Queries
                 return await Task.FromResult(imagesPagedList);
             }
         }
-    }
 
-    public class GetAllImagesEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/images/all", async (
-                GetAllImagesRequest getAllImagesRequest,
+                GetAllImagesRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetAllImages.Query()
-                    {
-                        Page = getAllImagesRequest.Page,
-                        PageSize = getAllImagesRequest.PageSize,
-                        SortOrder = getAllImagesRequest.SortOrder,
-                        SortColumn = getAllImagesRequest.SortColumn,
-                    };
-
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToGetAllImagesQuery(), cancellationToken));
+            })
                 .WithTags("Images");
+
+            return app;
         }
     }
 }

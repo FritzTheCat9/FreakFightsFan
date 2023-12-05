@@ -1,6 +1,8 @@
 ﻿using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.DictionaryItems.Commands;
 using FreakFightsFan.Api.Features.DictionaryItems.Queries;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
 using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using System.Linq.Expressions;
 
@@ -8,6 +10,18 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 {
     public static class MyDictionaryItemExtensions
     {
+        public static IEndpointRouteBuilder AddMyDictionaryItemEndpoints(this IEndpointRouteBuilder app)
+        {
+            CreateMyDictionaryItem.Endpoint(app);
+            DeleteMyDictionaryItem.Endpoint(app);
+            UpdateMyDictionaryItem.Endpoint(app);
+            GetAllMyDictionaryItems.Endpoint(app);
+            GetAllMyDictionaryItemsByCode.Endpoint(app);
+            GetMyDictionaryItem.Endpoint(app);
+
+            return app;
+        }
+
         public static MyDictionaryItemDto ToDto(this MyDictionaryItem dictionaryItem)
         {
             return new MyDictionaryItemDto
@@ -18,6 +32,52 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
                 Name = dictionaryItem.Name,
                 Code = dictionaryItem.Code,
                 DictionaryId = dictionaryItem.DictionaryId,
+            };
+        }
+
+        public static CreateMyDictionaryItem.Command ToCreateMyDictionaryItemCommand(this CreateMyDictionaryItemRequest request)
+        {
+            return new CreateMyDictionaryItem.Command
+            {
+                Name = request.Name,
+                Code = request.Code,
+                DictionaryId = request.DictionaryId,
+            };
+        }
+
+        public static UpdateMyDictionaryItem.Command ToUpdateMyDictionaryItemCommand(this UpdateMyDictionaryItemRequest request, int id)
+        {
+            return new UpdateMyDictionaryItem.Command
+            {
+                Id = id,
+                Name = request.Name,
+                Code = request.Code,
+            };
+        }
+
+        public static GetAllMyDictionaryItems.Query ToGetAllMyDictionaryItemsQuery(this GetAllMyDictionaryItemsRequest request)
+        {
+            return new GetAllMyDictionaryItems.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
+                SearchTerm = request.SearchTerm,
+                DictionaryId = request.DictionaryId,
+            };
+        }
+
+        public static GetAllMyDictionaryItemsByCode.Query ToGetAllMyDictionaryItemsByCodeQuery(this GetAllMyDictionaryItemsByCodeRequest request)
+        {
+            return new GetAllMyDictionaryItemsByCode.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
+                SearchTerm = request.SearchTerm,
+                DictionaryCode = request.DictionaryCode,
             };
         }
 

@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Services;
@@ -40,21 +39,20 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class DeleteImageEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapDelete("/api/images/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteImage.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                var command = new Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
                 .WithTags("Images");
+
+            return app;
         }
     }
 }

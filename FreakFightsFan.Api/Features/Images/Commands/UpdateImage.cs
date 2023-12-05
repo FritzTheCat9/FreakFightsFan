@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
@@ -66,27 +65,20 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class UpdateImageEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPut("/api/images/{id}", async (
                 int id,
-                UpdateImageRequest updateImageRequest,
+                UpdateImageRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new UpdateImage.Command()
-                    {
-                        Id = id,
-                        ImageBase64 = updateImageRequest.ImageBase64
-                    };
-
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToUpdateImageCommand(id), cancellationToken));
+            })
                 .WithTags("Images");
+
+            return app;
         }
     }
 }

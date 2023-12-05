@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
@@ -64,30 +63,19 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 return dictionaryItemsPagedList;
             }
         }
-    }
 
-    public class GetAllMyDictionaryItemsByCodeEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaryItems/allByCode", async (
-                GetAllMyDictionaryItemsByCodeRequest getAllMyDictionaryItemsByCodeRequest,
+                GetAllMyDictionaryItemsByCodeRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetAllMyDictionaryItemsByCode.Query()
-                {
-                    Page = getAllMyDictionaryItemsByCodeRequest.Page,
-                    PageSize = getAllMyDictionaryItemsByCodeRequest.PageSize,
-                    SortOrder = getAllMyDictionaryItemsByCodeRequest.SortOrder,
-                    SortColumn = getAllMyDictionaryItemsByCodeRequest.SortColumn,
-                    SearchTerm = getAllMyDictionaryItemsByCodeRequest.SearchTerm,
-                    DictionaryCode = getAllMyDictionaryItemsByCodeRequest.DictionaryCode,
-                };
-
-                return Results.Ok(await mediator.Send(query, cancellationToken));
+                return Results.Ok(await mediator.Send(request.ToGetAllMyDictionaryItemsByCodeQuery(), cancellationToken));
             })
                 .WithTags("MyDictionaryItems");
+
+            return app;
         }
     }
 }

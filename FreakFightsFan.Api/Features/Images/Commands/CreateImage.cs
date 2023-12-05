@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
@@ -66,26 +65,20 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 return await _imageRepository.Create(image);
             }
         }
-    }
 
-    public class CreateImageEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/images", async (
-                CreateImageRequest createImageRequest,
+                CreateImageRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateImage.Command()
-                    {
-                        ImageBase64 = createImageRequest.ImageBase64,
-                    };
-
-                    int imageId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetImage", new { id = imageId });
-                })
+            {
+                int imageId = await mediator.Send(request.ToCreateImageCommand(), cancellationToken);
+                return Results.CreatedAtRoute("GetImage", new { id = imageId });
+            })
                 .WithTags("Images");
+
+            return app;
         }
     }
 }

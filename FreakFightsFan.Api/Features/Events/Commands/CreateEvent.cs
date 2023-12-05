@@ -1,8 +1,8 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Events.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
@@ -76,29 +76,20 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 return await _eventRepository.Create(myEvent);
             }
         }
-    }
 
-    public class CreateEventEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/events", async (
-                CreateEventRequest createEventRequest,
+                CreateEventRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateEvent.Command()
-                    {
-                        Name = createEventRequest.Name,
-                        Date = createEventRequest.Date,
-                        FederationId = createEventRequest.FederationId,
-                        CityId = createEventRequest.CityId,
-                    };
-
-                    int eventId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetEvent", new { id = eventId });
-                })
+            {
+                int eventId = await mediator.Send(request.ToCreateEventCommand(), cancellationToken);
+                return Results.CreatedAtRoute("GetEvent", new { id = eventId });
+            })
                 .WithTags("Events");
+
+            return app;
         }
     }
 }

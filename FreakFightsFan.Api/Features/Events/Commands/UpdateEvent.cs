@@ -1,7 +1,7 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Events.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
@@ -55,7 +55,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 if (command.CityId is not null)
                 {
                     var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
-                    if (!isCityValid) 
+                    if (!isCityValid)
                         throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
                 }
 
@@ -68,29 +68,20 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class UpdateEventEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPut("/api/events/{id}", async (
                 int id,
-                UpdateEventRequest updateEventRequest,
+                UpdateEventRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new UpdateEvent.Command()
-                    {
-                        Id = id,
-                        Name = updateEventRequest.Name,
-                        Date = updateEventRequest.Date,
-                        CityId = updateEventRequest.CityId,
-                    };
-
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToUpdateEventCommand(id), cancellationToken));
+            })
                 .WithTags("Events");
+
+            return app;
         }
     }
 }

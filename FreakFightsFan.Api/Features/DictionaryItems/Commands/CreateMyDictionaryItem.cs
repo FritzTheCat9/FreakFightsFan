@@ -1,8 +1,8 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
 using MediatR;
@@ -67,28 +67,20 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 return await _myDictionaryItemRepository.Create(dictionaryItem);
             }
         }
-    }
 
-    public class CreateMyDictionaryItemEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaryItems", async (
-                CreateMyDictionaryItemRequest createMyDictionaryItemRequest,
+                CreateMyDictionaryItemRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new CreateMyDictionaryItem.Command()
-                {
-                    Name = createMyDictionaryItemRequest.Name,
-                    Code = createMyDictionaryItemRequest.Code,
-                    DictionaryId = createMyDictionaryItemRequest.DictionaryId,
-                };
-
-                int dictionaryItemId = await mediator.Send(command, cancellationToken);
+                int dictionaryItemId = await mediator.Send(request.ToCreateMyDictionaryItemCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionaryItem", new { id = dictionaryItemId });
             })
                 .WithTags("MyDictionaryItems");
+
+            return app;
         }
     }
 }

@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Events.Extensions;
@@ -35,22 +34,21 @@ namespace FreakFightsFan.Api.Features.Events.Queries
                 return myEvent.ToDto();
             }
         }
-    }
 
-    public class GetEventEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/events/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetEvent.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                var query = new Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
                 .WithName("GetEvent")
                 .WithTags("Events");
+
+            return app;
         }
     }
 }

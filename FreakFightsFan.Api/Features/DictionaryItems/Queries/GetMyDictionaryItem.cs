@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Shared.Exceptions;
@@ -35,22 +34,21 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 return dictionaryItem.ToDto();
             }
         }
-    }
 
-    public class GetMyDictionaryItemEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/myDictionaryItems/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetMyDictionaryItem.Query() { Id = id };
+                var query = new Query() { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
                 .WithName("GetMyDictionaryItem")
                 .WithTags("MyDictionaryItems");
+
+            return app;
         }
     }
 }

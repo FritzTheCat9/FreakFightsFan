@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Federations.Extensions;
@@ -35,22 +34,21 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 return federation.ToDto();
             }
         }
-    }
 
-    public class GetFederationEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/federations/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetFederation.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                var query = new Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
                 .WithName("GetFederation")
                 .WithTags("Federations");
+
+            return app;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
@@ -79,30 +79,20 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class UpdateFighterEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPut("/api/fighters/{id}", async (
                 int id,
-                UpdateFighterRequest updateFighterRequest,
+                UpdateFighterRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new UpdateFighter.Command()
-                    {
-                        Id = id,
-                        FirstName = updateFighterRequest.FirstName,
-                        LastName = updateFighterRequest.LastName,
-                        Nickname = updateFighterRequest.Nickname,
-                        ImageBase64 = updateFighterRequest.ImageBase64,
-                    };
-
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToUpdateFighterCommand(id), cancellationToken));
+            })
                 .WithTags("Fighters");
+
+            return app;
         }
     }
 }

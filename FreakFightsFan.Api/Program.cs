@@ -1,10 +1,15 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Exceptions;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
+using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
+using FreakFightsFan.Api.Features.Events.Extensions;
+using FreakFightsFan.Api.Features.Federations.Extensions;
+using FreakFightsFan.Api.Features.Fighters.Extensions;
+using FreakFightsFan.Api.Features.Fights.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
+using FreakFightsFan.Api.Features.Teams.Extensions;
 using FreakFightsFan.Api.Services;
 using System.Reflection;
 
@@ -29,7 +34,6 @@ builder.Services.AddMediatR(config =>
 });
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 ValidatorOptions.Global.LanguageManager.Enabled = false;
-builder.Services.AddCarter(); 
 
 builder.Services.AddMssql(builder.Configuration);
 builder.Services.AddSingleton<ExceptionMiddleware>();
@@ -53,7 +57,15 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("MyCorsPolicy");
-app.MapCarter();
 app.UseFileServer();
+
+app.AddMyDictionaryEndpoints();
+app.AddMyDictionaryItemEndpoints();
+app.AddEventEndpoints();
+app.AddFederationEndpoints();
+app.AddFighterEndpoints();
+app.AddFightEndpoints();
+app.AddImageEndpoints();
+app.AddTeamEndpoints();
 
 app.Run();

@@ -1,7 +1,9 @@
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
+using FreakFightsFan.Api.Features.Events.Commands;
 using FreakFightsFan.Api.Features.Events.Queries;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.Events.Requests;
 using FreakFightsFan.Shared.Features.Events.Responses;
 using System.Linq.Expressions;
 
@@ -9,6 +11,17 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 {
     public static class EventsExtensions
     {
+        public static IEndpointRouteBuilder AddEventEndpoints(this IEndpointRouteBuilder app)
+        {
+            CreateEvent.Endpoint(app);
+            DeleteEvent.Endpoint(app);
+            UpdateEvent.Endpoint(app);
+            GetAllEvents.Endpoint(app);
+            GetEvent.Endpoint(app);
+
+            return app;
+        }
+
         public static EventDto ToDto(this Event myEvent)
         {
             return new EventDto
@@ -20,6 +33,41 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Date = myEvent.Date,
                 FederationId = myEvent.FederationId,
                 City = myEvent.City?.ToDto(),
+            };
+        }
+
+        public static CreateEvent.Command ToCreateEventCommand(this CreateEventRequest request)
+        {
+            return new CreateEvent.Command
+            {
+                Name = request.Name,
+                Date = request.Date,
+                FederationId = request.FederationId,
+                CityId = request.CityId,
+            };
+        }
+
+        public static UpdateEvent.Command ToUpdateEventCommand(this UpdateEventRequest request, int id)
+        {
+            return new UpdateEvent.Command
+            {
+                Id = id,
+                Name = request.Name,
+                Date = request.Date,
+                CityId = request.CityId,
+            };
+        }
+
+        public static GetAllEvents.Query ToGetAllEventsQuery(this GetAllEventsRequest request)
+        {
+            return new GetAllEvents.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
+                SearchTerm = request.SearchTerm,
+                FederationId = request.FederationId,
             };
         }
 

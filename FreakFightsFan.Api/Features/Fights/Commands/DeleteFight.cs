@@ -1,4 +1,3 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
@@ -34,21 +33,20 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return Unit.Value;
             }
         }
-    }
 
-    public class DeleteFightEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapDelete("/api/fights/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteFight.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
+            {
+                var command = new Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
                 .WithTags("Fights");
+
+            return app;
         }
     }
 }

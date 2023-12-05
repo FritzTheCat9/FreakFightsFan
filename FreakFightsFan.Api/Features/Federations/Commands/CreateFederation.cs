@@ -1,8 +1,8 @@
-using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Features.Federations.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Federations.Requests;
@@ -71,27 +71,20 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
                 return await _federationRepository.Create(federation);
             }
         }
-    }
 
-    public class CreateFederationEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/federations", async (
-                CreateFederationRequest createFederationRequest,
+                CreateFederationRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var command = new CreateFederation.Command()
-                    {
-                        Name = createFederationRequest.Name,
-                        ImageBase64 = createFederationRequest.ImageBase64,
-                    };
-
-                    int federationId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetFederation", new { id = federationId });
-                })
+            {
+                int federationId = await mediator.Send(request.ToCreateFederationCommand(), cancellationToken);
+                return Results.CreatedAtRoute("GetFederation", new { id = federationId });
+            })
                 .WithTags("Federations");
+
+            return app;
         }
     }
 }

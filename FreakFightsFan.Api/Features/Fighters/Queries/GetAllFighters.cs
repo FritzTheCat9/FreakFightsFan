@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fighters.Extensions;
@@ -57,30 +56,19 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 return await Task.FromResult(fightersPagedList);
             }
         }
-    }
 
-    public class GetAllFightersEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fighters/all", async (
-                GetAllFightersRequest getAllFightersRequest,
+                GetAllFightersRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetAllFighters.Query()
-                    {
-                        Page = getAllFightersRequest.Page,
-                        PageSize = getAllFightersRequest.PageSize,
-                        SortOrder = getAllFightersRequest.SortOrder,
-                        SortColumn = getAllFightersRequest.SortColumn,
-                        SearchTerm = getAllFightersRequest.SearchTerm,
-                        HiddenFightersIds = getAllFightersRequest.HiddenFightersIds,
-                    };
-
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                return Results.Ok(await mediator.Send(request.ToGetAllFightersQuery(), cancellationToken));
+            })
                 .WithTags("Fighters");
+
+            return app;
         }
     }
 }

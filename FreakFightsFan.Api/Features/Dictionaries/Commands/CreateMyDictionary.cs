@@ -1,10 +1,10 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Requests;
+using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
@@ -61,27 +61,20 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return await _myDictionaryRepository.Create(dictionary);
             }
         }
-    }
 
-    public class CreateMyDictionaryEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaries", async (
-                CreateMyDictionaryRequest createMyDictionaryRequest,
+                CreateMyDictionaryRequest request,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new CreateMyDictionary.Command()
-                {
-                    Name = createMyDictionaryRequest.Name,
-                    Code = createMyDictionaryRequest.Code,
-                };
-
-                int dictionaryId = await mediator.Send(command, cancellationToken);
+                int dictionaryId = await mediator.Send(request.ToCreateMyDictionaryCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
             })
                 .WithTags("MyDictionaries");
+
+            return app;
         }
     }
 }

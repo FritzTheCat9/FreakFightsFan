@@ -1,7 +1,9 @@
 ﻿using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.Fighters.Commands;
 using FreakFightsFan.Api.Features.Fighters.Queries;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Features.Fighters.Requests;
 using FreakFightsFan.Shared.Features.Fighters.Responses;
 using System.Linq.Expressions;
 
@@ -9,6 +11,17 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 {
     public static class FightersExtensions
     {
+        public static IEndpointRouteBuilder AddFighterEndpoints(this IEndpointRouteBuilder app)
+        {
+            CreateFighter.Endpoint(app);
+            DeleteFighter.Endpoint(app);
+            UpdateFighter.Endpoint(app);
+            GetAllFighters.Endpoint(app);
+            GetFighter.Endpoint(app);
+
+            return app;
+        }
+
         public static FighterDto ToDto(this Fighter fighter)
         {
             return new FighterDto
@@ -20,6 +33,42 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 LastName = fighter.LastName,
                 Nickname = fighter.Nickname,
                 Image = fighter.Image?.ToDto(),
+            };
+        }
+
+        public static CreateFighter.Command ToCreateFighterCommand(this CreateFighterRequest request)
+        {
+            return new CreateFighter.Command
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Nickname = request.Nickname,
+                ImageBase64 = request.ImageBase64,
+            };
+        }
+
+        public static UpdateFighter.Command ToUpdateFighterCommand(this UpdateFighterRequest request, int id)
+        {
+            return new UpdateFighter.Command
+            {
+                Id = id,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Nickname = request.Nickname,
+                ImageBase64 = request.ImageBase64,
+            };
+        }
+
+        public static GetAllFighters.Query ToGetAllFightersQuery(this GetAllFightersRequest request)
+        {
+            return new GetAllFighters.Query
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SortOrder = request.SortOrder,
+                SortColumn = request.SortColumn,
+                SearchTerm = request.SearchTerm,
+                HiddenFightersIds = request.HiddenFightersIds,
             };
         }
 

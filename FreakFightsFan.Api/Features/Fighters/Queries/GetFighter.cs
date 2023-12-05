@@ -1,5 +1,4 @@
-﻿using Carter;
-using FluentValidation;
+﻿using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Shared.Exceptions;
@@ -35,22 +34,21 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 return fighter.ToDto();
             }
         }
-    }
 
-    public class GetFighterEndpoint : ICarterModule
-    {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/fighters/{id}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
-                {
-                    var query = new GetFighter.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
+            {
+                var query = new Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
                 .WithName("GetFighter")
                 .WithTags("Fighters");
+
+            return app;
         }
     }
 }
