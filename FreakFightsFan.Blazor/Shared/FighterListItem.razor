@@ -1,0 +1,34 @@
+﻿@if (Fighter != null)
+{
+    <MudItem Class="d-flex">
+        <MudStack Row="true">
+            <MudAvatar Size="Size.Large">
+                <ChildContent>
+                    @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
+                    {
+                        <MudImage Src="@Fighter.Image.Url" />
+                    }
+                    else
+                    {
+                        // TODO: Show default player image
+                    }
+                </ChildContent>
+            </MudAvatar>
+            <MudText Class="align-self-center">@Fighter.FirstName @Fighter.LastName - @Fighter.Nickname</MudText>
+            @if (OnDeleteFighter.HasDelegate)
+            {
+                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter"></MudIconButton>
+            }
+        </MudStack>
+    </MudItem>
+}
+
+@code {
+    [Parameter] public FighterDto Fighter { get; set; }
+    [Parameter] public EventCallback OnDeleteFighter { get; set; }
+
+    private void DeleteFighter()
+    {
+        OnDeleteFighter.InvokeAsync();
+    }
+}

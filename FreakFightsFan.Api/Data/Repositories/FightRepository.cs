@@ -6,7 +6,7 @@ namespace FreakFightsFan.Api.Data.Repositories
 {
     public interface IFightRepository
     {
-        IQueryable<Fight> AsQueryable();
+        IQueryable<Fight> AsQueryable(int eventId);
         Task<IEnumerable<Fight>> GetAll();
         Task<Fight> Get(int id);
         Task<int> Create(Fight fight);
@@ -23,11 +23,30 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Fight> AsQueryable() => _dbContext.Fights.AsQueryable();
+        public IQueryable<Fight> AsQueryable(int eventId) => 
+            _dbContext.Fights
+                .Include(x => x.Event)
+                .Include(x => x.Teams)
+                    .ThenInclude(x => x.Fighters)
+                        .ThenInclude(x => x.Image)
+                .Where(x => x.EventId == eventId)
+                .AsQueryable();
 
-        public async Task<IEnumerable<Fight>> GetAll() => await _dbContext.Fights.ToListAsync();
+        public async Task<IEnumerable<Fight>> GetAll() => 
+            await _dbContext.Fights
+                .Include(x => x.Event)
+                .Include(x => x.Teams)
+                    .ThenInclude(x => x.Fighters)
+                        .ThenInclude(x => x.Image)
+                .ToListAsync();
 
-        public async Task<Fight> Get(int id) => await _dbContext.Fights.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<Fight> Get(int id) => 
+            await _dbContext.Fights
+                .Include(x => x.Event)
+                .Include(x => x.Teams)
+                    .ThenInclude(x => x.Fighters)
+                        .ThenInclude(x => x.Image)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Fight fight)
         {

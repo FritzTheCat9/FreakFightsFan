@@ -1,3 +1,5 @@
+using FreakFightsFan.Shared.Features.Fighters.Responses;
+
 namespace FreakFightsFan.Shared.Features.Teams.Responses
 {
     public class TeamDto
@@ -6,7 +8,9 @@ namespace FreakFightsFan.Shared.Features.Teams.Responses
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
 
-        public string Name { get; set; }
+        public int Number { get; set; }
+        public int FightId { get; set; }
+        public List<FighterDto> Fighters { get; set; }
     }
 }
 

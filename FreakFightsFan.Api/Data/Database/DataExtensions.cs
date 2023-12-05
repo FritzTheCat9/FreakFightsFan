@@ -15,11 +15,11 @@ namespace FreakFightsFan.Api.Data.Database
 
             services.AddDbContext<AppDbContext>(x => x.UseSqlServer(options.ConnectionString));
 
-            services.AddScoped<IFighterRepository, FighterRepository>();
             services.AddScoped<IFederationRepository, FederationRepository>();
             services.AddScoped<IEventRepository, EventRepository>(); 
             services.AddScoped<IFightRepository, FightRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IFighterRepository, FighterRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
             services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();

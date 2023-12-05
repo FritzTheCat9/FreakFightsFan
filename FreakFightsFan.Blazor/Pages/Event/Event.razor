@@ -25,6 +25,7 @@
         <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="date" T="EventDto">Date</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="city" T="EventDto">City</MudTableSortLabel></MudTh>
+        <MudTh>Fights</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -39,6 +40,9 @@
             {
                 <MudText>-</MudText>
             }
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToFightsPage(@context.Id))"></MudIconButton>
         </MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateEvent(@context))"></MudIconButton>
@@ -102,6 +106,11 @@
     {
         searchString = searchText;
         table.ReloadServerData();
+    }
+
+    private void RedirectToFightsPage(int eventId)
+    {
+        NavigationManager.NavigateTo($"/fights/{FederationId}/{eventId}");
     }
 
     private async Task DeleteEvent(int id)

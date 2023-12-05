@@ -19,6 +19,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
             public string SortColumn { get; set; }
             public SortOrder SortOrder { get; set; }
             public string SearchTerm { get; set; }
+
+            public List<int> HiddenFightersIds { get; set; }
         }
 
         public class Validator : AbstractValidator<Query>
@@ -38,6 +40,11 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
             public async Task<PagedList<FighterDto>> Handle(Query query, CancellationToken cancellationToken)
             {
                 var fightersQuery = _fighterRepository.AsQueryable();
+
+                if(query.HiddenFightersIds is not null)
+                {
+                    fightersQuery = fightersQuery.Where(x => !query.HiddenFightersIds.Contains(x.Id));
+                }
 
                 fightersQuery = fightersQuery.FilterFighters(query);
                 fightersQuery = fightersQuery.SortFighters(query);
@@ -68,6 +75,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                         SortOrder = getAllFightersRequest.SortOrder,
                         SortColumn = getAllFightersRequest.SortColumn,
                         SearchTerm = getAllFightersRequest.SearchTerm,
+                        HiddenFightersIds = getAllFightersRequest.HiddenFightersIds,
                     };
 
                     return Results.Ok(await mediator.Send(query, cancellationToken));

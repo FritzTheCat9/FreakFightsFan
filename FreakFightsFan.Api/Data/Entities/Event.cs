@@ -9,5 +9,6 @@ namespace FreakFightsFan.Api.Data.Entities
         public Federation Federation { get; set; }
         public int? CityId { get; set; }
         public MyDictionaryItem? City { get; set; }
+        public List<Fight> Fights { get; } = [];
     }
 }

@@ -5,6 +5,6 @@
         public string Name { get; set; }
         public string Code { get; set; }
 
-        public List<MyDictionaryItem> DictionaryItems { get; set; }
+        public List<MyDictionaryItem> DictionaryItems { get; } = [];
     }
 }

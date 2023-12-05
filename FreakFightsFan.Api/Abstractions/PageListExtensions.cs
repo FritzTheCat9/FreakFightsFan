@@ -6,11 +6,11 @@ namespace FreakFightsFan.Api.Abstractions
     public static class PageListExtensions<T>
     {
         public static PagedList<T> Create(
-            IQueryable<T> source, 
-            int page, 
+            IQueryable<T> source,
+            int page,
             int pageSize)
         {
-            if (page <= 0) 
+            if (page <= 0)
                 throw new MyValidationException(nameof(page), "Page should be greater than 0");
             if (pageSize <= 0)
                 throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");

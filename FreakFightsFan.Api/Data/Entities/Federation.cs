@@ -4,7 +4,7 @@ namespace FreakFightsFan.Api.Data.Entities
     {
         public string Name { get; set; }
 
-        public List<Event> Events { get; set; }
+        public List<Event> Events { get; } = [];
         public Image? Image { get; set; }
     }
 }

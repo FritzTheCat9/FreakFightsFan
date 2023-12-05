@@ -25,18 +25,24 @@ namespace FreakFightsFan.Api.Data.Repositories
 
         public IQueryable<Event> AsQueryable(int federationId) => 
             _dbContext.Events
+                .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Fights)
                 .Where(x => x.FederationId == federationId)
                 .AsQueryable();
 
         public async Task<IEnumerable<Event>> GetAll() => 
             await _dbContext.Events
+                .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Fights)
                 .ToListAsync();
 
         public async Task<Event> Get(int id) => 
             await _dbContext.Events
+                .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Fights)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Event myEvent)

@@ -1,4 +1,4 @@
-@page "/fights"
+@page "/fights/{FederationId:int}/{EventId:int}"
 @inject IExceptionHandler ExceptionHandler
 @inject IFightHttpService FightHttpService
 @inject IDialogService DialogService
@@ -6,74 +6,103 @@
 
 <PageTitle>Fights</PageTitle>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<FightDto>>>(ServerReload))"
-          Dense="true" Hover="true" @ref="table">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Fights</MudText>
+<MudBreadcrumbs Items="_items">
+    <ItemTemplate Context="item">
+        <MudLink Href="@item.Href">@item.Text</MudLink>
+    </ItemTemplate>
+</MudBreadcrumbs>
+
+<MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
+    <MudStack Row="true" Justify="Justify.FlexStart">
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())"></MudIconButton>
-        <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh><MudTableSortLabel SortLabel="name" T="FightDto">Name</MudTableSortLabel></MudTh>
-        <MudTh><MudText>Actions</MudText></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(@context))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(@context.Id))"></MudIconButton>
-        </MudTd>
-    </RowTemplate>
-    <NoRecordsContent>
-        <MudText>No matching records found</MudText>
-    </NoRecordsContent>
-    <LoadingContent>
-        <MudText>Loading...</MudText>
-    </LoadingContent>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+    </MudStack>
+</MudPaper>
+
+@if (FightsList == null)
+{
+    <MudText>Loading...</MudText>
+}
+else if (FightsList.Count == 0)
+{
+    <MudText>No matching records found</MudText>
+}
+else
+{
+    <MudCard>
+        <MudStack Justify="Justify.Center" Spacing="0">
+            @foreach (var fight in FightsList)
+            {
+                <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
+                    <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))"></MudIconButton>
+                    </MudStack>
+                </MudPaper>
+                <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
+                    <MudStack Row="true" Justify="Justify.SpaceEvenly">
+                        @foreach (var team in fight.Teams)
+                        {
+                            <MudPaper Class="rounded-0" Elevation="1">
+
+                                @if (team.Fighters.Count == 1)
+                                {
+                                    <DisplayFighter Fighter="team.Fighters.FirstOrDefault()" />
+                                }
+                                else
+                                {
+                                    <DisplayTeam TeamDto="team" />
+                                }
+                            </MudPaper>
+                        }
+                    </MudStack>
+                </MudPaper>
+            }
+        </MudStack>
+    </MudCard>
+}
 
 @code {
-    private MudTable<FightDto> table;
-    private string searchString = "";
-    public PagedList<FightDto> FightsPagedList { get; set; }
+    [Parameter] public int FederationId { get; set; }
+    [Parameter] public int EventId { get; set; }
 
-    private async Task<TableData<FightDto>> ServerReload(TableState state)
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>();
+    public List<FightDto> FightsList { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _items = new List<BreadcrumbItem>()
+        {
+            new BreadcrumbItem("Federations", href: "/federations"),
+            new BreadcrumbItem("Events", href: $"/events/{FederationId}"),
+            new BreadcrumbItem("Fights", href: null, disabled: true),
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FightsList = await GetAllFights();
+    }
+
+    private async Task<List<FightDto>> GetAllFights()
     {
         var getAllFightsRequest = new GetAllFightsRequest
             {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = searchString,
+                Page = 1,
+                PageSize = FightsOptions.MaxFightsInOneEvent,
+                EventId = EventId
             };
 
         try
         {
-            FightsPagedList = await FightHttpService.GetAllFights(getAllFightsRequest);
+            FightsList = (await FightHttpService.GetAllFights(getAllFightsRequest)).Items;
         }
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<FightDto>() { TotalItems = 0, Items = new List<FightDto>() };
+            FightsList = new List<FightDto>();
         }
 
-        return new TableData<FightDto>()
-            {
-                TotalItems = FightsPagedList.TotalCount,
-                Items = FightsPagedList.Items
-            };
-    }
-
-    private void OnSearch(string searchText)
-    {
-        searchString = searchText;
-        table.ReloadServerData();
+        return FightsList;
     }
 
     private async Task DeleteFight(int id)
@@ -81,7 +110,7 @@
         try
         {
             await FightHttpService.DeleteFight(id);
-            await table.ReloadServerData();
+            FightsList = await GetAllFights();
         }
         catch (Exception ex)
         {
@@ -96,24 +125,32 @@
         parameters.Add(x => x.UpdateFightRequest, new UpdateFightRequest
             {
                 Id = fightDto.Id,
-                Name = fightDto.Name,
+                Teams = new List<UpdateTeamModel>(),
             });
+        
+        parameters.Add(x => x.Teams, fightDto.Teams);
+        parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
 
         var updateFightDialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, dialogOptions);
         var result = await updateFightDialog.Result;
         if (!result.Canceled)
-            await table.ReloadServerData();
+            FightsList = await GetAllFights();
     }
 
     private async Task CreateFight()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFightDialog>();
-        parameters.Add(x => x.CreateFightRequest, new CreateFightRequest());
+        parameters.Add(x => x.CreateFightRequest, new CreateFightRequest()
+            {
+                EventId = EventId,
+                Teams = new List<CreateTeamModel>(),
+            });
+        parameters.Add(x => x.NumberOfTeams, 2);
 
         var createFightDialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);
         var result = await createFightDialog.Result;
         if (!result.Canceled)
-            await table.ReloadServerData();
+            FightsList = await GetAllFights();
     }
 }

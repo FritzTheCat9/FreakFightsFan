@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # ignore images folder
 FreakFightsFan.Api/wwwroot/images
+FreakFightsFan.Api/wwwroot/images_backup

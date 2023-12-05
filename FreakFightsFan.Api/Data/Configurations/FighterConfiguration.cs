@@ -15,6 +15,10 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .HasForeignKey<Image>(i => i.FighterId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(f => f.Teams)
+                .WithMany(t => t.Fighters)
+                .UsingEntity<TeamFighter>();
         }
     }
 }

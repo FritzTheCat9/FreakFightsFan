@@ -12,13 +12,12 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
 {
     public static class GetAllFights
     {
-        public class Query : IRequest<PagedList<FightDto>>, IPagedQuery, ISortedQuery
+        public class Query : IRequest<PagedList<FightDto>>, IPagedQuery
         {
             public int Page { get; set; }
             public int PageSize { get; set; }
-            public string SortColumn { get; set; }
-            public SortOrder SortOrder { get; set; }
-            public string SearchTerm { get; set; }
+
+            public int EventId { get; set; }
         }
 
         public class Validator : AbstractValidator<Query>
@@ -37,10 +36,7 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
 
             public async Task<PagedList<FightDto>> Handle(Query query, CancellationToken cancellationToken)
             {
-                var fightsQuery = _fightRepository.AsQueryable();
-
-                fightsQuery = fightsQuery.FilterFights(query);
-                fightsQuery = fightsQuery.SortFights(query);
+                var fightsQuery = _fightRepository.AsQueryable(query.EventId);
 
                 var fightsPagedList = PageListExtensions<FightDto>.Create(
                     fightsQuery.Select(x => x.ToDto()),
@@ -65,9 +61,7 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                     {
                         Page = getAllFightsRequest.Page,
                         PageSize = getAllFightsRequest.PageSize,
-                        SortOrder = getAllFightsRequest.SortOrder,
-                        SortColumn = getAllFightsRequest.SortColumn,
-                        SearchTerm = getAllFightsRequest.SearchTerm,
+                        EventId = getAllFightsRequest.EventId
                     };
 
                     return Results.Ok(await mediator.Send(query, cancellationToken));

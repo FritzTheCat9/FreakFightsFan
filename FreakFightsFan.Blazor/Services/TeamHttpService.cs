@@ -8,9 +8,6 @@ namespace FreakFightsFan.Blazor.Services
     {
         Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest getAllTeamsRequest);
         Task<TeamDto> GetTeam(int id);
-        Task CreateTeam(CreateTeamRequest createTeamRequest);
-        Task UpdateTeam(UpdateTeamRequest updateTeamRequest);
-        Task DeleteTeam(int id);
     }
 
     public class TeamHttpService : ITeamHttpService
@@ -31,21 +28,6 @@ namespace FreakFightsFan.Blazor.Services
         public async Task<TeamDto> GetTeam(int id)
         {
             return await _httpService.Get<TeamDto>(_url + id);
-        }
-
-        public async Task CreateTeam(CreateTeamRequest createTeamRequest)
-        {
-            await _httpService.Post(_url, createTeamRequest);
-        }
-
-        public async Task UpdateTeam(UpdateTeamRequest updateTeamRequest)
-        {
-            await _httpService.Put(_url + "/" + updateTeamRequest.Id, updateTeamRequest);
-        }
-
-        public async Task DeleteTeam(int id)
-        {
-            await _httpService.Delete(_url + "/" + id);
         }
     }
 }

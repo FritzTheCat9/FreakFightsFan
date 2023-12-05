@@ -1,10 +1,103 @@
 @inject IFightHttpService FightHttpService
+@inject IFighterHttpService FighterHttpService
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateFightRequest" @ref="@form" Validation="ValidateValue">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <TitleContent>
+            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                <MudText Typo="Typo.h6">Update Fight</MudText>
+                <MudSwitch @bind-Checked="@ShowHelpers" Label="Help" LabelPosition="LabelPosition.Start" Color="Color.Primary" />
+            </MudStack>
+        </TitleContent>
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateFightRequest.Name" For="@(() => UpdateFightRequest.Name)"></MudTextField>
+            <MudTabs Rounded="true">
+                <MudTabPanel Text="Add fighters to teams">
+                    <MudGrid Spacing="1" Justify="Justify.FlexStart">
+                        <MudItem xs="10">
+                            <MudAutocomplete @ref="addFighterField" T="FighterDto" Label="Fighter" @bind-Value="_fighter" SearchFuncWithCancel="@Search" ToStringFunc="DisplayFighter"
+                                             ShowProgressIndicator="true" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true" Variant="Variant.Text">
+                                <NoItemsTemplate>
+                                    <MudText>No fighters found</MudText>
+                                </NoItemsTemplate>
+                                <ItemTemplate>
+                                    <FighterListItem Fighter="@context" />
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                            <MyValidationMessage T="List<UpdateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
+                        </MudItem>
+                        <MudItem xs="2" Class="d-flex">
+                            <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+                        </MudItem>
+                        @if (ShowHelpers)
+                        {
+                            <MudItem xs="12">
+                                <MudAlert Severity="Severity.Info" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"After clicking the add button, the fighter will be added to the selected team")</MudAlert>
+                            </MudItem>
+                        }
+                        @foreach (var team in _teams)
+                        {
+                            <MudItem xs="12" md="6" @onclick="@(() => SelectTeam(team.Number))" Style="cursor: pointer;">
+                                <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
+                                    Team @($"{team.Number + 1}")
+                                </MudText>
+                                @if (team.Fighters.Any())
+                                {
+                                    <MudPaper Width="100%" Class="@((_selectedTeam == team.Number) ? "mud-theme-primary" : "")">
+                                        <MudList Style="cursor: auto;">
+                                            @foreach (var fighter in team.Fighters)
+                                            {
+                                                <MudListItem>
+                                                    <FighterListItem Fighter="@fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
+                                                </MudListItem>
+                                            }
+                                        </MudList>
+                                    </MudPaper>
+                                }
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudTabPanel>
+                <MudTabPanel Text="Teams options" Icon="@Icons.Material.Filled.Settings">
+                    <MudGrid Spacing="1" Justify="Justify.FlexStart">
+                        <MudItem xs="6">
+                            <ChildContent>
+                                <MudSelect T="int" Label="Number of teams" @bind-Value="NumberOfTeams"
+                                           SelectedValuesChanged="OnSelectedValuesChanged" MultiSelection="false">
+                                    @foreach (var number in allowedTeamSizes)
+                                    {
+                                        <MudSelectItem Value="@number" />
+                                    }
+                                </MudSelect>
+                            </ChildContent>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudSelect T="int" Label="Selected team" @bind-Value="_selectedTeam" MultiSelection="false">
+                                @foreach (var team in _teams)
+                                {
+                                    <MudSelectItem Value="@team.Number">
+                                        <ChildContent>
+                                            <MudText>Team @($"{team.Number + 1}")</MudText>
+                                        </ChildContent>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        @if (ShowHelpers)
+                        {
+                            <MudItem xs="12">
+                                <MudAlert Severity="Severity.Warning" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"After changing ""Number of teams"" value, the teams will reset")</MudAlert>
+                            </MudItem>
+                        }
+                        @if (ShowHelpers)
+                        {
+                            <MudItem xs="12">
+                                <MudAlert Severity="Severity.Info" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"Select the team to which you want to add a player in the ""Selected team"" field or click on the selected team below")</MudAlert>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudTabPanel>
+            </MudTabs>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -16,9 +109,121 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public UpdateFightRequest UpdateFightRequest { get; set; } = new UpdateFightRequest();
+    [Parameter] public List<TeamDto> Teams { get; set; } = new List<TeamDto>();
+    [Parameter] public int NumberOfTeams { get; set; }
 
     private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
     private MudForm form;
+    private MudAutocomplete<FighterDto> addFighterField;
+
+    private List<int> allowedTeamSizes = new List<int> { 2, 3, 4, 5 };
+    private FighterDto _fighter = null;
+    private int _selectedTeam = 0;
+    private List<TeamDto> _teams = new List<TeamDto>(2);
+    public bool ShowHelpers { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        SetUpUpdate();
+    }
+
+    private void SetUpUpdate()
+    {
+        _teams = new List<TeamDto>(NumberOfTeams);
+        _teams.AddRange(Teams);
+    }
+
+    private void DeleteFighterListItem(TeamDto team, FighterDto fighter)
+    {
+        var pickedTeam = _teams.FirstOrDefault(x => x.Number == team.Number);
+        if (pickedTeam is not null)
+        {
+            pickedTeam.Fighters.Remove(fighter);
+        }
+    }
+
+    private async Task AddFighterToSelectedTeam()
+    {
+        if (_fighter != null)
+        {
+            _teams[_selectedTeam].Fighters.Add(_fighter);
+            _fighter = null;
+            _selectedTeam = (_selectedTeam + 1) % NumberOfTeams;
+            await addFighterField.FocusAsync();
+        }
+    }
+
+    private void SelectTeam(int number)
+    {
+        _selectedTeam = number;
+    }
+
+    private void OnSelectedValuesChanged(IEnumerable<int> values)
+    {
+        var teamsCount = values.First();
+        ResetTeams(teamsCount);
+    }
+
+    private void ResetTeams(int teamsCount)
+    {
+        _teams = new List<TeamDto>(teamsCount);
+        for (int i = 0; i < teamsCount; i++)
+        {
+            _teams.Add(new TeamDto()
+                {
+                    Id = 0,
+                    Created = DateTime.UtcNow,
+                    Modified = DateTime.UtcNow,
+                    Number = i,
+                    Fighters = new List<FighterDto>(),
+                });
+        }
+        _selectedTeam = 0;
+    }
+
+    private List<int> GetHiddenFightersIds()
+    {
+        var fightersToHide = new List<int>();
+
+        foreach (var team in _teams)
+        {
+            foreach (var fighter in team.Fighters)
+            {
+                if (!fightersToHide.Contains(fighter.Id))
+                    fightersToHide.Add(fighter.Id);
+            }
+        }
+
+        return fightersToHide;
+    }
+
+    private Func<FighterDto, string> DisplayFighter = fighter => fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
+    private async Task<IEnumerable<FighterDto>> Search(string value, CancellationToken token)
+    {
+        PagedList<FighterDto> FightersPagedList = null;
+
+        var getAllFightersRequest = new GetAllFightersRequest
+            {
+                Page = 1,
+                PageSize = 10,
+                SortColumn = "name",
+                SortOrder = SortOrder.Ascending,
+                SearchTerm = value ?? "",
+                HiddenFightersIds = GetHiddenFightersIds()
+            };
+
+        try
+        {
+            FightersPagedList = await FighterHttpService.GetAllFighters(getAllFightersRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new List<FighterDto>();
+        }
+
+        return FightersPagedList.Items;
+    }
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -26,6 +231,14 @@
     {
         try
         {
+            UpdateFightRequest.Teams = new List<UpdateTeamModel>();
+            foreach (var team in _teams)
+            {
+                var fightersIds = team.Fighters.Select(x => x.Id).ToList();
+                var updateTeamModel = new UpdateTeamModel() { FightersIds = fightersIds };
+                UpdateFightRequest.Teams.Add(updateTeamModel);
+            }
+
             await FightHttpService.UpdateFight(UpdateFightRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }

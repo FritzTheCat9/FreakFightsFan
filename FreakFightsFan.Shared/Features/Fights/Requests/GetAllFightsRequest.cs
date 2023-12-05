@@ -6,8 +6,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Requests
     {
         public int Page { get; set; }
         public int PageSize { get; set; }
-        public string SortColumn { get; set; }
-        public SortOrder SortOrder { get; set; }
-        public string SearchTerm { get; set; }
+
+        public int EventId { get; set; }
     }
 }

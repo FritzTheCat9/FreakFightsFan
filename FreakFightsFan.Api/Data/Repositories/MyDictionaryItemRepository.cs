@@ -27,12 +27,22 @@ namespace FreakFightsFan.Api.Data.Repositories
 
         public IQueryable<MyDictionaryItem> AsQueryable(int dictionaryId) =>
             _dbContext.MyDictionaryItems
+                .Include(x => x.Dictionary)
+                .Include(x => x.Events)
                 .Where(x => x.DictionaryId == dictionaryId)
                 .AsQueryable();
 
-        public async Task<IEnumerable<MyDictionaryItem>> GetAll() => await _dbContext.MyDictionaryItems.ToListAsync();
+        public async Task<IEnumerable<MyDictionaryItem>> GetAll() => 
+            await _dbContext.MyDictionaryItems
+                .Include(x => x.Dictionary)
+                .Include(x => x.Events)
+                .ToListAsync();
 
-        public async Task<MyDictionaryItem> Get(int id) => await _dbContext.MyDictionaryItems.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<MyDictionaryItem> Get(int id) => 
+            await _dbContext.MyDictionaryItems
+                .Include(x => x.Dictionary)
+                .Include(x => x.Events)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<bool> DictionaryItemCodeExists(string code, int dictionaryId) =>
             await _dbContext.MyDictionaryItems

@@ -9,5 +9,7 @@ namespace FreakFightsFan.Shared.Features.Fighters.Requests
         public string SortColumn { get; set; }
         public SortOrder SortOrder { get; set; }
         public string SearchTerm { get; set; }
+
+        public List<int> HiddenFightersIds { get; set; }
     }
 }
