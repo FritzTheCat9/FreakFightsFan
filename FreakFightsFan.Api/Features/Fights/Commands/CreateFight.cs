@@ -3,6 +3,7 @@ using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fights.Extensions;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
@@ -32,20 +33,22 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IClock _clock;
             private readonly IEventRepository _eventRepository;
             private readonly IFighterRepository _fighterRepository;
+            private readonly ITeamService _teamService;
 
-            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, IFighterRepository fighterRepository)
+            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, IFighterRepository fighterRepository, ITeamService teamService)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
                 _eventRepository = eventRepository;
                 _fighterRepository = fighterRepository;
+                _teamService = teamService;
             }
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
                 await ValidateCommand(command);
 
-                var teamsInFight = await CreateTeams(command);
+                var teamsInFight = await _teamService.CreateFightTeams(command.Teams);
 
                 var fight = new Fight
                 {
@@ -58,34 +61,6 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 fight.Teams.AddRange(teamsInFight);
 
                 return await _fightRepository.Create(fight);
-            }
-
-            private async Task<List<Team>> CreateTeams(Command command)
-            {
-                var teamsInFight = new List<Team>();
-                var teamNumber = 0;
-                foreach (var createTeamModel in command.Teams)
-                {
-                    var fightersInTeam = new List<Fighter>();
-                    foreach (var fighterId in createTeamModel.FightersIds)
-                    {
-                        var fighter = await _fighterRepository.Get(fighterId) ?? throw new MyNotFoundException();
-                        fightersInTeam.Add(fighter);
-                    }
-
-                    var team = new Team
-                    {
-                        Created = _clock.Current(),
-                        Modified = _clock.Current(),
-                        Number = teamNumber,
-                    };
-                    team.Fighters.AddRange(fightersInTeam);
-
-                    teamsInFight.Add(team);
-                    teamNumber++;
-                }
-
-                return teamsInFight;
             }
 
             private async Task ValidateCommand(Command command)

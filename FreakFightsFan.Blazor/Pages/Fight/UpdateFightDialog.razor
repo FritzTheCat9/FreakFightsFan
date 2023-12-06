@@ -24,7 +24,7 @@
                                     <FighterListItem Fighter="@context" />
                                 </ItemTemplate>
                             </MudAutocomplete>
-                            <MyValidationMessage T="List<UpdateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="List<CreateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
                         </MudItem>
                         <MudItem xs="2" Class="d-flex">
                             <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
@@ -231,11 +231,11 @@
     {
         try
         {
-            UpdateFightRequest.Teams = new List<UpdateTeamModel>();
+            UpdateFightRequest.Teams = new List<CreateTeamModel>();
             foreach (var team in _teams)
             {
                 var fightersIds = team.Fighters.Select(x => x.Id).ToList();
-                var updateTeamModel = new UpdateTeamModel() { FightersIds = fightersIds };
+                var updateTeamModel = new CreateTeamModel() { FightersIds = fightersIds };
                 UpdateFightRequest.Teams.Add(updateTeamModel);
             }
 

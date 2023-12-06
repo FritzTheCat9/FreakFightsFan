@@ -125,7 +125,7 @@ else
         parameters.Add(x => x.UpdateFightRequest, new UpdateFightRequest
             {
                 Id = fightDto.Id,
-                Teams = new List<UpdateTeamModel>(),
+                Teams = new List<CreateTeamModel>(),
             });
         
         parameters.Add(x => x.Teams, fightDto.Teams);

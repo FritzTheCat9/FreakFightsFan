@@ -1,8 +1,8 @@
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
-using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fights.Extensions;
+using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
@@ -15,7 +15,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
         public class Command : IRequest<Unit>
         {
             public int Id { get; set; }
-            public List<UpdateTeamModel> Teams { get; set; }
+            public List<CreateTeamModel> Teams { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -30,13 +30,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
         {
             private readonly IFightRepository _fightRepository;
             private readonly IClock _clock;
-            private readonly IFighterRepository _fighterRepository;
+            private readonly ITeamService _teamService;
 
-            public Handler(IFightRepository fightRepository, IClock clock, IFighterRepository fighterRepository)
+            public Handler(IFightRepository fightRepository, IClock clock, ITeamService teamService)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
-                _fighterRepository = fighterRepository;
+                _teamService = teamService;
             }
 
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
                 ValidateCommand(command);
 
-                var teamsToAdd = await CreateTeams(command);
+                var teamsToAdd = await _teamService.CreateFightTeams(command.Teams);
                 var teamsToRemove = fight.Teams.Select(x => x.Id).ToList();
 
                 fight.Modified = _clock.Current();
@@ -54,34 +54,6 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
                 await _fightRepository.Update(fight);
                 return Unit.Value;
-            }
-
-            private async Task<List<Team>> CreateTeams(Command command)
-            {
-                var teamsInFight = new List<Team>();
-                var teamNumber = 0;
-                foreach (var updateTeamModel in command.Teams)
-                {
-                    var fightersInTeam = new List<Fighter>();
-                    foreach (var fighterId in updateTeamModel.FightersIds)
-                    {
-                        var fighter = await _fighterRepository.Get(fighterId) ?? throw new MyNotFoundException();
-                        fightersInTeam.Add(fighter);
-                    }
-
-                    var team = new Team
-                    {
-                        Created = _clock.Current(),
-                        Modified = _clock.Current(),
-                        Number = teamNumber
-                    };
-                    team.Fighters.AddRange(fightersInTeam);
-
-                    teamsInFight.Add(team);
-                    teamNumber++;
-                }
-
-                return teamsInFight;
             }
 
             private void ValidateCommand(Command command)
