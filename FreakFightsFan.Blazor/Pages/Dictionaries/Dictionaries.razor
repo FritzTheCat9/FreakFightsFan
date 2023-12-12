@@ -16,7 +16,7 @@
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Dictionaries</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionary())"></MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionary())"/>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
@@ -31,11 +31,11 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"/>
         </MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionary(@context))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionary(@context.Id))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionary(@context))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionary(@context.Id))"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

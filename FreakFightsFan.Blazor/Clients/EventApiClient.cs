@@ -6,10 +6,10 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IEventApiClient
     {
-        Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest getAllEventsRequest);
+        Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest request);
         Task<EventDto> GetEvent(int id);
-        Task CreateEvent(CreateEventRequest createEventRequest);
-        Task UpdateEvent(UpdateEventRequest updateEventRequest);
+        Task CreateEvent(CreateEventRequest request);
+        Task UpdateEvent(UpdateEventRequest request);
         Task DeleteEvent(int id);
     }
 
@@ -23,9 +23,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest getAllEventsRequest)
+        public async Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest request)
         {
-            return await _apiClient.Post<GetAllEventsRequest, PagedList<EventDto>>(_url + "/all", getAllEventsRequest);
+            return await _apiClient.Post<GetAllEventsRequest, PagedList<EventDto>>(_url + "/all", request);
         }
 
         public async Task<EventDto> GetEvent(int id)
@@ -33,14 +33,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<EventDto>(_url + id);
         }
 
-        public async Task CreateEvent(CreateEventRequest createEventRequest)
+        public async Task CreateEvent(CreateEventRequest request)
         {
-            await _apiClient.Post(_url, createEventRequest);
+            await _apiClient.Post(_url, request);
         }
 
-        public async Task UpdateEvent(UpdateEventRequest updateEventRequest)
+        public async Task UpdateEvent(UpdateEventRequest request)
         {
-            await _apiClient.Put(_url + "/" + updateEventRequest.Id, updateEventRequest);
+            await _apiClient.Put(_url + "/" + request.Id, request);
         }
 
         public async Task DeleteEvent(int id)

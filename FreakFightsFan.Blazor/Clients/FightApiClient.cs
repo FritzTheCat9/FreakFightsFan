@@ -6,12 +6,12 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IFightApiClient
     {
-        Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest getAllFightsRequest);
+        Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest request);
         Task<FightDto> GetFight(int id);
-        Task CreateFight(CreateFightRequest createFightRequest);
-        Task UpdateFight(UpdateFightRequest updateFightRequest);
+        Task CreateFight(CreateFightRequest request);
+        Task UpdateFight(UpdateFightRequest request);
         Task DeleteFight(int id);
-        Task MoveFight(MoveFightRequest moveFightRequest);
+        Task MoveFight(MoveFightRequest request);
     }
 
     public class FightApiClient : IFightApiClient
@@ -24,9 +24,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest getAllFightsRequest)
+        public async Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest request)
         {
-            return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", getAllFightsRequest);
+            return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", request);
         }
 
         public async Task<FightDto> GetFight(int id)
@@ -34,14 +34,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<FightDto>(_url + id);
         }
 
-        public async Task CreateFight(CreateFightRequest createFightRequest)
+        public async Task CreateFight(CreateFightRequest request)
         {
-            await _apiClient.Post(_url, createFightRequest);
+            await _apiClient.Post(_url, request);
         }
 
-        public async Task UpdateFight(UpdateFightRequest updateFightRequest)
+        public async Task UpdateFight(UpdateFightRequest request)
         {
-            await _apiClient.Put(_url + "/" + updateFightRequest.Id, updateFightRequest);
+            await _apiClient.Put(_url + "/" + request.Id, request);
         }
 
         public async Task DeleteFight(int id)
@@ -49,9 +49,9 @@ namespace FreakFightsFan.Blazor.Clients
             await _apiClient.Delete(_url + "/" + id);
         }
 
-        public async Task MoveFight(MoveFightRequest moveFightRequest)
+        public async Task MoveFight(MoveFightRequest request)
         {
-            await _apiClient.Put(_url + "/move/" + moveFightRequest.Id, moveFightRequest);
+            await _apiClient.Put(_url + "/move/" + request.Id, request);
         }
     }
 }

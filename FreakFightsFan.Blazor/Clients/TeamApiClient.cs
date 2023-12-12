@@ -6,7 +6,7 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface ITeamApiClient
     {
-        Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest getAllTeamsRequest);
+        Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest request);
         Task<TeamDto> GetTeam(int id);
     }
 
@@ -20,9 +20,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest getAllTeamsRequest)
+        public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest request)
         {
-            return await _apiClient.Post<GetAllTeamsRequest, PagedList<TeamDto>>(_url + "/all", getAllTeamsRequest);
+            return await _apiClient.Post<GetAllTeamsRequest, PagedList<TeamDto>>(_url + "/all", request);
         }
 
         public async Task<TeamDto> GetTeam(int id)

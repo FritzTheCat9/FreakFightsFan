@@ -6,10 +6,10 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IMyDictionaryApiClient
     {
-        Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionariesRequest getAllMyDictionariesRequest);
+        Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionariesRequest request);
         Task<MyDictionaryDto> GetMyDictionary(int id);
-        Task CreateMyDictionary(CreateMyDictionaryRequest createMyDictionaryRequest);
-        Task UpdateMyDictionary(UpdateMyDictionaryRequest updateMyDictionaryRequest);
+        Task CreateMyDictionary(CreateMyDictionaryRequest request);
+        Task UpdateMyDictionary(UpdateMyDictionaryRequest request);
         Task DeleteMyDictionary(int id);
     }
 
@@ -23,9 +23,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionariesRequest getAllMyDictionariesRequest)
+        public async Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionariesRequest request)
         {
-            return await _apiClient.Post<GetAllMyDictionariesRequest, PagedList<MyDictionaryDto>>(_url + "/all", getAllMyDictionariesRequest);
+            return await _apiClient.Post<GetAllMyDictionariesRequest, PagedList<MyDictionaryDto>>(_url + "/all", request);
         }
 
         public async Task<MyDictionaryDto> GetMyDictionary(int id)
@@ -33,14 +33,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<MyDictionaryDto>(_url + id);
         }
 
-        public async Task CreateMyDictionary(CreateMyDictionaryRequest createMyDictionaryRequest)
+        public async Task CreateMyDictionary(CreateMyDictionaryRequest request)
         {
-            await _apiClient.Post(_url, createMyDictionaryRequest);
+            await _apiClient.Post(_url, request);
         }
 
-        public async Task UpdateMyDictionary(UpdateMyDictionaryRequest updateMyDictionaryRequest)
+        public async Task UpdateMyDictionary(UpdateMyDictionaryRequest request)
         {
-            await _apiClient.Put(_url + "/" + updateMyDictionaryRequest.Id, updateMyDictionaryRequest);
+            await _apiClient.Put(_url + "/" + request.Id, request);
         }
 
         public async Task DeleteMyDictionary(int id)

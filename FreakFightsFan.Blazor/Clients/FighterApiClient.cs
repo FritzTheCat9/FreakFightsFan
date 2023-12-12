@@ -6,10 +6,10 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IFighterApiClient
     {
-        Task<PagedList<FighterDto>> GetAllFighters(GetAllFightersRequest getAllFightersRequest);
+        Task<PagedList<FighterDto>> GetAllFighters(GetAllFightersRequest request);
         Task<FighterDto> GetFighter(int id);
-        Task CreateFighter(CreateFighterRequest createFighterRequest);
-        Task UpdateFighter(UpdateFighterRequest updateFighterRequest);
+        Task CreateFighter(CreateFighterRequest request);
+        Task UpdateFighter(UpdateFighterRequest request);
         Task DeleteFighter(int id);
     }
 
@@ -23,9 +23,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<FighterDto>> GetAllFighters(GetAllFightersRequest getAllFightersRequest)
+        public async Task<PagedList<FighterDto>> GetAllFighters(GetAllFightersRequest request)
         {
-            return await _apiClient.Post<GetAllFightersRequest, PagedList<FighterDto>>(_url + "/all", getAllFightersRequest);
+            return await _apiClient.Post<GetAllFightersRequest, PagedList<FighterDto>>(_url + "/all", request);
         }
 
         public async Task<FighterDto> GetFighter(int id)
@@ -33,14 +33,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<FighterDto>(_url + id);
         }
 
-        public async Task CreateFighter(CreateFighterRequest createFighterRequest)
+        public async Task CreateFighter(CreateFighterRequest request)
         {
-            await _apiClient.Post(_url, createFighterRequest);
+            await _apiClient.Post(_url, request);
         }
 
-        public async Task UpdateFighter(UpdateFighterRequest updateFighterRequest)
+        public async Task UpdateFighter(UpdateFighterRequest request)
         {
-            await _apiClient.Put(_url + "/" + updateFighterRequest.Id, updateFighterRequest);
+            await _apiClient.Put(_url + "/" + request.Id, request);
         }
 
         public async Task DeleteFighter(int id)

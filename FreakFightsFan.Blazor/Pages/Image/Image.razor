@@ -16,7 +16,7 @@
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Images</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateImage())"></MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateImage())"/>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -42,8 +42,8 @@
         <MudTd DataLabel="Modified">@context.Modified</MudTd>
         <MudTd DataLabel="Modified">@context.Name</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

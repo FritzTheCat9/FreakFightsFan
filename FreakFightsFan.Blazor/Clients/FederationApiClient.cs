@@ -6,10 +6,10 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IFederationApiClient
     {
-        Task<PagedList<FederationDto>> GetAllFederations(GetAllFederationsRequest getAllFederationsRequest);
+        Task<PagedList<FederationDto>> GetAllFederations(GetAllFederationsRequest request);
         Task<FederationDto> GetFederation(int id);
-        Task CreateFederation(CreateFederationRequest createFederationRequest);
-        Task UpdateFederation(UpdateFederationRequest updateFederationRequest);
+        Task CreateFederation(CreateFederationRequest request);
+        Task UpdateFederation(UpdateFederationRequest request);
         Task DeleteFederation(int id);
     }
 
@@ -23,9 +23,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<FederationDto>> GetAllFederations(GetAllFederationsRequest getAllFederationsRequest)
+        public async Task<PagedList<FederationDto>> GetAllFederations(GetAllFederationsRequest request)
         {
-            return await _apiClient.Post<GetAllFederationsRequest, PagedList<FederationDto>>(_url + "/all", getAllFederationsRequest);
+            return await _apiClient.Post<GetAllFederationsRequest, PagedList<FederationDto>>(_url + "/all", request);
         }
 
         public async Task<FederationDto> GetFederation(int id)
@@ -33,14 +33,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<FederationDto>(_url + id);
         }
 
-        public async Task CreateFederation(CreateFederationRequest createFederationRequest)
+        public async Task CreateFederation(CreateFederationRequest request)
         {
-            await _apiClient.Post(_url, createFederationRequest);
+            await _apiClient.Post(_url, request);
         }
 
-        public async Task UpdateFederation(UpdateFederationRequest updateFederationRequest)
+        public async Task UpdateFederation(UpdateFederationRequest request)
         {
-            await _apiClient.Put(_url + "/" + updateFederationRequest.Id, updateFederationRequest);
+            await _apiClient.Put(_url + "/" + request.Id, request);
         }
 
         public async Task DeleteFederation(int id)
