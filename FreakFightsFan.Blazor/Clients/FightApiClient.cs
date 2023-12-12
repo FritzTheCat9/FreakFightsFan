@@ -11,6 +11,7 @@ namespace FreakFightsFan.Blazor.Clients
         Task CreateFight(CreateFightRequest createFightRequest);
         Task UpdateFight(UpdateFightRequest updateFightRequest);
         Task DeleteFight(int id);
+        Task MoveFight(MoveFightRequest moveFightRequest);
     }
 
     public class FightApiClient : IFightApiClient
@@ -46,6 +47,11 @@ namespace FreakFightsFan.Blazor.Clients
         public async Task DeleteFight(int id)
         {
             await _apiClient.Delete(_url + "/" + id);
+        }
+
+        public async Task MoveFight(MoveFightRequest moveFightRequest)
+        {
+            await _apiClient.Put(_url + "/move/" + moveFightRequest.Id, moveFightRequest);
         }
     }
 }

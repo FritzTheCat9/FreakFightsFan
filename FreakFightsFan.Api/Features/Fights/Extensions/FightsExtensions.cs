@@ -13,6 +13,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
         {
             CreateFight.Endpoint(app);
             DeleteFight.Endpoint(app);
+            MoveFight.Endpoint(app);
             UpdateFight.Endpoint(app);
             GetAllFights.Endpoint(app);
             GetFight.Endpoint(app);
@@ -27,8 +28,9 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
                 Id = fight.Id,
                 Created = fight.Created,
                 Modified = fight.Modified,
+                OrderNumber = fight.OrderNumber,
                 EventId = fight.EventId,
-                Teams = fight.Teams.Select(x => x.ToDto()).ToList()
+                Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
             };
         }
 
@@ -38,6 +40,15 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             {
                 EventId = request.EventId,
                 Teams = request.Teams,
+            };
+        }
+
+        public static MoveFight.Command ToMoveFightCommand(this MoveFightRequest request, int id)
+        {
+            return new MoveFight.Command
+            {
+                Id = id, 
+                Direction = request.Direction,
             };
         }
 

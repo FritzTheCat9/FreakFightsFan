@@ -34,8 +34,12 @@ else
             {
                 <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))"></MudIconButton>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
+                                       Disabled="(fight.OrderNumber <= 1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
+                                       Disabled="(fight.OrderNumber >= FightsList.Count())" />
                     </MudStack>
                 </MudPaper>
                 <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
@@ -118,6 +122,20 @@ else
         }
     }
 
+    private async Task MoveFight(int id, MoveDirection direction)
+    {
+        try
+        {
+            var request = new MoveFightRequest() { Id = id, Direction = direction };
+            await FightApiClient.MoveFight(request);
+            FightsList = await GetAllFights();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+
     private async Task UpdateFight(FightDto fightDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
@@ -127,7 +145,7 @@ else
                 Id = fightDto.Id,
                 Teams = new List<CreateTeamModel>(),
             });
-        
+
         parameters.Add(x => x.Teams, fightDto.Teams);
         parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
 
