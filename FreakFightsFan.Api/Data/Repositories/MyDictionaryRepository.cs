@@ -58,20 +58,19 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(MyDictionary dictionary)
         {
             await _dbContext.AddAsync(dictionary);
-            await _dbContext.SaveChangesAsync();
             return dictionary.Id;
         }
 
-        public async Task Update(MyDictionary dictionary)
+        public Task Update(MyDictionary dictionary)
         {
             _dbContext.Update(dictionary);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task Delete(MyDictionary dictionary)
+        public Task Delete(MyDictionary dictionary)
         {
             _dbContext.Remove(dictionary);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

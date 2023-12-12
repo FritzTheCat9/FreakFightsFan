@@ -24,15 +24,15 @@ namespace FreakFightsFan.Api.Exceptions
             {
                 MyValidationException validationException =>
                     new ErrorHelperModel(StatusCodes.Status400BadRequest, new ValidationErrorResponse(validationException.Type, validationException.Message, validationException.Errors)),
-                MyServerException serverException => 
+                MyServerException serverException =>
                     new ErrorHelperModel(StatusCodes.Status500InternalServerError, new ServerErrorResponse(serverException.Type, serverException.Message)),
                 MyUnauthorizedException unauthorizedException =>
                     new ErrorHelperModel(StatusCodes.Status401Unauthorized, new UnauthorizedErrorResponse(unauthorizedException.Type, unauthorizedException.Message)),
                 MyForbiddenException forbiddenException =>
                     new ErrorHelperModel(StatusCodes.Status403Forbidden, new ForbiddenErrorResponse(forbiddenException.Type, forbiddenException.Message)),
-                MyNotFoundException notFoundException => 
+                MyNotFoundException notFoundException =>
                     new ErrorHelperModel(StatusCodes.Status404NotFound, new NotFoundErrorResponse(notFoundException.Type, notFoundException.Message)),
-                _ => 
+                _ =>
                     new ErrorHelperModel(StatusCodes.Status500InternalServerError, new ServerErrorResponse(ExceptionType.Server, "Server Error")),
             };
 

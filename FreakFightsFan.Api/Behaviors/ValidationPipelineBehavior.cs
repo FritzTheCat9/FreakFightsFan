@@ -2,7 +2,7 @@
 using FreakFightsFan.Shared.Exceptions;
 using MediatR;
 
-namespace FreakFightsFan.Api.Exceptions
+namespace FreakFightsFan.Api.Behaviors
 {
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {

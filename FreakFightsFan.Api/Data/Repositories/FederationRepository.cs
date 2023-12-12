@@ -44,20 +44,19 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Federation federation)
         {
             await _dbContext.AddAsync(federation);
-            await _dbContext.SaveChangesAsync();
             return federation.Id;
         }
 
-        public async Task Update(Federation federation)
+        public Task Update(Federation federation)
         {
             _dbContext.Update(federation);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task Delete(Federation federation)
+        public Task Delete(Federation federation)
         {
             _dbContext.Remove(federation);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

@@ -11,7 +11,9 @@ namespace FreakFightsFan.Api.Data.Repositories
         Task<Fight> Get(int id);
         Task<int> Create(Fight fight);
         Task Update(Fight fight);
+        Task UpdateRange(List<Fight> fights);
         Task Delete(Fight fight);
+        Task OrderFights(int eventId, int deletedId);
     }
 
     public class FightRepository : IFightRepository
@@ -23,16 +25,17 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Fight> AsQueryable(int eventId) => 
+        public IQueryable<Fight> AsQueryable(int eventId) =>
             _dbContext.Fights
                 .Include(x => x.Event)
                 .Include(x => x.Teams)
                     .ThenInclude(x => x.Fighters)
                         .ThenInclude(x => x.Image)
                 .Where(x => x.EventId == eventId)
+                .OrderByDescending(x => x.OrderNumber)
                 .AsQueryable();
 
-        public async Task<IEnumerable<Fight>> GetAll() => 
+        public async Task<IEnumerable<Fight>> GetAll() =>
             await _dbContext.Fights
                 .Include(x => x.Event)
                 .Include(x => x.Teams)
@@ -40,7 +43,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                         .ThenInclude(x => x.Image)
                 .ToListAsync();
 
-        public async Task<Fight> Get(int id) => 
+        public async Task<Fight> Get(int id) =>
             await _dbContext.Fights
                 .Include(x => x.Event)
                 .Include(x => x.Teams)
@@ -51,20 +54,37 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Fight fight)
         {
             await _dbContext.AddAsync(fight);
-            await _dbContext.SaveChangesAsync();
             return fight.Id;
         }
 
-        public async Task Update(Fight fight)
+        public Task Update(Fight fight)
         {
             _dbContext.Update(fight);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task Delete(Fight fight)
+        public Task Delete(Fight fight)
         {
             _dbContext.Remove(fight);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateRange(List<Fight> fights)
+        {
+            _dbContext.UpdateRange(fights);
+            return Task.CompletedTask;
+        }
+
+        public Task OrderFights(int eventId, int deletedId)
+        {
+            _dbContext.Fights
+                .Where(x => x.EventId == eventId && x.Id > deletedId)
+                .ToList().ForEach((x) =>
+                {
+                    x.OrderNumber--;
+                });
+
+            return Task.CompletedTask;
         }
     }
 }

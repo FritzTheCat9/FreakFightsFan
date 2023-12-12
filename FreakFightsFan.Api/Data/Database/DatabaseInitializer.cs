@@ -17,29 +17,29 @@ namespace FreakFightsFan.Api.Data.Database
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                dbContext.Database.Migrate();
+            //using (var scope = _serviceProvider.CreateScope())
+            //{
+            //    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //    dbContext.Database.Migrate();
 
-                var fighters = dbContext.Fighters.ToList();
+            //    var fighters = dbContext.Fighters.ToList();
 
-                if (fighters.Any())
-                {
-                    return Task.CompletedTask;
-                }
+            //    if (fighters.Any())
+            //    {
+            //        return Task.CompletedTask;
+            //    }
 
-                fighters = new List<Fighter>
-                {
-                    new() { FirstName = "Marcin", LastName = "Dubiel", Nickname = "Dubiel", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new() { FirstName = "Kacper", LastName = "Błoński", Nickname = "Crusher", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new() { FirstName = "Sylwester", LastName = "Wardęga", Nickname = "Zwyrol", Created = _clock.Current(), Modified =  _clock.Current()},
-                    new() { FirstName = "Michał", LastName = "Baron", Nickname = "Boxdel" , Created = _clock.Current(), Modified =  _clock.Current()},
-                };
+            //    fighters = new List<Fighter>
+            //    {
+            //        new() { FirstName = "Marcin", LastName = "Dubiel", Nickname = "Dubiel", Created = _clock.Current(), Modified =  _clock.Current()},
+            //        new() { FirstName = "Kacper", LastName = "Błoński", Nickname = "Crusher", Created = _clock.Current(), Modified =  _clock.Current()},
+            //        new() { FirstName = "Sylwester", LastName = "Wardęga", Nickname = "Zwyrol", Created = _clock.Current(), Modified =  _clock.Current()},
+            //        new() { FirstName = "Michał", LastName = "Baron", Nickname = "Boxdel" , Created = _clock.Current(), Modified =  _clock.Current()},
+            //    };
 
-                dbContext.Fighters.AddRange(fighters);
-                dbContext.SaveChanges();
-            }
+            //    dbContext.Fighters.AddRange(fighters);
+            //    dbContext.SaveChanges();
+            //}
 
             return Task.CompletedTask;
         }

@@ -29,7 +29,10 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
+                
+                await _fightRepository.OrderFights(fight.EventId, fight.Id);
                 await _fightRepository.Delete(fight);
+
                 return Unit.Value;
             }
         }

@@ -1,5 +1,6 @@
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
+using FreakFightsFan.Api.Behaviors;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Exceptions;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
@@ -31,6 +32,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+    config.AddOpenBehavior(typeof(UnitOfWorkPipelineBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 ValidatorOptions.Global.LanguageManager.Enabled = false;

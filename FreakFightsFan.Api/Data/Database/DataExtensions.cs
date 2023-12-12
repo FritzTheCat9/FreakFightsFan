@@ -1,4 +1,5 @@
-﻿using FreakFightsFan.Api.Data.Repositories;
+﻿using FreakFightsFan.Api.Abstractions;
+using FreakFightsFan.Api.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace FreakFightsFan.Api.Data.Database
@@ -13,10 +14,15 @@ namespace FreakFightsFan.Api.Data.Database
             services.Configure<MssqlOptions>(section);
             var options = configuration.GetOptions<MssqlOptions>(SectionName);
 
-            services.AddDbContext<AppDbContext>(x => x.UseSqlServer(options.ConnectionString));
+            services.AddSingleton<IClock, Clock>();
+            services.AddDbContext<AppDbContext>(x => 
+            { 
+                x.UseSqlServer(options.ConnectionString); 
+                x.EnableSensitiveDataLogging();
+            });
 
             services.AddScoped<IFederationRepository, FederationRepository>();
-            services.AddScoped<IEventRepository, EventRepository>(); 
+            services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IFightRepository, FightRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IFighterRepository, FighterRepository>();

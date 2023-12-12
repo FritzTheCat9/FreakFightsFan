@@ -47,20 +47,19 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Team team)
         {
             await _dbContext.AddAsync(team);
-            await _dbContext.SaveChangesAsync();
             return team.Id;
         }
 
-        public async Task Update(Team team)
+        public Task Update(Team team)
         {
             _dbContext.Update(team);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task Delete(Team team)
+        public Task Delete(Team team)
         {
             _dbContext.Remove(team);
-            await _dbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

@@ -32,15 +32,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IFightRepository _fightRepository;
             private readonly IClock _clock;
             private readonly IEventRepository _eventRepository;
-            private readonly IFighterRepository _fighterRepository;
             private readonly ITeamService _teamService;
 
-            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, IFighterRepository fighterRepository, ITeamService teamService)
+            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, ITeamService teamService)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
                 _eventRepository = eventRepository;
-                _fighterRepository = fighterRepository;
                 _teamService = teamService;
             }
 
@@ -48,6 +46,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             {
                 await ValidateCommand(command);
 
+                var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
                 var teamsInFight = await _teamService.CreateFightTeams(command.Teams);
 
                 var fight = new Fight
@@ -55,7 +54,8 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                     Id = 0,
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
-                    EventId = command.EventId,
+                    EventId = command.EventId, 
+                    OrderNumber = myEvent.Fights.Count + 1,
                 };
 
                 fight.Teams.AddRange(teamsInFight);
