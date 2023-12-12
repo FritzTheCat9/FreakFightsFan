@@ -33,6 +33,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Date = myEvent.Date,
                 FederationId = myEvent.FederationId,
                 City = myEvent.City?.ToDto(),
+                Hall = myEvent.Hall?.ToDto(),
             };
         }
 
@@ -44,6 +45,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Date = request.Date,
                 FederationId = request.FederationId,
                 CityId = request.CityId,
+                HallId = request.HallId,
             };
         }
 
@@ -55,6 +57,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 Name = request.Name,
                 Date = request.Date,
                 CityId = request.CityId,
+                HallId = request.HallId,
             };
         }
 

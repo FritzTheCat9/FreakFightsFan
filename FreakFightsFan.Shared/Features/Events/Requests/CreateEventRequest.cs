@@ -6,5 +6,6 @@ namespace FreakFightsFan.Shared.Features.Events.Requests
         public DateTime? Date { get; set; }
         public int FederationId { get; set; }
         public int? CityId { get; set; }
+        public int? HallId { get; set; }
     }
 }

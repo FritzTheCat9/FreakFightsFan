@@ -27,6 +27,7 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext.Events
                 .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Hall)
                 .Include(x => x.Fights)
                 .Where(x => x.FederationId == federationId)
                 .AsQueryable();
@@ -35,6 +36,7 @@ namespace FreakFightsFan.Api.Data.Repositories
             await _dbContext.Events
                 .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Hall)
                 .Include(x => x.Fights)
                 .ToListAsync();
 
@@ -42,6 +44,7 @@ namespace FreakFightsFan.Api.Data.Repositories
             await _dbContext.Events
                 .Include(x => x.Federation)
                 .Include(x => x.City)
+                .Include(x => x.Hall)
                 .Include(x => x.Fights)
                 .FirstOrDefaultAsync(x => x.Id == id);
 

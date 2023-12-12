@@ -19,6 +19,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             public DateTime? Date { get; set; }
             public int FederationId { get; set; }
             public int? CityId { get; set; }
+            public int? HallId { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -62,6 +63,13 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                         throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
                 }
 
+                if (command.HallId is not null)
+                {
+                    var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
+                    if (!isHallValid)
+                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
+                }
+
                 var myEvent = new Event
                 {
                     Id = 0,
@@ -70,7 +78,8 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     Name = command.Name,
                     Date = command.Date.GetValueOrDefault(_clock.Current()),
                     FederationId = command.FederationId,
-                    City = (command.CityId is not null) ? await _dictionaryItemRepository.Get(command.CityId.Value) : null
+                    City = (command.CityId is not null) ? await _dictionaryItemRepository.Get(command.CityId.Value) : null,
+                    Hall = (command.HallId is not null) ? await _dictionaryItemRepository.Get(command.HallId.Value) : null,
                 };
 
                 return await _eventRepository.Create(myEvent);

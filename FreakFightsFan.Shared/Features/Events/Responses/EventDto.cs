@@ -12,6 +12,7 @@ namespace FreakFightsFan.Shared.Features.Events.Responses
         public DateTime Date { get; set; }
         public int FederationId { get; set; }
         public MyDictionaryItemDto? City { get; set; }
+        public MyDictionaryItemDto? Hall { get; set; }
     }
 }
 

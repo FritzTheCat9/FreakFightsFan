@@ -3,5 +3,6 @@
     public static class DictionaryCode
     {
         public static readonly string City = "CITY";
+        public static readonly string Hall = "HALL";
     }
 }

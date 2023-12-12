@@ -15,10 +15,15 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .HasForeignKey(di => di.DictionaryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(di => di.Events)
+            builder.HasMany(di => di.Events_Cities)
                 .WithOne(e => e.City)
                 .HasForeignKey(e => e.CityId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(di => di.Events_Halls)
+                .WithOne(e => e.Hall)
+                .HasForeignKey(e => e.HallId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -7,6 +7,7 @@
 
         public int DictionaryId { get; set; }
         public MyDictionary Dictionary { get; set; }
-        public List<Event> Events { get; } = [];
+        public List<Event> Events_Cities { get; } = [];
+        public List<Event> Events_Halls { get; } = [];
     }
 }

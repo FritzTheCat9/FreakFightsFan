@@ -25,6 +25,7 @@
         <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="date" T="EventDto">Date</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="city" T="EventDto">City</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="hall" T="EventDto">Hall</MudTableSortLabel></MudTh>
         <MudTh>Fights</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
@@ -35,6 +36,16 @@
             @if (context.City != null)
             {
                 @context.City.Name
+            }
+            else
+            {
+                <MudText>-</MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="Hall">
+            @if (context.Hall != null)
+            {
+                @context.Hall.Name
             }
             else
             {
@@ -135,10 +146,12 @@
                 Id = eventDto.Id,
                 Name = eventDto.Name,
                 Date = eventDto.Date,
-                CityId = eventDto.City?.Id
+                CityId = eventDto.City?.Id,
+                HallId = eventDto.Hall?.Id
             });
-
+            
         parameters.Add(x => x.City, eventDto.City);
+        parameters.Add(x => x.Hall, eventDto.Hall);
 
         var updateEventDialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
         var result = await updateEventDialog.Result;
@@ -156,6 +169,7 @@
                 Date = DateTime.UtcNow,
                 FederationId = FederationId,
                 CityId = null,
+                HallId = null,
             });
 
         var createEventDialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);

@@ -28,6 +28,42 @@ namespace FreakFightsFan.Api.Data.Database
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+            modelBuilder.Entity<MyDictionary>().HasData(new List<MyDictionary>()
+            {
+                new() { Id = 1, Code = "CITY", Name = "Cities", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 2, Code = "HALL", Name = "Halls", Created =  _clock.Current(), Modified = _clock.Current() },
+            });
+
+            modelBuilder.Entity<MyDictionaryItem>().HasData(new List<MyDictionaryItem>()
+            {
+                // CITY
+                new() { Id = 1, DictionaryId = 1, Code = "KOSZALIN", Name = "Koszalin", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 2, DictionaryId = 1, Code = "POZNAN", Name = "Poznań", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 3, DictionaryId = 1, Code = "LODZ", Name = "Łódź", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 4, DictionaryId = 1, Code = "CZESTOCHOWA", Name = "Częstochowa", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 5, DictionaryId = 1, Code = "GDANSK_SOPOT", Name = "Gdańsk/Sopot", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 6, DictionaryId = 1, Code = "NIEPORAZ", Name = "Nieporaz", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 7, DictionaryId = 1, Code = "GLIWICE", Name = "Gliwice", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 8, DictionaryId = 1, Code = "KRAKOW", Name = "Kraków", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 9, DictionaryId = 1, Code = "NEWCASTLE", Name = "Newcastle", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 10, DictionaryId = 1, Code = "WROCLAW", Name = "Wrocław", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 11, DictionaryId = 1, Code = "SZCZECIN", Name = "Szczecin", Created =  _clock.Current(), Modified = _clock.Current() },
+
+                // HALL
+                new() { Id = 12, DictionaryId = 2, Code = "HWS_KOSZALIN", Name = "Hala Widowiskowo-Sportowa", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 13, DictionaryId = 2, Code = "HWSA_POZNAN", Name = "Hala widowiskowo-sportowa Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 14, DictionaryId = 2, Code = "AA_LODZ", Name = "Atlas Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 15, DictionaryId = 2, Code = "HS_CZESTOCHOWA", Name = "Hala Sportowa", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 16, DictionaryId = 2, Code = "EA_GDANSK_SOPOT", Name = "Ergo Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 17, DictionaryId = 2, Code = "AS_NIEPORAZ", Name = "Alvernia Studios", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 18, DictionaryId = 2, Code = "DTBHHL_LODZ", Name = "DoubleTree by Hilton Hotel Łódź", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 19, DictionaryId = 2, Code = "AG_GLIWICE", Name = "Arena Gliwice", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 20, DictionaryId = 2, Code = "TA_KRAKOW", Name = "Tauron Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 21, DictionaryId = 2, Code = "UA_NEWCASTLE", Name = "Utilita Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 22, DictionaryId = 2, Code = "HS_WROCLAW", Name = "Hala Stulecia", Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 23, DictionaryId = 2, Code = "NA_SZCZECIN", Name = "Netto Arena", Created =  _clock.Current(), Modified = _clock.Current() },
+            });
+
             modelBuilder.Entity<Fighter>().HasData(new List<Fighter>()
             {
                 // Fame 1: Boxdel vs. Guzik
@@ -293,30 +329,30 @@ namespace FreakFightsFan.Api.Data.Database
             modelBuilder.Entity<Event>().HasData(new List<Event>()
             {
                 // Fame MMA
-                new() { Id = 1, FederationId = 1, CityId = 1, Name = "Fame 1: Boxdel vs. Guzik", Date = new DateTime(2018, 6, 30), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 2, FederationId = 1, CityId = 2, Name = "Fame 2: Rafonix vs. Magical", Date = new DateTime(2018, 10, 13), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 3, FederationId = 1, CityId = 3, Name = "Fame 3: IsAmU vs. DeeJayPallaside", Date = new DateTime(2019, 3, 30), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 4, FederationId = 1, CityId = 4, Name = "Fame 4: Linkimaster vs. Lil Masti", Date = new DateTime(2019, 6, 22), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 5, FederationId = 1, CityId = 5, Name = "Fame 5: Bonus BGC vs. Najman", Date = new DateTime(2019, 10, 26), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 6, FederationId = 1, CityId = 6, Name = "Fame 6: Zusje vs. Linkimaster", Date = new DateTime(2020, 3, 28), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 7, FederationId = 1, CityId = 3, Name = "Fame 7: Popek vs. Stifler", Date = new DateTime(2020, 9, 5), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 8, FederationId = 1, CityId = 3, Name = "Fame 8: Dubiel vs. Blonsky", Date = new DateTime(2020, 11, 21), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 9, FederationId = 1, CityId = 3, Name = "Fame 9: Let’s Play", Date = new DateTime(2021, 3, 6), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 10, FederationId = 1, CityId = 3, Name = "Fame 10: Don Kasjo vs. Parke", Date = new DateTime(2021, 5, 15), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 11, FederationId = 1, CityId = 7, Name = "Fame 11: Fight Club", Date = new DateTime(2021, 10, 2), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 12, FederationId = 1, CityId = 5, Name = "Fame 12: Don Kasjo vs. Polish Zombie", Date = new DateTime(2021, 11, 20), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 13, FederationId = 1, CityId = 7, Name = "Fame 13: Nitro vs. Unboxall", Date = new DateTime(2022, 3, 26), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 14, FederationId = 1, CityId = 8, Name = "Fame 14: Gimper vs. Tromba", Date = new DateTime(2022, 5, 14), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 15, FederationId = 1, CityId = 3, Name = "Fame 15: Zemsta", Date = new DateTime(2022, 8, 26), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 16, FederationId = 1, CityId = 7, Name = "Fame 16: Tromba vs. Dubiel", Date = new DateTime(2022, 11, 5), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 17, FederationId = 1, CityId = 8, Name = "Fame 17: Ferrari vs. Łaszczyk", Date = new DateTime(2023, 2, 3), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 18, FederationId = 1, CityId = 3, Name = "Fame 18: Crusher vs. Ferrari", Date = new DateTime(2023, 5, 20), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 19, FederationId = 1, CityId = 8, Name = "Fame 19: Tańcula vs. Ferrari", Date = new DateTime(2023, 9, 2), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 20, FederationId = 1, CityId = 9, Name = "Fame UK 1: Gowland vs. McKenna", Date = new DateTime(2019, 12, 14), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 21, FederationId = 1, CityId = 3, Name = "Hype S01E01: Rafonix vs. Hejter", Date = new DateTime(2021, 4, 17), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 22, FederationId = 1, CityId = 10, Name = "Fame Friday Arena 1: Alberto vs. Kubańczyk", Date = new DateTime(2023, 7, 21), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 23, FederationId = 1, CityId = 11, Name = "Fame Friday Arena 2: Prezes FEN vs. Boxdel 2", Date = new DateTime(2023, 9, 29), Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 24, FederationId = 1, CityId = 3, Name = "Fame: Reborn", Date = new DateTime(2023, 12, 9), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 1, FederationId = 1, CityId = 1, HallId = 12, Name = "Fame 1: Boxdel vs. Guzik", Date = new DateTime(2018, 6, 30), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 2, FederationId = 1, CityId = 2, HallId = 13, Name = "Fame 2: Rafonix vs. Magical", Date = new DateTime(2018, 10, 13), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 3, FederationId = 1, CityId = 3, HallId = 14, Name = "Fame 3: IsAmU vs. DeeJayPallaside", Date = new DateTime(2019, 3, 30), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 4, FederationId = 1, CityId = 4, HallId = 15, Name = "Fame 4: Linkimaster vs. Lil Masti", Date = new DateTime(2019, 6, 22), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 5, FederationId = 1, CityId = 5, HallId = 16, Name = "Fame 5: Bonus BGC vs. Najman", Date = new DateTime(2019, 10, 26), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 6, FederationId = 1, CityId = 6, HallId = 17, Name = "Fame 6: Zusje vs. Linkimaster", Date = new DateTime(2020, 3, 28), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 7, FederationId = 1, CityId = 3, HallId = 18, Name = "Fame 7: Popek vs. Stifler", Date = new DateTime(2020, 9, 5), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 8, FederationId = 1, CityId = 3, HallId = 18, Name = "Fame 8: Dubiel vs. Blonsky", Date = new DateTime(2020, 11, 21), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 9, FederationId = 1, CityId = 3, HallId = 18, Name = "Fame 9: Let’s Play", Date = new DateTime(2021, 3, 6), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 10, FederationId = 1, CityId = 3, HallId = 18, Name = "Fame 10: Don Kasjo vs. Parke", Date = new DateTime(2021, 5, 15), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 11, FederationId = 1, CityId = 7, HallId = 19, Name = "Fame 11: Fight Club", Date = new DateTime(2021, 10, 2), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 12, FederationId = 1, CityId = 5, HallId = 16, Name = "Fame 12: Don Kasjo vs. Polish Zombie", Date = new DateTime(2021, 11, 20), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 13, FederationId = 1, CityId = 7, HallId = 19, Name = "Fame 13: Nitro vs. Unboxall", Date = new DateTime(2022, 3, 26), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 14, FederationId = 1, CityId = 8, HallId = 20, Name = "Fame 14: Gimper vs. Tromba", Date = new DateTime(2022, 5, 14), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 15, FederationId = 1, CityId = 3, HallId = 14, Name = "Fame 15: Zemsta", Date = new DateTime(2022, 8, 26), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 16, FederationId = 1, CityId = 7, HallId = 19, Name = "Fame 16: Tromba vs. Dubiel", Date = new DateTime(2022, 11, 5), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 17, FederationId = 1, CityId = 8, HallId = 20, Name = "Fame 17: Ferrari vs. Łaszczyk", Date = new DateTime(2023, 2, 3), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 18, FederationId = 1, CityId = 3, HallId = 14, Name = "Fame 18: Crusher vs. Ferrari", Date = new DateTime(2023, 5, 20), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 19, FederationId = 1, CityId = 8, HallId = 20, Name = "Fame 19: Tańcula vs. Ferrari", Date = new DateTime(2023, 9, 2), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 20, FederationId = 1, CityId = 9, HallId = 21, Name = "Fame UK 1: Gowland vs. McKenna", Date = new DateTime(2019, 12, 14), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 21, FederationId = 1, CityId = 3, HallId = 18, Name = "Hype S01E01: Rafonix vs. Hejter", Date = new DateTime(2021, 4, 17), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 22, FederationId = 1, CityId = 10, HallId = 22, Name = "Fame Friday Arena 1: Alberto vs. Kubańczyk", Date = new DateTime(2023, 7, 21), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 23, FederationId = 1, CityId = 11, HallId = 23, Name = "Fame Friday Arena 2: Prezes FEN vs. Boxdel 2", Date = new DateTime(2023, 9, 29), Created =  _clock.Current(), Modified = _clock.Current() },
+                new() { Id = 24, FederationId = 1, CityId = 3, HallId = 14, Name = "Fame: Reborn", Date = new DateTime(2023, 12, 9), Created =  _clock.Current(), Modified = _clock.Current() },
             });
 
             modelBuilder.Entity<Fight>().HasData(new List<Fight>()
@@ -1606,28 +1642,6 @@ namespace FreakFightsFan.Api.Data.Database
                 new() { Id = 456, TeamId = 451, FighterId = 52 },
                 new() { Id = 457, TeamId = 452, FighterId = 89 },
                 new() { Id = 458, TeamId = 452, FighterId = 65 },
-            });
-
-            modelBuilder.Entity<MyDictionary>().HasData(new List<MyDictionary>()
-            {
-                new() { Id = 1, Code = "CITY", Name = "Cities", Created =  _clock.Current(), Modified = _clock.Current() },
-                //new() { Id = 2, Code = "HALL", Name = "Halls", Created =  _clock.Current(), Modified = _clock.Current() },
-            });
-
-            modelBuilder.Entity<MyDictionaryItem>().HasData(new List<MyDictionaryItem>()
-            {
-                // CITY
-                new() { Id = 1, DictionaryId = 1, Code = "KOSZALIN", Name = "Koszalin", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 2, DictionaryId = 1, Code = "POZNAN", Name = "Poznań", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 3, DictionaryId = 1, Code = "LODZ", Name = "Łódź", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 4, DictionaryId = 1, Code = "CZESTOCHOWA", Name = "Częstochowa", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 5, DictionaryId = 1, Code = "GDANSK_SOPOT", Name = "Gdańsk/Sopot", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 6, DictionaryId = 1, Code = "NIEPORAZ", Name = "Nieporaz", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 7, DictionaryId = 1, Code = "GLIWICE", Name = "Gliwice", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 8, DictionaryId = 1, Code = "KRAKOW", Name = "Kraków", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 9, DictionaryId = 1, Code = "NEWCASTLE", Name = "Newcastle", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 10, DictionaryId = 1, Code = "WROCLAW", Name = "Wrocław", Created =  _clock.Current(), Modified = _clock.Current() },
-                new() { Id = 11, DictionaryId = 1, Code = "SZCZECIN", Name = "Szczecin", Created =  _clock.Current(), Modified = _clock.Current() },
             });
         }
     }
