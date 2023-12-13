@@ -21,7 +21,7 @@
                                     <MudText>No fighters found</MudText>
                                 </NoItemsTemplate>
                                 <ItemTemplate>
-                                    <FighterListItem Fighter="@context" />
+                                    <DisplayFighterListItem Fighter="@context" />
                                 </ItemTemplate>
                             </MudAutocomplete>
                             <MyValidationMessage T="List<CreateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
@@ -48,7 +48,7 @@
                                             @foreach (var fighter in team.Fighters)
                                             {
                                                 <MudListItem>
-                                                    <FighterListItem Fighter="@fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
+                                                    <FighterListItem FighterHelperModel="@fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
                                                 </MudListItem>
                                             }
                                         </MudList>
@@ -119,7 +119,7 @@
     private List<int> allowedTeamSizes = new List<int> { 2, 3, 4, 5 };
     private FighterDto _fighter = null;
     private int _selectedTeam = 0;
-    private List<TeamDto> _teams = new List<TeamDto>(2);
+    private List<TeamHelperModel> _teams = new List<TeamHelperModel>(2);
     public bool ShowHelpers { get; set; } = false;
 
     protected override void OnInitialized()
@@ -129,16 +129,40 @@
 
     private void SetUpUpdate()
     {
-        _teams = new List<TeamDto>(NumberOfTeams);
-        _teams.AddRange(Teams);
+        _teams = new List<TeamHelperModel>(NumberOfTeams);
+
+        foreach (var team in Teams)
+        {
+            var fighters = new List<FighterHelperModel>();
+            foreach (var teamFighters in team.FighterInTeams)
+            {
+                fighters.Add(new FighterHelperModel()
+                    {
+                        Fighter = teamFighters.Fighter,
+                        FightResult = teamFighters.FightResult,
+                    });
+            }
+
+            var teamHelperModel = new TeamHelperModel()
+            {
+                Number = team.Number,
+                Fighters = fighters,
+            };
+
+            _teams.Add(teamHelperModel);
+        }
     }
 
-    private void DeleteFighterListItem(TeamDto team, FighterDto fighter)
+    private void DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
     {
         var pickedTeam = _teams.FirstOrDefault(x => x.Number == team.Number);
         if (pickedTeam is not null)
         {
-            pickedTeam.Fighters.Remove(fighter);
+            var fighterToRemove = pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
+            if(fighterToRemove is not null)
+            {
+                pickedTeam.Fighters.Remove(fighterToRemove);
+            }
         }
     }
 
@@ -146,7 +170,7 @@
     {
         if (_fighter != null)
         {
-            _teams[_selectedTeam].Fighters.Add(_fighter);
+            _teams[_selectedTeam].Fighters.Add(new FighterHelperModel() { Fighter = _fighter, FightResult = FightResult.UPCOMING });
             _fighter = null;
             _selectedTeam = (_selectedTeam + 1) % NumberOfTeams;
             await addFighterField.FocusAsync();
@@ -166,16 +190,13 @@
 
     private void ResetTeams(int teamsCount)
     {
-        _teams = new List<TeamDto>(teamsCount);
+        _teams = new List<TeamHelperModel>(teamsCount);
         for (int i = 0; i < teamsCount; i++)
         {
-            _teams.Add(new TeamDto()
+            _teams.Add(new TeamHelperModel()
                 {
-                    Id = 0,
-                    Created = DateTime.UtcNow,
-                    Modified = DateTime.UtcNow,
                     Number = i,
-                    Fighters = new List<FighterDto>(),
+                    Fighters = new List<FighterHelperModel>(),
                 });
         }
         _selectedTeam = 0;
@@ -189,8 +210,8 @@
         {
             foreach (var fighter in team.Fighters)
             {
-                if (!fightersToHide.Contains(fighter.Id))
-                    fightersToHide.Add(fighter.Id);
+                if (!fightersToHide.Contains(fighter.Fighter.Id))
+                    fightersToHide.Add(fighter.Fighter.Id);
             }
         }
 
@@ -234,8 +255,18 @@
             UpdateFightRequest.Teams = new List<CreateTeamModel>();
             foreach (var team in _teams)
             {
-                var fightersIds = team.Fighters.Select(x => x.Id).ToList();
-                var updateTeamModel = new CreateTeamModel() { FightersIds = fightersIds };
+                var teamFighters = new List<TeamFighterModel>();
+                foreach (var fighter in team.Fighters)
+                {
+                    var teamFighterModel = new TeamFighterModel()
+                        {
+                            FighterId = fighter.Fighter.Id,
+                            FightResult = fighter.FightResult,
+                        };
+                    teamFighters.Add(teamFighterModel);
+                }
+
+                var updateTeamModel = new CreateTeamModel() { Fighters = teamFighters };
                 UpdateFightRequest.Teams.Add(updateTeamModel);
             }
 

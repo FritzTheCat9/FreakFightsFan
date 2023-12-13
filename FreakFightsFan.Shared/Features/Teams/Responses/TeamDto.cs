@@ -10,7 +10,7 @@ namespace FreakFightsFan.Shared.Features.Teams.Responses
 
         public int Number { get; set; }
         public int FightId { get; set; }
-        public List<FighterDto> Fighters { get; set; }
+        public List<FighterInTeamDto> FighterInTeams { get; set; }
     }
 }
 

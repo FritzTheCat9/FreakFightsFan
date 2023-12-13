@@ -1,0 +1,28 @@
+﻿@if (FighterInTeam.Fighter != null)
+{
+    <MudStack Justify="Justify.Center" Spacing="1">
+        @if (!string.IsNullOrEmpty(FighterInTeam.Fighter.Image?.Url))
+        {
+            <MudLink Class="align-self-center" Href="@FighterInTeam.Fighter.Image.Url" Target="_blank">
+                <MudImage Src="@FighterInTeam.Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+            </MudLink>
+        }
+        else
+        {
+            // TODO: Show default player image
+        }
+        <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>
+        <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()</MudText>
+        <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText()</MudText>
+    </MudStack>
+}
+
+
+@code {
+    [Parameter] public FighterInTeamDto FighterInTeam { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+    }
+}

@@ -1,8 +1,8 @@
 using FreakFightsFan.Api.Data.Entities;
-using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Teams.Queries;
 using FreakFightsFan.Shared.Features.Teams.Requests;
 using FreakFightsFan.Shared.Features.Teams.Responses;
+using FreakFightsFan.Api.Features.TeamFighters.Extensions;
 
 namespace FreakFightsFan.Api.Features.Teams.Extensions
 {
@@ -25,7 +25,7 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
                 Modified = team.Modified, 
                 Number = team.Number,
                 FightId = team.FightId,
-                Fighters = team.Fighters.Select(x => x.ToDto()).ToList(),
+                FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList(),
             };
         }
 

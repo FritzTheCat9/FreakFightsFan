@@ -1,12 +1,12 @@
-﻿@if (Fighter != null)
+﻿@if (FighterHelperModel != null)
 {
     <MudItem Class="d-flex">
         <MudStack Row="true">
             <MudAvatar Size="Size.Large">
                 <ChildContent>
-                    @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
+                    @if (!string.IsNullOrEmpty(FighterHelperModel.Fighter.Image?.Url))
                     {
-                        <MudImage Src="@Fighter.Image.Url" />
+                        <MudImage Src="@FighterHelperModel.Fighter.Image.Url" />
                     }
                     else
                     {
@@ -14,17 +14,28 @@
                     }
                 </ChildContent>
             </MudAvatar>
-            <MudText Class="align-self-center">@Fighter.FirstName @Fighter.LastName - @Fighter.Nickname</MudText>
+            <MudText Class="align-self-center">@FighterHelperModel.Fighter.FirstName @FighterHelperModel.Fighter.LastName - @FighterHelperModel.Fighter.Nickname</MudText>
             @if (OnDeleteFighter.HasDelegate)
             {
-                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter"/>
+                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
             }
         </MudStack>
     </MudItem>
+
+    <MudGrid Spacing="1" Justify="Justify.Center">
+        <MudItem xs="12">
+            <MudSelect @bind-Value="FighterHelperModel.FightResult" Label="Fight result">
+                @foreach (FightResult fightResult in Enum.GetValues(typeof(FightResult)))
+                {
+                    <MudSelectItem Value="@fightResult">@fightResult.ToText()</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
 }
 
 @code {
-    [Parameter] public FighterDto Fighter { get; set; }
+    [Parameter] public FighterHelperModel FighterHelperModel { get; set; }
     [Parameter] public EventCallback OnDeleteFighter { get; set; }
 
     private void DeleteFighter()

@@ -1,7 +1,7 @@
 ﻿<MudStack Spacing="1">
-    @foreach (var fighter in TeamDto.Fighters)
+    @foreach (var fighter in TeamDto.FighterInTeams)
     {
-        <DisplayFighter Fighter="@fighter" />
+        <DisplayFighterInTeam FighterInTeam="@fighter" />
     }
 </MudStack>
 

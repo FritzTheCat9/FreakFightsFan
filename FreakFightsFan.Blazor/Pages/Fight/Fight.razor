@@ -48,9 +48,9 @@ else
                         {
                             <MudPaper Class="rounded-0" Elevation="1">
 
-                                @if (team.Fighters.Count == 1)
+                                @if (team.FighterInTeams.Count == 1)
                                 {
-                                    <DisplayFighter Fighter="team.Fighters.FirstOrDefault()" />
+                                    <DisplayFighterInTeam FighterInTeam="team.FighterInTeams.FirstOrDefault()" />
                                 }
                                 else
                                 {

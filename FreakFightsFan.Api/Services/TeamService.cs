@@ -28,20 +28,27 @@ namespace FreakFightsFan.Api.Services
             var teamNumber = 0;
             foreach (var createTeamModel in teams)
             {
-                var fightersInTeam = new List<Fighter>();
-                foreach (var fighterId in createTeamModel.FightersIds)
-                {
-                    var fighter = await _fighterRepository.Get(fighterId) ?? throw new MyNotFoundException();
-                    fightersInTeam.Add(fighter);
-                }
-
                 var team = new Team
                 {
                     Created = _clock.Current(),
                     Modified = _clock.Current(),
                     Number = teamNumber,
                 };
-                team.Fighters.AddRange(fightersInTeam);
+
+                var teamFighters = new List<TeamFighter>();
+                foreach (var teamFighterModel in createTeamModel.Fighters)
+                {
+                    var fighter = await _fighterRepository.Get(teamFighterModel.FighterId) ?? throw new MyNotFoundException();
+                    var teamFighter = new TeamFighter()
+                    {
+                        Fighter = fighter,
+                        Team = team,
+                        FightResult = teamFighterModel.FightResult
+                    };
+                    teamFighters.Add(teamFighter);
+                };
+
+                team.TeamFighters.AddRange(teamFighters);
 
                 teamsInFight.Add(team);
                 teamNumber++;

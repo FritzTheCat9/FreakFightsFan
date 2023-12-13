@@ -1,0 +1,24 @@
+﻿@if (Fighter != null)
+{
+    <MudItem Class="d-flex">
+        <MudStack Row="true">
+            <MudAvatar Size="Size.Large">
+                <ChildContent>
+                    @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
+                    {
+                        <MudImage Src="@Fighter.Image.Url" />
+                    }
+                    else
+                    {
+                        // TODO: Show default player image
+                    }
+                </ChildContent>
+            </MudAvatar>
+            <MudText Class="align-self-center">@Fighter.FirstName @Fighter.LastName - @Fighter.Nickname</MudText>
+        </MudStack>
+    </MudItem>
+}
+
+@code {
+    [Parameter] public FighterDto Fighter { get; set; }
+}

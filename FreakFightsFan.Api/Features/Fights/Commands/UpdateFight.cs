@@ -67,16 +67,16 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 var allFightersIds = new List<int>();
                 foreach (var createTeamModel in command.Teams)
                 {
-                    if (createTeamModel.FightersIds.Count < FightsOptions.MinTeamFighters)
+                    if (createTeamModel.Fighters.Count < FightsOptions.MinTeamFighters)
                         throw new MyValidationException("Teams", $"At least {FightsOptions.MinTeamFighters} fighter should be added for each team");
 
-                    if (createTeamModel.FightersIds.Count > FightsOptions.MaxTeamFighters)
+                    if (createTeamModel.Fighters.Count > FightsOptions.MaxTeamFighters)
                         throw new MyValidationException("Teams", $"Each team can contain only {FightsOptions.MaxTeamFighters} fighters");
 
-                    foreach (var fighterId in createTeamModel.FightersIds)
+                    foreach (var fighter in createTeamModel.Fighters)
                     {
-                        if (!allFightersIds.Contains(fighterId))
-                            allFightersIds.Add(fighterId);
+                        if (!allFightersIds.Contains(fighter.FighterId))
+                            allFightersIds.Add(fighter.FighterId);
                         else
                             throw new MyValidationException("Teams", $"Each fighter can only be selected to the team once");
                     }
