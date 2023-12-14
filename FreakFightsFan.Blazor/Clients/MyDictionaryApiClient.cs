@@ -30,7 +30,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<MyDictionaryDto> GetMyDictionary(int id)
         {
-            return await _apiClient.Get<MyDictionaryDto>(_url + id);
+            return await _apiClient.Get<MyDictionaryDto>(_url + "/" + id);
         }
 
         public async Task CreateMyDictionary(CreateMyDictionaryRequest request)

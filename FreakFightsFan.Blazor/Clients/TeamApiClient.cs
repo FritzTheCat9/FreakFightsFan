@@ -27,7 +27,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<TeamDto> GetTeam(int id)
         {
-            return await _apiClient.Get<TeamDto>(_url + id);
+            return await _apiClient.Get<TeamDto>(_url + "/" + id);
         }
     }
 }

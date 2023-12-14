@@ -30,7 +30,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<FederationDto> GetFederation(int id)
         {
-            return await _apiClient.Get<FederationDto>(_url + id);
+            return await _apiClient.Get<FederationDto>(_url + "/" + id);
         }
 
         public async Task CreateFederation(CreateFederationRequest request)

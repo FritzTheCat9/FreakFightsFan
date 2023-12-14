@@ -31,7 +31,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<FightDto> GetFight(int id)
         {
-            return await _apiClient.Get<FightDto>(_url + id);
+            return await _apiClient.Get<FightDto>(_url + "/" + id);
         }
 
         public async Task CreateFight(CreateFightRequest request)

@@ -1,6 +1,7 @@
 @page "/fights/{FederationId:int}/{EventId:int}"
 @inject IExceptionHandler ExceptionHandler
 @inject IFightApiClient FightApiClient
+@inject IEventApiClient EventApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -18,6 +19,24 @@
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())"/>
     </MudStack>
 </MudPaper>
+
+@if(Event is not null)
+{
+    <MudStack AlignItems="AlignItems.Center" Style="margin: 0px 0px 40px 0px;">
+        <MudText Typo="Typo.h4">@Event.Name</MudText>
+        <MudText Typo="Typo.h5">
+            @(Event.Date.ToString("dd/MM/yyyy") + ", ")
+            @if (Event.Hall is not null)
+            {
+                @(Event.Hall.Name + " ")
+            }
+            @if (Event.City is not null)
+            {
+                @Event.City.Name 
+            }
+        </MudText>  
+    </MudStack>
+}
 
 @if (FightsList == null)
 {
@@ -74,6 +93,7 @@ else
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>();
     public List<FightDto> FightsList { get; set; }
+    public EventDto Event { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -87,10 +107,25 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        FightsList = await GetAllFights();
+        var getEventTask = GetEvent();
+        var getAllFightersTask = GetAllFights();
+        await Task.WhenAll(getEventTask, getAllFightersTask);
     }
 
-    private async Task<List<FightDto>> GetAllFights()
+    private async Task GetEvent()
+    {
+        try
+        {
+            Event = await EventApiClient.GetEvent(EventId);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            Event = null;
+        }
+    }
+
+    private async Task GetAllFights()
     {
         var getAllFightsRequest = new GetAllFightsRequest
             {
@@ -108,8 +143,6 @@ else
             ExceptionHandler.HandleExceptions(ex);
             FightsList = new List<FightDto>();
         }
-
-        return FightsList;
     }
 
     private async Task DeleteFight(int id)
@@ -117,7 +150,7 @@ else
         try
         {
             await FightApiClient.DeleteFight(id);
-            FightsList = await GetAllFights();
+            await GetAllFights();
         }
         catch (Exception ex)
         {
@@ -131,7 +164,7 @@ else
         {
             var request = new MoveFightRequest() { Id = id, Direction = direction };
             await FightApiClient.MoveFight(request);
-            FightsList = await GetAllFights();
+            await GetAllFights();
         }
         catch (Exception ex)
         {
@@ -164,7 +197,7 @@ else
         var updateFightDialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, dialogOptions);
         var result = await updateFightDialog.Result;
         if (!result.Canceled)
-            FightsList = await GetAllFights();
+            await GetAllFights();
     }
 
     private async Task CreateFight()
@@ -182,6 +215,6 @@ else
         var createFightDialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);
         var result = await createFightDialog.Result;
         if (!result.Canceled)
-            FightsList = await GetAllFights();
+            await GetAllFights();
     }
 }

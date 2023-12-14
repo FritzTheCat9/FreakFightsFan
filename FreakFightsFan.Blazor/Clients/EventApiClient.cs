@@ -30,7 +30,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<EventDto> GetEvent(int id)
         {
-            return await _apiClient.Get<EventDto>(_url + id);
+            return await _apiClient.Get<EventDto>(_url + "/" + id);
         }
 
         public async Task CreateEvent(CreateEventRequest request)

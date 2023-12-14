@@ -30,7 +30,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<ImageDto> GetImage(int id)
         {
-            return await _apiClient.Get<ImageDto>(_url + id);
+            return await _apiClient.Get<ImageDto>(_url + "/" + id);
         }
 
         public async Task CreateImage(CreateImageRequest request)
