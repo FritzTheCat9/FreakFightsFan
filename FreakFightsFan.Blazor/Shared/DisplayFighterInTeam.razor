@@ -13,7 +13,9 @@
         }
         <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>
         <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()</MudText>
-        <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText()</MudText>
+        <MudPaper Style="@($"background:{GetFightResultColor(FighterInTeam.FightResult)};")" Square="true">
+            <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText()</MudText>
+        </MudPaper>
     </MudStack>
 }
 
@@ -24,5 +26,24 @@
     protected override void OnInitialized()
     {
 
+    }
+
+    public string GetFightResultColor(FightResult fightResult)
+    {
+        switch (fightResult)
+        {
+            case FightResult.UPCOMING:
+                return Colors.Grey.Default;
+            case FightResult.WIN:
+                return Colors.Green.Default;
+            case FightResult.LOSS:
+                return Colors.Red.Default;
+            case FightResult.DRAW:
+                return Colors.Grey.Default;
+            case FightResult.NO_CONTEST:
+                return Colors.Blue.Default;
+            default:
+                return Colors.Grey.Default;
+        }
     }
 }

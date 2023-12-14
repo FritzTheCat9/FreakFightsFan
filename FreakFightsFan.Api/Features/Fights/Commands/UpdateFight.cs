@@ -16,13 +16,20 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
         {
             public int Id { get; set; }
             public List<CreateTeamModel> Teams { get; set; }
+            public string VideoUrl { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
         {
             public Validator()
             {
-
+                When(x => !string.IsNullOrEmpty(x.VideoUrl), () =>
+                {
+                    RuleFor(x => x.VideoUrl)
+                        .NotEmpty()
+                        .Matches("^(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?)\\/|\\S*?[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})")
+                        .WithMessage("This is not a valid link to the YouTube video");
+                });
             }
         }
 
@@ -49,6 +56,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 var teamsToRemove = fight.Teams.Select(x => x.Id).ToList();
 
                 fight.Modified = _clock.Current();
+                fight.VideoUrl = command.VideoUrl;
                 fight.Teams.AddRange(teamsToAdd);
                 fight.Teams.RemoveAll(x => teamsToRemove.Contains(x.Id));
 

@@ -3,6 +3,7 @@
 @inject IFightApiClient FightApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Fights</PageTitle>
 
@@ -34,6 +35,8 @@ else
             {
                 <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
+                        <MudIconButton Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(fight))"
+                            Disabled="(string.IsNullOrEmpty(fight.VideoUrl))"/>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
                         <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
@@ -46,7 +49,7 @@ else
                     <MudStack Row="true" Justify="Justify.SpaceEvenly">
                         @foreach (var team in fight.Teams)
                         {
-                            <MudPaper Class="rounded-0" Elevation="1">
+                            <MudPaper Class="rounded-0" Elevation="1" Style="padding: 5px 5px 5px 5px;">
 
                                 @if (team.FighterInTeams.Count == 1)
                                 {
@@ -136,6 +139,14 @@ else
         }
     }
 
+    private async Task RedirectToVideo(FightDto fightDto)
+    {
+        if(!string.IsNullOrEmpty(fightDto.VideoUrl))
+        {
+            await JSRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
+        }
+    }
+
     private async Task UpdateFight(FightDto fightDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
@@ -144,6 +155,7 @@ else
             {
                 Id = fightDto.Id,
                 Teams = new List<CreateTeamModel>(),
+                VideoUrl = fightDto.VideoUrl,
             });
 
         parameters.Add(x => x.Teams, fightDto.Teams);
@@ -163,6 +175,7 @@ else
             {
                 EventId = EventId,
                 Teams = new List<CreateTeamModel>(),
+                VideoUrl = null,
             });
         parameters.Add(x => x.NumberOfTeams, 2);
 

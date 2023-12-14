@@ -29,6 +29,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
                 Created = fight.Created,
                 Modified = fight.Modified,
                 OrderNumber = fight.OrderNumber,
+                VideoUrl = fight.VideoUrl,
                 EventId = fight.EventId,
                 Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
             };
@@ -40,6 +41,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             {
                 EventId = request.EventId,
                 Teams = request.Teams,
+                VideoUrl = request.VideoUrl
             };
         }
 
@@ -58,6 +60,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             {
                 Id = id,
                 Teams = request.Teams,
+                VideoUrl = request.VideoUrl
             };
         }
 

@@ -12,7 +12,7 @@
         </TitleContent>
         <DialogContent>
             <MudTabs Rounded="true">
-                <MudTabPanel Text="Add fighters to teams">
+                <MudTabPanel Text="Fight">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="10">
                             <MudAutocomplete @ref="addFighterField" T="FighterDto" Label="Fighter" @bind-Value="_fighter" SearchFuncWithCancel="@Search" ToStringFunc="DisplayFighter"
@@ -59,7 +59,7 @@
                         }
                     </MudGrid>
                 </MudTabPanel>
-                <MudTabPanel Text="Teams options" Icon="@Icons.Material.Filled.Settings">
+                <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Settings">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="6">
                             <ChildContent>
@@ -96,6 +96,9 @@
                                 <MudAlert Severity="Severity.Info" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"Select the team to which you want to add a player in the ""Selected team"" field or click on the selected team below")</MudAlert>
                             </MudItem>
                         }
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="CreateFightRequest.VideoUrl" For="() => CreateFightRequest.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
+                        </MudItem>
                     </MudGrid>
                 </MudTabPanel>
             </MudTabs>
