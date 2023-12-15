@@ -1,4 +1,6 @@
-﻿@if (FighterInTeam.Fighter != null)
+﻿@inject NavigationManager NavigationManager
+
+@if (FighterInTeam.Fighter != null)
 {
     <MudStack Justify="Justify.Center" Spacing="1">
         @if (!string.IsNullOrEmpty(FighterInTeam.Fighter.Image?.Url))
@@ -11,10 +13,12 @@
         {
             // TODO: Show default player image
         }
-        <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>
-        <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()</MudText>
+        <div onclick="@(() => RedirectToFighterProfile(FighterInTeam.Fighter.Id))" style="cursor: pointer;">
+            <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>
+            <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()</MudText>
+        </div>
         <MudPaper Style="@($"background:{GetFightResultColor(FighterInTeam.FightResult)};")" Square="true">
-            <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText()</MudText>
+            <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText().ToUpper()</MudText>
         </MudPaper>
     </MudStack>
 }
@@ -45,5 +49,10 @@
             default:
                 return Colors.Grey.Default;
         }
+    }
+
+    public void RedirectToFighterProfile(int fighterId)
+    {
+        NavigationManager.NavigateTo($"/fighter/{fighterId}");
     }
 }

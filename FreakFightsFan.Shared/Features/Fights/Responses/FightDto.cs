@@ -1,3 +1,4 @@
+using FreakFightsFan.Shared.Features.Events.Responses;
 using FreakFightsFan.Shared.Features.Teams.Responses;
 
 namespace FreakFightsFan.Shared.Features.Fights.Responses
@@ -11,6 +12,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Responses
         public string VideoUrl { get; set; }
 
         public int EventId { get; set; }
+        public EventDto Event { get; set; }
         public List<TeamDto> Teams { get; set; }
     }
 }

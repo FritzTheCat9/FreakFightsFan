@@ -44,6 +44,7 @@ builder.Services.AddSingleton<IClock, Clock>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IMyDictionaryService, MyDictionaryService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IFightService, FightService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<ImageOptions>(builder.Configuration.GetSection("Image"));

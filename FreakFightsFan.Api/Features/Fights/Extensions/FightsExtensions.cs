@@ -1,4 +1,5 @@
 using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.Events.Extensions;
 using FreakFightsFan.Api.Features.Fights.Commands;
 using FreakFightsFan.Api.Features.Fights.Queries;
 using FreakFightsFan.Api.Features.Teams.Extensions;
@@ -17,6 +18,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             UpdateFight.Endpoint(app);
             GetAllFights.Endpoint(app);
             GetFight.Endpoint(app);
+            GetFighterProfile.Endpoint(app);
 
             return app;
         }
@@ -31,6 +33,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
                 OrderNumber = fight.OrderNumber,
                 VideoUrl = fight.VideoUrl,
                 EventId = fight.EventId,
+                Event = fight.Event.ToDto(),
                 Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
             };
         }

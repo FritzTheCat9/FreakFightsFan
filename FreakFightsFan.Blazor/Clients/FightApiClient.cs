@@ -7,6 +7,7 @@ namespace FreakFightsFan.Blazor.Clients
     public interface IFightApiClient
     {
         Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest request);
+        Task<FighterProfileDto> GetFighterProfile(int id);
         Task<FightDto> GetFight(int id);
         Task CreateFight(CreateFightRequest request);
         Task UpdateFight(UpdateFightRequest request);
@@ -27,6 +28,11 @@ namespace FreakFightsFan.Blazor.Clients
         public async Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest request)
         {
             return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", request);
+        }
+
+        public async Task<FighterProfileDto> GetFighterProfile(int id)
+        {
+            return await _apiClient.Get<FighterProfileDto>(_url + "/fighter/" + id);
         }
 
         public async Task<FightDto> GetFight(int id)

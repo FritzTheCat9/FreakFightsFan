@@ -1,0 +1,165 @@
+﻿@page "/fighter/{FighterId:int}"
+@inject IFightApiClient FightApiClient
+@inject IFighterApiClient FighterApiClient
+@inject IExceptionHandler ExceptionHandler
+@inject IJSRuntime JSRuntime
+
+@if (Fighter is not null)
+{
+    <MudStack AlignItems="AlignItems.Center" Style="margin: 0px 0px 40px 0px;">
+        @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
+        {
+            <MudLink Class="align-self-center" Href="@Fighter.Image.Url" Target="_blank">
+                <MudImage Src="@Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+            </MudLink>
+        }
+        else
+        {
+            // TODO: Show default player image
+        }
+        <MudText Typo="Typo.h4">@Fighter.FirstName @Fighter.LastName</MudText>
+        <MudText Typo="Typo.h4">@Fighter.Nickname</MudText>
+    </MudStack>
+}
+
+@if (Profile is not null)
+{
+    <MudStack Row="true" Justify="Justify.SpaceEvenly" AlignItems="AlignItems.Center" Style="background: #E0E0E0; padding: 30px 10px 10px 10px">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Wins: @Profile.Stats.Win</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Losses: @Profile.Stats.Loss</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Draws: @Profile.Stats.Draw</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">No Contest: @Profile.Stats.NoContest</MudText>
+        </MudStack>
+        <MudChart ChartType="ChartType.Pie" InputData="@data" InputLabels="@labels" Width="150px" Height="150px" LegendPosition="Position.Bottom" 
+        ChartOptions="@(new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } })"/>
+    </MudStack>
+}
+
+@if (Profile?.ProfileFights == null)
+{
+    <MudText>Loading...</MudText>
+}
+else if (Profile?.ProfileFights.Count == 0)
+{
+    <MudText>No matching records found</MudText>
+}
+else
+{
+    @foreach (var profileFight in Profile.ProfileFights)
+    {
+        <MudPaper Style="background: #888;" Class="rounded-0" Elevation="0">
+            <MudStack Row="true" Spacing="2">
+                <MudItem Style="@($"padding: 16px 16px; background:{GetFightResultColor(profileFight.FightResult)};")">
+                    <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@profileFight.FightResult.ToText().ToUpper()</MudText>
+                </MudItem>
+                <MudItem Class="flex-auto">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End">
+                        <MudText Typo="Typo.h6" Style="@($"color:{Colors.Grey.Darken4};")">@profileFight.Fight.Event.Name</MudText>
+                        <MudIconButton Class="align-self-center" Style="@($"margin: 0px 10px;")" Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(profileFight.Fight))"
+                                       Disabled="(string.IsNullOrEmpty(profileFight.Fight.VideoUrl))" />
+                    </MudStack>
+                    <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4};")">
+                        @(profileFight.Fight.Event.Date.ToString("dd/MM/yyyy") + ", ")
+                        @if (profileFight.Fight.Event.Hall is not null)
+                        {
+                            @(profileFight.Fight.Event.Hall.Name + " ")
+                        }
+                        @if (profileFight.Fight.Event.City is not null)
+                        {
+                            @profileFight.Fight.Event.City.Name
+                        }
+                    </MudText>
+                </MudItem>
+            </MudStack>
+        </MudPaper>
+        <MudPaper Style="margin: 0px 0px 0px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
+            <MudStack Row="true" Justify="Justify.SpaceEvenly">
+                @foreach (var team in profileFight.Fight.Teams)
+                {
+                    <MudPaper Class="rounded-0" Elevation="1" Style="padding: 5px 5px 5px 5px;">
+
+                        @if (team.FighterInTeams.Count == 1)
+                        {
+                            <DisplayFighterInTeam FighterInTeam="team.FighterInTeams.FirstOrDefault()" />
+                        }
+                        else
+                        {
+                            <DisplayTeam TeamDto="team" />
+                        }
+                    </MudPaper>
+                }
+            </MudStack>
+        </MudPaper>
+    }
+}
+
+@code {
+    [Parameter] public int FighterId { get; set; }
+    public FighterProfileDto Profile { get; set; }
+    public FighterDto Fighter { get; set; }
+    
+    string[] labels = { "Wins", "Losses", "Draws", "No Contest" };
+    double[] data = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var getFighterFightsTask = GetFighterFights();
+        var getFighterTask = GetFighter();
+        await Task.WhenAll(getFighterFightsTask, getFighterTask);
+    }
+
+    private async Task GetFighterFights()
+    {
+        try
+        {
+            Profile = await FightApiClient.GetFighterProfile(FighterId);
+            data = [Profile.Stats.Win, Profile.Stats.Loss, Profile.Stats.Draw, Profile.Stats.NoContest];
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            Profile = null;
+        }
+    }
+
+    private async Task GetFighter()
+    {
+        try
+        {
+            Fighter = await FighterApiClient.GetFighter(FighterId);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            Fighter = null;
+        }
+    }
+
+    private async Task RedirectToVideo(FightDto fightDto)
+    {
+        if (!string.IsNullOrEmpty(fightDto.VideoUrl))
+        {
+            await JSRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
+        }
+    }
+
+    public string GetFightResultColor(FightResult fightResult)
+    {
+        switch (fightResult)
+        {
+            case FightResult.UPCOMING:
+                return Colors.Grey.Default;
+            case FightResult.WIN:
+                return Colors.Green.Default;
+            case FightResult.LOSS:
+                return Colors.Red.Default;
+            case FightResult.DRAW:
+                return Colors.Grey.Default;
+            case FightResult.NO_CONTEST:
+                return Colors.Blue.Default;
+            default:
+                return Colors.Grey.Default;
+        }
+    }
+}
