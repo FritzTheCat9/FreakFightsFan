@@ -38,13 +38,14 @@
             }
             else
             {
-                <MudText>-</MudText>
+                <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
             }
         </MudTd>
         <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
         <MudTd DataLabel="LastName">@context.LastName</MudTd>
         <MudTd DataLabel="Nickname">@context.Nickname</MudTd>
         <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Small" OnClick="@(() => RedirectToFighterProfile(context.Id))"/>
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFighter(@context))"/>
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFighter(@context.Id))"/>
         </MudTd>
@@ -127,6 +128,7 @@
                 FirstName = fighterDto.FirstName,
                 LastName = fighterDto.LastName,
                 Nickname = fighterDto.Nickname,
+                InstagramUrl = fighterDto.InstagramUrl,
                 ImageBase64 = ""
             });
 
@@ -148,5 +150,10 @@
         var result = await createFighterDialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
+    }
+
+    public void RedirectToFighterProfile(int fighterId)
+    {
+        NavigationManager.NavigateTo($"/fighter/{fighterId}");
     }
 }

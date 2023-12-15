@@ -14,7 +14,7 @@ namespace FreakFightsFan.Api.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            if (IsNotCommand())
+            if (IsNotCommand() || IsImportFighterImagesCommand())
             {
                 return await next();
             }
@@ -38,6 +38,11 @@ namespace FreakFightsFan.Api.Behaviors
         private bool IsNotCommand()
         {
             return !typeof(TRequest).Name.EndsWith("Command");
+        }
+
+        private bool IsImportFighterImagesCommand()
+        {
+            return typeof(TRequest).Name.EndsWith("ImportFighterImagesCommand");
         }
     }
 }

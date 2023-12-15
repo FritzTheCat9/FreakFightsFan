@@ -18,6 +18,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Nickname { get; set; }
+            public string InstagramUrl { get; set; }
             public string ImageBase64 { get; set; }
         }
 
@@ -39,6 +40,14 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
 
                 RuleFor(x => x.Nickname)
                     .NotEmpty();
+
+                When(x => !string.IsNullOrEmpty(x.InstagramUrl), () =>
+                {
+                    RuleFor(x => x.InstagramUrl)
+                        .NotEmpty()
+                        .Matches("^(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/([a-zA-Z0-9_\\.]{1,30})\\/?$")
+                        .WithMessage("This is not a valid link to the Instagram profile");
+                });
 
                 When(x => !string.IsNullOrEmpty(x.ImageBase64), () =>
                 {
@@ -75,6 +84,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                     FirstName = command.FirstName,
                     LastName = command.LastName,
                     Nickname = command.Nickname,
+                    InstagramUrl = command.InstagramUrl,
                     Image = _imageService.CreateEntityImage(command.ImageBase64),
                 };
 

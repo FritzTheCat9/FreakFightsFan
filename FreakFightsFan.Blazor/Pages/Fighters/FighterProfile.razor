@@ -15,10 +15,17 @@
         }
         else
         {
-            // TODO: Show default player image
+            <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
         }
         <MudText Typo="Typo.h4">@Fighter.FirstName @Fighter.LastName</MudText>
         <MudText Typo="Typo.h4">@Fighter.Nickname</MudText>
+        @if(!string.IsNullOrEmpty(Fighter.InstagramUrl))
+        {
+            <MudStack Row="true" Spacing="2">
+                <MudImage Src="images_default/instagram.png" Alt="Image" Style="height: 30px; width: 30px" />
+                <MudLink Typo="Typo.h5" Href="@Fighter.InstagramUrl" Color="Color.Primary" Target="_blank">@InstagramUrlToNickname(Fighter.InstagramUrl)</MudLink>
+            </MudStack>
+        }
     </MudStack>
 }
 
@@ -98,7 +105,7 @@ else
     [Parameter] public int FighterId { get; set; }
     public FighterProfileDto Profile { get; set; }
     public FighterDto Fighter { get; set; }
-    
+
     string[] labels = { "Wins", "Losses", "Draws", "No Contest" };
     double[] data = [];
 
@@ -161,5 +168,11 @@ else
             default:
                 return Colors.Grey.Default;
         }
+    }
+
+    public string InstagramUrlToNickname(string url)
+    {
+        var nickname = url.Replace("https://www.instagram.com/", "").Replace("/", "");
+        return nickname;
     }
 }

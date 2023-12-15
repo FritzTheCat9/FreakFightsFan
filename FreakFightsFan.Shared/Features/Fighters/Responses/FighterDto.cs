@@ -7,6 +7,7 @@ namespace FreakFightsFan.Shared.Features.Fighters.Responses
         public int Id { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
+        public string InstagramUrl { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }

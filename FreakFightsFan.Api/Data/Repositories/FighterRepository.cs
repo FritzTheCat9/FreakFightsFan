@@ -12,6 +12,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         Task<int> Create(Fighter fighter);
         Task Update(Fighter fighter);
         Task Delete(Fighter fighter);
+        Task SaveChanges();
     }
 
     public class FighterRepository : IFighterRepository
@@ -60,6 +61,11 @@ namespace FreakFightsFan.Api.Data.Repositories
         {
             _dbContext.Remove(fighter);
             return Task.CompletedTask;
+        }
+
+        public async Task SaveChanges()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

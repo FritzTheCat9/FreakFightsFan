@@ -32,6 +32,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 FirstName = fighter.FirstName,
                 LastName = fighter.LastName,
                 Nickname = fighter.Nickname,
+                InstagramUrl = fighter.InstagramUrl,
                 Image = fighter.Image?.ToDto(),
             };
         }
@@ -43,7 +44,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Nickname = request.Nickname,
-                ImageBase64 = request.ImageBase64,
+                InstagramUrl = request.InstagramUrl,
+                ImageBase64 = request.ImageBase64, 
             };
         }
 
@@ -55,6 +57,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Nickname = request.Nickname,
+                InstagramUrl = request.InstagramUrl,
                 ImageBase64 = request.ImageBase64,
             };
         }
