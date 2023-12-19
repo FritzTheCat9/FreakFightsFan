@@ -14,6 +14,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
         {
             CreateImage.Endpoint(app);
             DeleteImage.Endpoint(app);
+            ImportFederationImages.Endpoint(app);
             ImportFighterImages.Endpoint(app);
             UpdateImage.Endpoint(app);
             GetAllImages.Endpoint(app);
