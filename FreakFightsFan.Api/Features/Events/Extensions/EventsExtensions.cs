@@ -102,6 +102,8 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
             {
                 "name" => myEvent => myEvent.Name,
                 "date" => myEvent => myEvent.Date,
+                "city" => myEvent => myEvent.City.Name,
+                "hall" => myEvent => myEvent.Hall.Name,
                 _ => myEvent => myEvent.Date,
             };
         }
