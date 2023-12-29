@@ -24,6 +24,11 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .WithOne(e => e.Hall)
                 .HasForeignKey(e => e.HallId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(di => di.Fights_Types)
+                .WithOne(f => f.Type)
+                .HasForeignKey(f => f.TypeId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

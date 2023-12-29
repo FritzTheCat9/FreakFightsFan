@@ -5,6 +5,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Requests
         public int Id { get; set; }
         public List<CreateTeamModel> Teams { get; set; }
         public string VideoUrl { get; set; }
+        public int? TypeId { get; set; }
     }
 }
 

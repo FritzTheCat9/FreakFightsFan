@@ -1,4 +1,5 @@
 using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Api.Features.Events.Extensions;
 using FreakFightsFan.Api.Features.Fights.Commands;
 using FreakFightsFan.Api.Features.Fights.Queries;
@@ -35,6 +36,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
                 EventId = fight.EventId,
                 Event = fight.Event.ToDto(),
                 Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
+                Type = fight.Type?.ToDto(),
             };
         }
 
@@ -44,7 +46,8 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             {
                 EventId = request.EventId,
                 Teams = request.Teams,
-                VideoUrl = request.VideoUrl
+                VideoUrl = request.VideoUrl,
+                TypeId = request.TypeId,
             };
         }
 
@@ -63,7 +66,8 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
             {
                 Id = id,
                 Teams = request.Teams,
-                VideoUrl = request.VideoUrl
+                VideoUrl = request.VideoUrl,
+                TypeId = request.TypeId,
             };
         }
 

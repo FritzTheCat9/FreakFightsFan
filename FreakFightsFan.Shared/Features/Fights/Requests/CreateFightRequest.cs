@@ -8,6 +8,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Requests
         public int EventId { get; set; }
         public List<CreateTeamModel> Teams { get; set; }
         public string VideoUrl { get; set; }
+        public int? TypeId { get; set; }
     }
 
     public class CreateTeamModel
@@ -21,7 +22,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Requests
         public FightResult FightResult { get; set; }
     }
 
-    // Helpers models for frontend
+    // Helper models for frontend
 
     public class TeamHelperModel
     {

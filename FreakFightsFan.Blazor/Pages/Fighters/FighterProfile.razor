@@ -81,11 +81,18 @@ else
             </MudStack>
         </MudPaper>
         <MudPaper Style="margin: 0px 0px 0px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
+            <MudStack AlignItems="AlignItems.Center" Style="margin-bottom: 20px;">
+                <MudText Typo="Typo.h5">
+                    @if (profileFight.Fight.Type is not null)
+                    {
+                        @(profileFight.Fight.Type.Name + " ")
+                    }
+                </MudText>
+            </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceEvenly">
                 @foreach (var team in profileFight.Fight.Teams)
                 {
                     <MudPaper Class="rounded-0" Elevation="1" Style="padding: 5px 5px 5px 5px;">
-
                         @if (team.FighterInTeams.Count == 1)
                         {
                             <DisplayFighterInTeam FighterInTeam="team.FighterInTeams.FirstOrDefault()" />

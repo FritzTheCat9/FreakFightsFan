@@ -1,5 +1,6 @@
 @inject IFightApiClient FightApiClient
 @inject IFighterApiClient FighterApiClient
+@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateFightRequest" @ref="@form" Validation="ValidateValue">
@@ -7,7 +8,6 @@
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
                 <MudText Typo="Typo.h6">Create Fight</MudText>
-                <MudSwitch @bind-Checked="@ShowHelpers" Label="Help" LabelPosition="LabelPosition.Start" Color="Color.Primary" />
             </MudStack>
         </TitleContent>
         <DialogContent>
@@ -30,12 +30,6 @@
                         <MudItem xs="2" Class="d-flex">
                             <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
                         </MudItem>
-                        @if (ShowHelpers)
-                        {
-                            <MudItem xs="12">
-                                <MudAlert Severity="Severity.Info" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"After clicking the add button, the fighter will be added to the selected team")</MudAlert>
-                            </MudItem>
-                        }
                         @foreach (var team in _teams)
                         {
                             <MudItem xs="12" md="6" @onclick="@(() => SelectTeam(team.Number))" Style="cursor: pointer;">
@@ -61,7 +55,7 @@
                 </MudTabPanel>
                 <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Settings">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
-                        <MudItem xs="6">
+                        <MudItem xs="12">
                             <ChildContent>
                                 <MudSelect T="int" Label="Number of teams" @bind-Value="NumberOfTeams"
                                            SelectedValuesChanged="OnSelectedValuesChanged" MultiSelection="false">
@@ -72,30 +66,14 @@
                                 </MudSelect>
                             </ChildContent>
                         </MudItem>
-                        <MudItem xs="6">
-                            <MudSelect T="int" Label="Selected team" @bind-Value="_selectedTeam" MultiSelection="false">
-                                @foreach (var team in _teams)
-                                {
-                                    <MudSelectItem Value="@team.Number">
-                                        <ChildContent>
-                                            <MudText>Team @($"{team.Number + 1}")</MudText>
-                                        </ChildContent>
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
+                        <MudItem xs="12">
+                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@SearchFightType" Variant="Variant.Text"
+                                ShowProgressIndicator="true" ToStringFunc="DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+                                <NoItemsTemplate>
+                                    <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
+                                </NoItemsTemplate>
+                            </MudAutocomplete>
                         </MudItem>
-                        @if (ShowHelpers)
-                        {
-                            <MudItem xs="12">
-                                <MudAlert Severity="Severity.Warning" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"After changing ""Number of teams"" value, the teams will reset")</MudAlert>
-                            </MudItem>
-                        }
-                        @if (ShowHelpers)
-                        {
-                            <MudItem xs="12">
-                                <MudAlert Severity="Severity.Info" Dense="true" ContentAlignment="HorizontalAlignment.Start" Variant="Variant.Filled">@(@"Select the team to which you want to add a player in the ""Selected team"" field or click on the selected team below")</MudAlert>
-                            </MudItem>
-                        }
                         <MudItem xs="12">
                             <MudTextField @bind-Value="CreateFightRequest.VideoUrl" For="() => CreateFightRequest.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
                         </MudItem>
@@ -123,7 +101,9 @@
     private FighterDto _fighter = null;
     private int _selectedTeam = 0;
     private List<TeamHelperModel> _teams = new List<TeamHelperModel>(2);
-    public bool ShowHelpers { get; set; } = false;
+
+    public MyDictionaryItemDto FightType { get; set; } = null;
+    private Func<MyDictionaryItemDto, string> DisplayDictionaryItem = item => item is null ? null : item.Name;
 
     protected override void OnInitialized()
     {
@@ -223,6 +203,33 @@
         return FightersPagedList.Items;
     }
 
+    private async Task<IEnumerable<MyDictionaryItemDto>> SearchFightType(string value, CancellationToken token)
+    {
+        PagedList<MyDictionaryItemDto> DictionaryItemsPagedList = null;
+
+        var getAllMyDictionaryItemsByCodeRequest = new GetAllMyDictionaryItemsByCodeRequest
+            {
+                Page = 1,
+                PageSize = 10,
+                SortColumn = "name",
+                SortOrder = SortOrder.Ascending,
+                SearchTerm = value ?? "",
+                DictionaryCode = DictionaryCode.FightType
+            };
+
+        try
+        {
+            DictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new List<MyDictionaryItemDto>();
+        }
+
+        return DictionaryItemsPagedList.Items;
+    }
+
     private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
@@ -246,6 +253,8 @@
                 var createTeamModel = new CreateTeamModel() { Fighters = teamFighters };
                 CreateFightRequest.Teams.Add(createTeamModel);
             }
+
+            CreateFightRequest.TypeId = FightType?.Id;
 
             await FightApiClient.CreateFight(CreateFightRequest);
             MudDialog.Close(DialogResult.Ok(true));

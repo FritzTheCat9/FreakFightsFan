@@ -1,3 +1,4 @@
+using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using FreakFightsFan.Shared.Features.Events.Responses;
 using FreakFightsFan.Shared.Features.Teams.Responses;
 
@@ -14,6 +15,7 @@ namespace FreakFightsFan.Shared.Features.Fights.Responses
         public int EventId { get; set; }
         public EventDto Event { get; set; }
         public List<TeamDto> Teams { get; set; }
+        public MyDictionaryItemDto? Type { get; set; }
     }
 }
 

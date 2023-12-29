@@ -9,5 +9,6 @@
         public MyDictionary Dictionary { get; set; }
         public List<Event> Events_Cities { get; } = [];
         public List<Event> Events_Halls { get; } = [];
+        public List<Fight> Fights_Types { get; } = [];
     }
 }

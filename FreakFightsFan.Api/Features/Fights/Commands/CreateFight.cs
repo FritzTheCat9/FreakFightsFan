@@ -5,6 +5,7 @@ using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fights.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
 using MediatR;
@@ -18,6 +19,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             public int EventId { get; set; }
             public List<CreateTeamModel> Teams { get; set; }
             public string VideoUrl { get; set; }
+            public int? TypeId { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -40,13 +42,18 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IClock _clock;
             private readonly IEventRepository _eventRepository;
             private readonly ITeamService _teamService;
+            private readonly IMyDictionaryService _dictionaryService;
+            private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
 
-            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, ITeamService teamService)
+            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, ITeamService teamService, 
+                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
                 _eventRepository = eventRepository;
                 _teamService = teamService;
+                _dictionaryService = dictionaryService;
+                _dictionaryItemRepository = dictionaryItemRepository;
             }
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
@@ -63,7 +70,8 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                     Modified = _clock.Current(),
                     EventId = command.EventId,
                     OrderNumber = myEvent.Fights.Count + 1,
-                    VideoUrl = command.VideoUrl
+                    VideoUrl = command.VideoUrl,
+                    Type = (command.TypeId is not null) ? await _dictionaryItemRepository.Get(command.TypeId.Value) : null,
                 };
 
                 fight.Teams.AddRange(teamsInFight);
@@ -100,6 +108,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                         else
                             throw new MyValidationException("Teams", $"Each fighter can only be selected to the team once");
                     }
+                }
+
+                if (command.TypeId is not null)
+                {
+                    var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
+                    if (!isTypeValid)
+                        throw new MyValidationException("TypeId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
                 }
             }
         }

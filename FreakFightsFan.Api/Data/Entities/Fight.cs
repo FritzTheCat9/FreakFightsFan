@@ -7,6 +7,8 @@ namespace FreakFightsFan.Api.Data.Entities
 
         public int EventId { get; set; }
         public Event Event { get; set; }
+        public int? TypeId { get; set; }
+        public MyDictionaryItem? Type { get; set; }
         public List<Team> Teams { get; } = [];
     }
 }

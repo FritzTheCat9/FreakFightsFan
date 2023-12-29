@@ -15,6 +15,12 @@ namespace FreakFightsFan.Api.Data.Configurations
                 .HasForeignKey(f => f.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(f => f.Type)
+                .WithMany(di => di.Fights_Types)
+                .HasForeignKey(f => f.TypeId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.HasMany(f => f.Teams)
                 .WithOne(t => t.Fight)
                 .HasForeignKey(t => t.FightId)

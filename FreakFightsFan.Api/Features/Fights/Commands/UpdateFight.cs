@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fights.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
 using MediatR;
@@ -17,6 +18,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             public int Id { get; set; }
             public List<CreateTeamModel> Teams { get; set; }
             public string VideoUrl { get; set; }
+            public int? TypeId { get; set; }
         }
 
         public class Validator : AbstractValidator<Command>
@@ -38,25 +40,31 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IFightRepository _fightRepository;
             private readonly IClock _clock;
             private readonly ITeamService _teamService;
+            private readonly IMyDictionaryService _dictionaryService;
+            private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
 
-            public Handler(IFightRepository fightRepository, IClock clock, ITeamService teamService)
+            public Handler(IFightRepository fightRepository, IClock clock, ITeamService teamService,
+                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
                 _teamService = teamService;
+                _dictionaryService = dictionaryService;
+                _dictionaryItemRepository = dictionaryItemRepository;
             }
 
             public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                ValidateCommand(command);
+                await ValidateCommand(command);
 
                 var teamsToAdd = await _teamService.CreateFightTeams(command.Teams);
                 var teamsToRemove = fight.Teams.Select(x => x.Id).ToList();
 
                 fight.Modified = _clock.Current();
                 fight.VideoUrl = command.VideoUrl;
+                fight.Type = (command.TypeId is not null) ? await _dictionaryItemRepository.Get(command.TypeId.Value) : null;
                 fight.Teams.AddRange(teamsToAdd);
                 fight.Teams.RemoveAll(x => teamsToRemove.Contains(x.Id));
 
@@ -64,7 +72,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return Unit.Value;
             }
 
-            private void ValidateCommand(Command command)
+            private async Task ValidateCommand(Command command)
             {
                 if (command.Teams.Count < FightsOptions.MinTeamsNumber)
                     throw new MyValidationException("Teams", $"At least {FightsOptions.MinTeamsNumber} teams should be added for each fight");
@@ -88,6 +96,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                         else
                             throw new MyValidationException("Teams", $"Each fighter can only be selected to the team once");
                     }
+                }
+
+                if (command.TypeId is not null)
+                {
+                    var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
+                    if (!isTypeValid)
+                        throw new MyValidationException("TypeId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
                 }
             }
         }
