@@ -1,6 +1,6 @@
 @inject IFightApiClient FightApiClient
 @inject IFighterApiClient FighterApiClient
-@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
+@inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="UpdateFightRequest" @ref="@form" Validation="ValidateValue">
@@ -66,8 +66,8 @@
                             </ChildContent>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@SearchFightType" Variant="Variant.Text"
-                                ShowProgressIndicator="true" ToStringFunc="DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
+                                ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                                 <NoItemsTemplate>
                                     <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
                                 </NoItemsTemplate>
@@ -102,8 +102,6 @@
     private FighterDto _fighter = null;
     private int _selectedTeam = 0;
     private List<TeamHelperModel> _teams = new List<TeamHelperModel>(2);
-    
-    private Func<MyDictionaryItemDto, string> DisplayDictionaryItem = item => item is null ? null : item.Name;
 
     protected override void OnInitialized()
     {
@@ -227,33 +225,6 @@
         }
 
         return FightersPagedList.Items;
-    }
-
-    private async Task<IEnumerable<MyDictionaryItemDto>> SearchFightType(string value, CancellationToken token)
-    {
-        PagedList<MyDictionaryItemDto> DictionaryItemsPagedList = null;
-
-        var getAllMyDictionaryItemsByCodeRequest = new GetAllMyDictionaryItemsByCodeRequest
-            {
-                Page = 1,
-                PageSize = 10,
-                SortColumn = "name",
-                SortOrder = SortOrder.Ascending,
-                SearchTerm = value ?? "",
-                DictionaryCode = DictionaryCode.FightType
-            };
-
-        try
-        {
-            DictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-            return new List<MyDictionaryItemDto>();
-        }
-
-        return DictionaryItemsPagedList.Items;
     }
 
     private void Cancel() => MudDialog.Cancel();
