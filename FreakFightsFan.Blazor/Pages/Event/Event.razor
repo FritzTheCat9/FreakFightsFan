@@ -126,14 +126,21 @@
 
     private async Task DeleteEvent(int id)
     {
-        try
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+
+        var result = await simpleDialog.Result;
+        if (!result.Canceled)
         {
-            await EventApiClient.DeleteEvent(id);
-            await table.ReloadServerData();
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
+            try
+            {
+                await EventApiClient.DeleteEvent(id);
+                await table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleExceptions(ex);
+            }      
         }
     }
 

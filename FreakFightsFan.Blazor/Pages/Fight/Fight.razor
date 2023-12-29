@@ -154,14 +154,21 @@ else
 
     private async Task DeleteFight(int id)
     {
-        try
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+
+        var result = await simpleDialog.Result;
+        if (!result.Canceled)
         {
-            await FightApiClient.DeleteFight(id);
-            await GetAllFights();
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
+            try
+            {
+                await FightApiClient.DeleteFight(id);
+                await GetAllFights();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleExceptions(ex);
+            }
         }
     }
 

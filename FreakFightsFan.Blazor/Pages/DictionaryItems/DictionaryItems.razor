@@ -44,7 +44,7 @@
         </PagerContent>
     </MudTable>
 
-    @code {
+@code {
     [Parameter] public int DictionaryId { get; set; }
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
@@ -94,14 +94,21 @@
 
     private async Task DeleteDictionaryItem(int id)
     {
-        try
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+
+        var result = await simpleDialog.Result;
+        if (!result.Canceled)
         {
-            await MyDictionaryItemApiClient.DeleteMyDictionaryItem(id);
-            await table.ReloadServerData();
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
+            try
+            {
+                await MyDictionaryItemApiClient.DeleteMyDictionaryItem(id);
+                await table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleExceptions(ex);
+            }            
         }
     }
 

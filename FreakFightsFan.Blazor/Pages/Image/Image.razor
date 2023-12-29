@@ -95,14 +95,21 @@
 
     private async Task DeleteImage(int id)
     {
-        try
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+
+        var result = await simpleDialog.Result;
+        if (!result.Canceled)
         {
-            await ImageApiClient.DeleteImage(id);
-            await table.ReloadServerData();
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
+            try
+            {
+                await ImageApiClient.DeleteImage(id);
+                await table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleExceptions(ex);
+            }
         }
     }
 
