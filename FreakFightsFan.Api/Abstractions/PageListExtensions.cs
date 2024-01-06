@@ -33,7 +33,7 @@ namespace FreakFightsFan.Api.Abstractions
             if (pageSize <= 0)
                 throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");
 
-            return new PagedList<T>(new List<T>(), page, pageSize, 0);
+            return new PagedList<T>([], page, pageSize, 0);
         }
     }
 }
