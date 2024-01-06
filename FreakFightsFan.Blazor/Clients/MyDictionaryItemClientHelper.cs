@@ -25,11 +25,7 @@ namespace FreakFightsFan.Blazor.Clients
             _exceptionHandler = exceptionHandler;
         }
 
-        public Func<MyDictionaryItemDto, string> DisplayDictionaryItem 
-        {
-            get => 
-                item => item is null ? null : item.Name;
-        }
+        public Func<MyDictionaryItemDto, string> DisplayDictionaryItem => item => item?.Name;
 
         public async Task<IEnumerable<MyDictionaryItemDto>> SearchCity(string value, CancellationToken token)
         {
@@ -48,7 +44,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         private async Task<IEnumerable<MyDictionaryItemDto>> ReturnMyDictionaryItems(string value, string dictionaryCode)
         {
-            PagedList<MyDictionaryItemDto> DictionaryItemsPagedList = null;
+            PagedList<MyDictionaryItemDto> DictionaryItemsPagedList;
 
             var getAllMyDictionaryItemsByCodeRequest = new GetAllMyDictionaryItemsByCodeRequest
             {
@@ -57,7 +53,7 @@ namespace FreakFightsFan.Blazor.Clients
                 SortColumn = "name",
                 SortOrder = SortOrder.Ascending,
                 SearchTerm = value ?? "",
-                DictionaryCode = dictionaryCode
+                DictionaryCode = dictionaryCode,
             };
 
             try

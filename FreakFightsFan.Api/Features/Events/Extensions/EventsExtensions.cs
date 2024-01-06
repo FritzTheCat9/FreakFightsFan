@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
         public static EventDto ToDto(this Event myEvent)
         {
-            return new EventDto
+            return new()
             {
                 Id = myEvent.Id,
                 Created = myEvent.Created,
@@ -39,7 +39,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
         public static CreateEvent.Command ToCreateEventCommand(this CreateEventRequest request)
         {
-            return new CreateEvent.Command
+            return new()
             {
                 Name = request.Name,
                 Date = request.Date,
@@ -51,7 +51,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
         public static UpdateEvent.Command ToUpdateEventCommand(this UpdateEventRequest request, int id)
         {
-            return new UpdateEvent.Command
+            return new()
             {
                 Id = id,
                 Name = request.Name,
@@ -63,7 +63,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
         public static GetAllEvents.Query ToGetAllEventsQuery(this GetAllEventsRequest request)
         {
-            return new GetAllEvents.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

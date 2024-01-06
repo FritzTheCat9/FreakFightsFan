@@ -25,7 +25,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 
         public static ImageDto ToDto(this Image image)
         {
-            return new ImageDto
+            return new()
             {
                 Id = image.Id,
                 Created = image.Created,
@@ -37,7 +37,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 
         public static CreateImage.Command ToCreateImageCommand(this CreateImageRequest request)
         {
-            return new CreateImage.Command
+            return new()
             {
                 ImageBase64 = request.ImageBase64,
             };
@@ -45,7 +45,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 
         public static UpdateImage.Command ToUpdateImageCommand(this UpdateImageRequest request, int id)
         {
-            return new UpdateImage.Command
+            return new()
             {
                 Id = id,
                 ImageBase64 = request.ImageBase64
@@ -54,7 +54,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 
         public static GetAllImages.Query ToGetAllImagesQuery(this GetAllImagesRequest request)
         {
-            return new GetAllImages.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

@@ -1,11 +1,11 @@
 ﻿@inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateMyDictionaryRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="CreateMyDictionaryRequest" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="CreateMyDictionaryRequest.Name" For="@(() => CreateMyDictionaryRequest.Name)"></MudTextField>
-            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryRequest.Code" For="@(() => CreateMyDictionaryRequest.Code)"></MudTextField>
+            <MudTextField Label="Name" @bind-Value="CreateMyDictionaryRequest.Name" For="@(() => CreateMyDictionaryRequest.Name)" />
+            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryRequest.Code" For="@(() => CreateMyDictionaryRequest.Code)" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -16,9 +16,9 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateMyDictionaryRequest CreateMyDictionaryRequest { get; set; } = new CreateMyDictionaryRequest();
+    [Parameter] public CreateMyDictionaryRequest CreateMyDictionaryRequest { get; set; } = new();
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
 
     private void Cancel() => MudDialog.Cancel();
@@ -32,7 +32,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -40,12 +40,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }

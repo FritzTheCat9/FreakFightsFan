@@ -17,7 +17,7 @@
             <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>
             <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()</MudText>
         </div>
-        <MudPaper Style="@($"background:{GetFightResultColor(FighterInTeam.FightResult)};")" Square="true">
+        <MudPaper Style="@($"background:{FighterHelpers.GetFightResultColor(FighterInTeam.FightResult)};")" Square="true">
             <MudText Typo="Typo.subtitle2" Class="align-self-center" Style="text-align: center;">@FighterInTeam.FightResult.ToText().ToUpper()</MudText>
         </MudPaper>
     </MudStack>
@@ -26,30 +26,6 @@
 
 @code {
     [Parameter] public FighterInTeamDto FighterInTeam { get; set; }
-
-    protected override void OnInitialized()
-    {
-
-    }
-
-    public string GetFightResultColor(FightResult fightResult)
-    {
-        switch (fightResult)
-        {
-            case FightResult.UPCOMING:
-                return Colors.Grey.Default;
-            case FightResult.WIN:
-                return Colors.Green.Default;
-            case FightResult.LOSS:
-                return Colors.Red.Default;
-            case FightResult.DRAW:
-                return Colors.Grey.Default;
-            case FightResult.NO_CONTEST:
-                return Colors.Blue.Default;
-            default:
-                return Colors.Grey.Default;
-        }
-    }
 
     public void RedirectToFighterProfile(int fighterId)
     {

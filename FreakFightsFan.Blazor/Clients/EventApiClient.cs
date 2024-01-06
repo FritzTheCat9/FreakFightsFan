@@ -25,12 +25,12 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest request)
         {
-            return await _apiClient.Post<GetAllEventsRequest, PagedList<EventDto>>(_url + "/all", request);
+            return await _apiClient.Post<GetAllEventsRequest, PagedList<EventDto>>($"{_url}/all", request);
         }
 
         public async Task<EventDto> GetEvent(int id)
         {
-            return await _apiClient.Get<EventDto>(_url + "/" + id);
+            return await _apiClient.Get<EventDto>($"{_url}/{id}");
         }
 
         public async Task CreateEvent(CreateEventRequest request)
@@ -40,12 +40,12 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task UpdateEvent(UpdateEventRequest request)
         {
-            await _apiClient.Put(_url + "/" + request.Id, request);
+            await _apiClient.Put($"{_url}/{request.Id}", request);
         }
 
         public async Task DeleteEvent(int id)
         {
-            await _apiClient.Delete(_url + "/" + id);
+            await _apiClient.Delete($"{_url}/{id}");
         }
     }
 }

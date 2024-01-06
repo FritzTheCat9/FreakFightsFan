@@ -17,18 +17,18 @@
 
 @code {
     [Parameter] public Expression<Func<T>> For { get; set; }
-    [Parameter] public Dictionary<string, List<string>> ValidationErrors { get; set; }
+    [Parameter] public ValidationErrors ValidationErrors { get; set; }
 
     private bool HasErrorsForProperty(Expression<Func<T>> expression)
     {
         var propertyName = GetPropertyName(expression);
-        return ValidationErrors.ContainsKey(propertyName) && ValidationErrors[propertyName].Any();
+        return ValidationErrors.Errors.ContainsKey(propertyName) && ValidationErrors.Errors[propertyName].Any();
     }
 
     private List<string> GetErrorsForProperty(Expression<Func<T>> expression)
     {
         var propertyName = GetPropertyName(expression);
-        return ValidationErrors[propertyName];
+        return ValidationErrors.Errors[propertyName];
     }
 
     private string GetPropertyName(Expression<Func<T>> expression)

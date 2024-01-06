@@ -10,7 +10,7 @@ namespace FreakFightsFan.Api.Features.TeamFighters.Extensions
     {
         public static FighterInTeamDto ToFighterInTeamDto(this TeamFighter teamFighter)
         {
-            return new FighterInTeamDto
+            return new()
             {
                 Fighter = teamFighter.Fighter.ToDto(),
                 FightResult = teamFighter.FightResult,

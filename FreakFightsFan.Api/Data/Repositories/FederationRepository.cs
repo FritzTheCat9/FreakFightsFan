@@ -44,6 +44,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Federation federation)
         {
             await _dbContext.AddAsync(federation);
+            await _dbContext.SaveChangesAsync();
             return federation.Id;
         }
 

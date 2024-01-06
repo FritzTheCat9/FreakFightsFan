@@ -14,7 +14,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         Task Update(Fight fight);
         Task UpdateRange(List<Fight> fights);
         Task Delete(Fight fight);
-        Task OrderFights(int eventId, int deletedId);
+        Task OrderFights(int eventId, int deletedOrderNumber);
     }
 
     public class FightRepository : IFightRepository
@@ -98,6 +98,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Fight fight)
         {
             await _dbContext.AddAsync(fight);
+            await _dbContext.SaveChangesAsync();
             return fight.Id;
         }
 
@@ -119,16 +120,15 @@ namespace FreakFightsFan.Api.Data.Repositories
             return Task.CompletedTask;
         }
 
-        public Task OrderFights(int eventId, int deletedId)
+        public async Task OrderFights(int eventId, int deletedOrderNumber)
         {
-            _dbContext.Fights
-                .Where(x => x.EventId == eventId && x.Id > deletedId)
-                .ToList().ForEach((x) =>
-                {
-                    x.OrderNumber--;
-                });
+            var fightsToUpdate = await _dbContext.Fights
+                .Where(x => x.EventId == eventId && x.OrderNumber > deletedOrderNumber).ToListAsync();
 
-            return Task.CompletedTask;
+            foreach (var fight in fightsToUpdate)
+            {
+                fight.OrderNumber--;
+            }
         }
     }
 }

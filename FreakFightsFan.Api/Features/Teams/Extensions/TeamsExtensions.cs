@@ -18,7 +18,7 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
 
         public static TeamDto ToDto(this Team team)
         {
-            return new TeamDto
+            return new()
             {
                 Id = team.Id,
                 Created = team.Created,
@@ -31,7 +31,7 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
 
         public static GetAllTeams.Query ToGetAllTeamsQuery(this GetAllTeamsRequest request)
         {
-            return new GetAllTeams.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

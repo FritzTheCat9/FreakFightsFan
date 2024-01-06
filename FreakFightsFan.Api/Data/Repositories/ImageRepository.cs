@@ -44,6 +44,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Image image)
         {
             await _dbContext.AddAsync(image);
+            await _dbContext.SaveChangesAsync();
             return image.Id;
         }
 

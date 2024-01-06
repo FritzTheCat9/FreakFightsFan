@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static MyDictionaryItemDto ToDto(this MyDictionaryItem dictionaryItem)
         {
-            return new MyDictionaryItemDto
+            return new()
             {
                 Id = dictionaryItem.Id,
                 Created = dictionaryItem.Created,
@@ -37,7 +37,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static CreateMyDictionaryItem.Command ToCreateMyDictionaryItemCommand(this CreateMyDictionaryItemRequest request)
         {
-            return new CreateMyDictionaryItem.Command
+            return new()
             {
                 Name = request.Name,
                 Code = request.Code,
@@ -47,7 +47,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static UpdateMyDictionaryItem.Command ToUpdateMyDictionaryItemCommand(this UpdateMyDictionaryItemRequest request, int id)
         {
-            return new UpdateMyDictionaryItem.Command
+            return new()
             {
                 Id = id,
                 Name = request.Name,
@@ -57,7 +57,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static GetAllMyDictionaryItems.Query ToGetAllMyDictionaryItemsQuery(this GetAllMyDictionaryItemsRequest request)
         {
-            return new GetAllMyDictionaryItems.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,
@@ -70,7 +70,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static GetAllMyDictionaryItemsByCode.Query ToGetAllMyDictionaryItemsByCodeQuery(this GetAllMyDictionaryItemsByCodeRequest request)
         {
-            return new GetAllMyDictionaryItemsByCode.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

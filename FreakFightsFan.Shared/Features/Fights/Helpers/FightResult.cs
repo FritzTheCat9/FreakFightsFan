@@ -11,23 +11,14 @@
 
     public static class FightResultExtensions
     {
-        public static string ToText(this FightResult fightResult)
+        public static string ToText(this FightResult fightResult) => fightResult switch
         {
-            switch (fightResult)
-            {
-                case FightResult.UPCOMING:
-                    return "Upcoming";
-                case FightResult.WIN:
-                    return "Win";
-                case FightResult.LOSS:
-                    return "Loss";
-                case FightResult.DRAW:
-                    return "Draw";
-                case FightResult.NO_CONTEST:
-                    return "No Contest";
-                default:
-                    return "Upcoming";
-            }
-        }
+            FightResult.UPCOMING => "Upcoming",
+            FightResult.WIN => "Win",
+            FightResult.LOSS => "Loss",
+            FightResult.DRAW => "Draw",
+            FightResult.NO_CONTEST => "No Contest",
+            _ => "Upcoming",
+        };
     }
 }

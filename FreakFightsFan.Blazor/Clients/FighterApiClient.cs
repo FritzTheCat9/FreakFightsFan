@@ -25,12 +25,12 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<PagedList<FighterDto>> GetAllFighters(GetAllFightersRequest request)
         {
-            return await _apiClient.Post<GetAllFightersRequest, PagedList<FighterDto>>(_url + "/all", request);
+            return await _apiClient.Post<GetAllFightersRequest, PagedList<FighterDto>>($"{_url}/all", request);
         }
 
         public async Task<FighterDto> GetFighter(int id)
         {
-            return await _apiClient.Get<FighterDto>(_url + "/" + id);
+            return await _apiClient.Get<FighterDto>($"{_url}/{id}");
         }
 
         public async Task CreateFighter(CreateFighterRequest request)
@@ -40,12 +40,12 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task UpdateFighter(UpdateFighterRequest request)
         {
-            await _apiClient.Put(_url + "/" + request.Id, request);
+            await _apiClient.Put($"{_url}/{request.Id}", request);
         }
 
         public async Task DeleteFighter(int id)
         {
-            await _apiClient.Delete(_url + "/" + id);
+            await _apiClient.Delete($"{_url}/{id}");
         }
     }
 }

@@ -8,6 +8,12 @@ dotnet ef migrations add MIGRATION_NAME -o ./Data/Migrations --startup-project .
 dotnet ef database update
 ```
 
+## .http files bug
+1. Open %temp% folder
+2. Close Visual Studio 2022
+3. Delete "vs-dotnet-interactive" folder
+4. .http files should work
+
 ## FreakFightsFan.FeatureGenerator
 
 CLI app used to generate simple CRUD code in folders for a named feature

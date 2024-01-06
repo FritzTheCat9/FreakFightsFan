@@ -22,12 +22,12 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest request)
         {
-            return await _apiClient.Post<GetAllTeamsRequest, PagedList<TeamDto>>(_url + "/all", request);
+            return await _apiClient.Post<GetAllTeamsRequest, PagedList<TeamDto>>($"{_url}/all", request);
         }
 
         public async Task<TeamDto> GetTeam(int id)
         {
-            return await _apiClient.Get<TeamDto>(_url + "/" + id);
+            return await _apiClient.Get<TeamDto>($"{_url}/{id}");
         }
     }
 }

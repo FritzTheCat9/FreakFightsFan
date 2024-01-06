@@ -2,10 +2,10 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateEventRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="UpdateEventRequest" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateEventRequest.Name" For="@(() => UpdateEventRequest.Name)"></MudTextField>
+            <MudTextField Label="Name" @bind-Value="UpdateEventRequest.Name" For="@(() => UpdateEventRequest.Name)" />
             <MudDatePicker Label="Date" @bind-Date="UpdateEventRequest.Date" For="@(() => UpdateEventRequest.Date)" Editable="true" Placeholder="Select Date" />
             <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
                              ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
@@ -29,11 +29,11 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateEventRequest UpdateEventRequest { get; set; } = new UpdateEventRequest();
-    [Parameter] public MyDictionaryItemDto City { get; set; } = null;
-    [Parameter] public MyDictionaryItemDto Hall { get; set; } = null;
+    [Parameter] public UpdateEventRequest UpdateEventRequest { get; set; } = new();
+    [Parameter] public MyDictionaryItemDto City { get; set; }
+    [Parameter] public MyDictionaryItemDto Hall { get; set; }
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
    
     private void Cancel() => MudDialog.Cancel();
@@ -50,7 +50,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -58,12 +58,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }

@@ -1,13 +1,13 @@
 @inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFederationRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="UpdateFederationRequest" @ref="@form" Validation="validationErrors.Errors">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateFederationRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" Url="@Url" />
+            <MyFileInput @bind-ImageBase64="UpdateFederationRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
             <MyValidationMessage T="string" For="@(() => UpdateFederationRequest.ImageBase64)" ValidationErrors="validationErrors" />
 
-            <MudTextField Label="Name" @bind-Value="UpdateFederationRequest.Name" For="@(() => UpdateFederationRequest.Name)"></MudTextField>
+            <MudTextField Label="Name" @bind-Value="UpdateFederationRequest.Name" For="@(() => UpdateFederationRequest.Name)" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -18,10 +18,10 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFederationRequest UpdateFederationRequest { get; set; } = new UpdateFederationRequest();
+    [Parameter] public UpdateFederationRequest UpdateFederationRequest { get; set; } = new();
     [Parameter] public string Url { get; set; }
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
     private bool IsImageValid { get; set; }
 
@@ -39,7 +39,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -47,12 +47,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }

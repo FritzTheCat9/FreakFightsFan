@@ -51,6 +51,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(Event myEvent)
         {
             await _dbContext.AddAsync(myEvent);
+            await _dbContext.SaveChangesAsync();
             return myEvent.Id;
         }
 

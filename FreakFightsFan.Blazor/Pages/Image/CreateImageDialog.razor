@@ -1,10 +1,10 @@
 @inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateImageRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="CreateImageRequest" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="CreateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="CreateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" />
             <MyValidationMessage T="string" For="@(() => CreateImageRequest.ImageBase64)" ValidationErrors="validationErrors" />
         </DialogContent>
         <DialogActions>
@@ -16,9 +16,9 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateImageRequest CreateImageRequest { get; set; } = new CreateImageRequest();
+    [Parameter] public CreateImageRequest CreateImageRequest { get; set; } = new();
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
     private bool IsImageValid { get; set; }
 
@@ -36,7 +36,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -44,12 +44,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }

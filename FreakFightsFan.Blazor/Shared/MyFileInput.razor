@@ -31,8 +31,8 @@ else
     [Parameter] public Dictionary<string, List<string>> ValidationErrors { get; set; }
     [Parameter] public EventCallback<Dictionary<string, List<string>>> ValidationErrorsChanged { get; set; }
 
-    [Parameter] public int MaxFileSize { get; set; } = 1024 * 1024 * 5;                                                                // 5MB = 5 242 880 bytes
-    [Parameter] public List<string> AllowedFileTypes { get; set; } = new List<string>() { "image/jpg", "image/jpeg", "image/png" };     // "jpg", "jpeg", "png"
+    [Parameter] public int MaxFileSize { get; set; } = 1024 * 1024 * 5;                                                                 // 5MB = 5 242 880 bytes
+    [Parameter] public List<string> AllowedFileTypes { get; set; } = [ "image/jpg", "image/jpeg", "image/png" ];                        // "jpg", "jpeg", "png"
 
     public string AllowedFileTypesString = "";
     public IBrowserFile File { get; set; } = null;
@@ -84,7 +84,7 @@ else
 
     private async void UploadFiles(InputFileChangeEventArgs e)
     {
-        ValidationErrors = new Dictionary<string, List<string>>();
+        ValidationErrors = new();
         await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
 
         var errors = ValidateFile(e.File);
@@ -106,7 +106,7 @@ else
         IsImageValid = true;
         await IsImageValidChanged.InvokeAsync(IsImageValid);
 
-        ValidationErrors = new Dictionary<string, List<string>>();
+        ValidationErrors = new();
         await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
     }
 

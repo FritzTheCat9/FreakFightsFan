@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 
         public static FighterDto ToDto(this Fighter fighter)
         {
-            return new FighterDto
+            return new()
             {
                 Id = fighter.Id,
                 Created = fighter.Created,
@@ -39,7 +39,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 
         public static CreateFighter.Command ToCreateFighterCommand(this CreateFighterRequest request)
         {
-            return new CreateFighter.Command
+            return new()
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -51,7 +51,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 
         public static UpdateFighter.Command ToUpdateFighterCommand(this UpdateFighterRequest request, int id)
         {
-            return new UpdateFighter.Command
+            return new()
             {
                 Id = id,
                 FirstName = request.FirstName,
@@ -64,7 +64,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 
         public static GetAllFighters.Query ToGetAllFightersQuery(this GetAllFightersRequest request)
         {
-            return new GetAllFighters.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

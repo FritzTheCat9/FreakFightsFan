@@ -23,7 +23,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 
         public static MyDictionaryDto ToDto(this MyDictionary dictionary)
         {
-            return new MyDictionaryDto
+            return new()
             {
                 Id = dictionary.Id,
                 Created = dictionary.Created,
@@ -35,7 +35,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 
         public static CreateMyDictionary.Command ToCreateMyDictionaryCommand(this CreateMyDictionaryRequest request)
         {
-            return new CreateMyDictionary.Command
+            return new()
             {
                 Name = request.Name,
                 Code = request.Code,
@@ -44,7 +44,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 
         public static UpdateMyDictionary.Command ToUpdateMyDictionaryCommand(this UpdateMyDictionaryRequest request, int id)
         {
-            return new UpdateMyDictionary.Command
+            return new()
             {
                 Id = id,
                 Name = request.Name,
@@ -54,7 +54,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 
         public static GetAllMyDictionaries.Query ToGetAllMyDictionariesQuery(this GetAllMyDictionariesRequest request)
         {
-            return new GetAllMyDictionaries.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

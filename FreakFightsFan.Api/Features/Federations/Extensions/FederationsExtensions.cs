@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
         public static FederationDto ToDto(this Federation federation)
         {
-            return new FederationDto
+            return new()
             {
                 Id = federation.Id,
                 Created = federation.Created,
@@ -36,7 +36,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
         public static CreateFederation.Command ToCreateFederationCommand(this CreateFederationRequest request)
         {
-            return new CreateFederation.Command
+            return new()
             {
                 Name = request.Name,
                 ImageBase64 = request.ImageBase64,
@@ -45,7 +45,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
         public static UpdateFederation.Command ToUpdateFederationCommand(this UpdateFederationRequest request, int id)
         {
-            return new UpdateFederation.Command
+            return new()
             {
                 Id = id,
                 Name = request.Name,
@@ -55,7 +55,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
         public static GetAllFederations.Query ToGetAllFederationsQuery(this GetAllFederationsRequest request)
         {
-            return new GetAllFederations.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

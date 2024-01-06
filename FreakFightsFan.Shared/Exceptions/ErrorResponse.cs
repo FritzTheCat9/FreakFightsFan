@@ -14,7 +14,7 @@
 
     public class ValidationErrorResponse : ErrorResponse
     {
-        public Dictionary<string, List<string>> Errors { get; set; } = new();
+        public Dictionary<string, List<string>> Errors { get; set; } = [];
 
         public ValidationErrorResponse(
             ExceptionType type,

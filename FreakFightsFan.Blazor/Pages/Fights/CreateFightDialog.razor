@@ -3,11 +3,11 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFightRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="CreateFightRequest" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
-                <MudText Typo="Typo.h6">Update Fight</MudText>
+                <MudText Typo="Typo.h6">Create Fight</MudText>
             </MudStack>
         </TitleContent>
         <DialogContent>
@@ -24,7 +24,8 @@
                                     <DisplayFighterListItem Fighter="@context" />
                                 </ItemTemplate>
                             </MudAutocomplete>
-                            <MyValidationMessage T="List<CreateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="List<CreateTeamModel>" For="@(() => CreateFightRequest.Teams)" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="int" For="@(() => CreateFightRequest.EventId)" ValidationErrors="validationErrors" />
                         </MudItem>
                         <MudItem xs="2" Class="d-flex">
                             <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
@@ -74,7 +75,7 @@
                             </MudAutocomplete>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="UpdateFightRequest.VideoUrl" For="() => UpdateFightRequest.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
+                            <MudTextField @bind-Value="CreateFightRequest.VideoUrl" For="() => CreateFightRequest.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
@@ -82,56 +83,30 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFightRequest UpdateFightRequest { get; set; } = new UpdateFightRequest();
-    [Parameter] public List<TeamDto> Teams { get; set; } = new List<TeamDto>();
+    [Parameter] public CreateFightRequest CreateFightRequest { get; set; } = new();
     [Parameter] public int NumberOfTeams { get; set; }
-    [Parameter] public MyDictionaryItemDto FightType { get; set; } = null;
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
     private MudAutocomplete<FighterDto> addFighterField;
 
-    private List<int> allowedTeamSizes = new List<int> { 2, 3, 4, 5 };
-    private FighterDto _fighter = null;
-    private int _selectedTeam = 0;
-    private List<TeamHelperModel> _teams = new List<TeamHelperModel>(2);
+    private List<int> allowedTeamSizes = [ 2, 3, 4, 5 ];
+    private FighterDto _fighter;
+    private int _selectedTeam;
+    private List<TeamHelperModel> _teams = [];
+
+    public MyDictionaryItemDto FightType { get; set; }
 
     protected override void OnInitialized()
     {
-        SetUpUpdate();
-    }
-
-    private void SetUpUpdate()
-    {
-        _teams = new List<TeamHelperModel>(NumberOfTeams);
-
-        foreach (var team in Teams)
-        {
-            var fighters = new List<FighterHelperModel>();
-            foreach (var teamFighters in team.FighterInTeams)
-            {
-                fighters.Add(new FighterHelperModel()
-                    {
-                        Fighter = teamFighters.Fighter,
-                        FightResult = teamFighters.FightResult,
-                    });
-            }
-
-            var teamHelperModel = new TeamHelperModel()
-            {
-                Number = team.Number,
-                Fighters = fighters,
-            };
-
-            _teams.Add(teamHelperModel);
-        }
+        ResetTeams(NumberOfTeams);
     }
 
     private void DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
@@ -151,7 +126,7 @@
     {
         if (_fighter != null)
         {
-            _teams[_selectedTeam].Fighters.Add(new FighterHelperModel() { Fighter = _fighter, FightResult = FightResult.UPCOMING });
+            _teams[_selectedTeam].Fighters.Add(new() { Fighter = _fighter, FightResult = FightResult.UPCOMING });
             _fighter = null;
             _selectedTeam = (_selectedTeam + 1) % NumberOfTeams;
             await addFighterField.FocusAsync();
@@ -171,15 +146,17 @@
 
     private void ResetTeams(int teamsCount)
     {
-        _teams = new List<TeamHelperModel>(teamsCount);
+        _teams = [];
+
         for (int i = 0; i < teamsCount; i++)
         {
-            _teams.Add(new TeamHelperModel()
-                {
-                    Number = i,
-                    Fighters = new List<FighterHelperModel>(),
-                });
+            _teams.Add(new()
+            {
+                Number = i,
+                Fighters = [],
+            });
         }
+
         _selectedTeam = 0;
     }
 
@@ -199,20 +176,22 @@
         return fightersToHide;
     }
 
-    private Func<FighterDto, string> DisplayFighter = fighter => fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
+    private Func<FighterDto, string> DisplayFighter = fighter => 
+        fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
+
     private async Task<IEnumerable<FighterDto>> Search(string value, CancellationToken token)
     {
         PagedList<FighterDto> FightersPagedList = null;
 
         var getAllFightersRequest = new GetAllFightersRequest
-            {
-                Page = 1,
-                PageSize = 10,
-                SortColumn = "name",
-                SortOrder = SortOrder.Ascending,
-                SearchTerm = value ?? "",
-                HiddenFightersIds = GetHiddenFightersIds()
-            };
+        {
+            Page = 1,
+            PageSize = 10,
+            SortColumn = "name",
+            SortOrder = SortOrder.Ascending,
+            SearchTerm = value ?? "",
+            HiddenFightersIds = GetHiddenFightersIds(),
+        };
 
         try
         {
@@ -221,7 +200,7 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new List<FighterDto>();
+            return [];
         }
 
         return FightersPagedList.Items;
@@ -233,32 +212,33 @@
     {
         try
         {
-            UpdateFightRequest.Teams = new List<CreateTeamModel>();
+            CreateFightRequest.Teams = new List<CreateTeamModel>();
+
             foreach (var team in _teams)
             {
                 var teamFighters = new List<TeamFighterModel>();
                 foreach (var fighter in team.Fighters)
                 {
                     var teamFighterModel = new TeamFighterModel()
-                        {
-                            FighterId = fighter.Fighter.Id,
-                            FightResult = fighter.FightResult,
-                        };
+                    {
+                        FighterId = fighter.Fighter.Id,
+                        FightResult = fighter.FightResult,
+                    };
+
                     teamFighters.Add(teamFighterModel);
                 }
 
-                var updateTeamModel = new CreateTeamModel() { Fighters = teamFighters };
-                UpdateFightRequest.Teams.Add(updateTeamModel);
+                CreateFightRequest.Teams.Add(new() { Fighters = teamFighters });
             }
 
-            UpdateFightRequest.TypeId = FightType?.Id;
+            CreateFightRequest.TypeId = FightType?.Id;
 
-            await FightApiClient.UpdateFight(UpdateFightRequest);
+            await FightApiClient.CreateFight(CreateFightRequest);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -266,12 +246,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }

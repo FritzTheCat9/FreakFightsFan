@@ -27,17 +27,17 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<PagedList<FightDto>> GetAllFights(GetAllFightsRequest request)
         {
-            return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>(_url + "/all", request);
+            return await _apiClient.Post<GetAllFightsRequest, PagedList<FightDto>>($"{_url}/all", request);
         }
 
         public async Task<FighterProfileDto> GetFighterProfile(int id)
         {
-            return await _apiClient.Get<FighterProfileDto>(_url + "/fighter/" + id);
+            return await _apiClient.Get<FighterProfileDto>($"{_url}/fighter/{id}");
         }
 
         public async Task<FightDto> GetFight(int id)
         {
-            return await _apiClient.Get<FightDto>(_url + "/" + id);
+            return await _apiClient.Get<FightDto>($"{_url}/{id}");
         }
 
         public async Task CreateFight(CreateFightRequest request)
@@ -47,17 +47,17 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task UpdateFight(UpdateFightRequest request)
         {
-            await _apiClient.Put(_url + "/" + request.Id, request);
+            await _apiClient.Put($"{_url}/{request.Id}", request);
         }
 
         public async Task DeleteFight(int id)
         {
-            await _apiClient.Delete(_url + "/" + id);
+            await _apiClient.Delete($"{_url}/{id}");
         }
 
         public async Task MoveFight(MoveFightRequest request)
         {
-            await _apiClient.Put(_url + "/move/" + request.Id, request);
+            await _apiClient.Put($"{_url}/move/{request.Id}", request);
         }
     }
 }

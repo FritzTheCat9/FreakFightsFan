@@ -26,7 +26,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static FightDto ToDto(this Fight fight)
         {
-            return new FightDto
+            return new()
             {
                 Id = fight.Id,
                 Created = fight.Created,
@@ -42,7 +42,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static CreateFight.Command ToCreateFightCommand(this CreateFightRequest request)
         {
-            return new CreateFight.Command
+            return new()
             {
                 EventId = request.EventId,
                 Teams = request.Teams,
@@ -53,7 +53,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static MoveFight.Command ToMoveFightCommand(this MoveFightRequest request, int id)
         {
-            return new MoveFight.Command
+            return new()
             {
                 Id = id, 
                 Direction = request.Direction,
@@ -62,7 +62,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static UpdateFight.Command ToUpdateFightCommand(this UpdateFightRequest request, int id)
         {
-            return new UpdateFight.Command
+            return new()
             {
                 Id = id,
                 Teams = request.Teams,
@@ -73,7 +73,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static GetAllFights.Query ToGetAllFightsQuery(this GetAllFightsRequest request)
         {
-            return new GetAllFights.Query
+            return new()
             {
                 Page = request.Page,
                 PageSize = request.PageSize,

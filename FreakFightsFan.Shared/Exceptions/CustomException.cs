@@ -9,7 +9,7 @@
     public class MyValidationException : CustomException
     {
         private readonly static string _errorMessage = "Validation Error";
-        public Dictionary<string, List<string>> Errors { get; set; } = new();
+        public Dictionary<string, List<string>> Errors { get; set; } = [];
 
         public MyValidationException(Dictionary<string, List<string>> errors) : base(_errorMessage)
         {
@@ -20,7 +20,7 @@
         public MyValidationException(string propertyName, string error) : base(_errorMessage)
         {
             Type = ExceptionType.Validation;
-            Errors.Add(propertyName, new List<string> { error });
+            Errors.Add(propertyName, [error]);
         }
     }
 

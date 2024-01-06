@@ -33,7 +33,7 @@ namespace FreakFightsFan.Api.Behaviors
             return result;
         }
 
-        private Dictionary<string, List<string>> GetValidationErrorsDictionary(List<ValidationError> validationErrors)
+        private static Dictionary<string, List<string>> GetValidationErrorsDictionary(List<ValidationError> validationErrors)
         {
             var propertyNames = new List<string>();
             foreach (var failure in validationErrors)

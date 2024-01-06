@@ -62,6 +62,7 @@ namespace FreakFightsFan.Api.Data.Repositories
         public async Task<int> Create(MyDictionaryItem dictionaryItem)
         {
             await _dbContext.AddAsync(dictionaryItem);
+            await _dbContext.SaveChangesAsync();
             return dictionaryItem.Id;
         }
 

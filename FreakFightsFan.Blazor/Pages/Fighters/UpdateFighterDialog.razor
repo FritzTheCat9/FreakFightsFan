@@ -1,16 +1,16 @@
 ﻿@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFighterRequest" @ref="@form" Validation="ValidateValue">
+<MudForm Model="UpdateFighterRequest" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateFighterRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors" Url="@Url" />
+            <MyFileInput @bind-ImageBase64="UpdateFighterRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
             <MyValidationMessage T="string" For="@(() => UpdateFighterRequest.ImageBase64)" ValidationErrors="validationErrors" />
 
-            <MudTextField Label="First Name" @bind-Value="UpdateFighterRequest.FirstName" For="@(() => UpdateFighterRequest.FirstName)"></MudTextField>
-            <MudTextField Label="Last Name" @bind-Value="UpdateFighterRequest.LastName" For="@(() => UpdateFighterRequest.LastName)"></MudTextField>
-            <MudTextField Label="Nickname" @bind-Value="UpdateFighterRequest.Nickname" For="@(() => UpdateFighterRequest.Nickname)"></MudTextField>
-            <MudTextField Label="Instagram Url" @bind-Value="UpdateFighterRequest.InstagramUrl" For="@(() => UpdateFighterRequest.InstagramUrl)"></MudTextField>
+            <MudTextField Label="First Name" @bind-Value="UpdateFighterRequest.FirstName" For="@(() => UpdateFighterRequest.FirstName)" />
+            <MudTextField Label="Last Name" @bind-Value="UpdateFighterRequest.LastName" For="@(() => UpdateFighterRequest.LastName)" />
+            <MudTextField Label="Nickname" @bind-Value="UpdateFighterRequest.Nickname" For="@(() => UpdateFighterRequest.Nickname)" />
+            <MudTextField Label="Instagram Url" @bind-Value="UpdateFighterRequest.InstagramUrl" For="@(() => UpdateFighterRequest.InstagramUrl)" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -21,10 +21,10 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFighterRequest UpdateFighterRequest { get; set; } = new UpdateFighterRequest();
+    [Parameter] public UpdateFighterRequest UpdateFighterRequest { get; set; } = new();
     [Parameter] public string Url { get; set; }
 
-    private Dictionary<string, List<string>> validationErrors = new Dictionary<string, List<string>>();
+    private ValidationErrors validationErrors = new();
     private MudForm form;
     private bool IsImageValid { get; set; }
 
@@ -42,7 +42,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors = validationException.Errors;
+            validationErrors.Errors = validationException.Errors;
             await form.Validate();
         }
         catch (Exception ex)
@@ -50,12 +50,4 @@
             ExceptionHandler.HandleExceptions(ex);
         }
     }
-
-    private Func<object, string, List<string>> ValidateValue => (model, propertyName) =>
-    {
-        if (!validationErrors.ContainsKey(propertyName))
-            validationErrors.Add(propertyName, new List<string>());
-
-        return validationErrors[propertyName];
-    };
 }
