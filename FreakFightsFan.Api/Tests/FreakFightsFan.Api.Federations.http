@@ -1,0 +1,46 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name CreateFederation
+POST {{host}}/api/federations
+Content-Type: {{contentType}}
+
+{
+    "name": "Test federation",
+    "imageBase64": null
+}
+
+###
+# @name DeleteFederation
+DELETE {{host}}/api/federations/{{id}}
+
+###
+# @name UpdateFederation
+PUT {{host}}/api/federations/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "id": {{id}},
+    "name": "Updated test federation",
+    "imageBase64": null
+}
+
+###
+# @name GetAllFederations
+POST {{host}}/api/federations/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "name",
+    "sortOrder": 1,
+    "searchTerm": ""
+}
+
+###
+# @name GetFederation
+GET {{host}}/api/federations/{{id}}

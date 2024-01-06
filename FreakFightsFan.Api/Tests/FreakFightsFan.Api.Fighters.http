@@ -1,0 +1,55 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name CreateFighter
+POST {{host}}/api/fighters
+Content-Type: {{contentType}}
+
+{
+    "firstName": "Test firstName",
+    "lastName": "Test lastName",
+    "nickname": "Test nickname",
+    "instagramUrl": null,
+    "imageBase64": null
+}
+
+###
+# @name DeleteFighter
+DELETE {{host}}/api/fighters/{{id}}
+
+###
+# @name UpdateFighter
+PUT {{host}}/api/fighters/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "id": {{id}},
+    "firstName": "Updated test firstName",
+    "lastName": "Updated test lastName",
+    "nickname": "Updated test nickname",
+    "instagramUrl": null,
+    "imageBase64": null
+}
+
+###
+# @name GetAllFighters
+POST {{host}}/api/fighters/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "nickname",
+    "sortOrder": 1,
+    "searchTerm": "",
+    "hiddenFightersIds": null
+}
+
+###
+# @name GetFighter
+GET {{host}}/api/fighters/{{id}}
+
+

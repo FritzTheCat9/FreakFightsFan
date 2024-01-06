@@ -1,0 +1,63 @@
+﻿@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+@dictionaryId = 1
+
+###
+# @name CreateMyDictionaryItem
+POST {{host}}/api/myDictionaryItems
+Content-Type: {{contentType}}
+
+{
+    "name": "Test name",
+    "code": "TEST_CODE",
+    "dictionaryId": {{dictionaryId}}
+}
+
+###
+# @name DeleteMyDictionaryItem
+DELETE {{host}}/api/myDictionaryItems/{{id}}
+
+###
+# @name UpdateMyDictionaryItem
+PUT {{host}}/api/myDictionaryItems/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "Id": "{{id}}",
+    "Name": "Updated test name",
+    "Code": "TEST_CODE"
+}
+
+###
+# @name GetAllMyDictionaryItems
+POST {{host}}/api/myDictionaryItems/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "name",
+    "sortOrder": 1,
+    "searchTerm": "",
+    "dictionaryId": {{dictionaryId}}
+}
+
+###
+# @name GetAllMyDictionaryItemsByCode
+POST {{host}}/api/myDictionaryItems/allByCode
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "name",
+    "sortOrder": 1,
+    "searchTerm": "",
+    "dictionaryCode": "CITY"
+}
+
+###
+# @name GetMyDictionaryItem
+GET {{host}}/api/myDictionaryItems/{{id}}

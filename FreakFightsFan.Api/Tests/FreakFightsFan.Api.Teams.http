@@ -1,0 +1,18 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name GetAllTeams
+POST {{host}}/api/teams/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50
+}
+
+###
+# @name GetTeam
+GET {{host}}/api/teams/{{id}}

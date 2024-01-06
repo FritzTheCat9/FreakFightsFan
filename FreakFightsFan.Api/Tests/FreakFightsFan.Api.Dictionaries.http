@@ -1,0 +1,46 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name CreateMyDictionary
+POST {{host}}/api/myDictionaries
+Content-Type: {{contentType}}
+
+{
+    "name": "TestDictionary",
+    "code": "TEST_DICTIONARY"
+}
+
+###
+# @name DeleteMyDictionary
+DELETE {{host}}/api/myDictionaries/{{id}}
+
+###
+# @name UpdateMyDictionary
+PUT {{host}}/api/myDictionaries/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "id": {{id}},
+    "name": "UpdatedTestDictionary",
+    "code": "TEST_DICTIONARY"
+}
+
+###
+# @name GetAllMyDictionaries
+POST {{host}}/api/myDictionaries/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "code",
+    "sortOrder": 1,
+    "searchTerm": ""
+}
+
+###
+# @name GetMyDictionary
+GET {{host}}/api/myDictionaries/{{id}}

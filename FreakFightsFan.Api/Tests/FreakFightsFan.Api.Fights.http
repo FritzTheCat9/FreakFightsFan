@@ -1,0 +1,103 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name CreateFight
+POST {{host}}/api/fights
+Content-Type: {{contentType}}
+
+{
+    "eventId": 1,
+    "teams": [
+        {
+            "fighters": [
+                {
+                    "fighterId": 1,
+                    "fightResult": 1
+                },
+                {
+                    "fighterId": 2,
+                    "fightResult": 1
+                }
+            ]
+        },
+        {
+            "fighters": [
+                {
+                    "fighterId": 3,
+                    "fightResult": 2
+                }
+            ]
+        }
+    ],
+    "videoUrl": null,
+    "typeId": 44
+}
+
+###
+# @name DeleteFight
+DELETE {{host}}/api/fights/{{id}}
+
+###
+# @name MoveFight
+PUT {{host}}/api/fights/move/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "id": {{id}},
+    "direction": 1
+}
+
+###
+# @name UpdateFight
+PUT {{host}}/api/fights/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "eventId": 1,
+    "teams": [
+        {
+            "fighters": [
+                {
+                    "fighterId": 4,
+                    "fightResult": 1
+                }
+            ]
+        },
+        {
+            "fighters": [
+                {
+                    "fighterId": 5,
+                    "fightResult": 2
+                },
+                {
+                    "fighterId": 6,
+                    "fightResult": 2
+                }
+            ]
+        }
+    ],
+    "videoUrl": null,
+    "typeId": 45
+}
+
+###
+# @name GetAllFights
+POST {{host}}/api/fights/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "eventId": 1
+}
+
+###
+# @name GetFight
+GET {{host}}/api/fights/{{id}}
+
+###
+# @name GetFighterProfile
+GET {{host}}/api/fights/fighter/{{id}}

@@ -1,0 +1,52 @@
+@host = https://localhost:7277
+@contentType = application/json
+
+@id = 1
+
+###
+# @name CreateEvent
+POST {{host}}/api/events
+Content-Type: {{contentType}}
+
+{
+    "name": "Test event",
+    "date": "2025-01-01",
+    "federationId": 1,
+    "cityId": 1,
+    "hallId": 12
+}
+
+###
+# @name DeleteEvent
+DELETE {{host}}/api/events/{{id}}
+
+###
+# @name UpdateEvent
+PUT {{host}}/api/events/{{id}}
+Content-Type: {{contentType}}
+
+{
+    "id": {{id}},
+    "name": "Updated test event",
+    "date": "2025-02-02",
+    "cityId": 2,
+    "hallId": 13
+}
+
+###
+# @name GetAllEvents
+POST {{host}}/api/events/all
+Content-Type: {{contentType}}
+
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortColumn": "date",
+    "sortOrder": 1,
+    "searchTerm": "",
+    "federationId": 1
+}
+
+###
+# @name GetEvent
+GET {{host}}/api/events/{{id}}
