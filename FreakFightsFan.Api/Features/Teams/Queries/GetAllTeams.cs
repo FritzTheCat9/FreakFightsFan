@@ -5,6 +5,7 @@ using FreakFightsFan.Api.Features.Teams.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Teams.Requests;
 using FreakFightsFan.Shared.Features.Teams.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Teams.Queries
@@ -53,7 +54,8 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllTeamsQuery(), cancellationToken));
             })
-                .WithTags("Teams");
+                .WithTags("Teams")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

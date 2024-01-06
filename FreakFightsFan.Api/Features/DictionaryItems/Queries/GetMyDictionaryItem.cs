@@ -3,6 +3,7 @@ using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
@@ -46,7 +47,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
                 .WithName("GetMyDictionaryItem")
-                .WithTags("MyDictionaryItems");
+                .WithTags("MyDictionaryItems")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

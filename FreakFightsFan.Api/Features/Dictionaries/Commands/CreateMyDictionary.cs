@@ -6,6 +6,7 @@ using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Requests;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using MediatR;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
@@ -45,9 +46,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
-                var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
-                if (codeExists)
-                    throw new MyValidationException("Code", "'Code' must be unique");
+                await ValidateCommand(command);
 
                 var dictionary = new MyDictionary
                 {
@@ -59,6 +58,13 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 };
 
                 return await _myDictionaryRepository.Create(dictionary);
+            }
+
+            private async Task ValidateCommand(Command command)
+            {
+                var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
             }
         }
 
@@ -72,7 +78,8 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 int dictionaryId = await mediator.Send(request.ToCreateMyDictionaryCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
             })
-                .WithTags("MyDictionaries");
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

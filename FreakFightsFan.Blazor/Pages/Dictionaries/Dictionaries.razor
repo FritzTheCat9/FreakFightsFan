@@ -1,4 +1,6 @@
 ﻿@page "/dictionaries"
+@attribute [Authorize(Policy = Policy.Admin)]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IDialogService DialogService
@@ -50,9 +52,9 @@
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    private List<BreadcrumbItem> _items = new()
     {
-        new BreadcrumbItem("Dictionaries", href: null, disabled: true),
+        new("Dictionaries", href: null, disabled: true),
     };
 
     private MudTable<MyDictionaryDto> table;
@@ -62,13 +64,13 @@
     private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
     {
         var getAllMyDictionariesRequest = new GetAllMyDictionariesRequest
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = searchString,
-            };
+        {
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+            SearchTerm = searchString,
+        };
 
         try
         {
@@ -77,14 +79,14 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<MyDictionaryDto>() { TotalItems = 0, Items = new List<MyDictionaryDto>() };
+            return new() { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<MyDictionaryDto>()
-            {
-                TotalItems = MyDictionariesPagedList.TotalCount,
-                Items = MyDictionariesPagedList.Items
-            };
+        return new()
+        {
+            TotalItems = MyDictionariesPagedList.TotalCount,
+            Items = MyDictionariesPagedList.Items
+        };
     }
 
     private void OnSearch(string searchText)
@@ -122,12 +124,12 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryDialog>();
-        parameters.Add(x => x.UpdateMyDictionaryRequest, new UpdateMyDictionaryRequest
-            {
-                Id = myDictionaryDto.Id,
-                Name = myDictionaryDto.Name,
-                Code = myDictionaryDto.Code
-            });
+        parameters.Add(x => x.UpdateMyDictionaryRequest, new()
+        {
+            Id = myDictionaryDto.Id,
+            Name = myDictionaryDto.Name,
+            Code = myDictionaryDto.Code
+        });
 
         var updateDictionaryDialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, dialogOptions);
         var result = await updateDictionaryDialog.Result;
@@ -139,7 +141,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryDialog>();
-        parameters.Add(x => x.CreateMyDictionaryRequest, new CreateMyDictionaryRequest());
+        parameters.Add(x => x.CreateMyDictionaryRequest, new());
 
         var createDictionaryDialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
         var result = await createDictionaryDialog.Result;

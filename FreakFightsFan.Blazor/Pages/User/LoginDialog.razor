@@ -1,0 +1,58 @@
+﻿@inject IUserApiClient UserApiClient
+@inject IExceptionHandler ExceptionHandler
+
+<MudForm Model="LoginRequest" @ref="@form" Validation="validationErrors.Validate">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField Label="Email" @bind-Value="LoginRequest.Email" For="@(() => LoginRequest.Email)" />
+            <PasswordField @bind-Value="LoginRequest.Password" For="@(() => LoginRequest.Password)" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" Disabled="@_processing">
+                @if (_processing)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                    <MudText>Processing...</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2">LOGIN</MudText>
+                }
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public LoginRequest LoginRequest { get; set; } = new();
+
+    private ValidationErrors validationErrors = new();
+    private MudForm form;
+
+    private bool _processing;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task HandleValidSubmit()
+    {
+        _processing = true;
+
+        try
+        {
+            var token = await UserApiClient.Login(LoginRequest);
+            MudDialog.Close(DialogResult.Ok<JwtDto>(token));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors.Errors = validationException.Errors;
+            await form.Validate();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+
+        _processing = false;
+    }
+}

@@ -1,4 +1,6 @@
 @page "/fights/{FederationId:int}/{EventId:int}"
+@attribute [AllowAnonymous]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IFightApiClient FightApiClient
 @inject IEventApiClient EventApiClient
@@ -14,13 +16,15 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
-    <MudStack Row="true" Justify="Justify.FlexStart">
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())"/>
-    </MudStack>
-</MudPaper>
+<AuthorizeView Policy=@($"{Policy.Admin}")>
+    <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
+        <MudStack Row="true" Justify="Justify.FlexStart">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())" />
+        </MudStack>
+    </MudPaper>
+</AuthorizeView>
 
-@if(Event is not null)
+@if (Event is not null)
 {
     <MudStack AlignItems="AlignItems.Center" Style="margin: 0px 0px 40px 0px;">
         <MudText Typo="Typo.h4">@Event.Name</MudText>
@@ -56,12 +60,14 @@ else
                     <MudStack Row="true" Justify="Justify.FlexEnd">
                         <MudIconButton Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(fight))"
                             Disabled="(string.IsNullOrEmpty(fight.VideoUrl))"/>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
-                                       Disabled="(fight.OrderNumber <= 1)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
-                                       Disabled="(fight.OrderNumber >= FightsList.Count())" />
+                        <AuthorizeView Policy=@($"{Policy.Admin}")>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
+                                           Disabled="(fight.OrderNumber <= 1)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
+                                           Disabled="(fight.OrderNumber >= FightsList.Count())" />
+                        </AuthorizeView>
                     </MudStack>
                 </MudPaper>
                 <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
@@ -98,17 +104,17 @@ else
     [Parameter] public int FederationId { get; set; }
     [Parameter] public int EventId { get; set; }
 
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>();
+    private List<BreadcrumbItem> _items = [];
     public List<FightDto> FightsList { get; set; }
     public EventDto Event { get; set; }
 
     protected override void OnParametersSet()
     {
-        _items = new List<BreadcrumbItem>()
+        _items = new()
         {
-            new BreadcrumbItem("Federations", href: "/federations"),
-            new BreadcrumbItem("Events", href: $"/events/{FederationId}"),
-            new BreadcrumbItem("Fights", href: null, disabled: true),
+            new("Federations", href: "/federations"),
+            new("Events", href: $"/events/{FederationId}"),
+            new("Fights", href: null, disabled: true),
         };
     }
 
@@ -135,11 +141,11 @@ else
     private async Task GetAllFights()
     {
         var getAllFightsRequest = new GetAllFightsRequest
-            {
-                Page = 1,
-                PageSize = FightsOptions.MaxFightsInOneEvent,
-                EventId = EventId
-            };
+        {
+            Page = 1,
+            PageSize = FightsOptions.MaxFightsInOneEvent,
+            EventId = EventId
+        };
 
         try
         {
@@ -148,7 +154,7 @@ else
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            FightsList = new List<FightDto>();
+            FightsList = [];
         }
     }
 
@@ -198,14 +204,14 @@ else
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFightDialog>();
-        parameters.Add(x => x.UpdateFightRequest, new UpdateFightRequest
-            {
-                Id = fightDto.Id,
-                Teams = new List<CreateTeamModel>(),
-                VideoUrl = fightDto.VideoUrl,
-                TypeId = fightDto.Type?.Id
-            });
 
+        parameters.Add(x => x.UpdateFightRequest, new()
+        {
+            Id = fightDto.Id,
+            Teams = [],
+            VideoUrl = fightDto.VideoUrl,
+            TypeId = fightDto.Type?.Id
+        });
         parameters.Add(x => x.Teams, fightDto.Teams);
         parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
         parameters.Add(x => x.FightType, fightDto.Type);
@@ -220,13 +226,14 @@ else
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFightDialog>();
-        parameters.Add(x => x.CreateFightRequest, new CreateFightRequest()
-            {
-                EventId = EventId,
-                Teams = new List<CreateTeamModel>(),
-                VideoUrl = null,
-                TypeId = null,
-            });
+
+        parameters.Add(x => x.CreateFightRequest, new()
+        {
+            EventId = EventId,
+            Teams = [],
+            VideoUrl = null,
+            TypeId = null,
+        });
         parameters.Add(x => x.NumberOfTeams, 2);
 
         var createFightDialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);

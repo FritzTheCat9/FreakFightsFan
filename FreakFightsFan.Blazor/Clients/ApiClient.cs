@@ -1,5 +1,7 @@
-﻿using FreakFightsFan.Shared.Exceptions;
+﻿using FreakFightsFan.Blazor.Auth;
+using FreakFightsFan.Shared.Exceptions;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace FreakFightsFan.Blazor.Clients
@@ -16,17 +18,20 @@ namespace FreakFightsFan.Blazor.Clients
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _client;
+        private readonly IJwtProvider _jwtProvider;
         private readonly string _baseUrl;
 
-        public ApiClient(HttpClient client)
+        public ApiClient(HttpClient client, IJwtProvider jwtProvider)
         {
             _client = client;
+            _jwtProvider = jwtProvider;
             _baseUrl = client.BaseAddress.ToString();
         }
 
         public async Task<TResponse> Get<TResponse>(string url)
         {
-            var response = await _client.GetAsync(_baseUrl + url);
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.GetAsync($"{_baseUrl}{url}");
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
@@ -37,7 +42,8 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Post<TRequest>(string url, TRequest tRequest)
         {
-            var response = await _client.PostAsJsonAsync(_baseUrl + url, tRequest);
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.PostAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
@@ -45,7 +51,8 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest tRequest)
         {
-            var response = await _client.PostAsJsonAsync(_baseUrl + url, tRequest);
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.PostAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
@@ -56,7 +63,8 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Put<TRequest>(string url, TRequest tRequest)
         {
-            var response = await _client.PutAsJsonAsync(_baseUrl + url, tRequest);
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.PutAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
@@ -64,10 +72,17 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Delete(string url)
         {
-            var response = await _client.DeleteAsync(_baseUrl + url);
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.DeleteAsync($"{_baseUrl}{url}");
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
+        }
+
+        private async Task AddJwtAccessTokenToHeader()
+        {
+            var token = await _jwtProvider.GetJwtDto();
+            _client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
         }
 
         private static async Task HandleErrors(HttpResponseMessage response)

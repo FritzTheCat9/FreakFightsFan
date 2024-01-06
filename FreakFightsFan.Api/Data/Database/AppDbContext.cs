@@ -1,7 +1,9 @@
 ﻿using FreakFightsFan.Api.Abstractions;
+using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 
 namespace FreakFightsFan.Api.Data.Database
@@ -9,6 +11,7 @@ namespace FreakFightsFan.Api.Data.Database
     public class AppDbContext : DbContext
     {
         private readonly IClock _clock;
+        private readonly AuthOptions _authOptions;
 
         public DbSet<Federation> Federations { get; set; }
         public DbSet<Event> Events { get; set; }
@@ -19,10 +22,12 @@ namespace FreakFightsFan.Api.Data.Database
         public DbSet<Image> Images { get; set; }
         public DbSet<MyDictionary> MyDictionaries { get; set; }
         public DbSet<MyDictionaryItem> MyDictionaryItems { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IClock clock) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IClock clock, IOptions<AuthOptions> authOptions) : base(options)
         {
             _clock = clock;
+            _authOptions = authOptions.Value;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +35,13 @@ namespace FreakFightsFan.Api.Data.Database
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             var _date = _clock.Current();
+
+            modelBuilder.Entity<User>().HasData(new List<User>()
+            {
+                new() { Id = 1, Email = _authOptions.TestEmail, UserName = "SuperAdmin", Password = _authOptions.TestPassword, EmailConfirmed = true, EmailConfirmationToken = null, IsSuperAdmin = true, IsAdmin = true, Created = _date, Modified = _date },
+                new() { Id = 2, Email = "freakfightsfan1@gmail.com", UserName = "Admin", Password = _authOptions.TestPassword, EmailConfirmed = true, EmailConfirmationToken = null, IsSuperAdmin = false, IsAdmin = true, Created = _date, Modified = _date },
+                new() { Id = 3, Email = "freakfightsfan2@gmail.com", UserName = "User", Password = _authOptions.TestPassword, EmailConfirmed = true, EmailConfirmationToken = null, IsSuperAdmin = false, IsAdmin = false, Created = _date, Modified = _date },
+            });
 
             modelBuilder.Entity<MyDictionary>().HasData(new List<MyDictionary>()
             {

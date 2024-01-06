@@ -6,6 +6,7 @@ using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Federations.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 using Microsoft.Extensions.Options;
 
@@ -81,7 +82,8 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
             {
                 return Results.Ok(await mediator.Send(request.ToUpdateFederationCommand(id), cancellationToken));
             })
-                .WithTags("Federations");
+                .WithTags("Federations")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

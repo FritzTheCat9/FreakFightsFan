@@ -7,6 +7,7 @@ using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Events.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Events.Commands
@@ -54,21 +55,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
-                var federation = await _federationRepository.Get(command.FederationId) ?? throw new MyNotFoundException();
-
-                if (command.CityId is not null)
-                {
-                    var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
-                    if (!isCityValid)
-                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
-                }
-
-                if (command.HallId is not null)
-                {
-                    var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
-                    if (!isHallValid)
-                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
-                }
+                await ValidateCommand(command);
 
                 var myEvent = new Event
                 {
@@ -84,6 +71,25 @@ namespace FreakFightsFan.Api.Features.Events.Commands
 
                 return await _eventRepository.Create(myEvent);
             }
+
+            private async Task ValidateCommand(Command command)
+            {
+                var federation = await _federationRepository.Get(command.FederationId) ?? throw new MyNotFoundException();
+
+                if (command.CityId is not null)
+                {
+                    var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
+                    if (!isCityValid)
+                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
+                }
+
+                if (command.HallId is not null)
+                {
+                    var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
+                    if (!isHallValid)
+                        throw new MyValidationException("HallId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
+                }
+            }
         }
 
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
@@ -96,7 +102,8 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 int eventId = await mediator.Send(request.ToCreateEventCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetEvent", new { id = eventId });
             })
-                .WithTags("Events");
+                .WithTags("Events")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

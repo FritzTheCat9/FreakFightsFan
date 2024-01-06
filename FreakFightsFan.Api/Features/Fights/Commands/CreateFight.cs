@@ -8,6 +8,7 @@ using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
@@ -129,7 +130,8 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 int fightId = await mediator.Send(request.ToCreateFightCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetFight", new { id = fightId });
             })
-                .WithTags("Fights");
+                .WithTags("Fights")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

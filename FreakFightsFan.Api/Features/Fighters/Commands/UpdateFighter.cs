@@ -6,6 +6,7 @@ using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fighters.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 using Microsoft.Extensions.Options;
 
@@ -100,7 +101,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
             {
                 return Results.Ok(await mediator.Send(request.ToUpdateFighterCommand(id), cancellationToken));
             })
-                .WithTags("Fighters");
+                .WithTags("Fighters")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

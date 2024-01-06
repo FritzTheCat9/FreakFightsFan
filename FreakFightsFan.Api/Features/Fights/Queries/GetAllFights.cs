@@ -55,7 +55,8 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllFightsQuery(), cancellationToken));
             })
-                .WithTags("Fights");
+                .WithTags("Fights")
+                .AllowAnonymous();
 
             return app;
         }

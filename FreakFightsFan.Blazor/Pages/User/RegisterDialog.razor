@@ -1,0 +1,60 @@
+﻿@inject IUserApiClient UserApiClient
+@inject IExceptionHandler ExceptionHandler
+
+<MudForm Model="RegisterRequest" @ref="@form" Validation="validationErrors.Validate">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField Label="Email" @bind-Value="RegisterRequest.Email" For="@(() => RegisterRequest.Email)" />
+            <MudTextField Label="UserName" @bind-Value="RegisterRequest.UserName" For="@(() => RegisterRequest.UserName)" />
+            <PasswordField Label="Password" @bind-Value="RegisterRequest.Password" For="@(() => RegisterRequest.Password)" />
+            <PasswordField Label="Repeat Password" @bind-Value="RegisterRequest.RepeatPassword" For="@(() => RegisterRequest.RepeatPassword)" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" Disabled="@_processing" >
+                @if (_processing)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                    <MudText>Processing...</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.subtitle2">REGISTER</MudText>
+                }
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public RegisterRequest RegisterRequest { get; set; } = new();
+
+    private ValidationErrors validationErrors = new();
+    private MudForm form;
+
+    private bool _processing;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task HandleValidSubmit()
+    {
+        _processing = true;
+
+        try
+        {
+            await UserApiClient.Register(RegisterRequest);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors.Errors = validationException.Errors;
+            await form.Validate();
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+
+        _processing = false;
+    }
+}

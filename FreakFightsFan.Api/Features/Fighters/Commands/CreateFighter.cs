@@ -6,6 +6,7 @@ using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Fighters.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 using Microsoft.Extensions.Options;
 
@@ -102,7 +103,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
                 int fighterId = await mediator.Send(request.ToCreateFighterCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
             })
-                .WithTags("Fighters");
+                .WithTags("Fighters")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

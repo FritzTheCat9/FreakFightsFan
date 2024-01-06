@@ -40,7 +40,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
             {
                 var fightersQuery = _fighterRepository.AsQueryable();
 
-                if(query.HiddenFightersIds is not null)
+                if (query.HiddenFightersIds is not null)
                 {
                     fightersQuery = fightersQuery.Where(x => !query.HiddenFightersIds.Contains(x.Id));
                 }
@@ -66,7 +66,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllFightersQuery(), cancellationToken));
             })
-                .WithTags("Fighters");
+                .WithTags("Fighters")
+                .AllowAnonymous();
 
             return app;
         }

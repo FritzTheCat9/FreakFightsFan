@@ -59,7 +59,8 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllFederationsQuery(), cancellationToken));
             })
-                 .WithTags("Federations");
+                 .WithTags("Federations")
+                 .AllowAnonymous();
 
             return app;
         }

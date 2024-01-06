@@ -5,6 +5,7 @@ using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Images.Requests;
 using FreakFightsFan.Shared.Features.Images.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Images.Queries
@@ -57,7 +58,8 @@ namespace FreakFightsFan.Api.Features.Images.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllImagesQuery(), cancellationToken));
             })
-                .WithTags("Images");
+                .WithTags("Images")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

@@ -5,6 +5,7 @@ using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
@@ -48,11 +49,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 
             public async Task<int> Handle(Command command, CancellationToken cancellationToken)
             {
-                var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ?? throw new MyNotFoundException();
-
-                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
-                if (codeExists)
-                    throw new MyValidationException("Code", "'Code' must be unique");
+                await ValidateCommand(command);
 
                 var dictionaryItem = new MyDictionaryItem
                 {
@@ -66,6 +63,15 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 
                 return await _myDictionaryItemRepository.Create(dictionaryItem);
             }
+
+            private async Task ValidateCommand(Command command)
+            {
+                var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ?? throw new MyNotFoundException();
+
+                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
+                if (codeExists)
+                    throw new MyValidationException("Code", "'Code' must be unique");
+            }
         }
 
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
@@ -78,7 +84,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 int dictionaryItemId = await mediator.Send(request.ToCreateMyDictionaryItemCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionaryItem", new { id = dictionaryItemId });
             })
-                .WithTags("MyDictionaryItems");
+                .WithTags("MyDictionaryItems")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

@@ -6,6 +6,7 @@ using FreakFightsFan.Api.Features.Federations.Extensions;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Federations.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 using Microsoft.Extensions.Options;
 
@@ -82,7 +83,8 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
                 int federationId = await mediator.Send(request.ToCreateFederationCommand(), cancellationToken);
                 return Results.CreatedAtRoute("GetFederation", new { id = federationId });
             })
-                .WithTags("Federations");
+                .WithTags("Federations")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

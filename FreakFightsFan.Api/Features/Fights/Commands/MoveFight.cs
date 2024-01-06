@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Features.Fights.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Requests;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
@@ -79,7 +80,8 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             {
                 return Results.Ok(await mediator.Send(request.ToMoveFightCommand(id), cancellationToken));
             })
-                .WithTags("Fights");
+                .WithTags("Fights")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

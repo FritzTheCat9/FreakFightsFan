@@ -1,6 +1,7 @@
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Events.Commands
@@ -44,7 +45,8 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 var command = new Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Events");
+                .WithTags("Events")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

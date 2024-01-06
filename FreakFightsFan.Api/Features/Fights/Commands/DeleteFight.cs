@@ -1,6 +1,7 @@
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
@@ -30,7 +31,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 
-                await _fightRepository.OrderFights(fight.EventId, fight.Id);
+                await _fightRepository.OrderFights(fight.EventId, fight.OrderNumber);
                 await _fightRepository.Delete(fight);
 
                 return Unit.Value;
@@ -47,7 +48,8 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 var command = new Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Fights");
+                .WithTags("Fights")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

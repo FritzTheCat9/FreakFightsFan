@@ -1,4 +1,6 @@
 ﻿@page "/fighters"
+@attribute [AllowAnonymous]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IFighterApiClient FighterApiClient
 @inject IDialogService DialogService
@@ -13,13 +15,15 @@
 </MudBreadcrumbs>
 
 <MudTable ServerData="@(new Func<TableState, Task<TableData<FighterDto>>>(ServerReload))"
-          Dense="true" Hover="true" @ref="table">
+          Dense="true" Hover="true" @ref="table" Context="fighter">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Fighters</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFighter())"/>
+        <AuthorizeView Policy=@($"{Policy.Admin}")>
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFighter())"/>
+        </AuthorizeView>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -30,10 +34,10 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>
-            @if (context.Image != null)
+            @if (fighter.Image != null)
             {
-                <MudLink Href="@context.Image.Url" Target="_blank">
-                    <MudImage Src="@context.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                <MudLink Href="@fighter.Image.Url" Target="_blank">
+                    <MudImage Src="@fighter.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
                 </MudLink>
             }
             else
@@ -41,13 +45,15 @@
                 <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
             }
         </MudTd>
-        <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
-        <MudTd DataLabel="LastName">@context.LastName</MudTd>
-        <MudTd DataLabel="Nickname">@context.Nickname</MudTd>
+        <MudTd DataLabel="FirstName">@fighter.FirstName</MudTd>
+        <MudTd DataLabel="LastName">@fighter.LastName</MudTd>
+        <MudTd DataLabel="Nickname">@fighter.Nickname</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Small" OnClick="@(() => RedirectToFighterProfile(context.Id))"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFighter(@context))"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFighter(@context.Id))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Small" OnClick="@(() => RedirectToFighterProfile(fighter.Id))"/>
+            <AuthorizeView Policy=@($"{Policy.Admin}")>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFighter(@fighter))"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFighter(@fighter.Id))"/>
+            </AuthorizeView>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -62,9 +68,9 @@
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    private List<BreadcrumbItem> _items = new()
     {
-        new BreadcrumbItem("Fighters", href: null, disabled: true),
+        new("Fighters", href: null, disabled: true),
     };
 
     private MudTable<FighterDto> table;
@@ -74,13 +80,13 @@
     private async Task<TableData<FighterDto>> ServerReload(TableState state)
     {
         var getAllFightersRequest = new GetAllFightersRequest
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = searchString,
-            };
+        {
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+            SearchTerm = searchString,
+        };
 
         try
         {
@@ -89,14 +95,14 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<FighterDto>() { TotalItems = 0, Items = new List<FighterDto>() };
+            return new() { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<FighterDto>()
-            {
-                TotalItems = FightersPagedList.TotalCount,
-                Items = FightersPagedList.Items
-            };
+        return new()
+        {
+            TotalItems = FightersPagedList.TotalCount,
+            Items = FightersPagedList.Items
+        };
     }
 
     private void OnSearch(string searchText)
@@ -129,16 +135,16 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFighterDialog>();
-        parameters.Add(x => x.UpdateFighterRequest, new UpdateFighterRequest
-            {
-                Id = fighterDto.Id,
-                FirstName = fighterDto.FirstName,
-                LastName = fighterDto.LastName,
-                Nickname = fighterDto.Nickname,
-                InstagramUrl = fighterDto.InstagramUrl,
-                ImageBase64 = ""
-            });
 
+        parameters.Add(x => x.UpdateFighterRequest, new()
+        {
+            Id = fighterDto.Id,
+            FirstName = fighterDto.FirstName,
+            LastName = fighterDto.LastName,
+            Nickname = fighterDto.Nickname,
+            InstagramUrl = fighterDto.InstagramUrl,
+            ImageBase64 = ""
+        });
         parameters.Add(x => x.Url, fighterDto.Image?.Url);
 
         var updateFighterDialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
@@ -151,7 +157,8 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFighterDialog>();
-        parameters.Add(x => x.CreateFighterRequest, new CreateFighterRequest());
+
+        parameters.Add(x => x.CreateFighterRequest, new());
 
         var createFighterDialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, dialogOptions);
         var result = await createFighterDialog.Result;

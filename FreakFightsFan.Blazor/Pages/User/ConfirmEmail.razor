@@ -1,0 +1,60 @@
+﻿@page "/confirmEmail"
+@attribute [AllowAnonymous]
+
+@inject IUserApiClient UserApiClient
+@inject IExceptionHandler ExceptionHandler
+
+<MudText>Confirm your email by clicking on the button below.</MudText>
+
+<MudButton OnClick="ConfirmUserEmail" Color="Color.Primary" Variant="Variant.Filled" Disabled="@_processing">
+    @if (_processing)
+    {
+        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+        <MudText>Processing...</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.subtitle2">Confirm email</MudText>
+    }
+</MudButton>
+
+<MyValidationSummary validationErrors="validationErrors" />
+
+@if (_processing && !success)
+{
+    <MudText>Loading...</MudText>
+}
+else if (success && validationErrors.Errors.Count == 0)
+{
+    <MudText>Your email has been successfully confirmed.</MudText>
+}
+
+@code {
+    [SupplyParameterFromQuery] public string Email { get; set; }
+    [SupplyParameterFromQuery] public string Token { get; set; }
+
+    private ValidationErrors validationErrors = new();
+    private bool _processing;
+    private bool success;
+
+    private async Task ConfirmUserEmail()
+    {
+        _processing = true; 
+        validationErrors = new();
+
+        try
+        {
+            success = await UserApiClient.ConfirmEmail(HttpUtility.UrlEncode(Email), HttpUtility.UrlEncode(Token));
+        }
+        catch (MyValidationException validationException)
+        {
+            validationErrors.Errors = validationException.Errors;
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+
+        _processing = false;
+    }
+}

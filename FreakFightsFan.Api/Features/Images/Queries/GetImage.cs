@@ -3,6 +3,7 @@ using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Images.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Images.Queries
@@ -46,7 +47,8 @@ namespace FreakFightsFan.Api.Features.Images.Queries
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
                 .WithName("GetImage")
-                .WithTags("Images");
+                .WithTags("Images")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

@@ -40,7 +40,7 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 foreach (var fight in fights)
                 {
                     var fightResult = await _fightService.GetFightResultForFighter(fight.Id, query.Id);
-                    profileFights.Add(new ProfileFightDto
+                    profileFights.Add(new()
                     {
                         Fight = fight.ToDto(),
                         FightResult = fightResult
@@ -111,7 +111,8 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 var query = new Query() { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("Fights");
+                .WithTags("Fights")
+                .AllowAnonymous();
 
             return app;
         }

@@ -7,6 +7,7 @@ using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
 using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
@@ -65,7 +66,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllMyDictionaryItemsQuery(), cancellationToken));
             })
-                .WithTags("MyDictionaryItems");
+                .WithTags("MyDictionaryItems")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

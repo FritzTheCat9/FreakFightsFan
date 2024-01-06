@@ -6,15 +6,15 @@ namespace FreakFightsFan.Api.Data.Database
 {
     public static class DataExtensions
     {
-        private const string SectionName = "mssql";
+        private const string _sectionName = "Database";
 
-        public static IServiceCollection AddMssql(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            var section = configuration.GetSection(SectionName);
-            services.Configure<MssqlOptions>(section);
-            var options = configuration.GetOptions<MssqlOptions>(SectionName);
+            services.Configure<MssqlOptions>(configuration.GetRequiredSection(_sectionName));
+            var options = configuration.GetOptions<MssqlOptions>(_sectionName);
 
             services.AddSingleton<IClock, Clock>();
+
             services.AddDbContext<AppDbContext>(x => 
             { 
                 x.UseSqlServer(options.ConnectionString); 
@@ -29,18 +29,11 @@ namespace FreakFightsFan.Api.Data.Database
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
             services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddHostedService<DatabaseInitializer>();
 
             return services;
-        }
-
-        public static T GetOptions<T>(this IConfiguration configuration, string sectionName) where T : class, new()
-        {
-            var options = new T();
-            var section = configuration.GetSection(sectionName);
-            section.Bind(options);
-
-            return options;
         }
     }
 }

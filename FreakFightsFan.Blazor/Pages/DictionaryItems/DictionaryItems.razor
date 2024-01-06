@@ -1,4 +1,6 @@
 ﻿@page "/dictionary/{DictionaryId:int}"
+@attribute [Authorize(Policy = Policy.Admin)]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IDialogService DialogService
@@ -18,7 +20,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionaryItem())"/>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">Name</MudTableSortLabel></MudTh>
@@ -47,10 +49,10 @@
 @code {
     [Parameter] public int DictionaryId { get; set; }
 
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    private List<BreadcrumbItem> _items = new()
     {
-        new BreadcrumbItem("Dictionaries", href: "/dictionaries"),
-        new BreadcrumbItem("Dictionary Items", href: null, disabled: true),
+        new("Dictionaries", href: "/dictionaries"),
+        new("Dictionary Items", href: null, disabled: true),
     };
 
     private string searchString = "";
@@ -60,14 +62,14 @@
     private async Task<TableData<MyDictionaryItemDto>> ServerReload(TableState state)
     {
         var getAllMyDictionaryItemsRequest = new GetAllMyDictionaryItemsRequest
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = searchString,
-                DictionaryId = DictionaryId,
-            };
+        {
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+            SearchTerm = searchString,
+            DictionaryId = DictionaryId,
+        };
 
         try
         {
@@ -76,14 +78,14 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<MyDictionaryItemDto>() { TotalItems = 0, Items = new List<MyDictionaryItemDto>() };
+            return new() { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<MyDictionaryItemDto>()
-            {
-                TotalItems = MyDictionaryItemsPagedList.TotalCount,
-                Items = MyDictionaryItemsPagedList.Items
-            };
+        return new()
+        {
+            TotalItems = MyDictionaryItemsPagedList.TotalCount,
+            Items = MyDictionaryItemsPagedList.Items
+        };
     }
 
     private void OnSearch(string searchText)
@@ -116,12 +118,12 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryItemDialog>();
-        parameters.Add(x => x.UpdateMyDictionaryItemRequest, new UpdateMyDictionaryItemRequest
-            {
-                Id = myDictionaryItemDto.Id,
-                Name = myDictionaryItemDto.Name,
-                Code = myDictionaryItemDto.Code,
-            });
+        parameters.Add(x => x.UpdateMyDictionaryItemRequest, new()
+        {
+            Id = myDictionaryItemDto.Id,
+            Name = myDictionaryItemDto.Name,
+            Code = myDictionaryItemDto.Code,
+        });
 
         var updateDictionaryItemDialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
         var result = await updateDictionaryItemDialog.Result;
@@ -133,12 +135,12 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryItemDialog>();
-        parameters.Add(x => x.CreateMyDictionaryItemRequest, new CreateMyDictionaryItemRequest()
-            {
-                Name = "",
-                Code = "",
-                DictionaryId = DictionaryId,
-            });
+        parameters.Add(x => x.CreateMyDictionaryItemRequest, new()
+        {
+            Name = "",
+            Code = "",
+            DictionaryId = DictionaryId,
+        });
 
         var createDictionaryItemDialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);
         var result = await createDictionaryItemDialog.Result;

@@ -1,4 +1,6 @@
 @page "/images"
+@attribute [Authorize(Policy = Policy.Admin)]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IImageApiClient ImageApiClient
 @inject IDialogService DialogService
@@ -61,20 +63,20 @@
     private MudTable<ImageDto> table;
     public PagedList<ImageDto> ImagesPagedList { get; set; }
 
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    private List<BreadcrumbItem> _items = new()
     {
-        new BreadcrumbItem("Images", href: null, disabled: true),
+        new("Images", href: null, disabled: true),
     };
 
     private async Task<TableData<ImageDto>> ServerReload(TableState state)
     {
         var getAllImagesRequest = new GetAllImagesRequest
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-            };
+        {
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+        };
 
         try
         {
@@ -83,14 +85,14 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<ImageDto>() { TotalItems = 0, Items = new List<ImageDto>() };
+            return new() { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<ImageDto>()
-            {
-                TotalItems = ImagesPagedList.TotalCount,
-                Items = ImagesPagedList.Items
-            };
+        return new()
+        {
+            TotalItems = ImagesPagedList.TotalCount,
+            Items = ImagesPagedList.Items
+        };
     }
 
     private async Task DeleteImage(int id)
@@ -117,12 +119,12 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateImageDialog>();
-        parameters.Add(x => x.UpdateImageRequest, new UpdateImageRequest
-            {
-                Id = imageDto.Id,
-                ImageBase64 = ""
-            });
 
+        parameters.Add(x => x.UpdateImageRequest, new()
+        {
+            Id = imageDto.Id,
+            ImageBase64 = ""
+        });
         parameters.Add(x => x.Url, imageDto.Url);
 
         var updateImageDialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
@@ -135,7 +137,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateImageDialog>();
-        parameters.Add(x => x.CreateImageRequest, new CreateImageRequest());
+        parameters.Add(x => x.CreateImageRequest, new());
 
         var createImageDialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
         var result = await createImageDialog.Result;

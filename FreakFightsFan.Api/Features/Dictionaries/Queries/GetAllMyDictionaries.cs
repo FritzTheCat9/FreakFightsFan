@@ -5,6 +5,7 @@ using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Dictionaries.Requests;
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Queries
@@ -59,7 +60,8 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
             {
                 return Results.Ok(await mediator.Send(request.ToGetAllMyDictionariesQuery(), cancellationToken));
             })
-                .WithTags("MyDictionaries");
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
 
             return app;
         }

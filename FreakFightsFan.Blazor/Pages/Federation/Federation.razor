@@ -1,4 +1,6 @@
 @page "/federations"
+@attribute [AllowAnonymous]
+
 @inject IExceptionHandler ExceptionHandler
 @inject IFederationApiClient FederationApiClient
 @inject IDialogService DialogService
@@ -13,26 +15,30 @@
 </MudBreadcrumbs>
 
 <MudTable ServerData="@(new Func<TableState, Task<TableData<FederationDto>>>(ServerReload))"
-          Dense="true" Hover="true" @ref="table">
+          Dense="true" Hover="true" @ref="table" Context="federation">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Federations</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFederation())"/>
+        <AuthorizeView Policy=@($"{Policy.Admin}")>
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFederation())"/>
+        </AuthorizeView>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
         <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">Name</MudTableSortLabel></MudTh>
         <MudTh>Events</MudTh>
-        <MudTh>Actions</MudTh>
+        <AuthorizeView Policy=@($"{Policy.Admin}")>
+            <MudTh>Actions</MudTh>
+        </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
-            @if (context.Image != null)
+            @if (federation.Image != null)
             {
-                <MudLink Href="@context.Image.Url" Target="_blank">
-                    <MudImage Src="@context.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                <MudLink Href="@federation.Image.Url" Target="_blank">
+                    <MudImage Src="@federation.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
                 </MudLink>
             }
             else
@@ -40,14 +46,16 @@
                 <MudText>-</MudText>
             }
         </MudTd>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@federation.Name</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@context.Id))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@federation.Id))"/>
         </MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@context))"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@context.Id))"/>
-        </MudTd>
+        <AuthorizeView Policy=@($"{Policy.Admin}")>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@federation))"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@federation.Id))"/>
+            </MudTd>
+        </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
@@ -61,9 +69,9 @@
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    private List<BreadcrumbItem> _items = new()
     {
-        new BreadcrumbItem("Federations", href: null, disabled: true),
+        new("Federations", href: null, disabled: true),
     };
 
     private MudTable<FederationDto> table;
@@ -73,13 +81,13 @@
     private async Task<TableData<FederationDto>> ServerReload(TableState state)
     {
         var getAllFederationsRequest = new GetAllFederationsRequest
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = searchString,
-            };
+        {
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+            SearchTerm = searchString,
+        };
 
         try
         {
@@ -88,14 +96,14 @@
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            return new TableData<FederationDto>() { TotalItems = 0, Items = new List<FederationDto>() };
+            return new() { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<FederationDto>()
-            {
-                TotalItems = FederationsPagedList.TotalCount,
-                Items = FederationsPagedList.Items
-            };
+        return new()
+        {
+            TotalItems = FederationsPagedList.TotalCount,
+            Items = FederationsPagedList.Items
+        };
     }
 
     private void OnSearch(string searchText)
@@ -133,13 +141,12 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFederationDialog>();
-        parameters.Add(x => x.UpdateFederationRequest, new UpdateFederationRequest
-            {
-                Id = federationDto.Id,
-                Name = federationDto.Name,
-                ImageBase64 = ""
-            });
-
+        parameters.Add(x => x.UpdateFederationRequest, new()
+        {
+            Id = federationDto.Id,
+            Name = federationDto.Name,
+            ImageBase64 = "",
+        });
         parameters.Add(x => x.Url, federationDto.Image?.Url);
 
         var updateFederationDialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, dialogOptions);
@@ -152,7 +159,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFederationDialog>();
-        parameters.Add(x => x.CreateFederationRequest, new CreateFederationRequest());
+        parameters.Add(x => x.CreateFederationRequest, new());
 
         var createFederationDialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, dialogOptions);
         var result = await createFederationDialog.Result;

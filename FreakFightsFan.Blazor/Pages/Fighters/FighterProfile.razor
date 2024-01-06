@@ -1,4 +1,6 @@
 ﻿@page "/fighter/{FighterId:int}"
+@attribute [AllowAnonymous]
+
 @inject IFightApiClient FightApiClient
 @inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
@@ -39,7 +41,7 @@
             <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">No Contest: @Profile.Stats.NoContest</MudText>
         </MudStack>
         <MudChart ChartType="ChartType.Pie" InputData="@data" InputLabels="@labels" Width="150px" Height="150px" LegendPosition="Position.Bottom" 
-        ChartOptions="@(new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } })"/>
+            ChartOptions="@(new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } })"/>
     </MudStack>
 }
 
@@ -57,7 +59,7 @@ else
     {
         <MudPaper Style="background: #888;" Class="rounded-0" Elevation="0">
             <MudStack Row="true" Spacing="2">
-                <MudItem Style="@($"padding: 16px 16px; background:{GetFightResultColor(profileFight.FightResult)};")">
+                <MudItem Style="@($"padding: 16px 16px; background:{FighterHelpers.GetFightResultColor(profileFight.FightResult)};")">
                     <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@profileFight.FightResult.ToText().ToUpper()</MudText>
                 </MudItem>
                 <MudItem Class="flex-auto">
@@ -113,7 +115,7 @@ else
     public FighterProfileDto Profile { get; set; }
     public FighterDto Fighter { get; set; }
 
-    string[] labels = { "Wins", "Losses", "Draws", "No Contest" };
+    string[] labels = [ "Wins", "Losses", "Draws", "No Contest" ];
     double[] data = [];
 
     protected override async Task OnParametersSetAsync()
@@ -128,7 +130,7 @@ else
         try
         {
             Profile = await FightApiClient.GetFighterProfile(FighterId);
-            data = [Profile.Stats.Win, Profile.Stats.Loss, Profile.Stats.Draw, Profile.Stats.NoContest];
+            data = [ Profile.Stats.Win, Profile.Stats.Loss, Profile.Stats.Draw, Profile.Stats.NoContest ];
         }
         catch (Exception ex)
         {
@@ -155,25 +157,6 @@ else
         if (!string.IsNullOrEmpty(fightDto.VideoUrl))
         {
             await JSRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
-        }
-    }
-
-    public string GetFightResultColor(FightResult fightResult)
-    {
-        switch (fightResult)
-        {
-            case FightResult.UPCOMING:
-                return Colors.Grey.Default;
-            case FightResult.WIN:
-                return Colors.Green.Default;
-            case FightResult.LOSS:
-                return Colors.Red.Default;
-            case FightResult.DRAW:
-                return Colors.Grey.Default;
-            case FightResult.NO_CONTEST:
-                return Colors.Blue.Default;
-            default:
-                return Colors.Grey.Default;
         }
     }
 
