@@ -1,39 +1,16 @@
-﻿using FluentValidation;
-using FreakFightsFan.Api.Abstractions;
+﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
-using FreakFightsFan.Shared.Features.Dictionaries.Requests;
-using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using MediatR;
 using FreakFightsFan.Shared.Features.Users.Helpers;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
-    public static class CreateMyDictionary
+    public static class CreateMyDictionaryFeature
     {
-        public class Command : IRequest<int>
-        {
-            public string Name { get; set; }
-            public string Code { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                RuleFor(x => x.Name)
-                    .NotEmpty();
-
-                RuleFor(x => x.Code)
-                    .NotEmpty()
-                    .MaximumLength(30)
-                    .Matches("^[A-Z0-9_]+$")
-                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
-            }
-        }
-
-        public class Handler : IRequestHandler<Command, int>
+        public class Handler : IRequestHandler<CreateMyDictionary.Command, int>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
             private readonly IClock _clock;
@@ -44,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 _clock = clock;
             }
 
-            public async Task<int> Handle(Command command, CancellationToken cancellationToken)
+            public async Task<int> Handle(CreateMyDictionary.Command command, CancellationToken cancellationToken)
             {
                 await ValidateCommand(command);
 
@@ -60,7 +37,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return await _myDictionaryRepository.Create(dictionary);
             }
 
-            private async Task ValidateCommand(Command command)
+            private async Task ValidateCommand(CreateMyDictionary.Command command)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
                 if (codeExists)
@@ -71,11 +48,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaries", async (
-                CreateMyDictionaryRequest request,
+                CreateMyDictionary.Command command,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                int dictionaryId = await mediator.Send(request.ToCreateMyDictionaryCommand(), cancellationToken);
+                int dictionaryId = await mediator.Send(command, cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
             })
                 .WithTags("MyDictionaries")

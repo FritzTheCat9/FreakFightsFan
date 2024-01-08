@@ -1,25 +1,34 @@
 ﻿@inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateMyDictionaryRequest" @ref="@form" Validation="validationErrors.Validate">
+<EditForm @ref="@form" Model="CreateMyDictionaryCommand">
+    <ServerValidator @ref="@serverValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="CreateMyDictionaryRequest.Name" For="@(() => CreateMyDictionaryRequest.Name)" />
-            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryRequest.Code" For="@(() => CreateMyDictionaryRequest.Code)" />
+            <InputText @bind-Value="CreateMyDictionaryCommand.Name" DisplayName="Name" />
+            @* <MudTextField Label="Name" @bind-Value="CreateMyDictionaryCommand.Name" /> *@
+            @* TO DO: zmienić bibliotekę na FluentUI bo MudBlazor ma słabe formularze ok ok *@
+            <ValidationMessage For="@(() => CreateMyDictionaryCommand.Name)" />
+
+            <InputText @bind-Value="CreateMyDictionaryCommand.Code" DisplayName="Code" />
+            @* <MudTextField Label="Code" @bind-Value="CreateMyDictionaryCommand.Code" /> *@
+            <ValidationMessage For="@(() => CreateMyDictionaryCommand.Code)" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
             <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateMyDictionaryRequest CreateMyDictionaryRequest { get; set; } = new();
+    [Parameter] public CreateMyDictionary.Command CreateMyDictionaryCommand { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private EditForm form;
+    private ServerValidator serverValidator;
 
     private void Cancel() => MudDialog.Cancel();
 
@@ -27,13 +36,17 @@
     {
         try
         {
-            await MyDictionaryApiClient.CreateMyDictionary(CreateMyDictionaryRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            var isValid = form.EditContext.Validate();
+
+            if (isValid)
+            {
+                await MyDictionaryApiClient.CreateMyDictionary(CreateMyDictionaryCommand);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            serverValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

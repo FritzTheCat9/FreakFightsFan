@@ -2,7 +2,7 @@
 using FreakFightsFan.Api.Features.Dictionaries.Commands;
 using FreakFightsFan.Api.Features.Dictionaries.Queries;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Dictionaries.Requests;
+using FreakFightsFan.Shared.Features.Dictionaries.Queries;
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
 using System.Linq.Expressions;
 
@@ -12,11 +12,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
     {
         public static IEndpointRouteBuilder AddMyDictionaryEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateMyDictionary.Endpoint(app);
-            DeleteMyDictionary.Endpoint(app);
-            UpdateMyDictionary.Endpoint(app);
-            GetAllMyDictionaries.Endpoint(app);
-            GetMyDictionary.Endpoint(app);
+            CreateMyDictionaryFeature.Endpoint(app);
+            DeleteMyDictionaryFeature.Endpoint(app);
+            UpdateMyDictionaryFeature.Endpoint(app);
+            GetAllMyDictionariesFeature.Endpoint(app);
+            GetMyDictionaryFeature.Endpoint(app);
 
             return app;
         }
@@ -30,37 +30,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
                 Modified = dictionary.Modified,
                 Name = dictionary.Name,
                 Code = dictionary.Code,
-            };
-        }
-
-        public static CreateMyDictionary.Command ToCreateMyDictionaryCommand(this CreateMyDictionaryRequest request)
-        {
-            return new()
-            {
-                Name = request.Name,
-                Code = request.Code,
-            };
-        }
-
-        public static UpdateMyDictionary.Command ToUpdateMyDictionaryCommand(this UpdateMyDictionaryRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                Name = request.Name,
-                Code = request.Code,
-            };
-        }
-
-        public static GetAllMyDictionaries.Query ToGetAllMyDictionariesQuery(this GetAllMyDictionariesRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
             };
         }
 

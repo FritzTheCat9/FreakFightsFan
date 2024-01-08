@@ -6,8 +6,10 @@
 
         public Func<object, string, List<string>> Validate => (model, propertyName) =>
         {
+            // TODO: front validation on model
+
             if (!Errors.ContainsKey(propertyName))
-                Errors.Add(propertyName, new List<string>());
+                Errors.Add(propertyName, []);
 
             return Errors[propertyName];
         };

@@ -63,7 +63,7 @@
 
     private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
     {
-        var getAllMyDictionariesRequest = new GetAllMyDictionariesRequest
+        var getAllMyDictionariesRequest = new GetAllMyDictionaries.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -141,7 +141,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryDialog>();
-        parameters.Add(x => x.CreateMyDictionaryRequest, new());
+        parameters.Add(x => x.CreateMyDictionaryCommand, new());
 
         var createDictionaryDialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
         var result = await createDictionaryDialog.Result;

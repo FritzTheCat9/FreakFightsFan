@@ -17,8 +17,8 @@ namespace FreakFightsFan.Api.Behaviors
         {
             var validationContext = new ValidationContext<TRequest>(request);
 
-            var validationErrors = _validators.
-                Select(validator => validator.Validate(validationContext))
+            var validationErrors = _validators
+                .Select(validator => validator.Validate(validationContext))
                 .Where(validationResult => !validationResult.IsValid)
                 .SelectMany(validationResult => validationResult.Errors)
                 .Select(validationFailure => new ValidationError(validationFailure.PropertyName, validationFailure.ErrorMessage))

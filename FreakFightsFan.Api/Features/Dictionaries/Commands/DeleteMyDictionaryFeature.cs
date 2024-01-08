@@ -1,24 +1,14 @@
-﻿using FluentValidation;
-using FreakFightsFan.Api.Data.Repositories;
+﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
-    public static class DeleteMyDictionary
+    public static class DeleteMyDictionaryFeature
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-
-        }
-
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<DeleteMyDictionary.Command, Unit>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
 
@@ -27,7 +17,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 _myDictionaryRepository = myDictionaryRepository;
             }
 
-            public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(DeleteMyDictionary.Command command, CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 await _myDictionaryRepository.Delete(dictionary);
@@ -42,7 +32,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new Command() { Id = id };
+                var command = new DeleteMyDictionary.Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
                 .WithTags("MyDictionaries")

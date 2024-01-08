@@ -13,9 +13,11 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
         public static IEndpointRouteBuilder AddUserEndpoints(this IEndpointRouteBuilder app)
         {
             ConfirmEmail.Endpoint(app);
+            DegradeUser.Endpoint(app);
             Login.Endpoint(app);
+            PromoteUser.Endpoint(app);
             Register.Endpoint(app);
-            //UpdateUser.Endpoint(app);
+            UpdateUser.Endpoint(app);
             GetAllUsers.Endpoint(app);
             GetUser.Endpoint(app);
 
@@ -31,6 +33,8 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
                 Modified = user.Modified,
                 UserName = user.UserName,
                 Email = user.Email,
+                IsAdmin = user.IsAdmin,
+                IsSuperAdmin = user.IsSuperAdmin,
             };
         }
         
@@ -54,14 +58,14 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
             };
         }
 
-        //public static UpdateUser.Command ToUpdateUserCommand(this UpdateUserRequest request, int id)
-        //{
-        //    return new()
-        //    {
-        //        Id = id,
-        //        ImageBase64 = request.ImageBase64
-        //    };
-        //}
+        public static UpdateUser.Command ToUpdateUserCommand(this UpdateUserRequest request, int id)
+        {
+            return new()
+            {
+                Id = id,
+                ImageBase64 = request.ImageBase64
+            };
+        }
 
         public static GetAllUsers.Query ToGetAllUsersQuery(this GetAllUsersRequest request)
         {

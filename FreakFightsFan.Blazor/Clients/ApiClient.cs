@@ -12,6 +12,7 @@ namespace FreakFightsFan.Blazor.Clients
         Task Post<TRequest>(string url, TRequest tRequest);
         Task<TResponse> Post<TRequest, TResponse>(string url, TRequest tRequest);
         Task Put<TRequest>(string url, TRequest tRequest);
+        Task Put(string url);
         Task Delete(string url);
     }
 
@@ -65,6 +66,15 @@ namespace FreakFightsFan.Blazor.Clients
         {
             await AddJwtAccessTokenToHeader();
             var response = await _client.PutAsJsonAsync($"{_baseUrl}{url}", tRequest);
+
+            if (!response.IsSuccessStatusCode)
+                await HandleErrors(response);
+        }
+
+        public async Task Put(string url)
+        {
+            await AddJwtAccessTokenToHeader();
+            var response = await _client.PutAsync($"{_baseUrl}{url}", null);
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);

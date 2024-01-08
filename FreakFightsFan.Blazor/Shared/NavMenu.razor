@@ -6,10 +6,6 @@
         <MudNavGroup Title="Admin Panel" Expanded="true">
             <MudNavLink Href="/images" Match="NavLinkMatch.Prefix">Images</MudNavLink>
             <MudNavLink Href="/dictionaries" Match="NavLinkMatch.Prefix">Dictionaries</MudNavLink>
-        </MudNavGroup>
-    </AuthorizeView>
-    <AuthorizeView Policy=@($"{Policy.SuperAdmin}")>
-        <MudNavGroup Title="Super Admin Panel" Expanded="true">
             <MudNavLink Href="/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
         </MudNavGroup>
     </AuthorizeView>

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FreakFightsFan.Api.Behaviors;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using System.Reflection;
 
 namespace FreakFightsFan.Api.Abstractions
@@ -15,7 +16,9 @@ namespace FreakFightsFan.Api.Abstractions
                 config.AddOpenBehavior(typeof(UnitOfWorkPipelineBehavior<,>));
             });
 
+            services.AddValidatorsFromAssembly(typeof(CreateMyDictionary.Validator).Assembly);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
             ValidatorOptions.Global.LanguageManager.Enabled = false;
 
             return services;

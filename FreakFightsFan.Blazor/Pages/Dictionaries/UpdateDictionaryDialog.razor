@@ -16,7 +16,7 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateMyDictionaryRequest UpdateMyDictionaryRequest { get; set; } = new();
+    [Parameter] public UpdateMyDictionary.Command UpdateMyDictionaryRequest { get; set; } = new();
 
     private ValidationErrors validationErrors = new();
     private MudForm form;

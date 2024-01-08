@@ -3,12 +3,16 @@ using FreakFightsFan.Blazor;
 using FreakFightsFan.Blazor.Auth;
 using FreakFightsFan.Blazor.Clients;
 using FreakFightsFan.Blazor.Pages.Error;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using System.Security.Claims;
+using FluentValidation;
+using System.Reflection;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,6 +20,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddMudServices();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7277") });
+builder.Services.AddFluentUIComponents();
+
+builder.Services.AddValidatorsFromAssembly(typeof(CreateMyDictionary.Validator).Assembly);
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+ValidatorOptions.Global.LanguageManager.Enabled = false;
 
 builder.Services.AddBlazoredLocalStorage();
 

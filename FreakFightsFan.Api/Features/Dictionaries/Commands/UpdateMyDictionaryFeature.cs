@@ -1,39 +1,15 @@
-﻿using FluentValidation;
-using FreakFightsFan.Api.Abstractions;
+﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
-using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using FreakFightsFan.Shared.Exceptions;
-using FreakFightsFan.Shared.Features.Dictionaries.Requests;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
-    public static class UpdateMyDictionary
+    public static class UpdateMyDictionaryFeature
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public string Code { get; set; }
-        }
-
-        public class Validator : AbstractValidator<Command>
-        {
-            public Validator()
-            {
-                RuleFor(x => x.Name)
-                    .NotEmpty();
-
-                RuleFor(x => x.Code)
-                    .NotEmpty()
-                    .MaximumLength(30)
-                    .Matches("^[A-Z0-9_]+$")
-                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
-            }
-        }
-
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<UpdateMyDictionary.Command, Unit>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
             private readonly IClock _clock;
@@ -44,7 +20,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 _clock = clock;
             }
 
-            public async Task<Unit> Handle(Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(UpdateMyDictionary.Command command, CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
@@ -58,7 +34,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(Command command)
+            private async Task ValidateCommand(UpdateMyDictionary.Command command)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
                 if (codeExists)
@@ -70,11 +46,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         {
             app.MapPut("/api/myDictionaries/{id}", async (
                 int id,
-                UpdateMyDictionaryRequest request,
+                UpdateMyDictionary.Command command,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                return Results.Ok(await mediator.Send(request.ToUpdateMyDictionaryCommand(id), cancellationToken));
+                return Results.Ok(await mediator.Send(command, cancellationToken));
             })
                 .WithTags("MyDictionaries")
                 .RequireAuthorization(Policy.Admin);
