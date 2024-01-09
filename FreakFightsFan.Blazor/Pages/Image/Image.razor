@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IImageApiClient ImageApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Images</PageTitle>
@@ -18,7 +18,7 @@
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Images</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateImage())"/>
+        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateImage())"/>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -44,8 +44,8 @@
         <MudTd DataLabel="Modified">@context.Modified</MudTd>
         <MudTd DataLabel="Modified">@context.Name</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateImage(@context))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteImage(@context.Id))"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -70,7 +70,7 @@
 
     private async Task<TableData<ImageDto>> ServerReload(TableState state)
     {
-        var getAllImagesRequest = new GetAllImagesRequest
+        var query = new GetAllImages.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -80,7 +80,7 @@
 
         try
         {
-            ImagesPagedList = await ImageApiClient.GetAllImages(getAllImagesRequest);
+            ImagesPagedList = await ImageApiClient.GetAllImages(query);
         }
         catch (Exception ex)
         {
@@ -118,9 +118,9 @@
     private async Task UpdateImage(ImageDto imageDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<UpdateImageDialog>();
+        var parameters = new MudBlazor.DialogParameters<UpdateImageDialog>();
 
-        parameters.Add(x => x.UpdateImageRequest, new()
+        parameters.Add(x => x.UpdateImageCommand, new()
         {
             Id = imageDto.Id,
             ImageBase64 = ""
@@ -136,8 +136,8 @@
     private async Task CreateImage()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateImageDialog>();
-        parameters.Add(x => x.CreateImageRequest, new());
+        var parameters = new MudBlazor.DialogParameters<CreateImageDialog>();
+        parameters.Add(x => x.CreateImageCommand, new());
 
         var createImageDialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
         var result = await createImageDialog.Result;

@@ -11,6 +11,21 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
 {
     public static class GetAllMyDictionariesFeature
     {
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        {
+            app.MapPost("/api/myDictionaries/all", async (
+                GetAllMyDictionaries.Query query,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
+
+            return app;
+        }
+
         public class Handler : IRequestHandler<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
@@ -34,21 +49,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
 
                 return await Task.FromResult(dictionariesPagedList);
             }
-        }
-
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/myDictionaries/all", async (
-                GetAllMyDictionaries.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
-                .WithTags("MyDictionaries")
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
     }
 }

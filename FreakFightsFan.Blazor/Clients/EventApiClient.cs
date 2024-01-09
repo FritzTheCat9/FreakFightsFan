@@ -1,15 +1,16 @@
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Events.Requests;
+using FreakFightsFan.Shared.Features.Events.Commands;
+using FreakFightsFan.Shared.Features.Events.Queries;
 using FreakFightsFan.Shared.Features.Events.Responses;
 
 namespace FreakFightsFan.Blazor.Clients
 {
     public interface IEventApiClient
     {
-        Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest request);
+        Task<PagedList<EventDto>> GetAllEvents(GetAllEvents.Query query);
         Task<EventDto> GetEvent(int id);
-        Task CreateEvent(CreateEventRequest request);
-        Task UpdateEvent(UpdateEventRequest request);
+        Task CreateEvent(CreateEvent.Command command);
+        Task UpdateEvent(UpdateEvent.Command command);
         Task DeleteEvent(int id);
     }
 
@@ -23,9 +24,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<EventDto>> GetAllEvents(GetAllEventsRequest request)
+        public async Task<PagedList<EventDto>> GetAllEvents(GetAllEvents.Query query)
         {
-            return await _apiClient.Post<GetAllEventsRequest, PagedList<EventDto>>($"{_url}/all", request);
+            return await _apiClient.Post<GetAllEvents.Query, PagedList<EventDto>>($"{_url}/all", query);
         }
 
         public async Task<EventDto> GetEvent(int id)
@@ -33,14 +34,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<EventDto>($"{_url}/{id}");
         }
 
-        public async Task CreateEvent(CreateEventRequest request)
+        public async Task CreateEvent(CreateEvent.Command command)
         {
-            await _apiClient.Post(_url, request);
+            await _apiClient.Post(_url, command);
         }
 
-        public async Task UpdateEvent(UpdateEventRequest request)
+        public async Task UpdateEvent(UpdateEvent.Command command)
         {
-            await _apiClient.Put($"{_url}/{request.Id}", request);
+            await _apiClient.Put($"{_url}/{command.Id}", command);
         }
 
         public async Task DeleteEvent(int id)

@@ -3,7 +3,7 @@ using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
 using FreakFightsFan.Api.Features.Events.Commands;
 using FreakFightsFan.Api.Features.Events.Queries;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Events.Requests;
+using FreakFightsFan.Shared.Features.Events.Queries;
 using FreakFightsFan.Shared.Features.Events.Responses;
 using System.Linq.Expressions;
 
@@ -13,11 +13,11 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
     {
         public static IEndpointRouteBuilder AddEventEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateEvent.Endpoint(app);
-            DeleteEvent.Endpoint(app);
-            UpdateEvent.Endpoint(app);
-            GetAllEvents.Endpoint(app);
-            GetEvent.Endpoint(app);
+            CreateEventFeature.Endpoint(app);
+            DeleteEventFeature.Endpoint(app);
+            UpdateEventFeature.Endpoint(app);
+            GetAllEventsFeature.Endpoint(app);
+            GetEventFeature.Endpoint(app);
 
             return app;
         }
@@ -34,43 +34,6 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
                 FederationId = myEvent.FederationId,
                 City = myEvent.City?.ToDto(),
                 Hall = myEvent.Hall?.ToDto(),
-            };
-        }
-
-        public static CreateEvent.Command ToCreateEventCommand(this CreateEventRequest request)
-        {
-            return new()
-            {
-                Name = request.Name,
-                Date = request.Date,
-                FederationId = request.FederationId,
-                CityId = request.CityId,
-                HallId = request.HallId,
-            };
-        }
-
-        public static UpdateEvent.Command ToUpdateEventCommand(this UpdateEventRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                Name = request.Name,
-                Date = request.Date,
-                CityId = request.CityId,
-                HallId = request.HallId,
-            };
-        }
-
-        public static GetAllEvents.Query ToGetAllEventsQuery(this GetAllEventsRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
-                FederationId = request.FederationId,
             };
         }
 

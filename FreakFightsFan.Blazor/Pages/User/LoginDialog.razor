@@ -1,14 +1,14 @@
 ﻿@inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="LoginRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="LoginCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Email" @bind-Value="LoginRequest.Email" For="@(() => LoginRequest.Email)" />
-            <PasswordField @bind-Value="LoginRequest.Password" For="@(() => LoginRequest.Password)" />
+            <MudTextField Label="Email" @bind-Value="LoginCommand.Email" For="@(() => LoginCommand.Email)" />
+            <PasswordField @bind-Value="LoginCommand.Password" For="@(() => LoginCommand.Password)" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" Disabled="@_processing">
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary" Disabled="@_processing">
                 @if (_processing)
                 {
                     <MudProgressCircular Size="Size.Small" Indeterminate="true" />
@@ -25,7 +25,7 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public LoginRequest LoginRequest { get; set; } = new();
+    [Parameter] public Login.Command LoginCommand { get; set; } = new();
 
     private ValidationErrors validationErrors = new();
     private MudForm form;
@@ -40,8 +40,8 @@
 
         try
         {
-            var token = await UserApiClient.Login(LoginRequest);
-            MudDialog.Close(DialogResult.Ok<JwtDto>(token));
+            var token = await UserApiClient.Login(LoginCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok<JwtDto>(token));
         }
         catch (MyValidationException validationException)
         {

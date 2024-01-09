@@ -1,7 +1,7 @@
 ﻿using FreakFightsFan.Blazor.Pages.Error;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
-using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
+using FreakFightsFan.Shared.Features.DictionaryItems.Queries;
 using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 
 namespace FreakFightsFan.Blazor.Clients
@@ -46,7 +46,7 @@ namespace FreakFightsFan.Blazor.Clients
         {
             PagedList<MyDictionaryItemDto> DictionaryItemsPagedList;
 
-            var getAllMyDictionaryItemsByCodeRequest = new GetAllMyDictionaryItemsByCodeRequest
+            var query = new GetAllMyDictionaryItemsByCode.Query
             {
                 Page = 1,
                 PageSize = 10,
@@ -58,7 +58,7 @@ namespace FreakFightsFan.Blazor.Clients
 
             try
             {
-                DictionaryItemsPagedList = await _myDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(getAllMyDictionaryItemsByCodeRequest);
+                DictionaryItemsPagedList = await _myDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(query);
             }
             catch (Exception ex)
             {

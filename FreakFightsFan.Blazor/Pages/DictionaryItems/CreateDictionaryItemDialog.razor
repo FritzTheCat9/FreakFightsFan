@@ -1,22 +1,22 @@
 ﻿@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateMyDictionaryItemRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="CreateMyDictionaryItemCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="CreateMyDictionaryItemRequest.Name" For="@(() => CreateMyDictionaryItemRequest.Name)" />
-            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryItemRequest.Code" For="@(() => CreateMyDictionaryItemRequest.Code)" />
+            <MudTextField Label="Name" @bind-Value="CreateMyDictionaryItemCommand.Name" For="@(() => CreateMyDictionaryItemCommand.Name)" />
+            <MudTextField Label="Code" @bind-Value="CreateMyDictionaryItemCommand.Code" For="@(() => CreateMyDictionaryItemCommand.Code)" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateMyDictionaryItemRequest CreateMyDictionaryItemRequest { get; set; } = new();
+    [Parameter] public CreateMyDictionaryItem.Command CreateMyDictionaryItemCommand { get; set; } = new();
 
     private ValidationErrors validationErrors = new();
     private MudForm form;
@@ -27,8 +27,8 @@
     {
         try
         {
-            await MyDictionaryItemApiClient.CreateMyDictionaryItem(CreateMyDictionaryItemRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await MyDictionaryItemApiClient.CreateMyDictionaryItem(CreateMyDictionaryItemCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

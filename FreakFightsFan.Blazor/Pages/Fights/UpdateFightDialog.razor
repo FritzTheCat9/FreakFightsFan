@@ -3,7 +3,7 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFightRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="UpdateFightCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
@@ -24,15 +24,15 @@
                                     <DisplayFighterListItem Fighter="@context" />
                                 </ItemTemplate>
                             </MudAutocomplete>
-                            <MyValidationMessage T="List<CreateTeamModel>" For="@(() => UpdateFightRequest.Teams)" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="@(() => UpdateFightCommand.Teams)" ValidationErrors="validationErrors" />
                         </MudItem>
                         <MudItem xs="2" Class="d-flex">
-                            <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+                            <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">Add</MudButton>
                         </MudItem>
                         @foreach (var team in _teams)
                         {
                             <MudItem xs="12" md="6" @onclick="@(() => SelectTeam(team.Number))" Style="cursor: pointer;">
-                                <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
+                                <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? MudBlazor.Color.Primary : MudBlazor.Color.Default" GutterBottom="true">
                                     Team @($"{team.Number + 1}")
                                 </MudText>
                                 @if (team.Fighters.Any())
@@ -52,7 +52,7 @@
                         }
                     </MudGrid>
                 </MudTabPanel>
-                <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Settings">
+                <MudTabPanel Text="Options" Icon="@MudBlazor.Icons.Material.Filled.Settings">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="12">
                             <ChildContent>
@@ -74,7 +74,7 @@
                             </MudAutocomplete>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="UpdateFightRequest.VideoUrl" For="() => UpdateFightRequest.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
+                            <MudTextField @bind-Value="UpdateFightCommand.VideoUrl" For="() => UpdateFightCommand.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
@@ -82,14 +82,14 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFightRequest UpdateFightRequest { get; set; } = new();
+    [Parameter] public UpdateFight.Command UpdateFightCommand { get; set; } = new();
     [Parameter] public List<TeamDto> Teams { get; set; } = [];
     [Parameter] public int NumberOfTeams { get; set; }
     [Parameter] public MyDictionaryItemDto FightType { get; set; }
@@ -101,7 +101,7 @@
     private List<int> allowedTeamSizes = [ 2, 3, 4, 5 ];
     private FighterDto _fighter;
     private int _selectedTeam;
-    private List<TeamHelperModel> _teams = [];
+    private List<CreateFight.TeamHelperModel> _teams = [];
 
     protected override void OnInitialized()
     {
@@ -114,7 +114,7 @@
 
         foreach (var team in Teams)
         {
-            var fighters = new List<FighterHelperModel>();
+            var fighters = new List<CreateFight.FighterHelperModel>();
             foreach (var teamFighters in team.FighterInTeams)
             {
                 fighters.Add(new()
@@ -124,7 +124,7 @@
                 });
             }
 
-            var teamHelperModel = new TeamHelperModel()
+            var teamHelperModel = new CreateFight.TeamHelperModel()
             {
                 Number = team.Number,
                 Fighters = fighters,
@@ -134,7 +134,7 @@
         }
     }
 
-    private void DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
+    private void DeleteFighterListItem(CreateFight.TeamHelperModel team, CreateFight.FighterHelperModel fighter)
     {
         var pickedTeam = _teams.FirstOrDefault(x => x.Number == team.Number);
         if (pickedTeam is not null)
@@ -208,7 +208,7 @@
     {
         PagedList<FighterDto> FightersPagedList = null;
 
-        var getAllFightersRequest = new GetAllFightersRequest
+        var query = new GetAllFighters.Query
         {
             Page = 1,
             PageSize = 10,
@@ -220,7 +220,7 @@
 
         try
         {
-            FightersPagedList = await FighterApiClient.GetAllFighters(getAllFightersRequest);
+            FightersPagedList = await FighterApiClient.GetAllFighters(query);
         }
         catch (Exception ex)
         {
@@ -237,15 +237,15 @@
     {
         try
         {
-            UpdateFightRequest.Teams = [];
+            UpdateFightCommand.Teams = [];
 
             foreach (var team in _teams)
             {
-                var teamFighters = new List<TeamFighterModel>();
+                var teamFighters = new List<CreateFight.TeamFighterModel>();
 
                 foreach (var fighter in team.Fighters)
                 {
-                    var teamFighterModel = new TeamFighterModel()
+                    var teamFighterModel = new CreateFight.TeamFighterModel()
                     {
                         FighterId = fighter.Fighter.Id,
                         FightResult = fighter.FightResult,
@@ -254,13 +254,13 @@
                     teamFighters.Add(teamFighterModel);
                 }
 
-                UpdateFightRequest.Teams.Add(new() { Fighters = teamFighters });
+                UpdateFightCommand.Teams.Add(new() { Fighters = teamFighters });
             }
 
-            UpdateFightRequest.TypeId = FightType?.Id;
+            UpdateFightCommand.TypeId = FightType?.Id;
 
-            await FightApiClient.UpdateFight(UpdateFightRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await FightApiClient.UpdateFight(UpdateFightCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

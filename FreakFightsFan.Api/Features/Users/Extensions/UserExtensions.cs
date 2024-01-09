@@ -2,7 +2,7 @@
 using FreakFightsFan.Api.Features.Users.Commands;
 using FreakFightsFan.Api.Features.Users.Queries;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Users.Requests;
+using FreakFightsFan.Shared.Features.Users.Queries;
 using FreakFightsFan.Shared.Features.Users.Responses;
 using System.Linq.Expressions;
 
@@ -12,14 +12,14 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
     {
         public static IEndpointRouteBuilder AddUserEndpoints(this IEndpointRouteBuilder app)
         {
-            ConfirmEmail.Endpoint(app);
-            DegradeUser.Endpoint(app);
-            Login.Endpoint(app);
-            PromoteUser.Endpoint(app);
-            Register.Endpoint(app);
-            UpdateUser.Endpoint(app);
-            GetAllUsers.Endpoint(app);
-            GetUser.Endpoint(app);
+            ConfirmEmailFeature.Endpoint(app);
+            DegradeUserFeature.Endpoint(app);
+            LoginFeature.Endpoint(app);
+            PromoteUserFeature.Endpoint(app);
+            RegisterFeature.Endpoint(app);
+            UpdateUserFeature.Endpoint(app);
+            GetAllUsersFeature.Endpoint(app);
+            GetUserFeature.Endpoint(app);
 
             return app;
         }
@@ -38,47 +38,6 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
             };
         }
         
-        public static Login.Command ToLoginCommand(this LoginRequest request)
-        {
-            return new()
-            {
-                Email = request.Email,
-                Password = request.Password,
-            };
-        }
-
-        public static Register.Command ToRegisterCommand(this RegisterRequest request)
-        {
-            return new()
-            {
-                Email = request.Email,
-                UserName = request.UserName,
-                Password = request.Password,
-                RepeatPassword = request.RepeatPassword,
-            };
-        }
-
-        public static UpdateUser.Command ToUpdateUserCommand(this UpdateUserRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                ImageBase64 = request.ImageBase64
-            };
-        }
-
-        public static GetAllUsers.Query ToGetAllUsersQuery(this GetAllUsersRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
-            };
-        }
-
         public static IQueryable<User> FilterMyUsers(this IQueryable<User> users, GetAllUsers.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();

@@ -1,6 +1,5 @@
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.Teams.Queries;
-using FreakFightsFan.Shared.Features.Teams.Requests;
 using FreakFightsFan.Shared.Features.Teams.Responses;
 using FreakFightsFan.Api.Features.TeamFighters.Extensions;
 
@@ -10,8 +9,8 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
     {
         public static IEndpointRouteBuilder AddTeamEndpoints(this IEndpointRouteBuilder app)
         {
-            GetAllTeams.Endpoint(app);
-            GetTeam.Endpoint(app);
+            GetAllTeamsFeature.Endpoint(app);
+            GetTeamFeature.Endpoint(app);
 
             return app;
         }
@@ -26,15 +25,6 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
                 Number = team.Number,
                 FightId = team.FightId,
                 FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList(),
-            };
-        }
-
-        public static GetAllTeams.Query ToGetAllTeamsQuery(this GetAllTeamsRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
             };
         }
     }

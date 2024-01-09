@@ -10,6 +10,22 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
     public static class CreateMyDictionaryFeature
     {
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        {
+            app.MapPost("/api/myDictionaries", async (
+                CreateMyDictionary.Command command,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                int dictionaryId = await mediator.Send(command, cancellationToken);
+                return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
+            })
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
+
+            return app;
+        }
+
         public class Handler : IRequestHandler<CreateMyDictionary.Command, int>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
@@ -43,22 +59,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 if (codeExists)
                     throw new MyValidationException("Code", "'Code' must be unique");
             }
-        }
-
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/myDictionaries", async (
-                CreateMyDictionary.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int dictionaryId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
-            })
-                .WithTags("MyDictionaries")
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
     }
 }

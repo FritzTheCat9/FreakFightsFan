@@ -2,7 +2,7 @@ using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.Images.Commands;
 using FreakFightsFan.Api.Features.Images.Queries;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Images.Requests;
+using FreakFightsFan.Shared.Features.Images.Queries;
 using FreakFightsFan.Shared.Features.Images.Responses;
 using System.Linq.Expressions;
 
@@ -12,13 +12,13 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
     {
         public static IEndpointRouteBuilder AddImageEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateImage.Endpoint(app);
-            DeleteImage.Endpoint(app);
-            ImportFederationImages.Endpoint(app);
-            ImportFighterImages.Endpoint(app);
-            UpdateImage.Endpoint(app);
-            GetAllImages.Endpoint(app);
-            GetImage.Endpoint(app);
+            CreateImageFeature.Endpoint(app);
+            DeleteImageFeature.Endpoint(app);
+            ImportFederationImagesFeature.Endpoint(app);
+            ImportFighterImagesFeature.Endpoint(app);
+            UpdateImageFeature.Endpoint(app);
+            GetAllImagesFeature.Endpoint(app);
+            GetImageFeature.Endpoint(app);
 
             return app;
         }
@@ -32,34 +32,6 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
                 Modified = image.Modified,
                 Name = image.Name,
                 Url = image.Url
-            };
-        }
-
-        public static CreateImage.Command ToCreateImageCommand(this CreateImageRequest request)
-        {
-            return new()
-            {
-                ImageBase64 = request.ImageBase64,
-            };
-        }
-
-        public static UpdateImage.Command ToUpdateImageCommand(this UpdateImageRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                ImageBase64 = request.ImageBase64
-            };
-        }
-
-        public static GetAllImages.Query ToGetAllImagesQuery(this GetAllImagesRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
             };
         }
 

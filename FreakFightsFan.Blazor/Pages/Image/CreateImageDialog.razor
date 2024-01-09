@@ -1,22 +1,22 @@
 @inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateImageRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="CreateImageCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="CreateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" />
-            <MyValidationMessage T="string" For="@(() => CreateImageRequest.ImageBase64)" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="CreateImageCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" />
+            <MyValidationMessage T="string" For="@(() => CreateImageCommand.ImageBase64)" ValidationErrors="validationErrors" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateImageRequest CreateImageRequest { get; set; } = new();
+    [Parameter] public CreateImage.Command CreateImageCommand { get; set; } = new();
 
     private ValidationErrors validationErrors = new();
     private MudForm form;
@@ -31,8 +31,8 @@
             if (!IsImageValid)
                 return;
 
-            await ImageApiClient.CreateImage(CreateImageRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await ImageApiClient.CreateImage(CreateImageCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

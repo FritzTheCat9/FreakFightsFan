@@ -1,15 +1,16 @@
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Images.Requests;
+using FreakFightsFan.Shared.Features.Images.Commands;
+using FreakFightsFan.Shared.Features.Images.Queries;
 using FreakFightsFan.Shared.Features.Images.Responses;
 
 namespace FreakFightsFan.Blazor.Clients
 {
     public interface IImageApiClient
     {
-        Task<PagedList<ImageDto>> GetAllImages(GetAllImagesRequest request);
+        Task<PagedList<ImageDto>> GetAllImages(GetAllImages.Query query);
         Task<ImageDto> GetImage(int id);
-        Task CreateImage(CreateImageRequest request);
-        Task UpdateImage(UpdateImageRequest request);
+        Task CreateImage(CreateImage.Command command);
+        Task UpdateImage(UpdateImage.Command command);
         Task DeleteImage(int id);
     }
 
@@ -23,9 +24,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<ImageDto>> GetAllImages(GetAllImagesRequest request)
+        public async Task<PagedList<ImageDto>> GetAllImages(GetAllImages.Query query)
         {
-            return await _apiClient.Post<GetAllImagesRequest, PagedList<ImageDto>>($"{_url}/all", request);
+            return await _apiClient.Post<GetAllImages.Query, PagedList<ImageDto>>($"{_url}/all", query);
         }
 
         public async Task<ImageDto> GetImage(int id)
@@ -33,14 +34,14 @@ namespace FreakFightsFan.Blazor.Clients
             return await _apiClient.Get<ImageDto>($"{_url}/{id}");
         }
 
-        public async Task CreateImage(CreateImageRequest request)
+        public async Task CreateImage(CreateImage.Command command)
         {
-            await _apiClient.Post(_url, request);
+            await _apiClient.Post(_url, command);
         }
 
-        public async Task UpdateImage(UpdateImageRequest request)
+        public async Task UpdateImage(UpdateImage.Command command)
         {
-            await _apiClient.Put($"{_url}/{request.Id}", request);
+            await _apiClient.Put($"{_url}/{command.Id}", command);
         }
 
         public async Task DeleteImage(int id)

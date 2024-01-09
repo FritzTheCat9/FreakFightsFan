@@ -4,7 +4,6 @@ using FreakFightsFan.Api.Features.Events.Extensions;
 using FreakFightsFan.Api.Features.Fights.Commands;
 using FreakFightsFan.Api.Features.Fights.Queries;
 using FreakFightsFan.Api.Features.Teams.Extensions;
-using FreakFightsFan.Shared.Features.Fights.Requests;
 using FreakFightsFan.Shared.Features.Fights.Responses;
 
 namespace FreakFightsFan.Api.Features.Fights.Extensions
@@ -13,13 +12,13 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
     {
         public static IEndpointRouteBuilder AddFightEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateFight.Endpoint(app);
-            DeleteFight.Endpoint(app);
-            MoveFight.Endpoint(app);
-            UpdateFight.Endpoint(app);
-            GetAllFights.Endpoint(app);
-            GetFight.Endpoint(app);
-            GetFighterProfile.Endpoint(app);
+            CreateFightFeature.Endpoint(app);
+            DeleteFightFeature.Endpoint(app);
+            MoveFightFeature.Endpoint(app);
+            UpdateFightFeature.Endpoint(app);
+            GetAllFightsFeature.Endpoint(app);
+            GetFightFeature.Endpoint(app);
+            GetFighterProfileFeature.Endpoint(app);
 
             return app;
         }
@@ -37,47 +36,6 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
                 Event = fight.Event.ToDto(),
                 Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
                 Type = fight.Type?.ToDto(),
-            };
-        }
-
-        public static CreateFight.Command ToCreateFightCommand(this CreateFightRequest request)
-        {
-            return new()
-            {
-                EventId = request.EventId,
-                Teams = request.Teams,
-                VideoUrl = request.VideoUrl,
-                TypeId = request.TypeId,
-            };
-        }
-
-        public static MoveFight.Command ToMoveFightCommand(this MoveFightRequest request, int id)
-        {
-            return new()
-            {
-                Id = id, 
-                Direction = request.Direction,
-            };
-        }
-
-        public static UpdateFight.Command ToUpdateFightCommand(this UpdateFightRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                Teams = request.Teams,
-                VideoUrl = request.VideoUrl,
-                TypeId = request.TypeId,
-            };
-        }
-
-        public static GetAllFights.Query ToGetAllFightsQuery(this GetAllFightsRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                EventId = request.EventId
             };
         }
     }

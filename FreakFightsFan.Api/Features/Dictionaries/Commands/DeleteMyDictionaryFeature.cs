@@ -8,6 +8,22 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
     public static class DeleteMyDictionaryFeature
     {
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        {
+            app.MapDelete("/api/myDictionaries/{id}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                var command = new DeleteMyDictionary.Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
+
+            return app;
+        }
+
         public class Handler : IRequestHandler<DeleteMyDictionary.Command, Unit>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
@@ -23,22 +39,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 await _myDictionaryRepository.Delete(dictionary);
                 return Unit.Value;
             }
-        }
-
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapDelete("/api/myDictionaries/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteMyDictionary.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
-                .WithTags("MyDictionaries")
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
     }
 }

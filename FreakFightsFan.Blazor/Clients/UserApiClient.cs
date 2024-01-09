@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Users.Requests;
+using FreakFightsFan.Shared.Features.Users.Commands;
+using FreakFightsFan.Shared.Features.Users.Queries;
 using FreakFightsFan.Shared.Features.Users.Responses;
 
 namespace FreakFightsFan.Blazor.Clients
@@ -8,11 +9,11 @@ namespace FreakFightsFan.Blazor.Clients
     {
         Task<bool> ConfirmEmail(string email, string token);
         Task DegradeUser(int id);
-        Task<JwtDto> Login(LoginRequest request);
+        Task<JwtDto> Login(Login.Command command);
         Task PromoteUser(int id);
-        Task Register(RegisterRequest request);
-        Task UpdateUser(UpdateUserRequest request);
-        Task<PagedList<UserDto>> GetAllUsers(GetAllUsersRequest request);
+        Task Register(Register.Command command);
+        Task UpdateUser(UpdateUser.Command command);
+        Task<PagedList<UserDto>> GetAllUsers(GetAllUsers.Query query);
         Task<UserDto> GetUser(int id);
     }
 
@@ -36,9 +37,9 @@ namespace FreakFightsFan.Blazor.Clients
             await _apiClient.Put($"{_url}/degrade/{id}");
         }
 
-        public async Task<JwtDto> Login(LoginRequest request)
+        public async Task<JwtDto> Login(Login.Command command)
         {
-            return await _apiClient.Post<LoginRequest, JwtDto>($"{_url}/login", request);
+            return await _apiClient.Post<Login.Command, JwtDto>($"{_url}/login", command);
         }
 
         public async Task PromoteUser(int id)
@@ -46,19 +47,19 @@ namespace FreakFightsFan.Blazor.Clients
             await _apiClient.Put($"{_url}/promote/{id}");
         }
 
-        public async Task Register(RegisterRequest request)
+        public async Task Register(Register.Command command)
         {
-            await _apiClient.Post($"{_url}/register", request);
+            await _apiClient.Post($"{_url}/register", command);
         }
 
-        public async Task UpdateUser(UpdateUserRequest request)
+        public async Task UpdateUser(UpdateUser.Command command)
         {
-            await _apiClient.Put($"{_url}/{request.Id}", request);
+            await _apiClient.Put($"{_url}/{command.Id}", command);
         }
 
-        public async Task<PagedList<UserDto>> GetAllUsers(GetAllUsersRequest request)
+        public async Task<PagedList<UserDto>> GetAllUsers(GetAllUsers.Query query)
         {
-            return await _apiClient.Post<GetAllUsersRequest, PagedList<UserDto>>($"{_url}/all", request);
+            return await _apiClient.Post<GetAllUsers.Query, PagedList<UserDto>>($"{_url}/all", query);
         }
 
         public async Task<UserDto> GetUser(int id)

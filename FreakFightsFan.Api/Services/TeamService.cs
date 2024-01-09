@@ -2,13 +2,13 @@
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
-using FreakFightsFan.Shared.Features.Fights.Requests;
+using FreakFightsFan.Shared.Features.Fights.Commands;
 
 namespace FreakFightsFan.Api.Services
 {
     public interface ITeamService
     {
-        Task<List<Team>> CreateFightTeams(List<CreateTeamModel> teams);
+        Task<List<Team>> CreateFightTeams(List<CreateFight.CreateTeamModel> teams);
     }
 
     public class TeamService : ITeamService
@@ -22,7 +22,7 @@ namespace FreakFightsFan.Api.Services
             _clock = clock;
         }
 
-        public async Task<List<Team>> CreateFightTeams(List<CreateTeamModel> teams)
+        public async Task<List<Team>> CreateFightTeams(List<CreateFight.CreateTeamModel> teams)
         {
             var teamsInFight = new List<Team>();
             var teamNumber = 0;

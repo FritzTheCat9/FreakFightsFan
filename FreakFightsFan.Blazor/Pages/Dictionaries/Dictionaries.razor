@@ -3,7 +3,8 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryApiClient MyDictionaryApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
+@inject Fluent.IDialogService FluentDialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Dictionaries</PageTitle>
@@ -18,10 +19,10 @@
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Dictionaries</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionary())"/>
+        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionary())"/>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">Name</MudTableSortLabel></MudTh>
@@ -33,11 +34,11 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"/>
         </MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionary(@context))"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionary(@context.Id))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionary(@context))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionary(@context.Id))"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -123,7 +124,7 @@
     private async Task UpdateDictionary(MyDictionaryDto myDictionaryDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<UpdateDictionaryDialog>();
+        var parameters = new MudBlazor.DialogParameters<UpdateDictionaryDialog>();
         parameters.Add(x => x.UpdateMyDictionaryRequest, new()
         {
             Id = myDictionaryDto.Id,
@@ -139,13 +140,26 @@
 
     private async Task CreateDictionary()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateDictionaryDialog>();
-        parameters.Add(x => x.CreateMyDictionaryCommand, new());
-
-        var createDictionaryDialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
-        var result = await createDictionaryDialog.Result;
-        if (!result.Canceled)
+        Fluent.DialogParameters parameters = new()
+        {
+            Title = $"Create Dictionary",
+            Width = "500px",
+            Height = "500px", 
+            TrapFocus = true,
+        };
+        
+        Fluent.IDialogReference dialog = await FluentDialogService.ShowDialogAsync<CreateDictionaryDialog>(new CreateMyDictionary.Command(), parameters);
+        Fluent.DialogResult? result = await dialog.Result;
+        if(!result.Cancelled)
             await table.ReloadServerData();
+
+        // var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        // var parameters = new Fluent.DialogParameters<CreateDictionaryDialog>();
+        // parameters.Add(x => x.CreateMyDictionaryCommand, new());
+
+        // var createDictionaryDialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
+        // var result = await createDictionaryDialog.Result;
+        // if (!result.Canceled)
+        //     await table.ReloadServerData();
     }
 }

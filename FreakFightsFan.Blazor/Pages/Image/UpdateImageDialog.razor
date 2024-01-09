@@ -1,22 +1,22 @@
 @inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateImageRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="UpdateImageCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateImageRequest.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
-            <MyValidationMessage T="string" For="@(() => UpdateImageRequest.ImageBase64)" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="UpdateImageCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
+            <MyValidationMessage T="string" For="@(() => UpdateImageCommand.ImageBase64)" ValidationErrors="validationErrors" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateImageRequest UpdateImageRequest { get; set; } = new();
+    [Parameter] public UpdateImage.Command UpdateImageCommand { get; set; } = new();
     [Parameter] public string Url { get; set; }
 
     private ValidationErrors validationErrors = new();
@@ -32,8 +32,8 @@
             if (!IsImageValid)
                 return;
 
-            await ImageApiClient.UpdateImage(UpdateImageRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await ImageApiClient.UpdateImage(UpdateImageCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

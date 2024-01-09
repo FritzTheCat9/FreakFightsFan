@@ -9,6 +9,23 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
     public static class UpdateMyDictionaryFeature
     {
+        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        {
+            app.MapPut("/api/myDictionaries/{id}", async (
+                int id,
+                UpdateMyDictionary.Command command,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                command.Id = id;
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+                .WithTags("MyDictionaries")
+                .RequireAuthorization(Policy.Admin);
+
+            return app;
+        }
+
         public class Handler : IRequestHandler<UpdateMyDictionary.Command, Unit>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
@@ -40,22 +57,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 if (codeExists)
                     throw new MyValidationException("Code", "'Code' must be unique");
             }
-        }
-
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPut("/api/myDictionaries/{id}", async (
-                int id,
-                UpdateMyDictionary.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
-                .WithTags("MyDictionaries")
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
     }
 }

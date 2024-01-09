@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IFederationApiClient FederationApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Federations</PageTitle>
@@ -19,11 +19,11 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Federations</MudText>
         <AuthorizeView Policy=@($"{Policy.Admin}")>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFederation())"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFederation())"/>
         </AuthorizeView>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -48,12 +48,12 @@
         </MudTd>
         <MudTd DataLabel="Name">@federation.Name</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@federation.Id))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToEventsPage(@federation.Id))"/>
         </MudTd>
         <AuthorizeView Policy=@($"{Policy.Admin}")>
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@federation))"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@federation.Id))"/>
+                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFederation(@federation))"/>
+                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFederation(@federation.Id))"/>
             </MudTd>
         </AuthorizeView>
     </RowTemplate>
@@ -80,7 +80,7 @@
 
     private async Task<TableData<FederationDto>> ServerReload(TableState state)
     {
-        var getAllFederationsRequest = new GetAllFederationsRequest
+        var query = new GetAllFederations.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -91,7 +91,7 @@
 
         try
         {
-            FederationsPagedList = await FederationApiClient.GetAllFederations(getAllFederationsRequest);
+            FederationsPagedList = await FederationApiClient.GetAllFederations(query);
         }
         catch (Exception ex)
         {
@@ -140,8 +140,8 @@
     private async Task UpdateFederation(FederationDto federationDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<UpdateFederationDialog>();
-        parameters.Add(x => x.UpdateFederationRequest, new()
+        var parameters = new MudBlazor.DialogParameters<UpdateFederationDialog>();
+        parameters.Add(x => x.UpdateFederationCommand, new()
         {
             Id = federationDto.Id,
             Name = federationDto.Name,
@@ -158,8 +158,8 @@
     private async Task CreateFederation()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateFederationDialog>();
-        parameters.Add(x => x.CreateFederationRequest, new());
+        var parameters = new MudBlazor.DialogParameters<CreateFederationDialog>();
+        parameters.Add(x => x.CreateFederationCommand, new());
 
         var createFederationDialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, dialogOptions);
         var result = await createFederationDialog.Result;

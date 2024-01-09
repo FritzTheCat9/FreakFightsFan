@@ -2,7 +2,7 @@
 using FreakFightsFan.Api.Features.DictionaryItems.Commands;
 using FreakFightsFan.Api.Features.DictionaryItems.Queries;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.DictionaryItems.Requests;
+using FreakFightsFan.Shared.Features.DictionaryItems.Queries;
 using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using System.Linq.Expressions;
 
@@ -12,12 +12,12 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
     {
         public static IEndpointRouteBuilder AddMyDictionaryItemEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateMyDictionaryItem.Endpoint(app);
-            DeleteMyDictionaryItem.Endpoint(app);
-            UpdateMyDictionaryItem.Endpoint(app);
-            GetAllMyDictionaryItems.Endpoint(app);
-            GetAllMyDictionaryItemsByCode.Endpoint(app);
-            GetMyDictionaryItem.Endpoint(app);
+            CreateMyDictionaryItemFeature.Endpoint(app);
+            DeleteMyDictionaryItemFeature.Endpoint(app);
+            UpdateMyDictionaryItemFeature.Endpoint(app);
+            GetAllMyDictionaryItemsFeature.Endpoint(app);
+            GetAllMyDictionaryItemsByCodeFeature.Endpoint(app);
+            GetMyDictionaryItemFeature.Endpoint(app);
 
             return app;
         }
@@ -35,52 +35,6 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             };
         }
 
-        public static CreateMyDictionaryItem.Command ToCreateMyDictionaryItemCommand(this CreateMyDictionaryItemRequest request)
-        {
-            return new()
-            {
-                Name = request.Name,
-                Code = request.Code,
-                DictionaryId = request.DictionaryId,
-            };
-        }
-
-        public static UpdateMyDictionaryItem.Command ToUpdateMyDictionaryItemCommand(this UpdateMyDictionaryItemRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                Name = request.Name,
-                Code = request.Code,
-            };
-        }
-
-        public static GetAllMyDictionaryItems.Query ToGetAllMyDictionaryItemsQuery(this GetAllMyDictionaryItemsRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
-                DictionaryId = request.DictionaryId,
-            };
-        }
-
-        public static GetAllMyDictionaryItemsByCode.Query ToGetAllMyDictionaryItemsByCodeQuery(this GetAllMyDictionaryItemsByCodeRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
-                DictionaryCode = request.DictionaryCode,
-            };
-        }
-
         /* GetAllMyDictionaryItems.Query */
 
         public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItems.Query query)
@@ -88,8 +42,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             var searchTerm = query.SearchTerm.ToLower().Trim();
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x => 
-                x.Name.ToLower().Contains(searchTerm) ||
-                x.Code.ToLower().Contains(searchTerm));
+                    x.Name.ToLower().Contains(searchTerm) ||
+                    x.Code.ToLower().Contains(searchTerm));
 
             return dictionaryItems;
         }
@@ -122,8 +76,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             var searchTerm = query.SearchTerm.ToLower().Trim();
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
-                x.Name.ToLower().Contains(searchTerm) ||
-                x.Code.ToLower().Contains(searchTerm));
+                    x.Name.ToLower().Contains(searchTerm) ||
+                    x.Code.ToLower().Contains(searchTerm));
 
             return dictionaryItems;
         }

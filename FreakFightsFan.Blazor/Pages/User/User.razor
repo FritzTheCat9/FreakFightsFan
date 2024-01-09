@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IUserApiClient UserApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
 
 <PageTitle>Users</PageTitle>
 
@@ -19,7 +19,7 @@
         <MudText Typo="Typo.h6">Users</MudText>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         @* <MudTh>Image</MudTh> *@
@@ -53,13 +53,13 @@
                 @if(!user.IsSuperAdmin && user.IsAdmin)
                 {
                     <MudTooltip Text="Degrade">
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => DegradeUser(@user.Id))"/>
+                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => DegradeUser(@user.Id))"/>
                     </MudTooltip>
                 } 
                 else if(!user.IsSuperAdmin && !user.IsAdmin)
                 {
                     <MudTooltip Text="Promote">
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => PromoteUser(@user.Id))"/>
+                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => PromoteUser(@user.Id))"/>
                     </MudTooltip>
                 }
 
@@ -89,7 +89,7 @@
 
     private async Task<TableData<UserDto>> ServerReload(TableState state)
     {
-        var getAllUsersRequest = new GetAllUsersRequest
+        var query = new GetAllUsers.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -100,7 +100,7 @@
 
         try
         {
-            UsersPagedList = await UserApiClient.GetAllUsers(getAllUsersRequest);
+            UsersPagedList = await UserApiClient.GetAllUsers(query);
         }
         catch (Exception ex)
         {
@@ -124,7 +124,7 @@
     private async Task PromoteUser(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<InformationDialog>();
+        var parameters = new MudBlazor.DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to increase the privileges of the chosen user?");
 
         var informationDialog = await DialogService.ShowAsync<InformationDialog>("Increase user permissions", parameters, dialogOptions);
@@ -139,7 +139,7 @@
     private async Task DegradeUser(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<InformationDialog>();
+        var parameters = new MudBlazor.DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to decrease the privileges of the chosen user?");
 
         var informationDialog = await DialogService.ShowAsync<InformationDialog>("Decrease user permissions", parameters, dialogOptions);
@@ -162,14 +162,14 @@
         return Policy.User;
     }
 
-    private Color GetColorBasedOnPolicy(string policy)
+    private MudBlazor.Color GetColorBasedOnPolicy(string policy)
     {
         if (policy == Policy.SuperAdmin)
-            return Color.Info;
+            return MudBlazor.Color.Info;
             
         if (policy == Policy.Admin)
-            return Color.Error;
+            return MudBlazor.Color.Error;
 
-        return Color.Success;
+        return MudBlazor.Color.Success;
     }
 }

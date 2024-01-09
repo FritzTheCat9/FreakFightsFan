@@ -2,11 +2,11 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateEventRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="CreateEventCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="CreateEventRequest.Name" For="@(() => CreateEventRequest.Name)" />
-            <MudDatePicker Label="Date" @bind-Date="CreateEventRequest.Date" For="@(() => CreateEventRequest.Date)" Editable="true" Placeholder="Select Date" />
+            <MudTextField Label="Name" @bind-Value="CreateEventCommand.Name" For="@(() => CreateEventCommand.Name)" />
+            <MudDatePicker Label="Date" @bind-Date="CreateEventCommand.Date" For="@(() => CreateEventCommand.Date)" Editable="true" Placeholder="Select Date" />
             <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
                              ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                 <NoItemsTemplate>
@@ -22,14 +22,14 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateEventRequest CreateEventRequest { get; set; } = new();
+    [Parameter] public CreateEvent.Command CreateEventCommand { get; set; } = new();
     public MyDictionaryItemDto City { get; set; }
     public MyDictionaryItemDto Hall { get; set; }
 
@@ -42,11 +42,11 @@
     {
         try
         {
-            CreateEventRequest.CityId = City?.Id;
-            CreateEventRequest.HallId = Hall?.Id;
+            CreateEventCommand.CityId = City?.Id;
+            CreateEventCommand.HallId = Hall?.Id;
 
-            await EventApiClient.CreateEvent(CreateEventRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await EventApiClient.CreateEvent(CreateEventCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

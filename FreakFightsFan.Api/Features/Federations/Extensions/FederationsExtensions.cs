@@ -3,7 +3,7 @@ using FreakFightsFan.Api.Features.Federations.Commands;
 using FreakFightsFan.Api.Features.Federations.Queries;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Federations.Requests;
+using FreakFightsFan.Shared.Features.Federations.Queries;
 using FreakFightsFan.Shared.Features.Federations.Responses;
 using System.Linq.Expressions;
 
@@ -13,11 +13,11 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
     {
         public static IEndpointRouteBuilder AddFederationEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateFederation.Endpoint(app);
-            DeleteFederation.Endpoint(app);
-            UpdateFederation.Endpoint(app);
-            GetAllFederations.Endpoint(app);
-            GetFederation.Endpoint(app);
+            CreateFederationFeature.Endpoint(app);
+            DeleteFederationFeature.Endpoint(app);
+            UpdateFederationFeature.Endpoint(app);
+            GetAllFederationsFeature.Endpoint(app);
+            GetFederationFeature.Endpoint(app);
 
             return app;
         }
@@ -31,37 +31,6 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
                 Modified = federation.Modified,
                 Name = federation.Name, 
                 Image = federation.Image?.ToDto(),
-            };
-        }
-
-        public static CreateFederation.Command ToCreateFederationCommand(this CreateFederationRequest request)
-        {
-            return new()
-            {
-                Name = request.Name,
-                ImageBase64 = request.ImageBase64,
-            };
-        }
-
-        public static UpdateFederation.Command ToUpdateFederationCommand(this UpdateFederationRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                Name = request.Name,
-                ImageBase64 = request.ImageBase64,
-            };
-        }
-
-        public static GetAllFederations.Query ToGetAllFederationsQuery(this GetAllFederationsRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
             };
         }
 

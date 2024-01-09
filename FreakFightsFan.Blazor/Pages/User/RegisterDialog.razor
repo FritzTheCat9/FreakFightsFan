@@ -1,16 +1,16 @@
 ﻿@inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="RegisterRequest" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="RegisterCommand" @ref="@form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Email" @bind-Value="RegisterRequest.Email" For="@(() => RegisterRequest.Email)" />
-            <MudTextField Label="UserName" @bind-Value="RegisterRequest.UserName" For="@(() => RegisterRequest.UserName)" />
-            <PasswordField Label="Password" @bind-Value="RegisterRequest.Password" For="@(() => RegisterRequest.Password)" />
-            <PasswordField Label="Repeat Password" @bind-Value="RegisterRequest.RepeatPassword" For="@(() => RegisterRequest.RepeatPassword)" />
+            <MudTextField Label="Email" @bind-Value="RegisterCommand.Email" For="@(() => RegisterCommand.Email)" />
+            <MudTextField Label="UserName" @bind-Value="RegisterCommand.UserName" For="@(() => RegisterCommand.UserName)" />
+            <PasswordField Label="Password" @bind-Value="RegisterCommand.Password" For="@(() => RegisterCommand.Password)" />
+            <PasswordField Label="Repeat Password" @bind-Value="RegisterCommand.RepeatPassword" For="@(() => RegisterCommand.RepeatPassword)" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" Disabled="@_processing" >
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary" Disabled="@_processing">
                 @if (_processing)
                 {
                     <MudProgressCircular Size="Size.Small" Indeterminate="true" />
@@ -27,7 +27,7 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public RegisterRequest RegisterRequest { get; set; } = new();
+    [Parameter] public Register.Command RegisterCommand { get; set; } = new();
 
     private ValidationErrors validationErrors = new();
     private MudForm form;
@@ -42,8 +42,8 @@
 
         try
         {
-            await UserApiClient.Register(RegisterRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            await UserApiClient.Register(RegisterCommand);
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

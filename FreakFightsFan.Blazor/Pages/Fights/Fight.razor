@@ -4,7 +4,7 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IFightApiClient FightApiClient
 @inject IEventApiClient EventApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
@@ -19,7 +19,7 @@
 <AuthorizeView Policy=@($"{Policy.Admin}")>
     <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
         <MudStack Row="true" Justify="Justify.FlexStart">
-                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())" />
+                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())" />
         </MudStack>
     </MudPaper>
 </AuthorizeView>
@@ -58,14 +58,14 @@ else
             {
                 <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
-                        <MudIconButton Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(fight))"
+                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(fight))"
                             Disabled="(string.IsNullOrEmpty(fight.VideoUrl))"/>
                         <AuthorizeView Policy=@($"{Policy.Admin}")>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
+                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
+                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
+                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
                                            Disabled="(fight.OrderNumber <= 1)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
+                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
                                            Disabled="(fight.OrderNumber >= FightsList.Count())" />
                         </AuthorizeView>
                     </MudStack>
@@ -140,16 +140,16 @@ else
 
     private async Task GetAllFights()
     {
-        var getAllFightsRequest = new GetAllFightsRequest
+        var query = new GetAllFights.Query
         {
             Page = 1,
-            PageSize = FightsOptions.MaxFightsInOneEvent,
+            PageSize = FightsConsts.MaxFightsInOneEvent,
             EventId = EventId
         };
 
         try
         {
-            FightsList = (await FightApiClient.GetAllFights(getAllFightsRequest)).Items;
+            FightsList = (await FightApiClient.GetAllFights(query)).Items;
         }
         catch (Exception ex)
         {
@@ -182,8 +182,8 @@ else
     {
         try
         {
-            var request = new MoveFightRequest() { Id = id, Direction = direction };
-            await FightApiClient.MoveFight(request);
+            var command = new MoveFight.Command() { Id = id, Direction = direction };
+            await FightApiClient.MoveFight(command);
             await GetAllFights();
         }
         catch (Exception ex)
@@ -203,9 +203,9 @@ else
     private async Task UpdateFight(FightDto fightDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<UpdateFightDialog>();
+        var parameters = new MudBlazor.DialogParameters<UpdateFightDialog>();
 
-        parameters.Add(x => x.UpdateFightRequest, new()
+        parameters.Add(x => x.UpdateFightCommand, new()
         {
             Id = fightDto.Id,
             Teams = [],
@@ -225,9 +225,9 @@ else
     private async Task CreateFight()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateFightDialog>();
+        var parameters = new MudBlazor.DialogParameters<CreateFightDialog>();
 
-        parameters.Add(x => x.CreateFightRequest, new()
+        parameters.Add(x => x.CreateFightCommand, new()
         {
             EventId = EventId,
             Teams = [],

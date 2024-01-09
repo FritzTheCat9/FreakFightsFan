@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IEventApiClient EventApiClient
-@inject IDialogService DialogService
+@inject MudBlazor.IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Events</PageTitle>
@@ -19,11 +19,11 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Events</MudText>
         <AuthorizeView Policy=@($"{Policy.Admin}")>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateEvent())"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateEvent())"/>
         </AuthorizeView>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
@@ -59,12 +59,12 @@
             }
         </MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToFightsPage(@myEvent.Id))"/>
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToFightsPage(@myEvent.Id))"/>
         </MudTd>
         <AuthorizeView Policy=@($"{Policy.Admin}")>
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateEvent(@myEvent))"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteEvent(@myEvent.Id))"/>
+                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateEvent(@myEvent))"/>
+                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteEvent(@myEvent.Id))"/>
             </MudTd>
         </AuthorizeView>
     </RowTemplate>
@@ -94,7 +94,7 @@
 
     private async Task<TableData<EventDto>> ServerReload(TableState state)
     {
-        var getAllEventsRequest = new GetAllEventsRequest
+        var query = new GetAllEvents.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -106,7 +106,7 @@
 
         try
         {
-            EventsPagedList = await EventApiClient.GetAllEvents(getAllEventsRequest);
+            EventsPagedList = await EventApiClient.GetAllEvents(query);
         }
         catch (Exception ex)
         {
@@ -155,8 +155,8 @@
     private async Task UpdateEvent(EventDto eventDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<UpdateEventDialog>();
-        parameters.Add(x => x.UpdateEventRequest, new()
+        var parameters = new MudBlazor.DialogParameters<UpdateEventDialog>();
+        parameters.Add(x => x.UpdateEventCommand, new()
         {
             Id = eventDto.Id,
             Name = eventDto.Name,
@@ -177,8 +177,8 @@
     private async Task CreateEvent()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateEventDialog>();
-        parameters.Add(x => x.CreateEventRequest, new()
+        var parameters = new MudBlazor.DialogParameters<CreateEventDialog>();
+        parameters.Add(x => x.CreateEventCommand, new()
         {
             Name = "",
             Date = DateTime.UtcNow,

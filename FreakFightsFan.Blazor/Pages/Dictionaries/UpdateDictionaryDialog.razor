@@ -9,7 +9,7 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
@@ -28,7 +28,7 @@
         try
         {
             await MyDictionaryApiClient.UpdateMyDictionary(UpdateMyDictionaryRequest);
-            MudDialog.Close(DialogResult.Ok(true));
+            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

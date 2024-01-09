@@ -1,12 +1,12 @@
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Teams.Requests;
+using FreakFightsFan.Shared.Features.Teams.Queries;
 using FreakFightsFan.Shared.Features.Teams.Responses;
 
 namespace FreakFightsFan.Blazor.Clients
 {
     public interface ITeamApiClient
     {
-        Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest request);
+        Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query);
         Task<TeamDto> GetTeam(int id);
     }
 
@@ -20,9 +20,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeamsRequest request)
+        public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query)
         {
-            return await _apiClient.Post<GetAllTeamsRequest, PagedList<TeamDto>>($"{_url}/all", request);
+            return await _apiClient.Post<GetAllTeams.Query, PagedList<TeamDto>>($"{_url}/all", query);
         }
 
         public async Task<TeamDto> GetTeam(int id)

@@ -17,7 +17,7 @@
             <MudText Class="align-self-center">@FighterHelperModel.Fighter.FirstName @FighterHelperModel.Fighter.LastName - @FighterHelperModel.Fighter.Nickname</MudText>
             @if (OnDeleteFighter.HasDelegate)
             {
-                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
+                <MudIconButton Class="align-self-center" Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
             }
         </MudStack>
     </MudItem>
@@ -35,7 +35,7 @@
 }
 
 @code {
-    [Parameter] public FighterHelperModel FighterHelperModel { get; set; }
+    [Parameter] public CreateFight.FighterHelperModel FighterHelperModel { get; set; }
     [Parameter] public EventCallback OnDeleteFighter { get; set; }
 
     private void DeleteFighter()

@@ -3,7 +3,7 @@ using FreakFightsFan.Api.Features.Fighters.Commands;
 using FreakFightsFan.Api.Features.Fighters.Queries;
 using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Abstractions;
-using FreakFightsFan.Shared.Features.Fighters.Requests;
+using FreakFightsFan.Shared.Features.Fighters.Queries;
 using FreakFightsFan.Shared.Features.Fighters.Responses;
 using System.Linq.Expressions;
 
@@ -13,11 +13,11 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
     {
         public static IEndpointRouteBuilder AddFighterEndpoints(this IEndpointRouteBuilder app)
         {
-            CreateFighter.Endpoint(app);
-            DeleteFighter.Endpoint(app);
-            UpdateFighter.Endpoint(app);
-            GetAllFighters.Endpoint(app);
-            GetFighter.Endpoint(app);
+            CreateFighterFeature.Endpoint(app);
+            DeleteFighterFeature.Endpoint(app);
+            UpdateFighterFeature.Endpoint(app);
+            GetAllFightersFeature.Endpoint(app);
+            GetFighterFeature.Endpoint(app);
 
             return app;
         }
@@ -34,44 +34,6 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
                 Nickname = fighter.Nickname,
                 InstagramUrl = fighter.InstagramUrl,
                 Image = fighter.Image?.ToDto(),
-            };
-        }
-
-        public static CreateFighter.Command ToCreateFighterCommand(this CreateFighterRequest request)
-        {
-            return new()
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Nickname = request.Nickname,
-                InstagramUrl = request.InstagramUrl,
-                ImageBase64 = request.ImageBase64, 
-            };
-        }
-
-        public static UpdateFighter.Command ToUpdateFighterCommand(this UpdateFighterRequest request, int id)
-        {
-            return new()
-            {
-                Id = id,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Nickname = request.Nickname,
-                InstagramUrl = request.InstagramUrl,
-                ImageBase64 = request.ImageBase64,
-            };
-        }
-
-        public static GetAllFighters.Query ToGetAllFightersQuery(this GetAllFightersRequest request)
-        {
-            return new()
-            {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                SortOrder = request.SortOrder,
-                SortColumn = request.SortColumn,
-                SearchTerm = request.SearchTerm,
-                HiddenFightersIds = request.HiddenFightersIds,
             };
         }
 
