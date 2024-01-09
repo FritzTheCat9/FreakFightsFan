@@ -1,6 +1,6 @@
 ﻿namespace FreakFightsFan.Api.Data.Database
 {
-    public class MssqlOptions
+    public class DatabaseOptions
     {
         public string ConnectionString { get; set; }
     }

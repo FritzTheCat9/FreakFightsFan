@@ -1,7 +1,7 @@
 ﻿using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 
-namespace FreakFightsFan.Api.Abstractions
+namespace FreakFightsFan.Api.Extensions
 {
     public static class PageListExtensions<T>
     {

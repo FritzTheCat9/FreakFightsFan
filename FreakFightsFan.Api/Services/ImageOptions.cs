@@ -1,4 +1,4 @@
-﻿namespace FreakFightsFan.Api.Features.Images.Extensions
+﻿namespace FreakFightsFan.Api.Services
 {
     public class ImageOptions
     {

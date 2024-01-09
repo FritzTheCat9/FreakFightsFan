@@ -3,7 +3,6 @@ using FreakFightsFan.Api.Services;
 using MediatR;
 using HeyRed.Mime;
 using Microsoft.Extensions.Options;
-using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Images.Commands;
 

@@ -1,6 +1,4 @@
-﻿using FreakFightsFan.Api.Features.Images.Extensions;
-
-namespace FreakFightsFan.Api.Services
+﻿namespace FreakFightsFan.Api.Services
 {
     public static class ServiceExtensions
     {

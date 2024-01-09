@@ -1,4 +1,4 @@
-﻿namespace FreakFightsFan.Api.Abstractions
+﻿namespace FreakFightsFan.Api.Extensions
 {
     public static class OptionsExtensions
     {

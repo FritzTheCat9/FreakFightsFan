@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace FreakFightsFan.Api.Abstractions
+namespace FreakFightsFan.Api.Extensions
 {
     public static class SwaggerExtensions
     {

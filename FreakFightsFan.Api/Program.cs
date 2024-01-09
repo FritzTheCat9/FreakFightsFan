@@ -1,8 +1,8 @@
-using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Auth;
-using FreakFightsFan.Api.Data.Database;
+using FreakFightsFan.Api.Data;
 using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Exceptions;
+using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);

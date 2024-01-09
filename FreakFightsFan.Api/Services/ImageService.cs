@@ -1,6 +1,5 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
-using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Features.Images.Helpers;
 using Microsoft.Extensions.Options;
 

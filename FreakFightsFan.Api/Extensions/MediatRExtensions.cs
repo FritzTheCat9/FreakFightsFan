@@ -3,7 +3,7 @@ using FreakFightsFan.Api.Behaviors;
 using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using System.Reflection;
 
-namespace FreakFightsFan.Api.Abstractions
+namespace FreakFightsFan.Api.Extensions
 {
     public static class MediatRExtensions
     {

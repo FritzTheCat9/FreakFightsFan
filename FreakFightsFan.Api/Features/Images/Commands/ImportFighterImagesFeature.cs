@@ -6,7 +6,6 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using HeyRed.Mime;
 using Microsoft.Extensions.Options;
-using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Images.Commands;
 

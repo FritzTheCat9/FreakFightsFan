@@ -1,6 +1,6 @@
 ﻿using FreakFightsFan.Api.Auth;
 
-namespace FreakFightsFan.Api.Abstractions
+namespace FreakFightsFan.Api.Extensions
 {
     public static class CORSExtensions
     {

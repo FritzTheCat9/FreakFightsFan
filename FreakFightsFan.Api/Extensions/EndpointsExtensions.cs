@@ -8,7 +8,7 @@ using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Features.Teams.Extensions;
 using FreakFightsFan.Api.Features.Users.Extensions;
 
-namespace FreakFightsFan.Api.Abstractions
+namespace FreakFightsFan.Api.Extensions
 {
     public static class EndpointsExtensions
     {

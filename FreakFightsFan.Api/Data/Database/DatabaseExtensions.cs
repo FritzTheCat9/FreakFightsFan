@@ -1,23 +1,25 @@
 ﻿using FreakFightsFan.Api.Abstractions;
+using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data.Database
+namespace FreakFightsFan.Api.Data
 {
-    public static class DataExtensions
+    public static class DatabaseExtensions
     {
         private const string _sectionName = "Database";
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<MssqlOptions>(configuration.GetRequiredSection(_sectionName));
-            var options = configuration.GetOptions<MssqlOptions>(_sectionName);
+            services.Configure<DatabaseOptions>(configuration.GetRequiredSection(_sectionName));
+            var options = configuration.GetOptions<DatabaseOptions>(_sectionName);
 
             services.AddSingleton<IClock, Clock>();
 
-            services.AddDbContext<AppDbContext>(x => 
-            { 
-                x.UseSqlServer(options.ConnectionString); 
+            services.AddDbContext<AppDbContext>(x =>
+            {
+                x.UseSqlServer(options.ConnectionString);
                 x.EnableSensitiveDataLogging();
             });
 
