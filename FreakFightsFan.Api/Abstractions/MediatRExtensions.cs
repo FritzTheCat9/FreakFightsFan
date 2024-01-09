@@ -18,7 +18,6 @@ namespace FreakFightsFan.Api.Abstractions
 
             services.AddValidatorsFromAssembly(typeof(CreateMyDictionary.Validator).Assembly);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
             ValidatorOptions.Global.LanguageManager.Enabled = false;
 
             return services;

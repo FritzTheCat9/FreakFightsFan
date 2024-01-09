@@ -32,6 +32,11 @@ namespace FreakFightsFan.Api.Abstractions
                         []
                     }
                 });
+
+                // Fix for swagger bug for endpoints with name containing '+': (https://github.com/swagger-api/swagger-ui/issues/7911)
+                // InvalidOperationException: Can't use schemaId "$Command" for type "$FreakFightsFan.Shared.Features.Events.Commands.UpdateEvent+Command".
+                // The same schemaId is already used for type "$FreakFightsFan.Shared.Features.Events.Commands.CreateEvent+Command"
+                setup.CustomSchemaIds(s => s.FullName.Replace("+", "."));
             });
 
             return services;
