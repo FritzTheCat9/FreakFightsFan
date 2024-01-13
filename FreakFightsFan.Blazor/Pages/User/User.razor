@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IUserApiClient UserApiClient
-@inject MudBlazor.IDialogService DialogService
+@inject IDialogService DialogService
 
 <PageTitle>Users</PageTitle>
 
@@ -13,20 +13,20 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<UserDto>>>(ServerReload))"
+<MudTable ServerData="new Func<TableState, Task<TableData<UserDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="user">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Users</MudText>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <MudTextField T="string" ValueChanged="(searchText) => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         @* <MudTh>Image</MudTh> *@
         <MudTh><MudTableSortLabel SortLabel="username" T="UserDto">UserName</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="email" T="UserDto">Email</MudTableSortLabel></MudTh>
         <MudTh>Role</MudTh>
-        <AuthorizeView Policy=@($"{Policy.SuperAdmin}")>
+        <AuthorizeView Policy=@Policy.SuperAdmin>
             <MudTh>Actions</MudTh>
         </AuthorizeView>
     </HeaderContent>
@@ -46,20 +46,20 @@
         <MudTd DataLabel="UserName">@user.UserName</MudTd>
         <MudTd DataLabel="Email">@user.Email</MudTd>
         <MudTh>
-            <MudChip Variant="Variant.Outlined" Color="@GetColorBasedOnPolicy(GetUserHighestPolicy(user))">@GetUserHighestPolicy(user)</MudChip>
+            <MudChip Variant="Variant.Outlined" Color="GetColorBasedOnPolicy(GetUserHighestPolicy(user))">@GetUserHighestPolicy(user)</MudChip>
         </MudTh>
-        <AuthorizeView Policy=@($"{Policy.SuperAdmin}")>
+        <AuthorizeView Policy=@Policy.SuperAdmin>
             <MudTd>
                 @if(!user.IsSuperAdmin && user.IsAdmin)
                 {
                     <MudTooltip Text="Degrade">
-                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => DegradeUser(@user.Id))"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="() => DegradeUser(user.Id)"/>
                     </MudTooltip>
                 } 
                 else if(!user.IsSuperAdmin && !user.IsAdmin)
                 {
                     <MudTooltip Text="Promote">
-                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => PromoteUser(@user.Id))"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="() => PromoteUser(user.Id)"/>
                     </MudTooltip>
                 }
 
@@ -124,7 +124,7 @@
     private async Task PromoteUser(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<InformationDialog>();
+        var parameters = new DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to increase the privileges of the chosen user?");
 
         var informationDialog = await DialogService.ShowAsync<InformationDialog>("Increase user permissions", parameters, dialogOptions);
@@ -139,7 +139,7 @@
     private async Task DegradeUser(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<InformationDialog>();
+        var parameters = new DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to decrease the privileges of the chosen user?");
 
         var informationDialog = await DialogService.ShowAsync<InformationDialog>("Decrease user permissions", parameters, dialogOptions);
@@ -162,14 +162,14 @@
         return Policy.User;
     }
 
-    private MudBlazor.Color GetColorBasedOnPolicy(string policy)
+    private Color GetColorBasedOnPolicy(string policy)
     {
         if (policy == Policy.SuperAdmin)
-            return MudBlazor.Color.Info;
+            return Color.Info;
             
         if (policy == Policy.Admin)
-            return MudBlazor.Color.Error;
+            return Color.Error;
 
-        return MudBlazor.Color.Success;
+        return Color.Success;
     }
 }

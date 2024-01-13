@@ -17,7 +17,7 @@
             <MudText Class="align-self-center">@FighterHelperModel.Fighter.FirstName @FighterHelperModel.Fighter.LastName - @FighterHelperModel.Fighter.Nickname</MudText>
             @if (OnDeleteFighter.HasDelegate)
             {
-                <MudIconButton Class="align-self-center" Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
+                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
             }
         </MudStack>
     </MudItem>
@@ -27,7 +27,7 @@
             <MudSelect @bind-Value="FighterHelperModel.FightResult" Label="Fight result">
                 @foreach (FightResult fightResult in Enum.GetValues(typeof(FightResult)))
                 {
-                    <MudSelectItem Value="@fightResult">@fightResult.ToText()</MudSelectItem>
+                    <MudSelectItem Value="fightResult">@fightResult.ToText()</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>

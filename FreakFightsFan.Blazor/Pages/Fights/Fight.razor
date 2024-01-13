@@ -4,7 +4,7 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IFightApiClient FightApiClient
 @inject IEventApiClient EventApiClient
-@inject MudBlazor.IDialogService DialogService
+@inject IDialogService DialogService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
@@ -16,10 +16,10 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<AuthorizeView Policy=@($"{Policy.Admin}")>
+<AuthorizeView Policy=@Policy.Admin>
     <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
         <MudStack Row="true" Justify="Justify.FlexStart">
-                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFight())" />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFight()" />
         </MudStack>
     </MudPaper>
 </AuthorizeView>
@@ -58,15 +58,15 @@ else
             {
                 <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
-                        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(fight))"
-                            Disabled="(string.IsNullOrEmpty(fight.VideoUrl))"/>
-                        <AuthorizeView Policy=@($"{Policy.Admin}")>
-                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFight(fight))" />
-                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFight(fight.Id))" />
-                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Downwards))"
-                                           Disabled="(fight.OrderNumber <= 1)" />
-                            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="@(() => MoveFight(fight.Id, MoveDirection.Upwards))"
-                                           Disabled="(fight.OrderNumber >= FightsList.Count())" />
+                        <MudIconButton Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="() => RedirectToVideo(fight)"
+                            Disabled="string.IsNullOrEmpty(fight.VideoUrl)"/>
+                        <AuthorizeView Policy=@Policy.Admin>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateFight(fight)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteFight(fight.Id)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="() => MoveFight(fight.Id, MoveDirection.Downwards)"
+                                           Disabled="fight.OrderNumber <= 1" />
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="() => MoveFight(fight.Id, MoveDirection.Upwards)"
+                                           Disabled="fight.OrderNumber >= FightsList.Count()" />
                         </AuthorizeView>
                     </MudStack>
                 </MudPaper>
@@ -203,7 +203,7 @@ else
     private async Task UpdateFight(FightDto fightDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateFightDialog>();
+        var parameters = new DialogParameters<UpdateFightDialog>();
 
         parameters.Add(x => x.UpdateFightCommand, new()
         {
@@ -225,7 +225,7 @@ else
     private async Task CreateFight()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<CreateFightDialog>();
+        var parameters = new DialogParameters<CreateFightDialog>();
 
         parameters.Add(x => x.CreateFightCommand, new()
         {

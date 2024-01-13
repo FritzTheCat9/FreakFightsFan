@@ -3,8 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryApiClient MyDictionaryApiClient
-@inject MudBlazor.IDialogService DialogService
-@inject Fluent.IDialogService FluentDialogService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Dictionaries</PageTitle>
@@ -15,14 +14,14 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<MyDictionaryDto>>>(ServerReload))"
+<MudTable ServerData="new Func<TableState, Task<TableData<MyDictionaryDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Dictionaries</MudText>
-        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionary())"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionary()"/>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">Name</MudTableSortLabel></MudTh>
@@ -34,11 +33,11 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd>
-            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.List" Size="Size.Small" OnClick="@(() => RedirectToDictionaryItemsPage(@context.Id))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="() => RedirectToDictionaryItemsPage(context.Id)"/>
         </MudTd>
         <MudTd>
-            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionary(@context))"/>
-            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionary(@context.Id))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateDictionary(context)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteDictionary(context.Id)"/>
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -60,7 +59,7 @@
 
     private MudTable<MyDictionaryDto> table;
     private string searchString = "";
-    public PagedList<MyDictionaryDto> MyDictionariesPagedList { get; set; }
+    private PagedList<MyDictionaryDto> MyDictionariesPagedList { get; set; }
 
     private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
     {
@@ -104,9 +103,9 @@
     private async Task DeleteDictionary(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -124,42 +123,29 @@
     private async Task UpdateDictionary(MyDictionaryDto myDictionaryDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateDictionaryDialog>();
-        parameters.Add(x => x.UpdateMyDictionaryRequest, new()
+        var parameters = new DialogParameters<UpdateDictionaryDialog>();
+        parameters.Add(x => x.Command, new()
         {
             Id = myDictionaryDto.Id,
             Name = myDictionaryDto.Name,
             Code = myDictionaryDto.Code
         });
 
-        var updateDictionaryDialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, dialogOptions);
-        var result = await updateDictionaryDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
 
     private async Task CreateDictionary()
     {
-        Fluent.DialogParameters parameters = new()
-        {
-            Title = $"Create Dictionary",
-            Width = "500px",
-            Height = "500px", 
-            TrapFocus = true,
-        };
-        
-        Fluent.IDialogReference dialog = await FluentDialogService.ShowDialogAsync<CreateDictionaryDialog>(new CreateMyDictionary.Command(), parameters);
-        Fluent.DialogResult? result = await dialog.Result;
-        if(!result.Cancelled)
+        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateDictionaryDialog>();
+        parameters.Add(x => x.Command, new());
+
+        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
+        var result = await dialog.Result;
+        if (!result.Canceled)
             await table.ReloadServerData();
-
-        // var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        // var parameters = new Fluent.DialogParameters<CreateDictionaryDialog>();
-        // parameters.Add(x => x.CreateMyDictionaryCommand, new());
-
-        // var createDictionaryDialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
-        // var result = await createDictionaryDialog.Result;
-        // if (!result.Canceled)
-        //     await table.ReloadServerData();
     }
 }

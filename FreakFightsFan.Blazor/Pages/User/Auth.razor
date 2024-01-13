@@ -1,4 +1,4 @@
-﻿@inject MudBlazor.IDialogService DialogService
+﻿@inject IDialogService DialogService
 @inject IJwtProvider JwtProvider
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -7,13 +7,13 @@
     <Authorized>
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
             <MudText>@context.User.Identity.Name</MudText>
-            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="@(() => Logout())">Logout</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Logout">Logout</MudButton>
         </MudStack>
     </Authorized>
     <NotAuthorized>
         <MudStack Row="true" Spacing="2">
-            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Secondary" OnClick="@(() => Login())">Login</MudButton>
-            <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Tertiary" OnClick="@(() => Register())">Register</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Login">Login</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="Register">Register</MudButton>
         </MudStack>
     </NotAuthorized>
 </AuthorizeView>
@@ -22,7 +22,7 @@
     private async Task Login()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<LoginDialog>();
+        var parameters = new DialogParameters<LoginDialog>();
         parameters.Add(x => x.LoginCommand, new());
 
         var registerDialog = await DialogService.ShowAsync<LoginDialog>("Login", parameters, dialogOptions);
@@ -42,7 +42,7 @@
     private async Task Register()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<RegisterDialog>();
+        var parameters = new DialogParameters<RegisterDialog>();
         parameters.Add(x => x.RegisterCommand, new());
 
         var registerDialog = await DialogService.ShowAsync<RegisterDialog>("Register", parameters, dialogOptions);
@@ -54,7 +54,7 @@
     private async Task OpenRegistrationSuccessDialog()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<SuccessDialog>();
+        var parameters = new DialogParameters<SuccessDialog>();
         parameters.Add(x => x.ContentText, "The account has been successfully created. To log in, please confirm your email address by clicking on the activation link sent to your email inbox.");
 
         var simpleDialog = await DialogService.ShowAsync<SuccessDialog>("Success", parameters, dialogOptions);

@@ -1,20 +1,20 @@
 ﻿@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFighterCommand" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="UpdateFighterCommand" @ref="form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
             <MyFileInput @bind-ImageBase64="UpdateFighterCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
-            <MyValidationMessage T="string" For="@(() => UpdateFighterCommand.ImageBase64)" ValidationErrors="validationErrors" />
+            <MyValidationMessage T="string" For="() => UpdateFighterCommand.ImageBase64" ValidationErrors="validationErrors" />
 
-            <MudTextField Label="First Name" @bind-Value="UpdateFighterCommand.FirstName" For="@(() => UpdateFighterCommand.FirstName)" />
-            <MudTextField Label="Last Name" @bind-Value="UpdateFighterCommand.LastName" For="@(() => UpdateFighterCommand.LastName)" />
-            <MudTextField Label="Nickname" @bind-Value="UpdateFighterCommand.Nickname" For="@(() => UpdateFighterCommand.Nickname)" />
-            <MudTextField Label="Instagram Url" @bind-Value="UpdateFighterCommand.InstagramUrl" For="@(() => UpdateFighterCommand.InstagramUrl)" />
+            <MudTextField Label="First Name" @bind-Value="UpdateFighterCommand.FirstName" For="() => UpdateFighterCommand.FirstName" />
+            <MudTextField Label="Last Name" @bind-Value="UpdateFighterCommand.LastName" For="() => UpdateFighterCommand.LastName" />
+            <MudTextField Label="Nickname" @bind-Value="UpdateFighterCommand.Nickname" For="() => UpdateFighterCommand.Nickname" />
+            <MudTextField Label="Instagram Url" @bind-Value="UpdateFighterCommand.InstagramUrl" For="() => UpdateFighterCommand.InstagramUrl" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
@@ -38,7 +38,7 @@
                 UpdateFighterCommand.ImageBase64 = null;
 
             await FighterApiClient.UpdateFighter(UpdateFighterCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

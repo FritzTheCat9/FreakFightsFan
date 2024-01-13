@@ -13,10 +13,10 @@ else
     <MudItem>No image loaded</MudItem>
 }
 
-<MudFileUpload T="IBrowserFile" For="@(() => File)" @bind-Files="File" OnFilesChanged="UploadFiles" AppendMultipleFiles="false"
-               Accept="@AllowedFileTypesString" Validation="@(new Func<IBrowserFile, IEnumerable<string>>(ValidateFile))">
+<MudFileUpload T="IBrowserFile" For="() => File" @bind-Files="File" OnFilesChanged="UploadFiles" AppendMultipleFiles="false"
+               Accept="@AllowedFileTypesString" Validation="new Func<IBrowserFile, IEnumerable<string>>(ValidateFile)">
     <ButtonTemplate>
-        <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" StartIcon="@MudBlazor.Icons.Material.Filled.AttachFile">
+        <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AttachFile">
             Upload Image
         </MudButton>
     </ButtonTemplate>

@@ -1,16 +1,16 @@
 ﻿@inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="RegisterCommand" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="RegisterCommand" @ref="form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Email" @bind-Value="RegisterCommand.Email" For="@(() => RegisterCommand.Email)" />
-            <MudTextField Label="UserName" @bind-Value="RegisterCommand.UserName" For="@(() => RegisterCommand.UserName)" />
-            <PasswordField Label="Password" @bind-Value="RegisterCommand.Password" For="@(() => RegisterCommand.Password)" />
-            <PasswordField Label="Repeat Password" @bind-Value="RegisterCommand.RepeatPassword" For="@(() => RegisterCommand.RepeatPassword)" />
+            <MudTextField Label="Email" @bind-Value="RegisterCommand.Email" For="() => RegisterCommand.Email" />
+            <MudTextField Label="UserName" @bind-Value="RegisterCommand.UserName" For="() => RegisterCommand.UserName" />
+            <PasswordField Label="Password" @bind-Value="RegisterCommand.Password" For="() => RegisterCommand.Password" />
+            <PasswordField Label="Repeat Password" @bind-Value="RegisterCommand.RepeatPassword" For="() => RegisterCommand.RepeatPassword" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary" Disabled="@_processing">
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary" Disabled="_processing">
                 @if (_processing)
                 {
                     <MudProgressCircular Size="Size.Small" Indeterminate="true" />
@@ -43,7 +43,7 @@
         try
         {
             await UserApiClient.Register(RegisterCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

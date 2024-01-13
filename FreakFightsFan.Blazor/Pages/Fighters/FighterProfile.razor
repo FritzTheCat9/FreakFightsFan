@@ -25,7 +25,7 @@
         {
             <MudStack Row="true" Spacing="2">
                 <MudImage Src="images_default/instagram.png" Alt="Image" Style="height: 30px; width: 30px" />
-                <MudLink Typo="Typo.h5" Href="@Fighter.InstagramUrl" Color="MudBlazor.Color.Primary" Target="_blank">@InstagramUrlToNickname(Fighter.InstagramUrl)</MudLink>
+                <MudLink Typo="Typo.h5" Href="@Fighter.InstagramUrl" Color="Color.Primary" Target="_blank">@InstagramUrlToNickname(Fighter.InstagramUrl)</MudLink>
             </MudStack>
         }
     </MudStack>
@@ -40,8 +40,8 @@
             <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Draws: @Profile.Stats.Draw</MudText>
             <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">No Contest: @Profile.Stats.NoContest</MudText>
         </MudStack>
-        <MudChart ChartType="ChartType.Pie" InputData="@data" InputLabels="@labels" Width="150px" Height="150px" LegendPosition="Position.Bottom" 
-            ChartOptions="@(new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } })"/>
+        <MudChart ChartType="ChartType.Pie" InputData="data" InputLabels="labels" Width="150px" Height="150px" LegendPosition="Position.Bottom" 
+            ChartOptions="new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } }"/>
     </MudStack>
 }
 
@@ -65,7 +65,7 @@ else
                 <MudItem Class="flex-auto">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End">
                         <MudText Typo="Typo.h6" Style="@($"color:{Colors.Grey.Darken4};")">@profileFight.Fight.Event.Name</MudText>
-                        <MudIconButton Class="align-self-center" Style="@($"margin: 0px 10px;")" Icon="@MudBlazor.Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="@(() => RedirectToVideo(profileFight.Fight))"
+                        <MudIconButton Class="align-self-center" Style="margin: 0px 10px;" Icon="@Icons.Material.Filled.OndemandVideo" Size="Size.Small" OnClick="() => RedirectToVideo(profileFight.Fight)"
                                        Disabled="(string.IsNullOrEmpty(profileFight.Fight.VideoUrl))" />
                     </MudStack>
                     <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4};")">

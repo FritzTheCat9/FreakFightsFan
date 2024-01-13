@@ -1,43 +1,36 @@
-﻿@implements IDialogContentComponent<CreateMyDictionary.Command>
-
-@inject IMyDictionaryApiClient MyDictionaryApiClient
+﻿@inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<EditForm @ref="@form" Model="Content">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
-    <CustomValidator @ref="@CustomValidator" />
 
-    <FluentDialogBody>
-        <FluentTextField @bind-Value="Content.Name" Label="Name" style="width: 100%;" />
-        <FluentValidationMessage For="@(() => Content.Name)" />
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="() => Command.Name" />
 
-        <FluentTextField @bind-Value="Content.Code" Label="Code" style="width: 100%;" />
-        <FluentValidationMessage For="@(() => Content.Code)" />
-    </FluentDialogBody>
-
-    <FluentDialogFooter>
-        <FluentButton OnClick="HandleValidSubmit" Color="Fluent.Color.Info">Create</FluentButton>
-    </FluentDialogFooter>
+            <MudTextField Label="Code" @bind-Value="Command.Code" For="() => Command.Code" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="() => Command.Code" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
+        </DialogActions>
+    </MudDialog>
 </EditForm>
 
 @code {
-    [CascadingParameter] FluentDialog Dialog { get; set; }
-    [Parameter] public CreateMyDictionary.Command Content { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public CreateMyDictionary.Command Command { get; set; } = new();
 
-    private EditForm form;
-    private CustomValidator CustomValidator;
+    private CustomValidator CustomValidator = new();
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            var isValid = form.EditContext.Validate();
-
-            if (isValid)
-            {
-                await MyDictionaryApiClient.CreateMyDictionary(Content);
-                await Dialog.CloseAsync(Fluent.DialogResult.Ok(true));
-            }
+            await MyDictionaryApiClient.CreateMyDictionary(Command);
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

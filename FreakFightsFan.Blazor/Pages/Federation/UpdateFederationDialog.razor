@@ -1,17 +1,17 @@
 @inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFederationCommand" @ref="@form" Validation="validationErrors.Errors">
+<MudForm Model="UpdateFederationCommand" @ref="form" Validation="validationErrors.Errors">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
             <MyFileInput @bind-ImageBase64="UpdateFederationCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
-            <MyValidationMessage T="string" For="@(() => UpdateFederationCommand.ImageBase64)" ValidationErrors="validationErrors" />
+            <MyValidationMessage T="string" For="() => UpdateFederationCommand.ImageBase64" ValidationErrors="validationErrors" />
 
-            <MudTextField Label="Name" @bind-Value="UpdateFederationCommand.Name" For="@(() => UpdateFederationCommand.Name)" />
+            <MudTextField Label="Name" @bind-Value="UpdateFederationCommand.Name" For="() => UpdateFederationCommand.Name" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
@@ -35,7 +35,7 @@
                 UpdateFederationCommand.ImageBase64 = null;
 
             await FederationApiClient.UpdateFederation(UpdateFederationCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

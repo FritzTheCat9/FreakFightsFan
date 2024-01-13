@@ -12,7 +12,6 @@ using MudBlazor.Services;
 using System.Security.Claims;
 using FluentValidation;
 using System.Reflection;
-using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,7 +19,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddMudServices();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7277") });
-builder.Services.AddFluentUIComponents();
 
 builder.Services.AddValidatorsFromAssembly(typeof(CreateMyDictionary.Validator).Assembly);
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

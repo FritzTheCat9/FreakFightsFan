@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
-@inject MudBlazor.IDialogService DialogService
+@inject IDialogService DialogService
 
 <PageTitle>Dictionary items</PageTitle>
 
@@ -13,14 +13,14 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<MyDictionaryItemDto>>>(ServerReload))"
+<MudTable ServerData="new Func<TableState, Task<TableData<MyDictionaryItemDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Dictionary Items</MudText>
-        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateDictionaryItem())"/>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionaryItem()"/>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">Name</MudTableSortLabel></MudTh>
@@ -31,8 +31,8 @@
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
             <MudTd>
-                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateDictionaryItem(@context))"/>
-                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteDictionaryItem(@context.Id))"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateDictionaryItem(context)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteDictionaryItem(context.Id)"/>
             </MudTd>
         </RowTemplate>
         <NoRecordsContent>
@@ -57,7 +57,7 @@
 
     private string searchString = "";
     private MudTable<MyDictionaryItemDto> table;
-    public PagedList<MyDictionaryItemDto> MyDictionaryItemsPagedList { get; set; }
+    private PagedList<MyDictionaryItemDto> MyDictionaryItemsPagedList { get; set; }
 
     private async Task<TableData<MyDictionaryItemDto>> ServerReload(TableState state)
     {
@@ -97,9 +97,9 @@
     private async Task DeleteDictionaryItem(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -117,16 +117,16 @@
     private async Task UpdateDictionaryItem(MyDictionaryItemDto myDictionaryItemDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateDictionaryItemDialog>();
-        parameters.Add(x => x.UpdateMyDictionaryItemCommand, new()
+        var parameters = new DialogParameters<UpdateDictionaryItemDialog>();
+        parameters.Add(x => x.Command, new()
         {
             Id = myDictionaryItemDto.Id,
             Name = myDictionaryItemDto.Name,
             Code = myDictionaryItemDto.Code,
         });
 
-        var updateDictionaryItemDialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
-        var result = await updateDictionaryItemDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
@@ -134,16 +134,16 @@
     private async Task CreateDictionaryItem()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<CreateDictionaryItemDialog>();
-        parameters.Add(x => x.CreateMyDictionaryItemCommand, new()
+        var parameters = new DialogParameters<CreateDictionaryItemDialog>();
+        parameters.Add(x => x.Command, new()
         {
             Name = "",
             Code = "",
             DictionaryId = DictionaryId,
         });
 
-        var createDictionaryItemDialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);
-        var result = await createDictionaryItemDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }

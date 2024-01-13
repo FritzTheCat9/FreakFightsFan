@@ -4,19 +4,20 @@
 <MudDialogProvider FullWidth="true" />
 <MudSnackbarProvider />
 
-<FluentToastProvider />
-<FluentDialogProvider />
-<FluentTooltipProvider />
-<FluentMessageBarProvider />
+<style>
+    .mud-input-control-helper-container {
+        display: none !important;
+    }
+</style>
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Menu" Color="MudBlazor.Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" />
         Freak Fights Fan
         <MudSpacer />
         <Auth />
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
+    <MudDrawer @bind-Open="_drawerOpen">
         <NavMenu />
     </MudDrawer>
     <MudMainContent>

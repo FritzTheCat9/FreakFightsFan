@@ -4,7 +4,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+        <MudButton Color="Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -12,8 +12,8 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentText { get; set; } = "Do you really want to delete this record? This process cannot be undone.";
     [Parameter] public string ButtonText { get; set; } = "Delete";
-    [Parameter] public MudBlazor.Color Color { get; set; } = MudBlazor.Color.Error;
+    [Parameter] public Color Color { get; set; } = Color.Error;
 
-    void Submit() => MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 }

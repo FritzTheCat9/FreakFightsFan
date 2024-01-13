@@ -3,7 +3,7 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateFightCommand" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="CreateFightCommand" @ref="form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
@@ -15,25 +15,25 @@
                 <MudTabPanel Text="Fight">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="10">
-                            <MudAutocomplete @ref="addFighterField" T="FighterDto" Label="Fighter" @bind-Value="_fighter" SearchFuncWithCancel="@Search" ToStringFunc="DisplayFighter"
+                            <MudAutocomplete @ref="addFighterField" T="FighterDto" Label="Fighter" @bind-Value="_fighter" SearchFuncWithCancel="Search" ToStringFunc="DisplayFighter"
                                              ShowProgressIndicator="true" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true" Variant="Variant.Text">
                                 <NoItemsTemplate>
                                     <MudText>No fighters found</MudText>
                                 </NoItemsTemplate>
                                 <ItemTemplate>
-                                    <DisplayFighterListItem Fighter="@context" />
+                                    <DisplayFighterListItem Fighter="context" />
                                 </ItemTemplate>
                             </MudAutocomplete>
-                            <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="@(() => CreateFightCommand.Teams)" ValidationErrors="validationErrors" />
-                            <MyValidationMessage T="int" For="@(() => CreateFightCommand.EventId)" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="() => CreateFightCommand.Teams" ValidationErrors="validationErrors" />
+                            <MyValidationMessage T="int" For="() => CreateFightCommand.EventId" ValidationErrors="validationErrors" />
                         </MudItem>
                         <MudItem xs="2" Class="d-flex">
-                            <MudButton OnClick="@(() => AddFighterToSelectedTeam())" Class="align-self-end" Color="MudBlazor.Color.Primary" Variant="Variant.Filled">Add</MudButton>
+                            <MudButton OnClick="AddFighterToSelectedTeam" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
                         </MudItem>
                         @foreach (var team in _teams)
                         {
-                            <MudItem xs="12" md="6" @onclick="@(() => SelectTeam(team.Number))" Style="cursor: pointer;">
-                                <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? MudBlazor.Color.Primary : MudBlazor.Color.Default" GutterBottom="true">
+                            <MudItem xs="12" md="6" @onclick="() => SelectTeam(team.Number)" Style="cursor: pointer;">
+                                <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
                                     Team @($"{team.Number + 1}")
                                 </MudText>
                                 @if (team.Fighters.Any())
@@ -53,7 +53,7 @@
                         }
                     </MudGrid>
                 </MudTabPanel>
-                <MudTabPanel Text="Options" Icon="@MudBlazor.Icons.Material.Filled.Settings">
+                <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Settings">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="12">
                             <ChildContent>
@@ -61,14 +61,14 @@
                                            SelectedValuesChanged="OnSelectedValuesChanged" MultiSelection="false">
                                     @foreach (var number in allowedTeamSizes)
                                     {
-                                        <MudSelectItem Value="@number" />
+                                        <MudSelectItem Value="number" />
                                     }
                                 </MudSelect>
                             </ChildContent>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
-                                ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
+                                ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                                 <NoItemsTemplate>
                                     <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
                                 </NoItemsTemplate>
@@ -83,7 +83,7 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Create</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
@@ -234,7 +234,7 @@
             CreateFightCommand.TypeId = FightType?.Id;
 
             await FightApiClient.CreateFight(CreateFightCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

@@ -2,19 +2,19 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateEventCommand" @ref="@form" Validation="validationErrors.Validate">
+<MudForm Model="UpdateEventCommand" @ref="form" Validation="validationErrors.Validate">
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateEventCommand.Name" For="@(() => UpdateEventCommand.Name)" />
-            <MudDatePicker Label="Date" @bind-Date="UpdateEventCommand.Date" For="@(() => UpdateEventCommand.Date)" Editable="true" Placeholder="Select Date" />
-            <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
-                             ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+            <MudTextField Label="Name" @bind-Value="UpdateEventCommand.Name" For="() => UpdateEventCommand.Name" />
+            <MudDatePicker Label="Date" @bind-Date="UpdateEventCommand.Date" For="() => UpdateEventCommand.Date" Editable="true" Placeholder="Select Date" />
+            <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
+                             ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                 <NoItemsTemplate>
                     <MudText>No items found in dictionary with code: "@DictionaryCode.City"</MudText>
                 </NoItemsTemplate>
             </MudAutocomplete>
-            <MudAutocomplete T="MyDictionaryItemDto" Label="Hall" @bind-Value="Hall" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchHall" Variant="Variant.Text"
-                             ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
+            <MudAutocomplete T="MyDictionaryItemDto" Label="Hall" @bind-Value="Hall" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchHall" Variant="Variant.Text"
+                             ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                 <NoItemsTemplate>
                     <MudText>No items found in dictionary with code: "@DictionaryCode.Hall"</MudText>
                 </NoItemsTemplate>
@@ -22,7 +22,7 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
+            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </MudForm>
@@ -46,7 +46,7 @@
             UpdateEventCommand.HallId = Hall?.Id;
 
             await EventApiClient.UpdateEvent(UpdateEventCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

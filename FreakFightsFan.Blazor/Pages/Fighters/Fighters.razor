@@ -3,7 +3,7 @@
 
 @inject IExceptionHandler ExceptionHandler
 @inject IFighterApiClient FighterApiClient
-@inject MudBlazor.IDialogService DialogService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Fighters</PageTitle>
@@ -14,16 +14,16 @@
     </ItemTemplate>
 </MudBreadcrumbs>
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<FighterDto>>>(ServerReload))"
+<MudTable ServerData="new Func<TableState, Task<TableData<FighterDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="fighter">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Fighters</MudText>
-        <AuthorizeView Policy=@($"{Policy.Admin}")>
-            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => CreateFighter())"/>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFighter()"/>
         </AuthorizeView>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(searchText => OnSearch(searchText))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -49,10 +49,10 @@
         <MudTd DataLabel="LastName">@fighter.LastName</MudTd>
         <MudTd DataLabel="Nickname">@fighter.Nickname</MudTd>
         <MudTd>
-            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.AccountCircle" Size="Size.Small" OnClick="@(() => RedirectToFighterProfile(fighter.Id))"/>
-            <AuthorizeView Policy=@($"{Policy.Admin}")>
-                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" Size="Size.Small" OnClick="@(() => UpdateFighter(@fighter))"/>
-                <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Delete" Size="Size.Small" OnClick="@(() => DeleteFighter(@fighter.Id))"/>
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Small" OnClick="() => RedirectToFighterProfile(fighter.Id)"/>
+            <AuthorizeView Policy=@Policy.Admin>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateFighter(fighter)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteFighter(fighter.Id)"/>
             </AuthorizeView>
         </MudTd>
     </RowTemplate>
@@ -134,7 +134,7 @@
     private async Task UpdateFighter(FighterDto fighterDto)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateFighterDialog>();
+        var parameters = new DialogParameters<UpdateFighterDialog>();
 
         parameters.Add(x => x.UpdateFighterCommand, new()
         {
@@ -156,7 +156,7 @@
     private async Task CreateFighter()
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<CreateFighterDialog>();
+        var parameters = new DialogParameters<CreateFighterDialog>();
 
         parameters.Add(x => x.CreateFighterCommand, new());
 

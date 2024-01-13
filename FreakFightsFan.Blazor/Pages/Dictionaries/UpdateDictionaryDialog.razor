@@ -1,39 +1,40 @@
 ﻿@inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateMyDictionaryRequest" @ref="@form" Validation="validationErrors.Validate">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateMyDictionaryRequest.Name" For="@(() => UpdateMyDictionaryRequest.Name)" />
-            <MudTextField Label="Code" @bind-Value="UpdateMyDictionaryRequest.Code" For="@(() => UpdateMyDictionaryRequest.Code)" />
+            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="() => Command.Name" />
+
+            <MudTextField Label="Code" @bind-Value="Command.Code" For="() => Command.Code" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateMyDictionary.Command UpdateMyDictionaryRequest { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateMyDictionary.Command Command { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
-
-    private void Cancel() => MudDialog.Cancel();
+    private CustomValidator CustomValidator = new();
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await MyDictionaryApiClient.UpdateMyDictionary(UpdateMyDictionaryRequest);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            await MyDictionaryApiClient.UpdateMyDictionary(Command);
+            MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

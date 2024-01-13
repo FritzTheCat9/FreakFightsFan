@@ -3,7 +3,7 @@
         <MudText>@ContentText</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+        <MudButton Color="Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -11,7 +11,7 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentText { get; set; } = "Success";
     [Parameter] public string ButtonText { get; set; } = "Ok";
-    [Parameter] public MudBlazor.Color Color { get; set; } = MudBlazor.Color.Success;
+    [Parameter] public Color Color { get; set; } = Color.Success;
 
-    void Submit() => MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
 }

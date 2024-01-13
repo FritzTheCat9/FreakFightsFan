@@ -44,5 +44,7 @@
     private void FieldChanged(object sender, FieldChangedEventArgs e)
     {
         _validationMessageStore.Clear(e.FieldIdentifier);
+
+        EditContext.NotifyValidationStateChanged();
     }
 }
