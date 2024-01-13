@@ -2,56 +2,61 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateEventCommand" @ref="form" Validation="validationErrors.Validate">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateEventCommand.Name" For="() => UpdateEventCommand.Name" />
-            <MudDatePicker Label="Date" @bind-Date="UpdateEventCommand.Date" For="() => UpdateEventCommand.Date" Editable="true" Placeholder="Select Date" />
+            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <ValidationMessage For="() => Command.Name" />
+
+            <MudDatePicker Label="Date" @bind-Date="Command.Date" For="() => Command.Date" Editable="true" Placeholder="Select Date" />
+            <ValidationMessage For="() => Command.Date" />
+
             <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
                              ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                 <NoItemsTemplate>
                     <MudText>No items found in dictionary with code: "@DictionaryCode.City"</MudText>
                 </NoItemsTemplate>
             </MudAutocomplete>
+            <ValidationMessage For="() => City" />
+
             <MudAutocomplete T="MyDictionaryItemDto" Label="Hall" @bind-Value="Hall" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchHall" Variant="Variant.Text"
                              ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                 <NoItemsTemplate>
                     <MudText>No items found in dictionary with code: "@DictionaryCode.Hall"</MudText>
                 </NoItemsTemplate>
             </MudAutocomplete>
+            <ValidationMessage For="() => Hall" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateEvent.Command UpdateEventCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateEvent.Command Command { get; set; } = new();
     [Parameter] public MyDictionaryItemDto City { get; set; }
     [Parameter] public MyDictionaryItemDto Hall { get; set; }
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
-   
-    private void Cancel() => MudDialog.Cancel();
+    private CustomValidator CustomValidator = new();
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            UpdateEventCommand.CityId = City?.Id;
-            UpdateEventCommand.HallId = Hall?.Id;
+            Command.CityId = City?.Id;
+            Command.HallId = Hall?.Id;
 
-            await EventApiClient.UpdateEvent(UpdateEventCommand);
+            await EventApiClient.UpdateEvent(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

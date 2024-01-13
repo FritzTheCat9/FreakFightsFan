@@ -1,46 +1,46 @@
 @inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFederationCommand" @ref="form" Validation="validationErrors.Errors">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateFederationCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
-            <MyValidationMessage T="string" For="() => UpdateFederationCommand.ImageBase64" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ Url="@Url" />
+            @* <MyValidationMessage T="string" For="() => Command.ImageBase64" ValidationErrors="validationErrors" /> *@
+            <ValidationMessage For="() => Command.ImageBase64" />
 
-            <MudTextField Label="Name" @bind-Value="UpdateFederationCommand.Name" For="() => UpdateFederationCommand.Name" />
+            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <ValidationMessage For="() => Command.Name" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFederation.Command  UpdateFederationCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateFederation.Command Command { get; set; } = new();
     [Parameter] public string Url { get; set; }
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private CustomValidator CustomValidator = new();
     private bool IsImageValid { get; set; }
-
-    private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
     {
         try
         {
             if (!IsImageValid)
-                UpdateFederationCommand.ImageBase64 = null;
+                Command.ImageBase64 = null;
 
-            await FederationApiClient.UpdateFederation(UpdateFederationCommand);
+            await FederationApiClient.UpdateFederation(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

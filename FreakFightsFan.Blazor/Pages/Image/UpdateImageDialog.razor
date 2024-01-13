@@ -1,29 +1,29 @@
 @inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateImageCommand" @ref="form" Validation="validationErrors.Validate">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="UpdateImageCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" Url="@Url" />
-            <MyValidationMessage T="string" For="() => UpdateImageCommand.ImageBase64" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ Url="@Url" />
+            @* <MyValidationMessage T="string" For="() => UpdateImageCommand.ImageBase64" ValidationErrors="validationErrors" /> *@
+            <ValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateImage.Command UpdateImageCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateImage.Command Command { get; set; } = new();
     [Parameter] public string Url { get; set; }
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private CustomValidator CustomValidator = new();
     private bool IsImageValid { get; set; }
-
-    private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
     {
@@ -32,13 +32,12 @@
             if (!IsImageValid)
                 return;
 
-            await ImageApiClient.UpdateImage(UpdateImageCommand);
+            await ImageApiClient.UpdateImage(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

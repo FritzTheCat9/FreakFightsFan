@@ -61,7 +61,7 @@
 
 @code {
     private MudTable<ImageDto> table;
-    public PagedList<ImageDto> ImagesPagedList { get; set; }
+    private PagedList<ImageDto> ImagesPagedList { get; set; }
 
     private List<BreadcrumbItem> _items = new()
     {
@@ -98,9 +98,9 @@
     private async Task DeleteImage(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -120,15 +120,15 @@
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateImageDialog>();
 
-        parameters.Add(x => x.UpdateImageCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Id = imageDto.Id,
             ImageBase64 = ""
         });
         parameters.Add(x => x.Url, imageDto.Url);
 
-        var updateImageDialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
-        var result = await updateImageDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
@@ -137,10 +137,10 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateImageDialog>();
-        parameters.Add(x => x.CreateImageCommand, new());
+        parameters.Add(x => x.Command, new());
 
-        var createImageDialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
-        var result = await createImageDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }

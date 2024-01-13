@@ -3,7 +3,10 @@
 @inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateFightCommand" @ref="form" Validation="validationErrors.Validate">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
@@ -20,11 +23,12 @@
                                 <NoItemsTemplate>
                                     <MudText>No fighters found</MudText>
                                 </NoItemsTemplate>
-                                <ItemTemplate>
-                                    <DisplayFighterListItem Fighter="context" />
+                                <ItemTemplate Context="item">
+                                    <DisplayFighterListItem Fighter="item" />
                                 </ItemTemplate>
                             </MudAutocomplete>
-                            <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="() => UpdateFightCommand.Teams" ValidationErrors="validationErrors" />
+                            @* <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="() => UpdateFightCommand.Teams" ValidationErrors="validationErrors" /> *@
+                            <ValidationMessage For="() => Command.Teams" />
                         </MudItem>
                         <MudItem xs="2" Class="d-flex">
                             <MudButton OnClick="() => AddFighterToSelectedTeam()" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
@@ -72,30 +76,30 @@
                                     <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
                                 </NoItemsTemplate>
                             </MudAutocomplete>
+                            <ValidationMessage For="() => FightType" />
                         </MudItem>
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="UpdateFightCommand.VideoUrl" For="() => UpdateFightCommand.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
+                            <MudTextField @bind-Value="Command.VideoUrl" For="() => Command.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
+                            <ValidationMessage For="() => Command.VideoUrl" />
                         </MudItem>
                     </MudGrid>
                 </MudTabPanel>
             </MudTabs>
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFight.Command UpdateFightCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UpdateFight.Command Command { get; set; } = new();
     [Parameter] public List<TeamDto> Teams { get; set; } = [];
     [Parameter] public int NumberOfTeams { get; set; }
     [Parameter] public MyDictionaryItemDto FightType { get; set; }
-
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    
+    private CustomValidator CustomValidator = new();
     private MudAutocomplete<FighterDto> addFighterField;
 
     private List<int> allowedTeamSizes = [ 2, 3, 4, 5 ];
@@ -231,13 +235,11 @@
         return FightersPagedList.Items;
     }
 
-    private void Cancel() => MudDialog.Cancel();
-
     private async Task HandleValidSubmit()
     {
         try
         {
-            UpdateFightCommand.Teams = [];
+            Command.Teams = [];
 
             foreach (var team in _teams)
             {
@@ -254,18 +256,17 @@
                     teamFighters.Add(teamFighterModel);
                 }
 
-                UpdateFightCommand.Teams.Add(new() { Fighters = teamFighters });
+                Command.Teams.Add(new() { Fighters = teamFighters });
             }
 
-            UpdateFightCommand.TypeId = FightType?.Id;
+            Command.TypeId = FightType?.Id;
 
-            await FightApiClient.UpdateFight(UpdateFightCommand);
+            await FightApiClient.UpdateFight(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

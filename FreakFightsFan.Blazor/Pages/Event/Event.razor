@@ -90,7 +90,7 @@
 
     private MudTable<EventDto> table;
     private string searchString = "";
-    public PagedList<EventDto> EventsPagedList { get; set; }
+    private PagedList<EventDto> EventsPagedList { get; set; }
 
     private async Task<TableData<EventDto>> ServerReload(TableState state)
     {
@@ -135,9 +135,9 @@
     private async Task DeleteEvent(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -156,7 +156,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateEventDialog>();
-        parameters.Add(x => x.UpdateEventCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Id = eventDto.Id,
             Name = eventDto.Name,
@@ -168,8 +168,8 @@
         parameters.Add(x => x.City, eventDto.City);
         parameters.Add(x => x.Hall, eventDto.Hall);
 
-        var updateEventDialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
-        var result = await updateEventDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
@@ -178,7 +178,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateEventDialog>();
-        parameters.Add(x => x.CreateEventCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Name = "",
             Date = DateTime.UtcNow,
@@ -187,8 +187,8 @@
             HallId = null,
         });
 
-        var createEventDialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);
-        var result = await createEventDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }

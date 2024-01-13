@@ -27,7 +27,7 @@
 @code {
     [Parameter] public FighterInTeamDto FighterInTeam { get; set; }
 
-    public void RedirectToFighterProfile(int fighterId)
+    private void RedirectToFighterProfile(int fighterId)
     {
         NavigationManager.NavigateTo($"/fighter/{fighterId}");
     }

@@ -105,8 +105,8 @@ else
     [Parameter] public int EventId { get; set; }
 
     private List<BreadcrumbItem> _items = [];
-    public List<FightDto> FightsList { get; set; }
-    public EventDto Event { get; set; }
+    private List<FightDto> FightsList { get; set; }
+    private EventDto Event { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -161,9 +161,9 @@ else
     private async Task DeleteFight(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -205,7 +205,7 @@ else
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFightDialog>();
 
-        parameters.Add(x => x.UpdateFightCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Id = fightDto.Id,
             Teams = [],
@@ -216,8 +216,8 @@ else
         parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
         parameters.Add(x => x.FightType, fightDto.Type);
 
-        var updateFightDialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, dialogOptions);
-        var result = await updateFightDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();
     }
@@ -227,7 +227,7 @@ else
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFightDialog>();
 
-        parameters.Add(x => x.CreateFightCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             EventId = EventId,
             Teams = [],
@@ -236,8 +236,8 @@ else
         });
         parameters.Add(x => x.NumberOfTeams, 2);
 
-        var createFightDialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);
-        var result = await createFightDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();
     }

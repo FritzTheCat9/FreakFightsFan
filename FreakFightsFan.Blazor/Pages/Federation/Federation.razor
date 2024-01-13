@@ -141,7 +141,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFederationDialog>();
-        parameters.Add(x => x.UpdateFederationCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Id = federationDto.Id,
             Name = federationDto.Name,
@@ -159,7 +159,7 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFederationDialog>();
-        parameters.Add(x => x.CreateFederationCommand, new());
+        parameters.Add(x => x.Command, new());
 
         var createFederationDialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, dialogOptions);
         var result = await createFederationDialog.Result;

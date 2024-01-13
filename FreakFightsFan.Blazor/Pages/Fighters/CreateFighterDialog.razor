@@ -1,48 +1,54 @@
 ﻿@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateFighterCommand" @ref="form" Validation="validationErrors.Validate">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="CreateFighterCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" />
-            <MyValidationMessage T="string" For="() => CreateFighterCommand.ImageBase64" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ />
+            @* <MyValidationMessage T="string" For="() => CreateFighterCommand.ImageBase64" ValidationErrors="validationErrors" /> *@
+            <ValidationMessage For="() => Command.ImageBase64" />
 
-            <MudTextField Label="First Name" @bind-Value="CreateFighterCommand.FirstName" For="() => CreateFighterCommand.FirstName" />
-            <MudTextField Label="Last Name" @bind-Value="CreateFighterCommand.LastName" For="() => CreateFighterCommand.LastName" />
-            <MudTextField Label="Nickname" @bind-Value="CreateFighterCommand.Nickname" For="() => CreateFighterCommand.Nickname" />
-            <MudTextField Label="Instagram Url" @bind-Value="CreateFighterCommand.InstagramUrl" For="() => CreateFighterCommand.InstagramUrl" />
+            <MudTextField Label="First Name" @bind-Value="Command.FirstName" For="() => Command.FirstName" />
+            <ValidationMessage For="() => Command.FirstName" />
+
+            <MudTextField Label="Last Name" @bind-Value="Command.LastName" For="() => Command.LastName" />
+            <ValidationMessage For="() => Command.LastName" />
+
+            <MudTextField Label="Nickname" @bind-Value="Command.Nickname" For="() => Command.Nickname" />
+            <ValidationMessage For="() => Command.Nickname" />
+
+            <MudTextField Label="Instagram Url" @bind-Value="Command.InstagramUrl" For="() => Command.InstagramUrl" />
+            <ValidationMessage For="() => Command.InstagramUrl" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateFighter.Command CreateFighterCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public CreateFighter.Command Command { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private CustomValidator CustomValidator = new();
     private bool IsImageValid { get; set; }
-
-    private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
     {
         try
         {
             if (!IsImageValid)
-                CreateFighterCommand.ImageBase64 = null;
+                Command.ImageBase64 = null;
 
-            await FighterApiClient.CreateFighter(CreateFighterCommand);
+            await FighterApiClient.CreateFighter(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

@@ -85,7 +85,7 @@
 
     private MudTable<UserDto> table;
     private string searchString = "";
-    public PagedList<UserDto> UsersPagedList { get; set; }
+    private PagedList<UserDto> UsersPagedList { get; set; }
 
     private async Task<TableData<UserDto>> ServerReload(TableState state)
     {
@@ -127,8 +127,8 @@
         var parameters = new DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to increase the privileges of the chosen user?");
 
-        var informationDialog = await DialogService.ShowAsync<InformationDialog>("Increase user permissions", parameters, dialogOptions);
-        var result = await informationDialog.Result;
+        var dialog = await DialogService.ShowAsync<InformationDialog>("Increase user permissions", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             await UserApiClient.PromoteUser(id);
@@ -142,8 +142,8 @@
         var parameters = new DialogParameters<InformationDialog>();
         parameters.Add(x => x.ContentText, "Are you certain you wish to decrease the privileges of the chosen user?");
 
-        var informationDialog = await DialogService.ShowAsync<InformationDialog>("Decrease user permissions", parameters, dialogOptions);
-        var result = await informationDialog.Result;
+        var dialog = await DialogService.ShowAsync<InformationDialog>("Decrease user permissions", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             await UserApiClient.DegradeUser(id);

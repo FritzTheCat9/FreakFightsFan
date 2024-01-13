@@ -1,45 +1,45 @@
 @inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="CreateFederationCommand" @ref="form" Validation="validationErrors.Errors">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="CreateFederationCommand.ImageBase64" @bind-IsImageValid="IsImageValid" @bind-ValidationErrors="validationErrors.Errors" />
-            <MyValidationMessage T="string" For="() => CreateFederationCommand.ImageBase64" ValidationErrors="validationErrors" />
+            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ />
+            @* <MyValidationMessage T="string" For="() => Command.ImageBase64" ValidationErrors="validationErrors" /> *@
+            <ValidationMessage For="() => Command.ImageBase64" />
 
-            <MudTextField Label="Name" @bind-Value="CreateFederationCommand.Name" For="() => CreateFederationCommand.Name" />
+            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <ValidationMessage For="() => Command.Name" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="Color.Primary">Create</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateFederation.Command CreateFederationCommand { get; set; } = new();
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public CreateFederation.Command Command { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private CustomValidator CustomValidator = new();
     private bool IsImageValid { get; set; }
-
-    private void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()
     {
         try
         {
             if (!IsImageValid)
-                CreateFederationCommand.ImageBase64 = null;
+                Command.ImageBase64 = null;
 
-            await FederationApiClient.CreateFederation(CreateFederationCommand);
+            await FederationApiClient.CreateFederation(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

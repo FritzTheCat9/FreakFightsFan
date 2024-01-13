@@ -75,7 +75,7 @@
 
     private MudTable<FighterDto> table;
     private string searchString = "";
-    public PagedList<FighterDto> FightersPagedList { get; set; }
+    private PagedList<FighterDto> FightersPagedList { get; set; }
 
     private async Task<TableData<FighterDto>> ServerReload(TableState state)
     {
@@ -114,9 +114,9 @@
     private async Task DeleteFighter(int id)
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -136,7 +136,7 @@
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFighterDialog>();
 
-        parameters.Add(x => x.UpdateFighterCommand, new()
+        parameters.Add(x => x.Command, new()
         {
             Id = fighterDto.Id,
             FirstName = fighterDto.FirstName,
@@ -147,8 +147,8 @@
         });
         parameters.Add(x => x.Url, fighterDto.Image?.Url);
 
-        var updateFighterDialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
-        var result = await updateFighterDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
@@ -158,15 +158,15 @@
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFighterDialog>();
 
-        parameters.Add(x => x.CreateFighterCommand, new());
+        parameters.Add(x => x.Command, new());
 
-        var createFighterDialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, dialogOptions);
-        var result = await createFighterDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
 
-    public void RedirectToFighterProfile(int fighterId)
+    private void RedirectToFighterProfile(int fighterId)
     {
         NavigationManager.NavigateTo($"/fighter/{fighterId}");
     }

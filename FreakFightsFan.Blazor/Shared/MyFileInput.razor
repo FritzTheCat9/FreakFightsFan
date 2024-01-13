@@ -34,8 +34,8 @@ else
     [Parameter] public int MaxFileSize { get; set; } = ImageConsts.MaxFileSize;
     [Parameter] public List<string> AllowedFileTypes { get; set; } = ImageConsts.AllowedFileTypes;
 
-    public string AllowedFileTypesString = "";
-    public IBrowserFile File { get; set; } = null;
+    private string AllowedFileTypesString = "";
+    private IBrowserFile File { get; set; } = null;
 
     protected override void OnInitialized()
     {
@@ -98,7 +98,7 @@ else
         await ValidationErrorsChanged.InvokeAsync(ValidationErrors);
     }
 
-    public class FileFluentValidator : AbstractValidator<IBrowserFile>
+    private class FileFluentValidator : AbstractValidator<IBrowserFile>
     {
         private readonly int _maxFileSize;
         private readonly List<string> _allowedFileTypes;

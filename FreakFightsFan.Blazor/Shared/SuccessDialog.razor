@@ -8,10 +8,10 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentText { get; set; } = "Success";
     [Parameter] public string ButtonText { get; set; } = "Ok";
     [Parameter] public Color Color { get; set; } = Color.Success;
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
 }

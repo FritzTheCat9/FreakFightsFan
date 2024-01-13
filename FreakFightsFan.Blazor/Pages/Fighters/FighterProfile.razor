@@ -115,8 +115,8 @@ else
     public FighterProfileDto Profile { get; set; }
     public FighterDto Fighter { get; set; }
 
-    string[] labels = [ "Wins", "Losses", "Draws", "No Contest" ];
-    double[] data = [];
+    private string[] labels = [ "Wins", "Losses", "Draws", "No Contest" ];
+    private double[] data = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -160,7 +160,7 @@ else
         }
     }
 
-    public string InstagramUrlToNickname(string url)
+    private string InstagramUrlToNickname(string url)
     {
         var nickname = url.Replace("https://www.instagram.com/", "").Replace("/", "");
         return nickname;

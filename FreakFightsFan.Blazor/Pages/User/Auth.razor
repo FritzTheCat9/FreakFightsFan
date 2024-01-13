@@ -23,10 +23,10 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<LoginDialog>();
-        parameters.Add(x => x.LoginCommand, new());
+        parameters.Add(x => x.Command, new());
 
-        var registerDialog = await DialogService.ShowAsync<LoginDialog>("Login", parameters, dialogOptions);
-        var result = await registerDialog.Result;
+        var dialog = await DialogService.ShowAsync<LoginDialog>("Login", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             if (result.Data is JwtDto token)
@@ -43,10 +43,10 @@
     {
         var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<RegisterDialog>();
-        parameters.Add(x => x.RegisterCommand, new());
+        parameters.Add(x => x.Command, new());
 
-        var registerDialog = await DialogService.ShowAsync<RegisterDialog>("Register", parameters, dialogOptions);
-        var result = await registerDialog.Result;
+        var dialog = await DialogService.ShowAsync<RegisterDialog>("Register", parameters, dialogOptions);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await OpenRegistrationSuccessDialog();
     }
@@ -57,7 +57,7 @@
         var parameters = new DialogParameters<SuccessDialog>();
         parameters.Add(x => x.ContentText, "The account has been successfully created. To log in, please confirm your email address by clicking on the activation link sent to your email inbox.");
 
-        var simpleDialog = await DialogService.ShowAsync<SuccessDialog>("Success", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<SuccessDialog>("Success", parameters, dialogOptions);
     }
 
     private async Task Logout()
