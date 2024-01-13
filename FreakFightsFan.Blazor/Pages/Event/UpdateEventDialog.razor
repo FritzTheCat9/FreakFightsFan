@@ -1,57 +1,47 @@
+@implements IDialogContentComponent<UpdateEvent.DialogContent>
+
 @inject IEventApiClient EventApiClient
-@inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="UpdateEventCommand" @ref="@form" Validation="validationErrors.Validate">
-    <MudDialog DefaultFocus="DefaultFocus.LastChild">
-        <DialogContent>
-            <MudTextField Label="Name" @bind-Value="UpdateEventCommand.Name" For="@(() => UpdateEventCommand.Name)" />
-            <MudDatePicker Label="Date" @bind-Date="UpdateEventCommand.Date" For="@(() => UpdateEventCommand.Date)" Editable="true" Placeholder="Select Date" />
-            <MudAutocomplete T="MyDictionaryItemDto" Label="City" @bind-Value="City" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchCity" Variant="Variant.Text"
-                             ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
-                <NoItemsTemplate>
-                    <MudText>No items found in dictionary with code: "@DictionaryCode.City"</MudText>
-                </NoItemsTemplate>
-            </MudAutocomplete>
-            <MudAutocomplete T="MyDictionaryItemDto" Label="Hall" @bind-Value="Hall" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchHall" Variant="Variant.Text"
-                             ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
-                <NoItemsTemplate>
-                    <MudText>No items found in dictionary with code: "@DictionaryCode.Hall"</MudText>
-                </NoItemsTemplate>
-            </MudAutocomplete>
-        </DialogContent>
-        <DialogActions>
-            <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary">Update</MudButton>
-        </DialogActions>
-    </MudDialog>
-</MudForm>
+<EditForm Model="Content.Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
+    <FluentDialogBody>
+        <XTextField @bind-Value="Content.Command.Name" For="(() => Content.Command.Name)" Label="Name" />
+        <FluentValidationMessage For="(() => Content.Command.Name)" />
+
+        <XDatePicker @bind-Value="Content.Command.Date" For="(() => Content.Command.Date)" Label="Date" />
+        <FluentValidationMessage For="(() => Content.Command.Date)" />
+
+        <XDictionaryItemPicker @bind-Value="Content.Command.CityId" DictionaryCode="@DictionaryCode.City" Label="City" Placeholder="Select city" DictionaryItem="Content.City" />
+        <FluentValidationMessage For="(() => Content.Command.CityId)" />
+
+        <XDictionaryItemPicker @bind-Value="Content.Command.HallId" DictionaryCode="@DictionaryCode.Hall" Label="Hall" Placeholder="Select hall" DictionaryItem="Content.Hall" />
+        <FluentValidationMessage For="(() => Content.Command.HallId)" />
+    </FluentDialogBody>
+
+    <FluentDialogFooter>
+        <FluentButton Type="Fluent.ButtonType.Submit" Color="Fluent.Color.Info">Update</FluentButton>
+    </FluentDialogFooter>
+</EditForm>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateEvent.Command UpdateEventCommand { get; set; } = new();
-    [Parameter] public MyDictionaryItemDto City { get; set; }
-    [Parameter] public MyDictionaryItemDto Hall { get; set; }
+    [CascadingParameter] FluentDialog Dialog { get; set; }
+    [Parameter] public UpdateEvent.DialogContent Content { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
-   
-    private void Cancel() => MudDialog.Cancel();
+    private CustomValidator CustomValidator;
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            UpdateEventCommand.CityId = City?.Id;
-            UpdateEventCommand.HallId = Hall?.Id;
-
-            await EventApiClient.UpdateEvent(UpdateEventCommand);
-            MudDialog.Close(MudBlazor.DialogResult.Ok(true));
+            await EventApiClient.UpdateEvent(Content.Command);
+            await Dialog.CloseAsync(Fluent.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

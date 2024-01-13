@@ -3,20 +3,20 @@
 @inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<EditForm @ref="@form" Model="Content">
+<EditForm Model="Content" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
-    <CustomValidator @ref="@CustomValidator" />
 
     <FluentDialogBody>
-        <FluentTextField @bind-Value="Content.Name" Label="Name" style="width: 100%;" />
-        <FluentValidationMessage For="@(() => Content.Name)" />
+        <XTextField @bind-Value="Content.Name" For="(() => Content.Name)" Label="Name" />
+        <FluentValidationMessage For="(() => Content.Name)" />
 
-        <FluentTextField @bind-Value="Content.Code" Label="Code" style="width: 100%;" />
-        <FluentValidationMessage For="@(() => Content.Code)" />
+        <XTextField @bind-Value="Content.Code" For="(() => Content.Code)" Label="Code" />
+        <FluentValidationMessage For="(() => Content.Code)" />
     </FluentDialogBody>
 
     <FluentDialogFooter>
-        <FluentButton OnClick="HandleValidSubmit" Color="Fluent.Color.Info">Create</FluentButton>
+        <FluentButton Type="Fluent.ButtonType.Submit" Color="Fluent.Color.Info">Create</FluentButton>
     </FluentDialogFooter>
 </EditForm>
 
@@ -24,20 +24,14 @@
     [CascadingParameter] FluentDialog Dialog { get; set; }
     [Parameter] public CreateMyDictionary.Command Content { get; set; } = new();
 
-    private EditForm form;
     private CustomValidator CustomValidator;
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            var isValid = form.EditContext.Validate();
-
-            if (isValid)
-            {
-                await MyDictionaryApiClient.CreateMyDictionary(Content);
-                await Dialog.CloseAsync(Fluent.DialogResult.Ok(true));
-            }
+            await MyDictionaryApiClient.CreateMyDictionary(Content);
+            await Dialog.CloseAsync(Fluent.DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
         {

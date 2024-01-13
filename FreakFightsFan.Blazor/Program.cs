@@ -59,7 +59,6 @@ builder.Services.AddScoped<IFighterApiClient, FighterApiClient>();
 builder.Services.AddScoped<IImageApiClient, ImageApiClient>();
 builder.Services.AddScoped<IMyDictionaryApiClient, MyDictionaryApiClient>();
 builder.Services.AddScoped<IMyDictionaryItemApiClient, MyDictionaryItemApiClient>();
-builder.Services.AddScoped<IMyDictionaryItemClientHelper, MyDictionaryItemClientHelper>();
 builder.Services.AddScoped<IUserApiClient, UserApiClient>();
 
 await builder.Build().RunAsync();

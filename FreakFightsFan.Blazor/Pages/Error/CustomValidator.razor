@@ -1,5 +1,4 @@
 ﻿
-
 @code {
     [CascadingParameter] private EditContext EditContext { get; set; }
     private ValidationMessageStore _validationMessageStore;
@@ -37,12 +36,14 @@
     private void ValidationRequested(object sender, ValidationRequestedEventArgs e)
     {
         _validationMessageStore.Clear();
-
+        
         EditContext.NotifyValidationStateChanged();
     }
-
+    
     private void FieldChanged(object sender, FieldChangedEventArgs e)
     {
         _validationMessageStore.Clear(e.FieldIdentifier);
+
+        EditContext.NotifyValidationStateChanged();
     }
 }

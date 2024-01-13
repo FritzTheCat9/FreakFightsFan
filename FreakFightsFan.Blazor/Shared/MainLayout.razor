@@ -9,6 +9,12 @@
 <FluentTooltipProvider />
 <FluentMessageBarProvider />
 
+<style>
+    .mud-input-control-helper-container {
+        display: none !important;
+    }
+</style>
+
 <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Menu" Color="MudBlazor.Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />

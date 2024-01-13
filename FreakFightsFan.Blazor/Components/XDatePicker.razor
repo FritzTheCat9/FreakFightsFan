@@ -1,0 +1,47 @@
+﻿@inherits FluentCalendarBase
+
+<FluentDatePicker Immediate="true" Value="Value" ValueChanged="OnValueChanged" ValueExpression="For" Label="@Label" autocomplete="@Autocomplete" style="width: 100%;" />
+
+@code {
+    [Parameter] public Expression<Func<DateTime?>> For { get; set; }
+    [Parameter] public string Autocomplete { get; set; } = "off";
+
+    private void OnValueChanged(DateTime? value)
+    {
+        Value = value;
+        ValueChanged.InvokeAsync(Value);
+
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+    }
+
+    protected override bool TryParseValueFromString(string value, out DateTime? result, out string validationErrorMessage)
+    {
+        if (value == null || value.Length < 6)
+        {
+            result = null;
+        }
+        else
+        {
+            string[] formats = { "yyyy-MM-dd" };
+            if (DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime validDate))
+            {
+                result = validDate;
+            }
+            else
+            {
+                result = null;
+            }
+        }
+
+        if (result.HasValue)
+        {
+            validationErrorMessage = null;
+            return true;
+        }
+        else
+        {
+            validationErrorMessage = "Enter a valid date";
+            return false;
+        }
+    }
+}

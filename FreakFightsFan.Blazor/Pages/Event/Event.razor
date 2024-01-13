@@ -4,6 +4,7 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IEventApiClient EventApiClient
 @inject MudBlazor.IDialogService DialogService
+@inject Fluent.IDialogService FluentDialogService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Events</PageTitle>
@@ -154,42 +155,54 @@
 
     private async Task UpdateEvent(EventDto eventDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateEventDialog>();
-        parameters.Add(x => x.UpdateEventCommand, new()
-        {
-            Id = eventDto.Id,
-            Name = eventDto.Name,
-            Date = eventDto.Date,
-            CityId = eventDto.City?.Id,
-            HallId = eventDto.Hall?.Id
-        });
-            
-        parameters.Add(x => x.City, eventDto.City);
-        parameters.Add(x => x.Hall, eventDto.Hall);
+        var data = new UpdateEvent.DialogContent()
+        { 
+            Command = new UpdateEvent.Command()
+            {
+                Id = eventDto.Id,
+                Name = eventDto.Name,
+                Date = eventDto.Date,
+                CityId = eventDto.City?.Id,
+                HallId = eventDto.Hall?.Id
+            },
+             City = eventDto.City,
+             Hall = eventDto.Hall,
+        };
 
-        var updateEventDialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
-        var result = await updateEventDialog.Result;
-        if (!result.Canceled)
+        var parameters = new Fluent.DialogParameters()
+        {
+            Title = $"Update Event",
+            Width = "500px",
+            TrapFocus = true,
+        };
+
+        var dialog = await FluentDialogService.ShowDialogAsync<UpdateEventDialog>(data, parameters);
+        var result = await dialog.Result;
+        if(!result.Cancelled)
             await table.ReloadServerData();
     }
 
     private async Task CreateEvent()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<CreateEventDialog>();
-        parameters.Add(x => x.CreateEventCommand, new()
+        var data = new CreateEvent.Command()
         {
             Name = "",
             Date = DateTime.UtcNow,
             FederationId = FederationId,
             CityId = null,
             HallId = null,
-        });
+        };
 
-        var createEventDialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);
-        var result = await createEventDialog.Result;
-        if (!result.Canceled)
+        var parameters = new Fluent.DialogParameters()
+        {
+            Title = $"Create Event",
+            Width = "500px",
+            TrapFocus = true,
+        };
+
+        var dialog = await FluentDialogService.ShowDialogAsync<CreateEventDialog>(data, parameters);
+        var result = await dialog.Result;
+        if(!result.Cancelled)
             await table.ReloadServerData();
     }
 }

@@ -1,16 +1,23 @@
 ﻿@inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
 
-<MudForm Model="RegisterCommand" @ref="@form" Validation="validationErrors.Validate">
+<EditForm Model="RegisterCommand" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Email" @bind-Value="RegisterCommand.Email" For="@(() => RegisterCommand.Email)" />
-            <MudTextField Label="UserName" @bind-Value="RegisterCommand.UserName" For="@(() => RegisterCommand.UserName)" />
+            <MudTextField Label="Email" @bind-Value="RegisterCommand.Email" For="@(() => RegisterCommand.Email)" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="@(() => RegisterCommand.Email)" />
+            <MudTextField Label="UserName" @bind-Value="RegisterCommand.UserName" For="@(() => RegisterCommand.UserName)" OnlyValidateIfDirty="true" />
+            <ValidationMessage For="@(() => RegisterCommand.UserName)" />
             <PasswordField Label="Password" @bind-Value="RegisterCommand.Password" For="@(() => RegisterCommand.Password)" />
+            <ValidationMessage For="@(() => RegisterCommand.Password)" />
             <PasswordField Label="Repeat Password" @bind-Value="RegisterCommand.RepeatPassword" For="@(() => RegisterCommand.RepeatPassword)" />
+            <ValidationMessage For="@(() => RegisterCommand.RepeatPassword)" />
         </DialogContent>
         <DialogActions>
-            <MudButton OnClick="HandleValidSubmit" Color="MudBlazor.Color.Primary" Disabled="@_processing">
+            <MudButton ButtonType="MudBlazor.ButtonType.Submit" Color="MudBlazor.Color.Primary" Disabled="@_processing">
                 @if (_processing)
                 {
                     <MudProgressCircular Size="Size.Small" Indeterminate="true" />
@@ -23,14 +30,13 @@
             </MudButton>
         </DialogActions>
     </MudDialog>
-</MudForm>
+</EditForm>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public Register.Command RegisterCommand { get; set; } = new();
 
-    private ValidationErrors validationErrors = new();
-    private MudForm form;
+    private CustomValidator CustomValidator;
 
     private bool _processing;
 
@@ -47,8 +53,7 @@
         }
         catch (MyValidationException validationException)
         {
-            validationErrors.Errors = validationException.Errors;
-            await form.Validate();
+            CustomValidator.DisplayErrors(validationException.Errors);
         }
         catch (Exception ex)
         {

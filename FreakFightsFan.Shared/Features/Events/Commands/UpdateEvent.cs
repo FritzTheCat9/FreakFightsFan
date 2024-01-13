@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using MediatR;
 
 namespace FreakFightsFan.Shared.Features.Events.Commands
@@ -23,7 +24,20 @@ namespace FreakFightsFan.Shared.Features.Events.Commands
 
                 RuleFor(x => x.Date)
                     .NotEmpty();
+
+                RuleFor(x => x.CityId)
+                    .NotEmpty();
+
+                RuleFor(x => x.HallId)
+                    .NotEmpty();
             }
+        }
+
+        public class DialogContent
+        {
+            public Command Command { get; set; }
+            public MyDictionaryItemDto? City { get; set; }
+            public MyDictionaryItemDto? Hall { get; set; }
         }
     }
 }

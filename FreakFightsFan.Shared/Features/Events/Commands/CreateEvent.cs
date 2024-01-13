@@ -23,6 +23,12 @@ namespace FreakFightsFan.Shared.Features.Events.Commands
 
                 RuleFor(x => x.Date)
                     .NotEmpty();
+
+                RuleFor(x => x.CityId)
+                    .NotEmpty();
+
+                RuleFor(x => x.HallId)
+                    .NotEmpty();
             }
         }
     }

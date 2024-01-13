@@ -4,6 +4,7 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject MudBlazor.IDialogService DialogService
+@inject Fluent.IDialogService FluentDialogService
 
 <PageTitle>Dictionary items</PageTitle>
 
@@ -116,35 +117,45 @@
 
     private async Task UpdateDictionaryItem(MyDictionaryItemDto myDictionaryItemDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<UpdateDictionaryItemDialog>();
-        parameters.Add(x => x.UpdateMyDictionaryItemCommand, new()
+        var data = new UpdateMyDictionaryItem.Command()
         {
             Id = myDictionaryItemDto.Id,
             Name = myDictionaryItemDto.Name,
             Code = myDictionaryItemDto.Code,
-        });
+        };
 
-        var updateDictionaryItemDialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, dialogOptions);
-        var result = await updateDictionaryItemDialog.Result;
-        if (!result.Canceled)
+        var parameters = new Fluent.DialogParameters()
+        {
+            Title = $"Update Dictionary Item",
+            Width = "500px",
+            TrapFocus = true,
+        };
+
+        var dialog = await FluentDialogService.ShowDialogAsync<UpdateDictionaryItemDialog>(data, parameters);
+        var result = await dialog.Result;
+        if(!result.Cancelled)
             await table.ReloadServerData();
     }
 
     private async Task CreateDictionaryItem()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new MudBlazor.DialogParameters<CreateDictionaryItemDialog>();
-        parameters.Add(x => x.CreateMyDictionaryItemCommand, new()
+        var data = new CreateMyDictionaryItem.Command()
         {
             Name = "",
             Code = "",
             DictionaryId = DictionaryId,
-        });
+        };
 
-        var createDictionaryItemDialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, dialogOptions);
-        var result = await createDictionaryItemDialog.Result;
-        if (!result.Canceled)
+        var parameters = new Fluent.DialogParameters()
+        {
+            Title = $"Create Dictionary Item",
+            Width = "500px",
+            TrapFocus = true,
+        };
+
+        var dialog = await FluentDialogService.ShowDialogAsync<CreateDictionaryItemDialog>(data, parameters);
+        var result = await dialog.Result;
+        if(!result.Cancelled)
             await table.ReloadServerData();
     }
 }

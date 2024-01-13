@@ -1,6 +1,5 @@
 @inject IFightApiClient FightApiClient
 @inject IFighterApiClient FighterApiClient
-@inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model="CreateFightCommand" @ref="@form" Validation="validationErrors.Validate">
@@ -67,12 +66,14 @@
                             </ChildContent>
                         </MudItem>
                         <MudItem xs="12">
-                            <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
+                            @* <DictionaryItemPicker @bind-Value="@Halls" Label="Hall" Placeholder="Select hall" DictionaryCode="@DictionaryCode.Hall" />
+                            <FluentValidationMessage For="@(() => Content.HallId)" /> *@
+                            @* <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="@MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
                                 ShowProgressIndicator="true" ToStringFunc="@MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
                                 <NoItemsTemplate>
                                     <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
                                 </NoItemsTemplate>
-                            </MudAutocomplete>
+                            </MudAutocomplete> *@
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField @bind-Value="CreateFightCommand.VideoUrl" For="() => CreateFightCommand.VideoUrl" Label="Youtube video url" Variant="Variant.Text" />
