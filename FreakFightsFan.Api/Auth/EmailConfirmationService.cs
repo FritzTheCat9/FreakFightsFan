@@ -1,8 +1,8 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 
 namespace FreakFightsFan.Api.Auth
 {
@@ -37,6 +37,6 @@ namespace FreakFightsFan.Api.Auth
         }
 
         public string GenerateConfirmationLink(string email, string token) => 
-            $"{_baseUrl}/confirmEmail?email={HttpUtility.UrlEncode(email)}&token={HttpUtility.UrlEncode(token)}";
+            $"{_baseUrl}/confirmEmail?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
     }
 }
