@@ -20,7 +20,7 @@ namespace FreakFightsFan.Shared.Features.Users.Commands
             {
                 _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
-                When(x => !string.IsNullOrEmpty(x.ImageBase64), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
                 {
                     RuleFor(x => x.ImageBase64)
                         .NotEmpty()

@@ -1,4 +1,4 @@
-﻿using FreakFightsFan.Api.Abstractions;
+﻿    using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
@@ -57,7 +57,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
                 if (codeExists)
-                    throw new MyValidationException("Code", "'Code' must be unique");
+                    throw new MyValidationException(nameof(CreateMyDictionary.Command.Code), $"{nameof(CreateMyDictionary.Command.Code)} must be unique");
             }
         }
     }

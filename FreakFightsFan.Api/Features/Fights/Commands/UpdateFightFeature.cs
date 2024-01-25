@@ -68,35 +68,11 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
             private async Task ValidateCommand(UpdateFight.Command command)
             {
-                if (command.Teams.Count < FightsConsts.MinTeamsNumber)
-                    throw new MyValidationException("Teams", $"At least {FightsConsts.MinTeamsNumber} teams should be added for each fight");
-
-                if (command.Teams.Count > FightsConsts.MaxTeamsNumber)
-                    throw new MyValidationException("Teams", $"Each fight can contain only {FightsConsts.MaxTeamsNumber} teams");
-
-                var allFightersIds = new List<int>();
-                foreach (var createTeamModel in command.Teams)
-                {
-                    if (createTeamModel.Fighters.Count < FightsConsts.MinTeamFighters)
-                        throw new MyValidationException("Teams", $"At least {FightsConsts.MinTeamFighters} fighter should be added for each team");
-
-                    if (createTeamModel.Fighters.Count > FightsConsts.MaxTeamFighters)
-                        throw new MyValidationException("Teams", $"Each team can contain only {FightsConsts.MaxTeamFighters} fighters");
-
-                    foreach (var fighter in createTeamModel.Fighters)
-                    {
-                        if (!allFightersIds.Contains(fighter.FighterId))
-                            allFightersIds.Add(fighter.FighterId);
-                        else
-                            throw new MyValidationException("Teams", $"Each fighter can only be selected to the team once");
-                    }
-                }
-
                 if (command.TypeId is not null)
                 {
                     var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
                     if (!isTypeValid)
-                        throw new MyValidationException("TypeId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
+                        throw new MyValidationException($"{nameof(command.TypeId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
                 }
             }
         }

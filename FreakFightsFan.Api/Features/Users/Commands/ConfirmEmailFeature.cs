@@ -46,14 +46,14 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             public async Task<bool> Handle(ConfirmEmail.Command command, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
-                    throw new MyValidationException("Email", "User with given 'Email' does not exist");
+                    throw new MyValidationException($"{nameof(command.Email)}", $"User with given {nameof(command.Email)} does not exist");
 
                 if (user.EmailConfirmed)
-                    throw new MyValidationException("Email", "Provided 'Email' has already been confirmed");
+                    throw new MyValidationException($"{nameof(command.Email)}", $"Provided {nameof(command.Email)} has already been confirmed");
 
                 var isTokenAssignedToUser = await _userRepository.IsTokenAssignedToUser(user.Email, command.Token);
                 if (!isTokenAssignedToUser)
-                    throw new MyValidationException("Token", "Provided 'Token' is not assigned to this user");
+                    throw new MyValidationException($"{nameof(command.Token)}", $"Provided {nameof(command.Token)} is not assigned to this user");
 
                 user.EmailConfirmed = true;
                 user.EmailConfirmationToken = null;
@@ -62,7 +62,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 
                 await _emailService.SendEmail(user.Email, new EmailConfirmationSuccessfulTemplateModel
                 {
-                    UserName  = user.UserName,
+                    UserName = user.UserName,
                 });
 
                 return isTokenAssignedToUser;

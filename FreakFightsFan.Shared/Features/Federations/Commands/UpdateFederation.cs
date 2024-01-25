@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Images.Helpers;
 using MediatR;
 
@@ -24,10 +25,11 @@ namespace FreakFightsFan.Shared.Features.Federations.Commands
                 RuleFor(x => x.Name)
                     .NotEmpty();
 
-                When(x => !string.IsNullOrEmpty(x.ImageBase64), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
                 {
                     RuleFor(x => x.ImageBase64)
                         .NotEmpty()
+                        .WithMessage(x => ValidationMessages.NotEmpty("Image"))
                         .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
                             .WithMessage($"The maximum file size is {ImageConsts.MaxFileSize} bytes")
                         .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))

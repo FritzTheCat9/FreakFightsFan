@@ -79,11 +79,11 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             {
                 var emailExists = await _userRepository.EmailExists(command.Email);
                 if (emailExists)
-                    throw new MyValidationException("Email", "'Email' is already taken");
+                    throw new MyValidationException($"{nameof(command.Email)}", $"{nameof(command.Email)} is already taken");
 
                 var userNameExists = await _userRepository.UserNameExists(command.UserName);
                 if (userNameExists)
-                    throw new MyValidationException("UserName", "'UserName' is already taken");
+                    throw new MyValidationException($"{nameof(command.UserName)}", $"{nameof(command.UserName)} is already taken");
             }
         }
     }

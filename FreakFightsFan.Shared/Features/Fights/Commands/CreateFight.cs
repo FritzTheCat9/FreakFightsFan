@@ -44,7 +44,22 @@ namespace FreakFightsFan.Shared.Features.Fights.Commands
         {
             public Validator()
             {
-                When(x => !string.IsNullOrEmpty(x.VideoUrl), () =>
+                RuleFor(x => x.Teams)
+                    .NotEmpty()
+                    .Must(teams => teams.Count >= FightsConsts.MinTeamsNumber)
+                    .WithMessage($"At least {FightsConsts.MinTeamsNumber} teams should be added for each fight")
+                    .Must(teams => teams.Count <= FightsConsts.MaxTeamsNumber)
+                    .WithMessage($"Each fight can contain only {FightsConsts.MaxTeamsNumber} teams")
+                    .Must(FightHelpers.HaveUniqueFighters)
+                    .WithMessage("Each fighter can only be selected to the team once");
+
+                RuleForEach(x => x.Teams)
+                    .Must(team => team.Fighters.Count >= FightsConsts.MinTeamFighters)
+                    .WithMessage($"At least {FightsConsts.MinTeamFighters} fighter should be added for each team")
+                    .Must(team => team.Fighters.Count <= FightsConsts.MaxTeamFighters)
+                    .WithMessage($"Each team can contain only {FightsConsts.MaxTeamFighters} fighters");
+
+                When(x => !string.IsNullOrWhiteSpace(x.VideoUrl), () =>
                 {
                     RuleFor(x => x.VideoUrl)
                         .NotEmpty()

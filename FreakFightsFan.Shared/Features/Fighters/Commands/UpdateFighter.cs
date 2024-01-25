@@ -33,7 +33,7 @@ namespace FreakFightsFan.Shared.Features.Fighters.Commands
                 RuleFor(x => x.Nickname)
                     .NotEmpty();
 
-                When(x => !string.IsNullOrEmpty(x.InstagramUrl), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
                 {
                     RuleFor(x => x.InstagramUrl)
                         .NotEmpty()
@@ -41,7 +41,7 @@ namespace FreakFightsFan.Shared.Features.Fighters.Commands
                         .WithMessage("This is not a valid link to the Instagram profile");
                 });
 
-                When(x => !string.IsNullOrEmpty(x.ImageBase64), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
                 {
                     RuleFor(x => x.ImageBase64)
                         .NotEmpty()

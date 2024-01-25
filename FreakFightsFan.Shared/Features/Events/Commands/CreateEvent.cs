@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Exceptions;
 using MediatR;
 
 namespace FreakFightsFan.Shared.Features.Events.Commands
@@ -19,10 +20,20 @@ namespace FreakFightsFan.Shared.Features.Events.Commands
             public Validator()
             {
                 RuleFor(x => x.Name)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty(nameof(x.Name)));
 
                 RuleFor(x => x.Date)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty(nameof(x.Date)));
+
+                RuleFor(x => x.CityId)
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty("City"));
+
+                RuleFor(x => x.HallId)
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty("Hall"));
             }
         }
     }

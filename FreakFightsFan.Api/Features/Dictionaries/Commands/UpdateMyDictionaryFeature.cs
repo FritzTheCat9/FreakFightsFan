@@ -55,7 +55,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
                 if (codeExists)
-                    throw new MyValidationException("Code", "'Code' must be unique");
+                    throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code), $"{nameof(UpdateMyDictionary.Command.Code)} must be unique");
             }
         }
     }

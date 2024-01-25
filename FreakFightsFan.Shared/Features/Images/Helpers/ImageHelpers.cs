@@ -11,7 +11,14 @@
 
         public static bool HaveValidSize(string imageBase64, int maxFileSize)
         {
-            return GetImageData(imageBase64).Length <= maxFileSize;
+            try
+            {
+                return GetImageData(imageBase64).Length <= maxFileSize;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public static string MakeAllowedFileTypesString(List<string> allowedFileTypes)

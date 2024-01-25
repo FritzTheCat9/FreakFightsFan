@@ -43,11 +43,11 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
                 if (fight.OrderNumber >= eventFights.Count() && command.Direction == MoveDirection.Upwards)
                 {
-                    throw new MyValidationException("Direction", "Invalid Direction - Fight is already on top");
+                    throw new MyValidationException($"{nameof(command.Direction)}", $"Invalid {nameof(command.Direction)} - Fight is already on top");
                 }
                 else if (fight.OrderNumber <= 1 && command.Direction == MoveDirection.Downwards)
                 {
-                    throw new MyValidationException("Direction", "Invalid Direction - Fight is already on bottom");
+                    throw new MyValidationException($"{nameof(command.Direction)}", $"Invalid {nameof(command.Direction)} - Fight is already on bottom");
                 }
                 else if (fight.OrderNumber < eventFights.Count() && command.Direction == MoveDirection.Upwards)
                 {

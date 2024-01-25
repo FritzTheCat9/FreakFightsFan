@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Images.Helpers;
 using MediatR;
 
@@ -24,26 +25,31 @@ namespace FreakFightsFan.Shared.Features.Fighters.Commands
                 _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
                 RuleFor(x => x.FirstName)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty("First name"));
 
                 RuleFor(x => x.LastName)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty("Last name"));
 
                 RuleFor(x => x.Nickname)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => ValidationMessages.NotEmpty($"{nameof(x.Nickname)}"));
 
-                When(x => !string.IsNullOrEmpty(x.InstagramUrl), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
                 {
                     RuleFor(x => x.InstagramUrl)
                         .NotEmpty()
+                        .WithMessage(x => ValidationMessages.NotEmpty("Instagram Url"))
                         .Matches("^(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/([a-zA-Z0-9_\\.]{1,30})\\/?$")
                         .WithMessage("This is not a valid link to the Instagram profile");
                 });
 
-                When(x => !string.IsNullOrEmpty(x.ImageBase64), () =>
+                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
                 {
                     RuleFor(x => x.ImageBase64)
                         .NotEmpty()
+                        .WithMessage(x => ValidationMessages.NotEmpty("Image"))
                         .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
                             .WithMessage($"The maximum file size is {ImageConsts.MaxFileSize} bytes")
                         .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))

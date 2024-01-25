@@ -2,6 +2,7 @@
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.DictionaryItems.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
@@ -62,7 +63,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 
                 var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
                 if (codeExists)
-                    throw new MyValidationException("Code", "'Code' must be unique");
+                    throw new MyValidationException(nameof(CreateMyDictionaryItem.Command.Code), $"{nameof(CreateMyDictionaryItem.Command.Code)} must be unique");
             }
         }
     }

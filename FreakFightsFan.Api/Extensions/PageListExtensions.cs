@@ -5,35 +5,38 @@ namespace FreakFightsFan.Api.Extensions
 {
     public static class PageListExtensions<T>
     {
+        private static readonly int _minPage = 0;
+        private static readonly int _minPageSize = 0;
+
         public static PagedList<T> Create(
             IQueryable<T> source,
-            int page,
-            int pageSize)
+            int Page,
+            int PageSize)
         {
-            if (page <= 0)
-                throw new MyValidationException(nameof(page), "Page should be greater than 0");
-            if (pageSize <= 0)
-                throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");
+            if (Page <= _minPage)
+                throw new MyValidationException(nameof(Page), $"{nameof(Page)} should be greater than {_minPage}");
+            if (PageSize <= _minPageSize)
+                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be greater than {_minPageSize}");
 
             var totalCount = source.Count();
             var items = source
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((Page - 1) * PageSize)
+                .Take(PageSize)
                 .ToList();
 
-            return new PagedList<T>(items, page, pageSize, totalCount);
+            return new PagedList<T>(items, Page, PageSize, totalCount);
         }
 
         public static PagedList<T> CreateEmpty(
-            int page,
-            int pageSize)
+            int Page,
+            int PageSize)
         {
-            if (page <= 0)
-                throw new MyValidationException(nameof(page), "Page should be greater than 0");
-            if (pageSize <= 0)
-                throw new MyValidationException(nameof(pageSize), "Page size should be greater than 0");
+            if (Page <= _minPage)
+                throw new MyValidationException(nameof(Page), $"{nameof(Page)} should be greater than {_minPage}");
+            if (PageSize <= _minPageSize)
+                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be greater than {_minPageSize}");
 
-            return new PagedList<T>([], page, pageSize, 0);
+            return new PagedList<T>([], Page, PageSize, 0);
         }
     }
 }

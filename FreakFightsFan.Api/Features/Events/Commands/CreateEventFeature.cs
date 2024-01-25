@@ -73,14 +73,14 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 {
                     var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
                     if (!isCityValid)
-                        throw new MyValidationException("CityId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
+                        throw new MyValidationException($"{nameof(command.CityId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
                 }
 
                 if (command.HallId is not null)
                 {
                     var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
                     if (!isHallValid)
-                        throw new MyValidationException("HallId", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
+                        throw new MyValidationException($"{nameof(command.HallId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
                 }
             }
         }

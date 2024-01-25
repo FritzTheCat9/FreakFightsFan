@@ -40,13 +40,13 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             public async Task<JwtDto> Handle(Login.Command command, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ?? 
-                    throw new MyValidationException("Email", "User with given 'Email' does not exist");
+                    throw new MyValidationException($"{nameof(command.Email)}", $"User with given {nameof(command.Email)} does not exist");
 
                 if (!user.EmailConfirmed)
-                    throw new MyValidationException("Email", "'Email' is not confirmed");
+                    throw new MyValidationException($"{nameof(command.Email)}", $"{nameof(command.Email)} is not confirmed");
 
                 if (!_passwordService.Validate(command.Password, user.Password))
-                    throw new MyValidationException("Password", "Incorrect 'Password'");
+                    throw new MyValidationException($"{nameof(command.Password)}", $"Incorrect {nameof(command.Password)}");
 
                 var jwt = _authenticator.CreateToken(user);
 
