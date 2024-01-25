@@ -36,3 +36,4 @@ app.AddEndpoints();
 
 app.Run();
 
+public partial class Program { }
