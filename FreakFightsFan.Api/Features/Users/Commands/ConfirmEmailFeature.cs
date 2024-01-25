@@ -4,7 +4,6 @@ using FreakFightsFan.Api.Emails.Templates;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FreakFightsFan.Api.Features.Users.Commands
 {
@@ -12,18 +11,10 @@ namespace FreakFightsFan.Api.Features.Users.Commands
     {
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/users/confirmEmail", async (
-                [FromQuery(Name = "email")] string email,
-                [FromQuery(Name = "token")] string token,
+            app.MapPost("/api/users/confirmEmail", async (ConfirmEmail.Command command,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new ConfirmEmail.Command()
-                {
-                    Email = email,
-                    Token = token,
-                };
-
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
                 .WithTags("Users")

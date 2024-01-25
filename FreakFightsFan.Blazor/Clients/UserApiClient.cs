@@ -7,7 +7,7 @@ namespace FreakFightsFan.Blazor.Clients
 {
     public interface IUserApiClient
     {
-        Task<bool> ConfirmEmail(string email, string token);
+        Task<bool> ConfirmEmail(ConfirmEmail.Command command);
         Task DegradeUser(int id);
         Task<JwtDto> Login(Login.Command command);
         Task PromoteUser(int id);
@@ -27,9 +27,9 @@ namespace FreakFightsFan.Blazor.Clients
             _apiClient = apiClient;
         }
 
-        public async Task<bool> ConfirmEmail(string email, string token)
+        public async Task<bool> ConfirmEmail(ConfirmEmail.Command command)
         {
-            return await _apiClient.Get<bool>($"{_url}/confirmEmail?email={email}&token={token}");
+            return await _apiClient.Post<ConfirmEmail.Command, bool>($"{_url}/confirmEmail", command);
         }
 
         public async Task DegradeUser(int id)

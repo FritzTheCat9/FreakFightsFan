@@ -45,6 +45,8 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 var federations = await _federationRepository.GetAll();
                 var extension = ".png";
 
+                //TODO: jak nie ma obrazka to nie można go tu dodać
+
                 foreach (var federation in federations)
                 {
                     var federation_image_name = $"{_webHostEnvironment.WebRootPath}\\{_options.FederationImagesFolderName}\\{federation.Id}{extension}";
