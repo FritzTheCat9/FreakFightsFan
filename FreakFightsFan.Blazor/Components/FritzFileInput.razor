@@ -1,0 +1,130 @@
+﻿@inherits MudTextField<string>
+
+<MudTextField @ref="TextField" 
+              T="string"
+              Value="Value"
+              ValueChanged="OnImageBase64Changed"
+              For="For"
+              Style="display: none;" />
+
+@if ((IsImageValid && !string.IsNullOrEmpty(Value)))
+{
+    <MudImage Src="@Value" Width="400" />
+}
+else if (!string.IsNullOrEmpty(Url))
+{
+    <MudImage Src="@Url" Width="400" />
+}
+else
+{
+    <MudItem>No image loaded</MudItem>
+}
+
+<MudFileUpload T="IBrowserFile" 
+    @bind-Files="File" 
+    OnFilesChanged="UploadFiles" 
+    For="() => File" 
+    Accept="@AllowedFileTypesString"
+    AppendMultipleFiles="false">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AttachFile">
+            Upload Image
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+@code {
+    [Parameter] public string Url { get; set; }
+    [Parameter] public EventCallback<string> OnImageBase64Changed { get; set; }
+
+    private MudTextField<string> TextField;
+    private int MaxFileSize { get; set; } = ImageConsts.MaxFileSize;
+    private List<string> AllowedFileTypes { get; set; } = ImageConsts.AllowedFileTypes;
+    private string AllowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
+    private IBrowserFile File { get; set; } = null;
+    private bool IsImageValid { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SetIsImageValid(Value);
+    }
+
+    private async Task OnValueChanged(string value)
+    {
+        await SetValueAsync(value);
+        await OnImageBase64Changed.InvokeAsync(Value);
+    }
+
+    private void SetIsImageValid(string imageBase64)
+    {
+        if (!string.IsNullOrEmpty(imageBase64))
+        {
+            IsImageValid = true;
+        }
+    }
+
+    private async void UploadFiles(InputFileChangeEventArgs e)
+    {
+        var validationErrors = ValidateFile(e.File);
+        if (validationErrors.Any())
+        {
+            IsImageValid = false;
+            await OnValueChanged(null);
+            StateHasChanged();
+            return;
+        }
+
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(MaxFileSize).ReadAsync(buffer);
+        var imageBase64 = Convert.ToBase64String(buffer);
+        string dataUrl = $"data:{file.ContentType};base64,{imageBase64}";
+        await OnValueChanged(dataUrl);
+
+        IsImageValid = true;
+        StateHasChanged();
+    }
+
+    private IDictionary<string, List<string>> ValidateFile(IBrowserFile file)
+    {
+        if (file == null)
+            return new Dictionary<string, List<string>>();
+
+        var validator = new FileFluentValidator(MaxFileSize, AllowedFileTypes, AllowedFileTypesString);
+        var result = validator.Validate(file);
+
+        var validationErrors = new Dictionary<string, List<string>>();
+        if (!result.IsValid)
+        {
+            validationErrors = result.Errors
+                .GroupBy(failure => failure.PropertyName)
+                .ToDictionary(group => group.Key, group => group.Select(failure => failure.ErrorMessage).ToList());
+        }
+        return validationErrors;
+    }
+
+    private class FileFluentValidator : AbstractValidator<IBrowserFile>
+    {
+        private readonly int _maxFileSize;
+        private readonly List<string> _allowedFileTypes;
+        private readonly string _allowedFileTypesString;
+
+        public FileFluentValidator(int maxFileSize, List<string> allowedFileTypes, string allowedFileTypesString)
+        {
+            _maxFileSize = maxFileSize;
+            _allowedFileTypes = allowedFileTypes;
+            _allowedFileTypesString = allowedFileTypesString;
+
+            When(x => x != null, () =>
+            {
+                RuleFor(x => x.Size)
+                .Must(x => x <= _maxFileSize)
+                .WithMessage($"The maximum file size is {_maxFileSize} bytes");
+
+                RuleFor(x => x.ContentType)
+                .Must(x => _allowedFileTypes.Contains(x))
+                .WithMessage($"Allowed image types: {allowedFileTypesString}");
+            });
+        }
+    }
+}

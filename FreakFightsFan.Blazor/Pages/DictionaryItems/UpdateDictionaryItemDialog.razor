@@ -7,11 +7,11 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" OnlyValidateIfDirty="true" />
-            <ValidationMessage For="() => Command.Name" />
+            <FritzTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzValidationMessage For="() => Command.Name" />
 
-            <MudTextField Label="Code" @bind-Value="Command.Code" For="() => Command.Code" OnlyValidateIfDirty="true" />
-            <ValidationMessage For="() => Command.Code" />
+            <FritzTextField Label="Code" @bind-Value="Command.Code" For="() => Command.Code" />
+            <FritzValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>

@@ -7,12 +7,12 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ Url="@Url" />
-            @* <MyValidationMessage T="string" For="() => Command.ImageBase64" ValidationErrors="validationErrors" /> *@
-            <ValidationMessage For="() => Command.ImageBase64" />
+            <FritzFileInput @bind-Value="Command.ImageBase64" For="() => Command.ImageBase64"
+                            OnImageBase64Changed="(image) => Command.ImageBase64 = image" Url="@Url" />
+            <FritzValidationMessage For="() => Command.ImageBase64" />
 
-            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
-            <ValidationMessage For="() => Command.Name" />
+            <FritzTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzValidationMessage For="() => Command.Name" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
@@ -26,15 +26,11 @@
     [Parameter] public string Url { get; set; }
 
     private CustomValidator CustomValidator = new();
-    private bool IsImageValid { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            if (!IsImageValid)
-                Command.ImageBase64 = null;
-
             await FederationApiClient.UpdateFederation(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }

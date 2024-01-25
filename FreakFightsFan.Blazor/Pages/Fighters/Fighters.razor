@@ -8,11 +8,7 @@
 
 <PageTitle>Fighters</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<FighterDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="fighter">
@@ -22,8 +18,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFighter()"/>
         </AuthorizeView>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -73,9 +68,9 @@
         new("Fighters", href: null, disabled: true),
     };
 
-    private MudTable<FighterDto> table;
     private string searchString = "";
-    private PagedList<FighterDto> FightersPagedList { get; set; }
+    private MudTable<FighterDto> table;
+    private PagedList<FighterDto> MyFighters { get; set; }
 
     private async Task<TableData<FighterDto>> ServerReload(TableState state)
     {
@@ -90,7 +85,7 @@
 
         try
         {
-            FightersPagedList = await FighterApiClient.GetAllFighters(query);
+            MyFighters = await FighterApiClient.GetAllFighters(query);
         }
         catch (Exception ex)
         {
@@ -100,21 +95,15 @@
 
         return new()
         {
-            TotalItems = FightersPagedList.TotalCount,
-            Items = FightersPagedList.Items
+            TotalItems = MyFighters.TotalCount,
+            Items = MyFighters.Items
         };
-    }
-
-    private void OnSearch(string searchText)
-    {
-        searchString = searchText;
-        table.ReloadServerData();
     }
 
     private async Task DeleteFighter(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -133,9 +122,8 @@
 
     private async Task UpdateFighter(FighterDto fighterDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFighterDialog>();
-
         parameters.Add(x => x.Command, new()
         {
             Id = fighterDto.Id,
@@ -147,7 +135,7 @@
         });
         parameters.Add(x => x.Url, fighterDto.Image?.Url);
 
-        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -155,12 +143,12 @@
 
     private async Task CreateFighter()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFighterDialog>();
 
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

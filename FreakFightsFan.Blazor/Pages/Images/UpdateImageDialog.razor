@@ -7,31 +7,28 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ />
-            @* <MyValidationMessage T="string" For="() => CreateImageCommand.ImageBase64" ValidationErrors="validationErrors" /> *@
-            <ValidationMessage For="() => Command.ImageBase64" />
+            <FritzFileInput @bind-Value="Command.ImageBase64" For="() => Command.ImageBase64"
+                            OnImageBase64Changed="(image) => Command.ImageBase64 = image" Url="@Url" />
+            <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
 
 @code {
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateImage.Command Command { get; set; } = new();
+    [Parameter] public UpdateImage.Command Command { get; set; } = new();
+    [Parameter] public string Url { get; set; }
 
     private CustomValidator CustomValidator = new();
-    private bool IsImageValid { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            if (!IsImageValid)
-                return;
-
-            await ImageApiClient.CreateImage(Command);
+            await ImageApiClient.UpdateImage(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

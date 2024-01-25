@@ -8,11 +8,7 @@
 
 <PageTitle>Events</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<EventDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="myEvent">
@@ -22,8 +18,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateEvent()"/>
         </AuthorizeView>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">Name</MudTableSortLabel></MudTh>
@@ -39,24 +34,10 @@
         <MudTd DataLabel="Name">@myEvent.Name</MudTd>
         <MudTd DataLabel="Date">@myEvent.Date.ToString("dd/MM/yyyy")</MudTd>
         <MudTd DataLabel="City">
-            @if (myEvent.City != null)
-            {
-                @myEvent.City.Name
-            }
-            else
-            {
-                <MudText>-</MudText>
-            }
+            <DisplayDictionaryItemDto DictionaryItemDto="myEvent.City" />
         </MudTd>
         <MudTd DataLabel="Hall">
-            @if (myEvent.Hall != null)
-            {
-                @myEvent.Hall.Name
-            }
-            else
-            {
-                <MudText>-</MudText>
-            }
+            <DisplayDictionaryItemDto DictionaryItemDto="myEvent.Hall" />
         </MudTd>
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="() => RedirectToFightsPage(myEvent.Id)"/>
@@ -88,9 +69,9 @@
         new("Events", href: null, disabled: true),
     };
 
-    private MudTable<EventDto> table;
     private string searchString = "";
-    private PagedList<EventDto> EventsPagedList { get; set; }
+    private MudTable<EventDto> table;
+    private PagedList<EventDto> MyEvents { get; set; }
 
     private async Task<TableData<EventDto>> ServerReload(TableState state)
     {
@@ -106,7 +87,7 @@
 
         try
         {
-            EventsPagedList = await EventApiClient.GetAllEvents(query);
+            MyEvents = await EventApiClient.GetAllEvents(query);
         }
         catch (Exception ex)
         {
@@ -116,15 +97,9 @@
 
         return new()
         {
-            TotalItems = EventsPagedList.TotalCount,
-            Items = EventsPagedList.Items
+            TotalItems = MyEvents.TotalCount,
+            Items = MyEvents.Items
         };
-    }
-
-    private void OnSearch(string searchText)
-    {
-        searchString = searchText;
-        table.ReloadServerData();
     }
 
     private void RedirectToFightsPage(int eventId)
@@ -134,8 +109,8 @@
 
     private async Task DeleteEvent(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -154,7 +129,7 @@
 
     private async Task UpdateEvent(EventDto eventDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateEventDialog>();
         parameters.Add(x => x.Command, new()
         {
@@ -164,11 +139,10 @@
             CityId = eventDto.City?.Id,
             HallId = eventDto.Hall?.Id
         });
-            
         parameters.Add(x => x.City, eventDto.City);
         parameters.Add(x => x.Hall, eventDto.Hall);
 
-        var dialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<UpdateEventDialog>("Update Event", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -176,7 +150,7 @@
 
     private async Task CreateEvent()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateEventDialog>();
         parameters.Add(x => x.Command, new()
         {
@@ -187,7 +161,7 @@
             HallId = null,
         });
 
-        var dialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<CreateEventDialog>("Create Event", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

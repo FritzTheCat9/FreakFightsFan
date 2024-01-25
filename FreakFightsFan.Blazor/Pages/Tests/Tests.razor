@@ -1,0 +1,113 @@
+﻿@page "/tests"
+@attribute [AllowAnonymous]
+
+@inject IExceptionHandler ExceptionHandler
+@inject IDialogService DialogService
+
+<PageTitle>Tests</PageTitle>
+
+<FritzBreadcrumbs Items="_items" />
+
+<MudTable ServerData="new Func<TableState, Task<TableData<TestDto>>>(ServerReload)"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Tests</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateTest()"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel T="TestDto">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">DictionaryItemId</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">Fighter</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">DictionaryItem</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">Number</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel T="TestDto">ImageBase64</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Id</MudTd>
+        <MudTd DataLabel="Code">@context.Name</MudTd>
+        <MudTd DataLabel="Code">@context.Date</MudTd>
+        <MudTd DataLabel="Code">@context.MyDictionaryItem?.Id</MudTd>
+        <MudTd DataLabel="Code">@context.Fighter?.FirstName @context.Fighter?.LastName</MudTd>
+        <MudTd DataLabel="Code">@context.MyDictionaryItem?.Name</MudTd>
+        <MudTd DataLabel="Code">@context.Number</MudTd>
+        <MudTd DataLabel="Code">@context.ImageBase64</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateTest(context)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteTest(context.Id)"/>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private List<BreadcrumbItem> _items = new()
+    {
+        new("Tests", href: null, disabled: true),
+    };
+
+    private MudTable<TestDto> table;
+    private List<TestDto> MyTests { get; set; }
+
+    private async Task<TableData<TestDto>> ServerReload(TableState state)
+    {
+        MyTests = TestData.GetTests();
+
+        return new()
+        {
+            TotalItems = MyTests.Count,
+            Items = MyTests
+        };
+    }
+
+    private async Task DeleteTest(int id)
+    {
+        TestData.DeleteTest(id);
+        await table.ReloadServerData();
+    }
+
+    private async Task UpdateTest(TestDto testDto)
+    {
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<UpdateTestDialog>();
+        parameters.Add(x => x.Command, new()
+        {
+            Id = testDto.Id,
+            Name = testDto.Name,
+            Date = testDto.Date,
+            Fighter = testDto.Fighter,
+            DictionaryItemId = testDto.MyDictionaryItem?.Id,
+            ImageBase64 = testDto.ImageBase64,
+            Number = testDto.Number,
+        });
+        parameters.Add(x => x.City, testDto.MyDictionaryItem);
+
+        var dialog = await DialogService.ShowAsync<UpdateTestDialog>("Update Test", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+
+    private async Task CreateTest()
+    {
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateTestDialog>();
+        parameters.Add(x => x.Command, new() { Number = 2, Date = DateTime.UtcNow, DictionaryItemId = null });
+        parameters.Add(x => x.City, null);
+
+        var dialog = await DialogService.ShowAsync<CreateTestDialog>("Create Test", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+            await table.ReloadServerData();
+    }
+}

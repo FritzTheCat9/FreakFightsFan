@@ -8,11 +8,7 @@
 
 <PageTitle>Federations</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<FederationDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="federation">
@@ -22,8 +18,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFederation()"/>
         </AuthorizeView>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" />
+        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Image</MudTh>
@@ -74,9 +69,9 @@
         new("Federations", href: null, disabled: true),
     };
 
-    private MudTable<FederationDto> table;
     private string searchString = "";
-    public PagedList<FederationDto> FederationsPagedList { get; set; }
+    private MudTable<FederationDto> table;
+    public PagedList<FederationDto> MyFederations { get; set; }
 
     private async Task<TableData<FederationDto>> ServerReload(TableState state)
     {
@@ -91,7 +86,7 @@
 
         try
         {
-            FederationsPagedList = await FederationApiClient.GetAllFederations(query);
+            MyFederations = await FederationApiClient.GetAllFederations(query);
         }
         catch (Exception ex)
         {
@@ -101,15 +96,9 @@
 
         return new()
         {
-            TotalItems = FederationsPagedList.TotalCount,
-            Items = FederationsPagedList.Items
+            TotalItems = MyFederations.TotalCount,
+            Items = MyFederations.Items
         };
-    }
-
-    private void OnSearch(string searchText)
-    {
-        searchString = searchText;
-        table.ReloadServerData();
     }
 
     private void RedirectToEventsPage(int id)
@@ -119,10 +108,10 @@
 
     private async Task DeleteFederation(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var simpleDialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
-        var result = await simpleDialog.Result;
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
@@ -139,7 +128,7 @@
 
     private async Task UpdateFederation(FederationDto federationDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFederationDialog>();
         parameters.Add(x => x.Command, new()
         {
@@ -149,20 +138,20 @@
         });
         parameters.Add(x => x.Url, federationDto.Image?.Url);
 
-        var updateFederationDialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, dialogOptions);
-        var result = await updateFederationDialog.Result;
+        var dialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, options);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }
 
     private async Task CreateFederation()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFederationDialog>();
         parameters.Add(x => x.Command, new());
 
-        var createFederationDialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, dialogOptions);
-        var result = await createFederationDialog.Result;
+        var dialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, options);
+        var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
     }

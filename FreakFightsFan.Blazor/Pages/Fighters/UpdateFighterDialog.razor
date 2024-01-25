@@ -7,22 +7,21 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ Url="@Url" />
-            @* <MyValidationMessage T="string" For="() => UpdateFighterCommand.ImageBase64" ValidationErrors="validationErrors" /> *@
-            <ValidationMessage For="() => Command.ImageBase64" />
+            <FritzFileInput @bind-Value="Command.ImageBase64" For="() => Command.ImageBase64"
+                            OnImageBase64Changed="(image) => Command.ImageBase64 = image" Url="@Url" />
+            <FritzValidationMessage For="() => Command.ImageBase64" />
 
-            <MudTextField Label="First Name" @bind-Value="Command.FirstName" For="() => Command.FirstName" />
-            <ValidationMessage For="() => Command.FirstName" />
+            <FritzTextField Label="First Name" @bind-Value="Command.FirstName" For="() => Command.FirstName" />
+            <FritzValidationMessage For="() => Command.FirstName" />
 
-            <MudTextField Label="Last Name" @bind-Value="Command.LastName" For="() => Command.LastName" />
-            <ValidationMessage For="() => Command.LastName" />
+            <FritzTextField Label="Last Name" @bind-Value="Command.LastName" For="() => Command.LastName" />
+            <FritzValidationMessage For="() => Command.LastName" />
 
-            <MudTextField Label="Nickname" @bind-Value="Command.Nickname" For="() => Command.Nickname" />
-            <ValidationMessage For="() => Command.Nickname" />
+            <FritzTextField Label="Nickname" @bind-Value="Command.Nickname" For="() => Command.Nickname" />
+            <FritzValidationMessage For="() => Command.Nickname" />
 
-            <MudTextField Label="Instagram Url" @bind-Value="Command.InstagramUrl" For="() => Command.InstagramUrl" />
-            <ValidationMessage For="() => Command.InstagramUrl" />
-
+            <FritzTextField Label="Instagram Url" @bind-Value="Command.InstagramUrl" For="() => Command.InstagramUrl" />
+            <FritzValidationMessage For="() => Command.InstagramUrl" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
@@ -36,15 +35,11 @@
     [Parameter] public string Url { get; set; }
 
     private CustomValidator CustomValidator = new();
-    private bool IsImageValid { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            if (!IsImageValid)
-                Command.ImageBase64 = null;
-
             await FighterApiClient.UpdateFighter(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }

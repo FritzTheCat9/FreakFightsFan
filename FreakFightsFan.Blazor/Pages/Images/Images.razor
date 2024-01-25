@@ -8,11 +8,7 @@
 
 <PageTitle>Images</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<ImageDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
@@ -61,7 +57,7 @@
 
 @code {
     private MudTable<ImageDto> table;
-    private PagedList<ImageDto> ImagesPagedList { get; set; }
+    private PagedList<ImageDto> MyImages { get; set; }
 
     private List<BreadcrumbItem> _items = new()
     {
@@ -80,7 +76,7 @@
 
         try
         {
-            ImagesPagedList = await ImageApiClient.GetAllImages(query);
+            MyImages = await ImageApiClient.GetAllImages(query);
         }
         catch (Exception ex)
         {
@@ -90,15 +86,15 @@
 
         return new()
         {
-            TotalItems = ImagesPagedList.TotalCount,
-            Items = ImagesPagedList.Items
+            TotalItems = MyImages.TotalCount,
+            Items = MyImages.Items
         };
     }
 
     private async Task DeleteImage(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -117,9 +113,8 @@
 
     private async Task UpdateImage(ImageDto imageDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateImageDialog>();
-
         parameters.Add(x => x.Command, new()
         {
             Id = imageDto.Id,
@@ -127,7 +122,7 @@
         });
         parameters.Add(x => x.Url, imageDto.Url);
 
-        var dialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -135,11 +130,11 @@
 
     private async Task CreateImage()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateImageDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

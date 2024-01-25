@@ -1,0 +1,31 @@
+﻿@inherits MudButton
+
+<MudButton ButtonType="ButtonType" Color="Color" Disabled="_processing">
+    @if (_processing)
+    {
+        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+        <MudText>@ProcessingButtonText</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.subtitle2">@ButtonText</MudText>
+    }
+</MudButton>
+
+@code {
+    [Parameter] public string ProcessingButtonText { get; set; } = "Processing...";
+    [Parameter] public string ButtonText { get; set; }
+
+    private bool _processing;
+
+    public void SetProcessing(bool processing)
+    {
+        _processing = processing;
+        StateHasChanged();
+    }
+
+    public bool IsProcessing()
+    {
+        return _processing;
+    }
+}

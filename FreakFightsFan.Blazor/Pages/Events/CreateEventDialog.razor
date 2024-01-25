@@ -1,0 +1,57 @@
+@inject IEventApiClient EventApiClient
+@inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
+@inject IExceptionHandler ExceptionHandler
+
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="CustomValidator" />
+    <FluentValidationValidator />
+
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <FritzTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzValidationMessage For="() => Command.Name" />
+
+            <FritzDatePicker Label="Date" @bind-Date="Command.Date" For="() => Command.Date" />
+            <FritzValidationMessage For="() => Command.Date" />
+
+            <FritzDictionaryItemPicker Label="City" @bind-Value="Command.CityId" For="() => Command.CityId"
+                                       DictionaryCode="@DictionaryCode.City" DictionaryItemDto="City" 
+                                       OnDictionaryItemDtoChanged="(item) => City = item" />
+            <FritzValidationMessage For="() => Command.CityId" />
+
+            <FritzDictionaryItemPicker Label="Hall" @bind-Value="Command.HallId" For="() => Command.HallId"
+                                       DictionaryCode="@DictionaryCode.Hall" DictionaryItemDto="Hall" 
+                                       OnDictionaryItemDtoChanged="(item) => Hall = item" />
+            <FritzValidationMessage For="() => Command.HallId" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+    [Parameter] public CreateEvent.Command Command { get; set; } = new();
+
+    private MyDictionaryItemDto City { get; set; }
+    private MyDictionaryItemDto Hall { get; set; }
+    private CustomValidator CustomValidator = new();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await EventApiClient.CreateEvent(Command);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            CustomValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+        }
+    }
+}

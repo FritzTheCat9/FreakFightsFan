@@ -8,11 +8,7 @@
 
 <PageTitle>Dictionaries</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<MyDictionaryDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
@@ -20,8 +16,7 @@
         <MudText Typo="Typo.h6">Dictionaries</MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionary()"/>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="searchText => OnSearch(searchText)" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"></MudTextField>
+        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">Name</MudTableSortLabel></MudTh>
@@ -57,13 +52,13 @@
         new("Dictionaries", href: null, disabled: true),
     };
 
-    private MudTable<MyDictionaryDto> table;
     private string searchString = "";
-    private PagedList<MyDictionaryDto> MyDictionariesPagedList { get; set; }
+    private MudTable<MyDictionaryDto> table;
+    private PagedList<MyDictionaryDto> MyDictionaries { get; set; }
 
     private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
     {
-        var getAllMyDictionariesRequest = new GetAllMyDictionaries.Query
+        var query = new GetAllMyDictionaries.Query
         {
             Page = state.Page + 1,
             PageSize = state.PageSize,
@@ -74,7 +69,7 @@
 
         try
         {
-            MyDictionariesPagedList = await MyDictionaryApiClient.GetAllMyDictionaries(getAllMyDictionariesRequest);
+            MyDictionaries = await MyDictionaryApiClient.GetAllMyDictionaries(query);
         }
         catch (Exception ex)
         {
@@ -84,15 +79,9 @@
 
         return new()
         {
-            TotalItems = MyDictionariesPagedList.TotalCount,
-            Items = MyDictionariesPagedList.Items
+            TotalItems = MyDictionaries.TotalCount,
+            Items = MyDictionaries.Items
         };
-    }
-
-    private void OnSearch(string searchText)
-    {
-        searchString = searchText;
-        table.ReloadServerData();
     }
 
     private void RedirectToDictionaryItemsPage(int id)
@@ -102,8 +91,8 @@
 
     private async Task DeleteDictionary(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -122,7 +111,7 @@
 
     private async Task UpdateDictionary(MyDictionaryDto myDictionaryDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryDialog>();
         parameters.Add(x => x.Command, new()
         {
@@ -131,7 +120,7 @@
             Code = myDictionaryDto.Code
         });
 
-        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -139,11 +128,11 @@
 
     private async Task CreateDictionary()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

@@ -1,0 +1,123 @@
+﻿@using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
+@inherits MudTextField<List<CreateTeamModel>>
+
+<MudTextField T="List<CreateTeamModel>"
+              Value="Teams"
+              ValueChanged="OnValueChanged"
+              For="For"
+              OnlyValidateIfDirty="true"
+              style="display: none;" />
+
+<MudGrid Spacing="1" Justify="Justify.FlexStart">
+    <MudItem xs="10">
+        <FritzFighterPicker @ref="addFighterField" Label="Fighter" @bind-Value="_fighter" Teams="_teams" />
+
+        <FritzValidationMessage For="ForTeams" />
+        <FritzValidationMessage For="ForEventId" />
+    </MudItem>
+    <MudItem xs="2" Class="d-flex">
+        <MudButton OnClick="AddFighterToSelectedTeam" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+    </MudItem>
+    @foreach (var team in _teams)
+    {
+        <MudItem xs="12" md="6" @onclick="() => SelectTeam(team.Number)" Style="cursor: pointer;">
+            <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
+                Team @($"{team.Number + 1}")
+            </MudText>
+            @if (team.Fighters.Any())
+            {
+                <MudPaper Width="100%" Class="@((_selectedTeam == team.Number) ? "mud-theme-primary" : "")">
+                    <MudList Style="cursor: auto;">
+                        @foreach (var fighter in team.Fighters)
+                        {
+                            <MudListItem>
+                                <FighterListItem FighterHelperModel="@fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            }
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    [Parameter] public List<CreateTeamModel> Teams { get; set; }
+    [Parameter] public List<CreateFight.TeamHelperModel> _teams { get; set; } = [];
+    [Parameter] public int _selectedTeam { get; set; }
+    [Parameter] public EventCallback<List<CreateTeamModel>> OnTeamsChanged { get; set; }
+    [Parameter] public Expression<Func<List<CreateTeamModel>>> ForTeams { get; set; }
+    [Parameter] public Expression<Func<int>> ForEventId { get; set; }
+    [Parameter] public int NumberOfTeams { get; set; }
+
+    private FritzFighterPicker addFighterField;
+    private FighterDto _fighter;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateTeams();
+    }
+
+    private async Task OnValueChanged(List<CreateTeamModel> teams)
+    {
+        await SetValueAsync(teams);
+        await OnTeamsChanged.InvokeAsync(teams);
+    }
+
+    private void SelectTeam(int number)
+    {
+        _selectedTeam = number;
+    }
+
+    private async Task DeleteFighterListItem(CreateFight.TeamHelperModel team, CreateFight.FighterHelperModel fighter)
+    {
+        var pickedTeam = _teams.FirstOrDefault(x => x.Number == team.Number);
+        if (pickedTeam is not null)
+        {
+            var fighterToRemove = pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
+            if (fighterToRemove is not null)
+            {
+                pickedTeam.Fighters.Remove(fighterToRemove);
+            }
+        }
+
+        await UpdateTeams();
+    }
+
+    private async Task AddFighterToSelectedTeam()
+    {
+        if (_fighter != null)
+        {
+            _teams[_selectedTeam].Fighters.Add(new() { Fighter = _fighter, FightResult = FightResult.UPCOMING });
+            _fighter = null;
+            _selectedTeam = (_selectedTeam + 1) % NumberOfTeams;
+            await addFighterField.Focus();
+        }
+
+        await UpdateTeams();
+    }
+
+    private async Task UpdateTeams()
+    {
+        Teams = [];
+
+        foreach (var team in _teams)
+        {
+            var teamFighters = new List<CreateFight.TeamFighterModel>();
+            foreach (var fighter in team.Fighters)
+            {
+                var teamFighterModel = new CreateFight.TeamFighterModel()
+                {
+                    FighterId = fighter.Fighter.Id,
+                    FightResult = fighter.FightResult,
+                };
+
+                teamFighters.Add(teamFighterModel);
+            }
+
+            Teams.Add(new() { Fighters = teamFighters });
+        }
+
+        await OnValueChanged(Teams);
+    }
+}

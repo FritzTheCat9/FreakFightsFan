@@ -54,9 +54,12 @@
     public class MyNotFoundException : CustomException
     {
         private readonly static string _errorMessage = "Not Found Error";
-        public MyNotFoundException() : base(_errorMessage)
+        //public string Details { get; set; }
+
+        public MyNotFoundException(/*string details*/) : base(_errorMessage)
         {
             Type = ExceptionType.NotFound;
+            //Details = details;
         }
     }
 }

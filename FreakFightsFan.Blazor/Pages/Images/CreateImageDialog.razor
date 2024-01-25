@@ -1,4 +1,4 @@
-@inject IFederationApiClient FederationApiClient
+@inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
 
 <EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
@@ -7,12 +7,9 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MyFileInput @bind-ImageBase64="Command.ImageBase64" @bind-IsImageValid="IsImageValid" @* @bind-ValidationErrors="validationErrors.Errors" *@ />
-            @* <MyValidationMessage T="string" For="() => Command.ImageBase64" ValidationErrors="validationErrors" /> *@
-            <ValidationMessage For="() => Command.ImageBase64" />
-
-            <MudTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
-            <ValidationMessage For="() => Command.Name" />
+            <FritzFileInput @bind-Value="Command.ImageBase64" For="() => Command.ImageBase64"
+                            OnImageBase64Changed="(image) => Command.ImageBase64 = image" />
+            <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
@@ -22,19 +19,15 @@
 
 @code {
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateFederation.Command Command { get; set; } = new();
+    [Parameter] public CreateImage.Command Command { get; set; } = new();
 
     private CustomValidator CustomValidator = new();
-    private bool IsImageValid { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            if (!IsImageValid)
-                Command.ImageBase64 = null;
-
-            await FederationApiClient.CreateFederation(Command);
+            await ImageApiClient.CreateImage(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)

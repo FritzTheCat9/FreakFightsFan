@@ -7,24 +7,14 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <MudTextField Label="Email" @bind-Value="Command.Email" For="() => Command.Email" />
-            <ValidationMessage For="() => Command.Email" />
+            <FritzTextField Label="Email" @bind-Value="Command.Email" For="() => Command.Email" />
+            <FritzValidationMessage For="() => Command.Email" />
 
-            <PasswordField @bind-Value="Command.Password" For="() => Command.Password" />
-            <ValidationMessage For="() => Command.Password" />
+            <FritzPasswordField Label="Password" @bind-Value="Command.Password" For="() => Command.Password" />
+            <FritzValidationMessage For="() => Command.Password" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Disabled="_processing">
-                @if (_processing)
-                {
-                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-                    <MudText>Processing...</MudText>
-                }
-                else
-                {
-                    <MudText Typo="Typo.subtitle2">LOGIN</MudText>
-                }
-            </MudButton>
+            <FritzProcessingButton @ref="ProcessingButton" ButtonType="ButtonType.Submit" Color="Color.Primary" ButtonText="LOGIN" />
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -34,14 +24,14 @@
     [Parameter] public Login.Command Command { get; set; } = new();
 
     private CustomValidator CustomValidator = new();
-    private bool _processing;
+    private FritzProcessingButton ProcessingButton;
 
     private async Task HandleValidSubmit()
     {
-        _processing = true;
-
         try
         {
+            ProcessingButton.SetProcessing(true);
+
             var token = await UserApiClient.Login(Command);
             MudDialog.Close(DialogResult.Ok<JwtDto>(token));
         }
@@ -53,7 +43,9 @@
         {
             ExceptionHandler.HandleExceptions(ex);
         }
-
-        _processing = false;
+        finally
+        {
+            ProcessingButton.SetProcessing(false);
+        }
     }
 }

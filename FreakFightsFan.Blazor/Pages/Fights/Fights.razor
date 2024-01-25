@@ -10,11 +10,7 @@
 
 <PageTitle>Fights</PageTitle>
 
-<MudBreadcrumbs Items="_items">
-    <ItemTemplate Context="item">
-        <MudLink Href="@item.Href">@item.Text</MudLink>
-    </ItemTemplate>
-</MudBreadcrumbs>
+<FritzBreadcrumbs Items="_items" />
 
 <AuthorizeView Policy=@Policy.Admin>
     <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
@@ -30,23 +26,18 @@
         <MudText Typo="Typo.h4">@Event.Name</MudText>
         <MudText Typo="Typo.h5">
             @(Event.Date.ToString("dd/MM/yyyy") + ", ")
-            @if (Event.Hall is not null)
-            {
-                @(Event.Hall.Name + " ")
-            }
-            @if (Event.City is not null)
-            {
-                @Event.City.Name 
-            }
+            <DisplayDictionaryItemDto DictionaryItemDto="Event.Hall" />
+            @(" ")
+            <DisplayDictionaryItemDto DictionaryItemDto="Event.City" />
         </MudText>  
     </MudStack>
 }
 
-@if (FightsList == null)
+@if (MyFights == null)
 {
     <MudText>Loading...</MudText>
 }
-else if (FightsList.Count == 0)
+else if (MyFights.Count == 0)
 {
     <MudText>No matching records found</MudText>
 }
@@ -54,7 +45,7 @@ else
 {
     <MudCard>
         <MudStack Justify="Justify.Center" Spacing="0">
-            @foreach (var fight in FightsList)
+            @foreach (var fight in MyFights)
             {
                 <MudPaper Style="padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
                     <MudStack Row="true" Justify="Justify.FlexEnd">
@@ -66,17 +57,15 @@ else
                             <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="() => MoveFight(fight.Id, MoveDirection.Downwards)"
                                            Disabled="fight.OrderNumber <= 1" />
                             <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="() => MoveFight(fight.Id, MoveDirection.Upwards)"
-                                           Disabled="fight.OrderNumber >= FightsList.Count()" />
+                                           Disabled="fight.OrderNumber >= MyFights.Count()" />
                         </AuthorizeView>
                     </MudStack>
                 </MudPaper>
                 <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;" Class="rounded-0" Elevation="0">
                     <MudStack AlignItems="AlignItems.Center" Style="margin-bottom: 20px;">
                         <MudText Typo="Typo.h5">
-                        @if (fight.Type is not null)
-                        {
-                            @(fight.Type.Name + " ")
-                        }
+                            <DisplayDictionaryItemDto DictionaryItemDto="fight.Type" />
+                             @(" ")
                         </MudText>
                     </MudStack>
                     <MudStack Row="true" Justify="Justify.SpaceEvenly">
@@ -105,7 +94,7 @@ else
     [Parameter] public int EventId { get; set; }
 
     private List<BreadcrumbItem> _items = [];
-    private List<FightDto> FightsList { get; set; }
+    private List<FightDto> MyFights { get; set; }
     private EventDto Event { get; set; }
 
     protected override void OnParametersSet()
@@ -149,19 +138,19 @@ else
 
         try
         {
-            FightsList = (await FightApiClient.GetAllFights(query)).Items;
+            MyFights = (await FightApiClient.GetAllFights(query)).Items;
         }
         catch (Exception ex)
         {
             ExceptionHandler.HandleExceptions(ex);
-            FightsList = [];
+            MyFights = [];
         }
     }
 
     private async Task DeleteFight(int id)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", dialogOptions);
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -202,9 +191,8 @@ else
 
     private async Task UpdateFight(FightDto fightDto)
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFightDialog>();
-
         parameters.Add(x => x.Command, new()
         {
             Id = fightDto.Id,
@@ -216,7 +204,7 @@ else
         parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
         parameters.Add(x => x.FightType, fightDto.Type);
 
-        var dialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();
@@ -224,9 +212,8 @@ else
 
     private async Task CreateFight()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFightDialog>();
-
         parameters.Add(x => x.Command, new()
         {
             EventId = EventId,
@@ -236,7 +223,7 @@ else
         });
         parameters.Add(x => x.NumberOfTeams, 2);
 
-        var dialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();

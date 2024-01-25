@@ -21,11 +21,11 @@
 @code {
     private async Task Login()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<LoginDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<LoginDialog>("Login", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<LoginDialog>("Login", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -41,11 +41,11 @@
 
     private async Task Register()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<RegisterDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<RegisterDialog>("Register", parameters, dialogOptions);
+        var dialog = await DialogService.ShowAsync<RegisterDialog>("Register", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await OpenRegistrationSuccessDialog();
