@@ -1,5 +1,6 @@
 @inject IImageApiClient ImageApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
@@ -12,7 +13,7 @@
             <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Update)]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

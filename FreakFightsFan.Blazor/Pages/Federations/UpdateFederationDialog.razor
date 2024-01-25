@@ -1,5 +1,6 @@
 @inject IFederationApiClient FederationApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
@@ -11,11 +12,11 @@
                             OnImageBase64Changed="(image) => Command.ImageBase64 = image" Url="@Url" />
             <FritzValidationMessage For="() => Command.ImageBase64" />
 
-            <FritzTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.Name)]" @bind-Value="Command.Name" For="() => Command.Name" />
             <FritzValidationMessage For="() => Command.Name" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Update)]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

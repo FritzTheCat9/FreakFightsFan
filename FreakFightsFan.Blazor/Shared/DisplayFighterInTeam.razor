@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
 @if (FighterInTeam.Fighter != null)
 {
@@ -6,12 +7,12 @@
         @if (!string.IsNullOrEmpty(FighterInTeam.Fighter.Image?.Url))
         {
             <MudLink Class="align-self-center" Href="@FighterInTeam.Fighter.Image.Url" Target="_blank">
-                <MudImage Src="@FighterInTeam.Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+                <MudImage Src="@FighterInTeam.Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
             </MudLink>
         }
         else
         {
-            <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+            <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
         }
         <div onclick="@(() => RedirectToFighterProfile(FighterInTeam.Fighter.Id))" style="cursor: pointer;">
             <MudText Typo="Typo.subtitle1" Class="align-self-center" Style="font-weight: bold; text-align: center;">@FighterInTeam.Fighter.Nickname.ToUpper()</MudText>

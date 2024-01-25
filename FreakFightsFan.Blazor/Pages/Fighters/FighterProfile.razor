@@ -5,6 +5,7 @@
 @inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
 @inject IJSRuntime JSRuntime
+@inject IStringLocalizer<App> Localizer
 
 @if (Fighter is not null)
 {
@@ -12,19 +13,19 @@
         @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
         {
             <MudLink Class="align-self-center" Href="@Fighter.Image.Url" Target="_blank">
-                <MudImage Src="@Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+                <MudImage Src="@Fighter.Image.Url" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
             </MudLink>
         }
         else
         {
-            <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+            <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
         }
         <MudText Typo="Typo.h4">@Fighter.FirstName @Fighter.LastName</MudText>
         <MudText Typo="Typo.h4">@Fighter.Nickname</MudText>
         @if (!string.IsNullOrEmpty(Fighter.InstagramUrl))
         {
             <MudStack Row="true" Spacing="2">
-                <MudImage Src="images_default/instagram.png" Alt="Image" Style="height: 30px; width: 30px" />
+                <MudImage Src="images_default/instagram.png" Alt="@Localizer[nameof(AppStrings.Image)]" Style="height: 30px; width: 30px" />
                 <MudLink Typo="Typo.h5" Href="@Fighter.InstagramUrl" Color="Color.Primary" Target="_blank">@InstagramUrlToNickname(Fighter.InstagramUrl)</MudLink>
             </MudStack>
         }
@@ -35,10 +36,10 @@
 {
     <MudStack Row="true" Justify="Justify.SpaceEvenly" AlignItems="AlignItems.Center" Style="background: #E0E0E0; padding: 30px 10px 10px 10px">
         <MudStack Spacing="1">
-            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Wins: @Profile.Stats.Win</MudText>
-            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Losses: @Profile.Stats.Loss</MudText>
-            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">Draws: @Profile.Stats.Draw</MudText>
-            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">No Contest: @Profile.Stats.NoContest</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@Localizer[nameof(AppStrings.Wins)]: @Profile.Stats.Win</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@Localizer[nameof(AppStrings.Losses)]: @Profile.Stats.Loss</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@Localizer[nameof(AppStrings.Draws)]: @Profile.Stats.Draw</MudText>
+            <MudText Typo="Typo.subtitle1" Style="@($"color:{Colors.Grey.Darken4}; font-weight: 500;")">@Localizer[nameof(AppStrings.NoContest)]: @Profile.Stats.NoContest</MudText>
         </MudStack>
         <MudChart ChartType="ChartType.Pie" InputData="data" InputLabels="labels" Width="150px" Height="150px" LegendPosition="Position.Bottom"
                   ChartOptions="new ChartOptions() { ChartPalette = new [] { Colors.Green.Default, Colors.Red.Default, Colors.Grey.Default, Colors.Blue.Default } }" />
@@ -47,11 +48,11 @@
 
 @if (Profile?.ProfileFights == null)
 {
-    <MudText>Loading...</MudText>
+    <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
 }
 else if (Profile?.ProfileFights.Count == 0)
 {
-    <MudText>No matching records found</MudText>
+    <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
 }
 else
 {
@@ -111,8 +112,18 @@ else
     public FighterProfileDto Profile { get; set; }
     public FighterDto Fighter { get; set; }
 
-    private string[] labels = ["Wins", "Losses", "Draws", "No Contest"];
+    private string[] labels;
     private double[] data = [];
+
+    protected override void OnInitialized()
+    {
+        labels = [
+            Localizer[nameof(AppStrings.Wins)], 
+            Localizer[nameof(AppStrings.Losses)],
+            Localizer[nameof(AppStrings.Draws)],
+            Localizer[nameof(AppStrings.NoContest)],
+        ];
+    }
 
     protected override async Task OnParametersSetAsync()
     {

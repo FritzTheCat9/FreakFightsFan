@@ -1,9 +1,11 @@
 ﻿@page "/error/server-error"
 @attribute [AllowAnonymous]
 
-<PageTitle>Server error</PageTitle>
+@inject IStringLocalizer<App> Localizer
 
-<h1>Server error</h1>
+<PageTitle>@Localizer[nameof(AppStrings.ServerError)]</PageTitle>
+
+<h1>@Localizer[nameof(AppStrings.ServerError)]</h1>
 
 @code {
 

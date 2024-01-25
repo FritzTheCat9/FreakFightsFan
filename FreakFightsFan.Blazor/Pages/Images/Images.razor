@@ -5,30 +5,31 @@
 @inject IImageApiClient ImageApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Images</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Images)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<ImageDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Images</MudText>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Images)]</MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateImage()"/>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Image</MudTh>
-        <MudTh><MudTableSortLabel SortLabel="created" T="ImageDto">Created</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="modified" T="ImageDto">Modified</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="name" T="ImageDto">Name</MudTableSortLabel></MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Image)]</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="created" T="ImageDto">@Localizer[nameof(AppStrings.Created)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="modified" T="ImageDto">@Localizer[nameof(AppStrings.Modified)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="ImageDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
             @if(!string.IsNullOrEmpty(context.Url))
             {
                 <MudLink Href="@context.Url" Target="_blank">
-                    <MudImage Src="@context.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                    <MudImage Src="@context.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="@Localizer[nameof(AppStrings.Image)]" />
                 </MudLink>
             }
             else
@@ -45,24 +46,28 @@
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>No matching records found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>Loading...</MudText>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
 @code {
+    private List<BreadcrumbItem> _items;
     private MudTable<ImageDto> table;
     private PagedList<ImageDto> MyImages { get; set; }
 
-    private List<BreadcrumbItem> _items = new()
+    protected override void OnInitialized()
     {
-        new("Images", href: null, disabled: true),
-    };
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Images)], href: null, disabled: true),
+        };
+    }
 
     private async Task<TableData<ImageDto>> ServerReload(TableState state)
     {
@@ -94,7 +99,7 @@
     private async Task DeleteImage(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -122,7 +127,7 @@
         });
         parameters.Add(x => x.Url, imageDto.Url);
 
-        var dialog = await DialogService.ShowAsync<UpdateImageDialog>("Update Image", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateImageDialog>(Localizer[nameof(AppStrings.UpdateImage)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -134,7 +139,7 @@
         var parameters = new DialogParameters<CreateImageDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateImageDialog>("Create Image", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateImageDialog>(Localizer[nameof(AppStrings.CreateImage)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

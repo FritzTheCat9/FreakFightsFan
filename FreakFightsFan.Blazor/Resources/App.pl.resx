@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccountCreated" xml:space="preserve">
+    <value>Konto zostało pomyślnie utworzone. Aby się zalogować, prosimy o potwierdzenie adresu e-mail poprzez kliknięcie w link aktywacyjny przesłany na Twoją skrzynkę e-mail.</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Panel Administratora</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Freak Fights Fan</value>
+  </data>
+  <data name="AuthenticationInProgress" xml:space="preserve">
+    <value>Uwierzytelnianie w toku</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Miasto</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>Potwierdź email</value>
+  </data>
+  <data name="ConfirmEmailInfo" xml:space="preserve">
+    <value>Potwierdź swój adres e-mail, klikając przycisk poniżej.</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Utworzony</value>
+  </data>
+  <data name="CreateDictionary" xml:space="preserve">
+    <value>Dodaj Słownik</value>
+  </data>
+  <data name="CreateDictionaryItem" xml:space="preserve">
+    <value>Dodaj Słowo</value>
+  </data>
+  <data name="CreateEvent" xml:space="preserve">
+    <value>Dodaj Wydarzenie</value>
+  </data>
+  <data name="CreateFederation" xml:space="preserve">
+    <value>Dodaj Federację</value>
+  </data>
+  <data name="CreateFight" xml:space="preserve">
+    <value>Dodaj Walkę</value>
+  </data>
+  <data name="CreateFighter" xml:space="preserve">
+    <value>Dodaj Zawodnika</value>
+  </data>
+  <data name="CreateImage" xml:space="preserve">
+    <value>Dodaj Obraz</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DecreaseUserPermissions" xml:space="preserve">
+    <value>Zmniejsz uprawnienia użytkownika</value>
+  </data>
+  <data name="DecreaseUserPermissionsQuestion" xml:space="preserve">
+    <value>Czy jesteś pewien, że chcesz zmniejszyć uprawnienia wybranego użytkownika?</value>
+  </data>
+  <data name="Degrade" xml:space="preserve">
+    <value>Zdegraduj</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="DeleteConfirmInfo" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten rekord? Tego procesu nie można cofnąć.</value>
+  </data>
+  <data name="Dictionaries" xml:space="preserve">
+    <value>Słowniki</value>
+  </data>
+  <data name="DictionaryItems" xml:space="preserve">
+    <value>Słowa</value>
+  </data>
+  <data name="Draws" xml:space="preserve">
+    <value>Remisy</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Wydarzenia</value>
+  </data>
+  <data name="Federations" xml:space="preserve">
+    <value>Federacje</value>
+  </data>
+  <data name="Fight" xml:space="preserve">
+    <value>Walka</value>
+  </data>
+  <data name="Fighter" xml:space="preserve">
+    <value>Zawodnik</value>
+  </data>
+  <data name="Fighters" xml:space="preserve">
+    <value>Zawodnicy</value>
+  </data>
+  <data name="FightResult" xml:space="preserve">
+    <value>Wynik walki</value>
+  </data>
+  <data name="Fights" xml:space="preserve">
+    <value>Walki</value>
+  </data>
+  <data name="FightType" xml:space="preserve">
+    <value>Typ walki</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Imię</value>
+  </data>
+  <data name="ForbiddenError" xml:space="preserve">
+    <value>Błąd - Zabroniony dostęp</value>
+  </data>
+  <data name="Greetings" xml:space="preserve">
+    <value>Witamy w aplikacji dla fanów Freak Fightów</value>
+  </data>
+  <data name="Hall" xml:space="preserve">
+    <value>Hala</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Strona główna</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Obraz</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Obrazy</value>
+  </data>
+  <data name="IncreaseUserPermissions" xml:space="preserve">
+    <value>Zwiększ uprawnienia użytkownika</value>
+  </data>
+  <data name="IncreaseUserPermissionsQuestion" xml:space="preserve">
+    <value>Czy jesteś pewien, że chcesz zwiększyć uprawnienia wybranego użytkownika?</value>
+  </data>
+  <data name="InformationConfirmInfo" xml:space="preserve">
+    <value>Czy na pewno chcesz wykonać wybraną akcję? Tego procesu nie można cofnąć.</value>
+  </data>
+  <data name="InstagramUrl" xml:space="preserve">
+    <value>Adres URL Instagrama</value>
+  </data>
+  <data name="InvalidEmailOrToken" xml:space="preserve">
+    <value>Nieprawidłowy adres e-mail lub token</value>
+  </data>
+  <data name="InvalidRoute" xml:space="preserve">
+    <value>Przepraszamy, pod tym adresem nic nie ma.</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nazwisko</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Ładowanie...</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Zaloguj się</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Wyloguj</value>
+  </data>
+  <data name="Losses" xml:space="preserve">
+    <value>Przegrane</value>
+  </data>
+  <data name="Modified" xml:space="preserve">
+    <value>Zmodyfikowano</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nickname</value>
+  </data>
+  <data name="NoContest" xml:space="preserve">
+    <value>Nieodbyte</value>
+  </data>
+  <data name="NoDictionaryItemsFound" xml:space="preserve">
+    <value>Nie znaleziono słów w słowniku z kodem: "{0}"</value>
+  </data>
+  <data name="NoFightersFound" xml:space="preserve">
+    <value>Nie znaleziono żadnych zawodników</value>
+  </data>
+  <data name="NoImageLoaded" xml:space="preserve">
+    <value>Nie załadowano żadnego obrazu</value>
+  </data>
+  <data name="NoMatchingRecordsFound" xml:space="preserve">
+    <value>Nie znaleziono pasujących rekordów</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Nie znaleziono</value>
+  </data>
+  <data name="NotFoundError" xml:space="preserve">
+    <value>Błąd - Nie znaleziono</value>
+  </data>
+  <data name="NumberOfTeams" xml:space="preserve">
+    <value>Liczba drużyn</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opcje</value>
+  </data>
+  <data name="PaginationInfoFormat" xml:space="preserve">
+    <value>{first_item}-{last_item} z {all_items}</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Hasło</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Przetwarzanie...</value>
+  </data>
+  <data name="Promote" xml:space="preserve">
+    <value>Awansuj</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Zarejestruj się</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Powtórz hasło</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rola</value>
+  </data>
+  <data name="RowsPerPage" xml:space="preserve">
+    <value>Wierszy na stronę</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>Wybierz język</value>
+  </data>
+  <data name="ServerError" xml:space="preserve">
+    <value>Błąd serwera</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Sukces</value>
+  </data>
+  <data name="SuccessfulEmailConfirmation" xml:space="preserve">
+    <value>Twój e-mail został pomyślnie potwierdzony.</value>
+  </data>
+  <data name="Team" xml:space="preserve">
+    <value>Drużyna</value>
+  </data>
+  <data name="UnauthorizedError" xml:space="preserve">
+    <value>Błąd - Nieautoryzowany dostęp</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="UpdateDictionary" xml:space="preserve">
+    <value>Edytuj Słownik</value>
+  </data>
+  <data name="UpdateDictionaryItem" xml:space="preserve">
+    <value>Edytuj Słowo</value>
+  </data>
+  <data name="UpdateEvent" xml:space="preserve">
+    <value>Edytuj Wydarzenie</value>
+  </data>
+  <data name="UpdateFederation" xml:space="preserve">
+    <value>Edytuj Federację</value>
+  </data>
+  <data name="UpdateFight" xml:space="preserve">
+    <value>Edytuj Walkę</value>
+  </data>
+  <data name="UpdateFighter" xml:space="preserve">
+    <value>Edytuj Zawodnika</value>
+  </data>
+  <data name="UpdateImage" xml:space="preserve">
+    <value>Edytuj Obraz</value>
+  </data>
+  <data name="UploadImage" xml:space="preserve">
+    <value>Załaduj obrazek</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Nazwa użytkownika</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Błąd walidacji</value>
+  </data>
+  <data name="Wins" xml:space="preserve">
+    <value>Wygrane</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="YoutubeVideoUrl" xml:space="preserve">
+    <value>Adres URL filmu na YouTube</value>
+  </data>
+</root>

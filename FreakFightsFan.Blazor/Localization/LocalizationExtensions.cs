@@ -1,0 +1,38 @@
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Globalization;
+
+namespace FreakFightsFan.Blazor.Localization
+{
+    public static class LocalizationExtensions
+    {
+        public static IServiceCollection AddMyLocalization(this IServiceCollection services)
+        {
+            services.AddLocalization(x => x.ResourcesPath = LocalizationConsts.ResourcesFolder);
+            services.AddScoped<ILocalizationProvider, LocalizationProvider>();
+
+            return services;
+        }
+
+        public static async Task UseMyLocalization(this WebAssemblyHost host)
+        {
+            var localStorage = host.Services.GetRequiredService<ILocalStorageService>();
+            var cultureString = await localStorage.GetItemAsync<string>(LocalizationConsts.CultureKey);
+
+            CultureInfo cultureInfo;
+
+            if (!string.IsNullOrWhiteSpace(cultureString))
+            {
+                cultureInfo = new CultureInfo(cultureString);
+            }
+            else
+            {
+                cultureInfo = new CultureInfo(LocalizationConsts.DefaultCulture);
+                await localStorage.SetItemAsync(LocalizationConsts.CultureKey, LocalizationConsts.DefaultCulture);
+            }
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+        }
+    }
+}

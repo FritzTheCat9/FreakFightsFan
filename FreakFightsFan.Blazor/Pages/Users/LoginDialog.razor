@@ -1,5 +1,6 @@
 ﻿@inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
@@ -7,14 +8,14 @@
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label="Email" @bind-Value="Command.Email" For="() => Command.Email" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.Email)]" @bind-Value="Command.Email" For="() => Command.Email" />
             <FritzValidationMessage For="() => Command.Email" />
 
-            <FritzPasswordField Label="Password" @bind-Value="Command.Password" For="() => Command.Password" />
+            <FritzPasswordField Label="@Localizer[nameof(AppStrings.Password)]" @bind-Value="Command.Password" For="() => Command.Password" />
             <FritzValidationMessage For="() => Command.Password" />
         </DialogContent>
         <DialogActions>
-            <FritzProcessingButton @ref="ProcessingButton" ButtonType="ButtonType.Submit" Color="Color.Primary" ButtonText="LOGIN" />
+            <FritzProcessingButton @ref="ProcessingButton" ButtonType="ButtonType.Submit" Color="Color.Primary" ButtonText="@Localizer[nameof(AppStrings.Login)]" />
         </DialogActions>
     </MudDialog>
 </EditForm>

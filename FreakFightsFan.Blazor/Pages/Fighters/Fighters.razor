@@ -5,15 +5,16 @@
 @inject IFighterApiClient FighterApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Fighters</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Fighters)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<FighterDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="fighter">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Fighters</MudText>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Fighters)]</MudText>
         <AuthorizeView Policy=@Policy.Admin>
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFighter()"/>
         </AuthorizeView>
@@ -21,23 +22,23 @@
         <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Image</MudTh>
-        <MudTh><MudTableSortLabel SortLabel="firstname" T="FighterDto">First Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="lastname" T="FighterDto">Last Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="nickname" T="FighterDto">Nickname</MudTableSortLabel></MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Image)]</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="firstname" T="FighterDto">@Localizer[nameof(AppStrings.FirstName)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="lastname" T="FighterDto">@Localizer[nameof(AppStrings.LastName)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="nickname" T="FighterDto">@Localizer[nameof(AppStrings.Nickname)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
             @if (fighter.Image != null)
             {
                 <MudLink Href="@fighter.Image.Url" Target="_blank">
-                    <MudImage Src="@fighter.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                    <MudImage Src="@fighter.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="@Localizer[nameof(AppStrings.Image)]" />
                 </MudLink>
             }
             else
             {
-                <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="@Localizer[nameof(AppStrings.Image)]" />
             }
         </MudTd>
         <MudTd DataLabel="FirstName">@fighter.FirstName</MudTd>
@@ -52,25 +53,30 @@
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>No matching records found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>Loading...</MudText>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new()
-    {
-        new("Fighters", href: null, disabled: true),
-    };
+    private List<BreadcrumbItem> _items;
 
     private string searchString = "";
     private MudTable<FighterDto> table;
     private PagedList<FighterDto> MyFighters { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Fighters)], href: null, disabled: true),
+        };
+    }
 
     private async Task<TableData<FighterDto>> ServerReload(TableState state)
     {
@@ -103,7 +109,7 @@
     private async Task DeleteFighter(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(@Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -135,7 +141,7 @@
         });
         parameters.Add(x => x.Url, fighterDto.Image?.Url);
 
-        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>("Update Fighter", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>(Localizer[nameof(AppStrings.UpdateFighter)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -148,7 +154,7 @@
 
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateFighterDialog>("Create Fighter", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateFighterDialog>(Localizer[nameof(AppStrings.CreateFighter)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

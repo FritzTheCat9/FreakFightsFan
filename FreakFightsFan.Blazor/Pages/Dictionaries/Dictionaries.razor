@@ -5,24 +5,25 @@
 @inject IMyDictionaryApiClient MyDictionaryApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Dictionaries</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Dictionaries)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<MyDictionaryDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Dictionaries</MudText>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Dictionaries)]</MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionary()"/>
         <MudSpacer />
         <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryDto">Code</MudTableSortLabel></MudTh>
-        <MudTh>Dictionary Items</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryDto">@Localizer[nameof(AppStrings.Code)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.DictionaryItems)]</MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
@@ -36,25 +37,29 @@
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>No matching records found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>Loading...</MudText>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new()
-    {
-        new("Dictionaries", href: null, disabled: true),
-    };
-
+    private List<BreadcrumbItem> _items;
     private string searchString = "";
     private MudTable<MyDictionaryDto> table;
     private PagedList<MyDictionaryDto> MyDictionaries { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Dictionaries)], href: null, disabled: true),
+        };
+    }
 
     private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
     {
@@ -92,7 +97,7 @@
     private async Task DeleteDictionary(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -120,7 +125,7 @@
             Code = myDictionaryDto.Code
         });
 
-        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>("Update Dictionary", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>(Localizer[nameof(AppStrings.UpdateDictionary)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -132,7 +137,7 @@
         var parameters = new DialogParameters<CreateDictionaryDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>("Create Dictionary", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>(Localizer[nameof(AppStrings.CreateDictionary)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

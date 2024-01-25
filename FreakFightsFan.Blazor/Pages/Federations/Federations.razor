@@ -5,15 +5,16 @@
 @inject IFederationApiClient FederationApiClient
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Federations</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Federations)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<FederationDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="federation">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Federations</MudText>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Federations)]</MudText>
         <AuthorizeView Policy=@Policy.Admin>
             <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFederation()"/>
         </AuthorizeView>
@@ -21,11 +22,11 @@
         <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Image</MudTh>
-        <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">Name</MudTableSortLabel></MudTh>
-        <MudTh>Events</MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Image)]</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Events)]</MudTh>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudTh>Actions</MudTh>
+            <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
@@ -33,7 +34,7 @@
             @if (federation.Image != null)
             {
                 <MudLink Href="@federation.Image.Url" Target="_blank">
-                    <MudImage Src="@federation.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+                    <MudImage Src="@federation.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="@Localizer[nameof(AppStrings.Image)]" />
                 </MudLink>
             }
             else
@@ -53,25 +54,30 @@
         </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>No matching records found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>Loading...</MudText>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new()
-    {
-        new("Federations", href: null, disabled: true),
-    };
+    private List<BreadcrumbItem> _items;
 
     private string searchString = "";
     private MudTable<FederationDto> table;
     public PagedList<FederationDto> MyFederations { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Federations)], href: null, disabled: true),
+        };
+    }
 
     private async Task<TableData<FederationDto>> ServerReload(TableState state)
     {
@@ -109,7 +115,7 @@
     private async Task DeleteFederation(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -138,7 +144,7 @@
         });
         parameters.Add(x => x.Url, federationDto.Image?.Url);
 
-        var dialog = await DialogService.ShowAsync<UpdateFederationDialog>("Update Federation", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -150,7 +156,7 @@
         var parameters = new DialogParameters<CreateFederationDialog>();
         parameters.Add(x => x.Command, new());
 
-        var dialog = await DialogService.ShowAsync<CreateFederationDialog>("Create Federation", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateFederationDialog>(Localizer[nameof(AppStrings.CreateFederation)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

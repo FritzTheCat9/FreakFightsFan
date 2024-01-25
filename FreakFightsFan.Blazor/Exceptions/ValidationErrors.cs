@@ -1,4 +1,4 @@
-﻿namespace FreakFightsFan.Blazor.Pages.Error
+﻿namespace FreakFightsFan.Blazor.Exceptions
 {
     public class ValidationErrors
     {

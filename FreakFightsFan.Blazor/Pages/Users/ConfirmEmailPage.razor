@@ -3,10 +3,11 @@
 
 @inject IUserApiClient UserApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 @if (!success)
 {
-    <MudText>Confirm your email by clicking on the button below.</MudText>
+    <MudText>@Localizer[nameof(AppStrings.ConfirmEmailInfo)]</MudText>
 
     <EditForm Model="Command" OnValidSubmit="OnValidSubmit">
         <CustomValidator @ref="CustomValidator" />
@@ -22,17 +23,17 @@
                                ButtonType="ButtonType.Submit"
                                Color="Color.Primary"
                                Variant="Variant.Filled"
-                               ButtonText="Confirm email" />
+                               ButtonText="@Localizer[nameof(AppStrings.ConfirmEmail)]" />
     </EditForm>
 }
 else
 {
-    <MudText Color="Color.Success">Your email has been successfully confirmed.</MudText>
+    <MudText Color="Color.Success">@Localizer[nameof(AppStrings.SuccessfulEmailConfirmation)]</MudText>
 }
 
 @if (parsingError)
 {
-    <MudText Color="Color.Error">Invalid Email or Token</MudText>
+    <MudText Color="Color.Error">@Localizer[nameof(AppStrings.InvalidEmailOrToken)]</MudText>
 }
 
 @code {

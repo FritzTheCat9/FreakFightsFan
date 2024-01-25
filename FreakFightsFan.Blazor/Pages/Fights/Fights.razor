@@ -7,15 +7,16 @@
 @inject IDialogService DialogService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Fights</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Fights)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <AuthorizeView Policy=@Policy.Admin>
     <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;" Class="rounded-0" Elevation="0">
         <MudStack Row="true" Justify="Justify.FlexStart">
-                <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFight()" />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFight()" />
         </MudStack>
     </MudPaper>
 </AuthorizeView>
@@ -35,11 +36,11 @@
 
 @if (MyFights == null)
 {
-    <MudText>Loading...</MudText>
+    <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
 }
 else if (MyFights.Count == 0)
 {
-    <MudText>No matching records found</MudText>
+    <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
 }
 else
 {
@@ -101,9 +102,9 @@ else
     {
         _items = new()
         {
-            new("Federations", href: "/federations"),
-            new("Events", href: $"/events/{FederationId}"),
-            new("Fights", href: null, disabled: true),
+            new(Localizer[nameof(AppStrings.Federations)], href: "/federations"),
+            new(Localizer[nameof(AppStrings.Events)], href: $"/events/{FederationId}"),
+            new(Localizer[nameof(AppStrings.Fights)], href: null, disabled: true),
         };
     }
 
@@ -150,7 +151,7 @@ else
     private async Task DeleteFight(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -204,7 +205,7 @@ else
         parameters.Add(x => x.NumberOfTeams, fightDto.Teams.Count);
         parameters.Add(x => x.FightType, fightDto.Type);
 
-        var dialog = await DialogService.ShowAsync<UpdateFightDialog>("Update Fight", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateFightDialog>(Localizer[nameof(AppStrings.UpdateFight)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();
@@ -223,7 +224,7 @@ else
         });
         parameters.Add(x => x.NumberOfTeams, 2);
 
-        var dialog = await DialogService.ShowAsync<CreateFightDialog>("Create Fight", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateFightDialog>(Localizer[nameof(AppStrings.CreateFight)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await GetAllFights();

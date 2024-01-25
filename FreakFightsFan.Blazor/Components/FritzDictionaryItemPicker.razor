@@ -1,6 +1,7 @@
 ﻿@inherits MudNumericField<int?>
 @inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <InputNumber TValue="int?"
              Value="Value"
@@ -21,7 +22,7 @@
                  FullWidth="true"
                  OnlyValidateIfDirty="true">
     <NoItemsTemplate>
-        <MudText>No items found in dictionary with code: "@DictionaryCode"</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoDictionaryItemsFound), DictionaryCode]</MudText>
     </NoItemsTemplate>
 </MudAutocomplete>
 

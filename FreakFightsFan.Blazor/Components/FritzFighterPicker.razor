@@ -1,6 +1,7 @@
 ﻿@inherits MudAutocomplete<FighterDto>
 @inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <MudAutocomplete @ref="Autocomplete"
                  T="FighterDto"
@@ -17,7 +18,7 @@
                  FullWidth="true"
                  OnlyValidateIfDirty="true">
     <NoItemsTemplate>
-        <MudText>No fighters found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoFightersFound)]</MudText>
     </NoItemsTemplate>
     <ItemTemplate Context="item">
         <DisplayFighterListItem Fighter="item" />

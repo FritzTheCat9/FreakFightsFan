@@ -4,25 +4,26 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IUserApiClient UserApiClient
 @inject IDialogService DialogService
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Users</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.Users)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<UserDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table" Context="user">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Users</MudText>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Users)]</MudText>
         <MudSpacer />
         <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         @* <MudTh>Image</MudTh> *@
-        <MudTh><MudTableSortLabel SortLabel="username" T="UserDto">UserName</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="email" T="UserDto">Email</MudTableSortLabel></MudTh>
-        <MudTh>Role</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="username" T="UserDto">@Localizer[nameof(AppStrings.UserName)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="email" T="UserDto">@Localizer[nameof(AppStrings.Email)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Role)]</MudTh>
         <AuthorizeView Policy=@Policy.SuperAdmin>
-            <MudTh>Actions</MudTh>
+            <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
@@ -47,13 +48,13 @@
             <MudTd>
                 @if(!user.IsSuperAdmin && user.IsAdmin)
                 {
-                    <MudTooltip Text="Degrade">
+                    <MudTooltip Text="@Localizer[nameof(AppStrings.Degrade)]">
                         <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="() => DegradeUser(user.Id)"/>
                     </MudTooltip>
                 } 
                 else if(!user.IsSuperAdmin && !user.IsAdmin)
                 {
-                    <MudTooltip Text="Promote">
+                    <MudTooltip Text="@Localizer[nameof(AppStrings.Promote)]">
                         <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="() => PromoteUser(user.Id)"/>
                     </MudTooltip>
                 }
@@ -62,25 +63,30 @@
         </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>No matching records found</MudText>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>Loading...</MudText>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
 @code {
-    private List<BreadcrumbItem> _items = new()
-    {
-        new("Users", href: null, disabled: true),
-    };
+    private List<BreadcrumbItem> _items;
 
     private string searchString = "";
     private MudTable<UserDto> table;
     private PagedList<UserDto> MyUsers { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Users)], href: null, disabled: true),
+        };
+    }
 
     private async Task<TableData<UserDto>> ServerReload(TableState state)
     {
@@ -114,9 +120,9 @@
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>();
-        parameters.Add(x => x.ContentText, "Are you certain you wish to increase the privileges of the chosen user?");
+        parameters.Add(x => x.ContentText, Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)]);
 
-        var dialog = await DialogService.ShowAsync<InformationDialog>("Increase user permissions", parameters, options);
+        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -129,9 +135,9 @@
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>();
-        parameters.Add(x => x.ContentText, "Are you certain you wish to decrease the privileges of the chosen user?");
+        parameters.Add(x => x.ContentText, Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)]);
 
-        var dialog = await DialogService.ShowAsync<InformationDialog>("Decrease user permissions", parameters, options);
+        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

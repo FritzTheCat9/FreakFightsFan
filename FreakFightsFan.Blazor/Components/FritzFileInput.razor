@@ -1,6 +1,7 @@
 ﻿@inherits MudTextField<string>
+@inject IStringLocalizer<App> Localizer
 
-<MudTextField @ref="TextField" 
+<MudTextField @ref="TextField"
               T="string"
               Value="Value"
               ValueChanged="OnImageBase64Changed"
@@ -9,26 +10,26 @@
 
 @if ((IsImageValid && !string.IsNullOrEmpty(Value)))
 {
-    <MudImage Src="@Value" Width="400" />
+    <MudImage Src="@Value" Width="400" Alt="@Localizer[nameof(AppStrings.Image)]" />
 }
 else if (!string.IsNullOrEmpty(Url))
 {
-    <MudImage Src="@Url" Width="400" />
+    <MudImage Src="@Url" Width="400" Alt="@Localizer[nameof(AppStrings.Image)]" />
 }
 else
 {
-    <MudItem>No image loaded</MudItem>
+    <MudItem>@Localizer[nameof(AppStrings.NoImageLoaded)]</MudItem>
 }
 
-<MudFileUpload T="IBrowserFile" 
-    @bind-Files="File" 
-    OnFilesChanged="UploadFiles" 
-    For="() => File" 
-    Accept="@AllowedFileTypesString"
-    AppendMultipleFiles="false">
+<MudFileUpload T="IBrowserFile"
+               @bind-Files="File"
+               OnFilesChanged="UploadFiles"
+               For="() => File"
+               Accept="@AllowedFileTypesString"
+               AppendMultipleFiles="false">
     <ButtonTemplate>
         <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AttachFile">
-            Upload Image
+            @Localizer[nameof(AppStrings.UploadImage)]
         </MudButton>
     </ButtonTemplate>
 </MudFileUpload>

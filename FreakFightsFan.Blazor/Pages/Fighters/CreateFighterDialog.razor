@@ -1,5 +1,6 @@
 ﻿@inject IFighterApiClient FighterApiClient
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
 <EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
@@ -11,20 +12,20 @@
                             OnImageBase64Changed="(image) => Command.ImageBase64 = image" />
             <FritzValidationMessage For="() => Command.ImageBase64" />
 
-            <FritzTextField Label="First Name" @bind-Value="Command.FirstName" For="() => Command.FirstName" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.FirstName)]" @bind-Value="Command.FirstName" For="() => Command.FirstName" />
             <FritzValidationMessage For="() => Command.FirstName" />
 
-            <FritzTextField Label="Last Name" @bind-Value="Command.LastName" For="() => Command.LastName" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.LastName)]" @bind-Value="Command.LastName" For="() => Command.LastName" />
             <FritzValidationMessage For="() => Command.LastName" />
 
-            <FritzTextField Label="Nickname" @bind-Value="Command.Nickname" For="() => Command.Nickname" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.Nickname)]" @bind-Value="Command.Nickname" For="() => Command.Nickname" />
             <FritzValidationMessage For="() => Command.Nickname" />
 
-            <FritzTextField Label="Instagram Url" @bind-Value="Command.InstagramUrl" For="() => Command.InstagramUrl" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.InstagramUrl)]" @bind-Value="Command.InstagramUrl" For="() => Command.InstagramUrl" />
             <FritzValidationMessage For="() => Command.InstagramUrl" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Create)]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

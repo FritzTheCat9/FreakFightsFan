@@ -4,67 +4,72 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
 @inject IDialogService DialogService
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Dictionary items</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.DictionaryItems)]</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<MyDictionaryItemDto>>>(ServerReload)"
           Dense="true" Hover="true" @ref="table">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Dictionary Items</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionaryItem()"/>
+        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.DictionaryItems)]</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateDictionaryItem()" />
         <MudSpacer />
         <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryItemDto">Code</MudTableSortLabel></MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name" T="MyDictionaryItemDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="code" T="MyDictionaryItemDto">@Localizer[nameof(AppStrings.Code)]</MudTableSortLabel></MudTh>
+        <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateDictionaryItem(context)"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteDictionaryItem(context.Id)"/>
-            </MudTd>
-        </RowTemplate>
-        <NoRecordsContent>
-            <MudText>No matching records found</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateDictionaryItem(context)" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteDictionaryItem(context.Id)" />
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
+    </PagerContent>
+</MudTable>
 
 @code {
     [Parameter] public int DictionaryId { get; set; }
 
-    private List<BreadcrumbItem> _items = new()
-    {
-        new("Dictionaries", href: "/dictionaries"),
-        new("Dictionary Items", href: null, disabled: true),
-    };
-
+    private List<BreadcrumbItem> _items;
     private string searchString = "";
     private MudTable<MyDictionaryItemDto> table;
     private PagedList<MyDictionaryItemDto> MyDictionaryItems { get; set; }
 
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new(Localizer[nameof(AppStrings.Dictionaries)], href: "/dictionaries"),
+            new(Localizer[nameof(AppStrings.DictionaryItems)], href: null, disabled: true),
+        };
+    }
+
     private async Task<TableData<MyDictionaryItemDto>> ServerReload(TableState state)
     {
         var query = new GetAllMyDictionaryItems.Query
-        {
-            Page = state.Page + 1,
-            PageSize = state.PageSize,
-            SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = searchString,
-            DictionaryId = DictionaryId,
-        };
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+                DictionaryId = DictionaryId,
+            };
 
         try
         {
@@ -77,16 +82,16 @@
         }
 
         return new()
-        {
-            TotalItems = MyDictionaryItems.TotalCount,
-            Items = MyDictionaryItems.Items
-        };
+            {
+                TotalItems = MyDictionaryItems.TotalCount,
+                Items = MyDictionaryItems.Items
+            };
     }
 
     private async Task DeleteDictionaryItem(int id)
     {
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete", options);
+        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -99,7 +104,7 @@
             catch (Exception ex)
             {
                 ExceptionHandler.HandleExceptions(ex);
-            }            
+            }
         }
     }
 
@@ -108,13 +113,13 @@
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryItemDialog>();
         parameters.Add(x => x.Command, new()
-        {
-            Id = myDictionaryItemDto.Id,
-            Name = myDictionaryItemDto.Name,
-            Code = myDictionaryItemDto.Code,
-        });
+            {
+                Id = myDictionaryItemDto.Id,
+                Name = myDictionaryItemDto.Name,
+                Code = myDictionaryItemDto.Code,
+            });
 
-        var dialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>("Update Dictionary Item", parameters, options);
+        var dialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>(Localizer[nameof(AppStrings.UpdateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();
@@ -125,13 +130,13 @@
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryItemDialog>();
         parameters.Add(x => x.Command, new()
-        {
-            Name = "",
-            Code = "",
-            DictionaryId = DictionaryId,
-        });
+            {
+                Name = "",
+                Code = "",
+                DictionaryId = DictionaryId,
+            });
 
-        var dialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>("Create Dictionary Item", parameters, options);
+        var dialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>(Localizer[nameof(AppStrings.CreateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
             await table.ReloadServerData();

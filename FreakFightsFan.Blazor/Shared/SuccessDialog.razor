@@ -1,4 +1,6 @@
-﻿<MudDialog>
+﻿@inject IStringLocalizer<App> Localizer
+
+<MudDialog>
     <DialogContent>
         <MudText>@ContentText</MudText>
     </DialogContent>
@@ -9,9 +11,18 @@
 
 @code {
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string ContentText { get; set; } = "Success";
-    [Parameter] public string ButtonText { get; set; } = "Ok";
+    [Parameter] public string ContentText { get; set; }
+    [Parameter] public string ButtonText { get; set; }
     [Parameter] public Color Color { get; set; } = Color.Success;
+
+    protected override void OnParametersSet()
+    {
+        if (string.IsNullOrWhiteSpace(ContentText))
+            ContentText = Localizer[nameof(AppStrings.Success)];
+
+        if (string.IsNullOrWhiteSpace(ButtonText))
+            ButtonText = Localizer[nameof(AppStrings.Ok)];
+    }
 
     private void Submit() => MudDialog.Close(DialogResult.Ok(true));
 }

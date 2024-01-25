@@ -1,9 +1,11 @@
 ﻿@page "/error/notfound-error"
 @attribute [AllowAnonymous]
 
-<PageTitle>Not found error</PageTitle>
+@inject IStringLocalizer<App> Localizer
 
-<h1>Not found error</h1>
+<PageTitle>@Localizer[nameof(AppStrings.NotFoundError)]</PageTitle>
+
+<h1>@Localizer[nameof(AppStrings.NotFoundError)]</h1>
 
 @code {
 

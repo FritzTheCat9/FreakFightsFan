@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.Api", "Freak
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.FeatureGenerator", "FreakFightsFan.FeatureGenerator\FreakFightsFan.FeatureGenerator.csproj", "{4814483C-8216-4FA0-8154-556FF670BD2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreakFightsFan.IntegrationTests", "FreakFightsFan.IntegrationTests\FreakFightsFan.IntegrationTests.csproj", "{C21521BF-A798-46DC-B0F0-7979CF837117}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreakFightsFan.IntegrationTests", "FreakFightsFan.IntegrationTests\FreakFightsFan.IntegrationTests.csproj", "{C21521BF-A798-46DC-B0F0-7979CF837117}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

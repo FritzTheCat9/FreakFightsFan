@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject IStringLocalizer<App> Localizer
 
 <MudThemeProvider />
 <MudDialogProvider FullWidth="true" />
@@ -13,7 +14,7 @@
 <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" />
-        Freak Fights Fan
+            @Localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
         <Auth />
     </MudAppBar>

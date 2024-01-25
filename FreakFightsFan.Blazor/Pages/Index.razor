@@ -1,6 +1,8 @@
 ﻿@page "/"
 @attribute [AllowAnonymous]
 
-<PageTitle>Freak Fights Fan</PageTitle>
+@inject IStringLocalizer<App> Localizer
 
-<MudText Typo="Typo.h5">Welcome to Freak Fights Fan App</MudText>
+<PageTitle>@Localizer[nameof(AppStrings.AppName)]</PageTitle>
+
+<MudText Typo="Typo.h5">@Localizer[nameof(AppStrings.Greetings)]</MudText>

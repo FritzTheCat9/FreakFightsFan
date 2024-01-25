@@ -1,5 +1,6 @@
 ﻿@using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 @inherits MudTextField<List<CreateTeamModel>>
+@inject IStringLocalizer<App> Localizer
 
 <MudTextField T="List<CreateTeamModel>"
               Value="Teams"
@@ -10,19 +11,22 @@
 
 <MudGrid Spacing="1" Justify="Justify.FlexStart">
     <MudItem xs="10">
-        <FritzFighterPicker @ref="addFighterField" Label="Fighter" @bind-Value="_fighter" Teams="_teams" />
+        <FritzFighterPicker @ref="addFighterField" Label="@Localizer[nameof(AppStrings.Fighter)]" @bind-Value="_fighter" Teams="_teams" />
 
         <FritzValidationMessage For="ForTeams" />
-        <FritzValidationMessage For="ForEventId" />
+        @if (ForEventId is not null)
+        {
+            <FritzValidationMessage For="ForEventId" />
+        }
     </MudItem>
     <MudItem xs="2" Class="d-flex">
-        <MudButton OnClick="AddFighterToSelectedTeam" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
+        <MudButton OnClick="AddFighterToSelectedTeam" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">@Localizer[nameof(AppStrings.Add)]</MudButton>
     </MudItem>
     @foreach (var team in _teams)
     {
         <MudItem xs="12" md="6" @onclick="() => SelectTeam(team.Number)" Style="cursor: pointer;">
             <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
-                Team @($"{team.Number + 1}")
+                @Localizer[nameof(AppStrings.Team)] @($"{team.Number + 1}")
             </MudText>
             @if (team.Fighters.Any())
             {
@@ -52,7 +56,7 @@
 
     private FritzFighterPicker addFighterField;
     private FighterDto _fighter;
-    
+
     protected override async Task OnInitializedAsync()
     {
         await UpdateTeams();
@@ -107,10 +111,10 @@
             foreach (var fighter in team.Fighters)
             {
                 var teamFighterModel = new CreateFight.TeamFighterModel()
-                {
-                    FighterId = fighter.Fighter.Id,
-                    FightResult = fighter.FightResult,
-                };
+                    {
+                        FighterId = fighter.Fighter.Id,
+                        FightResult = fighter.FightResult,
+                    };
 
                 teamFighters.Add(teamFighterModel);
             }

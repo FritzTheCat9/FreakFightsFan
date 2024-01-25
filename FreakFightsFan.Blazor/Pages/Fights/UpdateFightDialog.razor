@@ -1,94 +1,37 @@
 @inject IFightApiClient FightApiClient
 @inject IFighterApiClient FighterApiClient
-@inject IMyDictionaryItemClientHelper MyDictionaryItemClientHelper
 @inject IExceptionHandler ExceptionHandler
+@inject IStringLocalizer<App> Localizer
 
-<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="Command" OnValidSubmit="HandleValidSubmit" @ref=editForm>
     <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
             <MudStack Row="true" Justify="Justify.SpaceBetween">
-                <MudText Typo="Typo.h6">Update Fight</MudText>
+                <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.UpdateFight)]</MudText>
             </MudStack>
         </TitleContent>
         <DialogContent>
             <MudTabs Rounded="true">
-                <MudTabPanel Text="Fight">
-                    <MudGrid Spacing="1" Justify="Justify.FlexStart">
-                        <MudItem xs="10">
-                            <FritzFighterPicker @ref="addFighterField" Label="Fighter" @bind-Value="_fighter" Teams="_teams" />
-
-                           @*  <MudAutocomplete @ref="addFighterField" T="FighterDto" Label="Fighter" @bind-Value="_fighter" SearchFuncWithCancel="Search" ToStringFunc="DisplayFighter"
-                                             ShowProgressIndicator="true" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true" Variant="Variant.Text">
-                                <NoItemsTemplate>
-                                    <MudText>No fighters found</MudText>
-                                </NoItemsTemplate>
-                                <ItemTemplate Context="item">
-                                    <DisplayFighterListItem Fighter="item" />
-                                </ItemTemplate>
-                            </MudAutocomplete> *@
-                            @* <MyValidationMessage T="List<CreateFight.CreateTeamModel>" For="() => UpdateFightCommand.Teams" ValidationErrors="validationErrors" /> *@
-                            <FritzValidationMessage For="() => Command.Teams" />
-                        </MudItem>
-                        <MudItem xs="2" Class="d-flex">
-                            <MudButton OnClick="() => AddFighterToSelectedTeam()" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">Add</MudButton>
-                        </MudItem>
-                        @foreach (var team in _teams)
-                        {
-                            <MudItem xs="12" md="6" @onclick="() => SelectTeam(team.Number)" Style="cursor: pointer;">
-                                <MudText Typo="Typo.h6" Color="_selectedTeam == team.Number ? Color.Primary : Color.Default" GutterBottom="true">
-                                    Team @($"{team.Number + 1}")
-                                </MudText>
-                                @if (team.Fighters.Any())
-                                {
-                                    <MudPaper Width="100%" Class="@((_selectedTeam == team.Number) ? "mud-theme-primary" : "")">
-                                        <MudList Style="cursor: auto;">
-                                            @foreach (var fighter in team.Fighters)
-                                            {
-                                                <MudListItem>
-                                                    <FighterListItem FighterHelperModel="fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
-                                                </MudListItem>
-                                            }
-                                        </MudList>
-                                    </MudPaper>
-                                }
-                            </MudItem>
-                        }
-                    </MudGrid>
+                <MudTabPanel Text="@Localizer[nameof(AppStrings.Fight)]">
+                    <FritzTeamMaker @bind-Value="Command.Teams" For="() => Command.Teams" _teams="_teams" _selectedTeam="_selectedTeam"
+                                    OnTeamsChanged="(teams) => Command.Teams = teams" ForTeams="() => Command.Teams" NumberOfTeams=NumberOfTeams />
                 </MudTabPanel>
-                <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Settings">
+                <MudTabPanel Text="@Localizer[nameof(AppStrings.Options)]" Icon="@Icons.Material.Filled.Settings">
                     <MudGrid Spacing="1" Justify="Justify.FlexStart">
                         <MudItem xs="12">
-                                <FritzSelect T="int" Label="Number of teams" @bind-Value="NumberOfTeams" OnSelect="OnTeamsCountSelect" 
-                                For="() => NumberOfTeams" ItemsToSelect="allowedTeamSizes" />
-
-                           @*  <ChildContent>
-                                <MudSelect T="int" Label="Number of teams" @bind-Value="NumberOfTeams"
-                                           SelectedValuesChanged="OnSelectedValuesChanged" MultiSelection="false">
-                                    @foreach (var number in allowedTeamSizes)
-                                    {
-                                        <MudSelectItem Value="number" />
-                                    }
-                                </MudSelect>
-                            </ChildContent> *@
+                            <FritzSelect T="int" Label="@Localizer[nameof(AppStrings.NumberOfTeams)]" @bind-Value="NumberOfTeams" OnSelect="OnTeamsCountSelect"
+                                         For="() => NumberOfTeams" ItemsToSelect="allowedTeamSizes" />
                         </MudItem>
                         <MudItem xs="12">
-                            <FritzDictionaryItemPicker Label="City" @bind-Value="Command.TypeId" For="() => Command.TypeId"
-                                       DictionaryCode="@DictionaryCode.FightType" DictionaryItemDto="FightType" OnDictionaryItemDtoChanged="(item) => FightType = item" />
-                                       <FritzValidationMessage For="() => Command.TypeId" />
-
-                            @* <MudAutocomplete T="MyDictionaryItemDto" Label="Type" @bind-Value="FightType" SearchFuncWithCancel="MyDictionaryItemClientHelper.SearchFightType" Variant="Variant.Text"
-                                ShowProgressIndicator="true" ToStringFunc="MyDictionaryItemClientHelper.DisplayDictionaryItem" SelectValueOnTab="true" ResetValueOnEmptyText="true" FullWidth="true">
-                                <NoItemsTemplate>
-                                    <MudText>No items found in dictionary with code: "@DictionaryCode.FightType"</MudText>
-                                </NoItemsTemplate>
-                            </MudAutocomplete>
-                            <FritzValidationMessage For="() => FightType" /> *@
+                            <FritzDictionaryItemPicker Label="@Localizer[nameof(AppStrings.FightType)]" @bind-Value="Command.TypeId" For="() => Command.TypeId"
+                                                       DictionaryCode="@DictionaryCode.FightType" DictionaryItemDto="FightType" OnDictionaryItemDtoChanged="(item) => FightType = item" />
+                            <FritzValidationMessage For="() => Command.TypeId" />
                         </MudItem>
                         <MudItem xs="12">
-                            <FritzTextField Label="Youtube video url" @bind-Value="Command.VideoUrl" For="() => Command.VideoUrl" />
+                            <FritzTextField Label="@Localizer[nameof(AppStrings.YoutubeVideoUrl)]" @bind-Value="Command.VideoUrl" For="() => Command.VideoUrl" />
                             <FritzValidationMessage For="() => Command.VideoUrl" />
                         </MudItem>
                     </MudGrid>
@@ -96,7 +39,7 @@
             </MudTabs>
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Update)]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -107,14 +50,13 @@
     [Parameter] public List<TeamDto> Teams { get; set; } = [];
     [Parameter] public int NumberOfTeams { get; set; }
     [Parameter] public MyDictionaryItemDto FightType { get; set; }
-    
-    private CustomValidator CustomValidator = new();
-    private FritzFighterPicker addFighterField;
 
-    private List<int> allowedTeamSizes = [ 2, 3, 4, 5 ];
-    private FighterDto _fighter;
-    private int _selectedTeam;
+    protected EditForm editForm { get; set; }
+    private CustomValidator CustomValidator = new();
+
+    private List<int> allowedTeamSizes = [2, 3, 4, 5];
     private List<CreateFight.TeamHelperModel> _teams = [];
+    private int _selectedTeam;
 
     protected override void OnInitialized()
     {
@@ -131,43 +73,19 @@
             foreach (var teamFighters in team.FighterInTeams)
             {
                 fighters.Add(new()
-                {
-                    Fighter = teamFighters.Fighter,
-                    FightResult = teamFighters.FightResult,
-                });
+                    {
+                        Fighter = teamFighters.Fighter,
+                        FightResult = teamFighters.FightResult,
+                    });
             }
 
             var teamHelperModel = new CreateFight.TeamHelperModel()
-            {
-                Number = team.Number,
-                Fighters = fighters,
-            };
+                {
+                    Number = team.Number,
+                    Fighters = fighters,
+                };
 
             _teams.Add(teamHelperModel);
-        }
-    }
-
-    private void DeleteFighterListItem(CreateFight.TeamHelperModel team, CreateFight.FighterHelperModel fighter)
-    {
-        var pickedTeam = _teams.FirstOrDefault(x => x.Number == team.Number);
-        if (pickedTeam is not null)
-        {
-            var fighterToRemove = pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
-            if(fighterToRemove is not null)
-            {
-                pickedTeam.Fighters.Remove(fighterToRemove);
-            }
-        }
-    }
-
-    private async Task AddFighterToSelectedTeam()
-    {
-        if (_fighter != null)
-        {
-            _teams[_selectedTeam].Fighters.Add(new() { Fighter = _fighter, FightResult = FightResult.UPCOMING });
-            _fighter = null;
-            _selectedTeam = (_selectedTeam + 1) % NumberOfTeams;
-            await addFighterField.Focus();
         }
     }
 
@@ -188,10 +106,10 @@
         for (int i = 0; i < teamsCount; i++)
         {
             _teams.Add(new()
-            {
-                Number = i,
-                Fighters = [],
-            });
+                {
+                    Number = i,
+                    Fighters = [],
+                });
         }
 
         _selectedTeam = 0;
@@ -201,26 +119,6 @@
     {
         try
         {
-            Command.Teams = [];
-
-            foreach (var team in _teams)
-            {
-                var teamFighters = new List<CreateFight.TeamFighterModel>();
-
-                foreach (var fighter in team.Fighters)
-                {
-                    var teamFighterModel = new CreateFight.TeamFighterModel()
-                    {
-                        FighterId = fighter.Fighter.Id,
-                        FightResult = fighter.FightResult,
-                    };
-
-                    teamFighters.Add(teamFighterModel);
-                }
-
-                Command.Teams.Add(new() { Fighters = teamFighters });
-            }
-
             await FightApiClient.UpdateFight(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }

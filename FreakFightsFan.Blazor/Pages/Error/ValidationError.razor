@@ -2,10 +2,11 @@
 @attribute [AllowAnonymous]
 
 @inject ValidationErrors ValidationErrors
+@inject IStringLocalizer<App> Localizer
 
-<PageTitle>Validation error</PageTitle>
+<PageTitle>@Localizer[nameof(AppStrings.ValidationError)]</PageTitle>
 
-<h1>Validation error</h1>
+<h1>@Localizer[nameof(AppStrings.ValidationError)]</h1>
 
 @foreach (var propName in ValidationErrors.Errors.Keys)
 {

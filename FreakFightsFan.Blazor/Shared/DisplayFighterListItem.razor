@@ -1,4 +1,6 @@
-﻿@if (Fighter != null)
+﻿@inject IStringLocalizer<App> Localizer
+
+@if (Fighter != null)
 {
     <MudItem Class="d-flex">
         <MudStack Row="true">
@@ -6,11 +8,11 @@
                 <ChildContent>
                     @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
                     {
-                        <MudImage Src="@Fighter.Image.Url" />
+                        <MudImage Src="@Fighter.Image.Url" Alt="@Localizer[nameof(AppStrings.Image)]" />
                     }
                     else
                     {
-                        <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="Image" Style="max-height: 250px;" />
+                        <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
                     }
                 </ChildContent>
             </MudAvatar>

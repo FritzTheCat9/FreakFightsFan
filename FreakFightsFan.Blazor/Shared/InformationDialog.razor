@@ -1,18 +1,29 @@
-﻿<MudDialog>
+﻿@inject IStringLocalizer<App> Localizer
+
+<MudDialog>
     <DialogContent>
         <MudText>@ContentText</MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="Cancel">@Localizer[nameof(AppStrings.Cancel)]</MudButton>
         <MudButton Color="Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string ContentText { get; set; } = "Are you sure you want to perform the selected action? This process cannot be undone.";
-    [Parameter] public string ButtonText { get; set; } = "Yes";
+    [Parameter] public string ContentText { get; set; }
+    [Parameter] public string ButtonText { get; set; }
     [Parameter] public Color Color { get; set; } = Color.Primary;
+
+    protected override void OnParametersSet()
+    {
+        if (string.IsNullOrWhiteSpace(ContentText))
+            ContentText = Localizer[nameof(AppStrings.InformationConfirmInfo)];
+
+        if (string.IsNullOrWhiteSpace(ButtonText))
+            ButtonText = Localizer[nameof(AppStrings.Yes)];
+    }
 
     private void Submit() => MudDialog.Close(DialogResult.Ok(true));
     private void Cancel() => MudDialog.Cancel();

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace FreakFightsFan.Blazor.Pages.Error
+namespace FreakFightsFan.Blazor.Exceptions
 {
     public interface IExceptionHandler
     {
@@ -16,7 +16,7 @@ namespace FreakFightsFan.Blazor.Pages.Error
         private readonly NavigationManager _navigationManager;
         private readonly ValidationErrors _validationErrors;
 
-        public ExceptionHandler(NavigationManager navigationManager, ValidationErrors validationErrors) 
+        public ExceptionHandler(NavigationManager navigationManager, ValidationErrors validationErrors)
         {
             _navigationManager = navigationManager;
             _validationErrors = validationErrors;

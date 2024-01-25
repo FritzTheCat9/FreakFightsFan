@@ -1,9 +1,11 @@
 ﻿@page "/error/unauthorized-error"
 @attribute [AllowAnonymous]
 
-<PageTitle>Unauthorized error</PageTitle>
+@inject IStringLocalizer<App> Localizer
 
-<h1>Unauthorized error</h1>
+<PageTitle>@Localizer[nameof(AppStrings.UnauthorizedError)]</PageTitle>
+
+<h1>@Localizer[nameof(AppStrings.UnauthorizedError)]</h1>
 
 @code {
 
