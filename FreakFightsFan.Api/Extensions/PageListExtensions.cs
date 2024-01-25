@@ -7,16 +7,14 @@ namespace FreakFightsFan.Api.Extensions
     {
         private static readonly int _minPage = 0;
         private static readonly int _minPageSize = 0;
+        private static readonly int _maxPageSize = 100;
 
         public static PagedList<T> Create(
             IQueryable<T> source,
             int Page,
             int PageSize)
         {
-            if (Page <= _minPage)
-                throw new MyValidationException(nameof(Page), $"{nameof(Page)} should be greater than {_minPage}");
-            if (PageSize <= _minPageSize)
-                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be greater than {_minPageSize}");
+            Validate(Page, PageSize);
 
             var totalCount = source.Count();
             var items = source
@@ -31,12 +29,19 @@ namespace FreakFightsFan.Api.Extensions
             int Page,
             int PageSize)
         {
+            Validate(Page, PageSize);
+
+            return new PagedList<T>([], Page, PageSize, 0);
+        }
+
+        private static void Validate(int Page, int PageSize)
+        {
             if (Page <= _minPage)
                 throw new MyValidationException(nameof(Page), $"{nameof(Page)} should be greater than {_minPage}");
             if (PageSize <= _minPageSize)
                 throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be greater than {_minPageSize}");
-
-            return new PagedList<T>([], Page, PageSize, 0);
+            if (PageSize > _maxPageSize)
+                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be less than or equal to {_maxPageSize}");
         }
     }
 }
