@@ -21,7 +21,7 @@ namespace FreakFightsFan.Blazor.Localization
 
             CultureInfo cultureInfo;
 
-            if (!string.IsNullOrWhiteSpace(cultureString))
+            if (!string.IsNullOrWhiteSpace(cultureString) && LocalizationConsts.SupportedCultures.Any(x => x.CultureInfo.Name == cultureString))
             {
                 cultureInfo = new CultureInfo(cultureString);
             }

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
-using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Dictionaries.Commands
 {
@@ -15,18 +16,21 @@ namespace FreakFightsFan.Shared.Features.Dictionaries.Commands
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 RuleFor(x => x.Name)
                     .NotEmpty()
-                    .WithMessage(x => ValidationMessages.NotEmpty(nameof(x.Name)));
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.NameNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.NameMaximumLength)]);
 
                 RuleFor(x => x.Code)
                     .NotEmpty()
-                    .WithMessage(x => ValidationMessages.NotEmpty(nameof(x.Code)))
-                    .MaximumLength(30)
-                    .Matches("^[A-Z0-9_]+$")
-                        .WithMessage("Code can contain only: A-Z, 0-9 and _ characters");
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.CodeNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.CodeMaximumLength)])
+                    .Matches(ValidationConsts.CodeRegex)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.CodeMatchesRegex)]);
             }
         }
     }

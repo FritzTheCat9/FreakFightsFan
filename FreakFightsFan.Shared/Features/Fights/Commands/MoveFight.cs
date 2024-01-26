@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FreakFightsFan.Shared.Abstractions;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Fights.Commands
 {
@@ -14,10 +16,11 @@ namespace FreakFightsFan.Shared.Features.Fights.Commands
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 RuleFor(x => x.Direction)
-                    .IsInEnum();
+                    .IsInEnum()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.DirectionIsInEnum)]);
             }
         }
     }

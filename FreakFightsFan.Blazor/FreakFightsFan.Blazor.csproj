@@ -26,12 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\App.en-GB.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\App.pl.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
+	  <EmbeddedResource Update="Localization\Resources\App.en.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Localization\Resources\App.pl.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+	  </EmbeddedResource>
   </ItemGroup>
 
 </Project>

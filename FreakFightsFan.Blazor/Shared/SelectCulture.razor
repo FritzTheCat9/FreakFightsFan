@@ -17,7 +17,7 @@
     protected override void OnInitialized()
     {
         var culture = LocalizationConsts.SupportedCultures.FirstOrDefault(x => x.CultureInfo.Name == CultureInfo.CurrentCulture.Name);
-        CurrentCulture = culture is not null ? CurrentCulture = culture : LocalizationConsts.SupportedCultures[0];
+        CurrentCulture = culture is not null ? culture : LocalizationConsts.SupportedCultures[0];
     }
 
     public void OnValueChanged(Culture culture)

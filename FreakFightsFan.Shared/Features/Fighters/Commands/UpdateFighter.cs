@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FreakFightsFan.Shared.Features.Images.Helpers;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Fighters.Commands
 {
@@ -20,35 +22,46 @@ namespace FreakFightsFan.Shared.Features.Fighters.Commands
         {
             private readonly string _allowedFileTypesString;
 
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
                 RuleFor(x => x.FirstName)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameMaximumLength)]);
 
                 RuleFor(x => x.LastName)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameMaximumLength)]);
 
                 RuleFor(x => x.Nickname)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameMaximumLength)]);
 
                 When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
                 {
                     RuleFor(x => x.InstagramUrl)
                         .NotEmpty()
-                        .Matches("^(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/([a-zA-Z0-9_\\.]{1,30})\\/?$")
-                        .WithMessage("This is not a valid link to the Instagram profile");
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlNotEmpty)])
+                        .Matches(ValidationConsts.InstagramUrlRegex)
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlMatchesRegex)]);
                 });
 
                 When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
                 {
                     RuleFor(x => x.ImageBase64)
                         .NotEmpty()
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
                         .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
-                            .WithMessage($"The maximum file size is {ImageConsts.MaxFileSize} bytes")
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
                         .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
-                            .WithMessage($"Allowed image types: {_allowedFileTypesString}");
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), _allowedFileTypesString]);
                 });
             }
         }

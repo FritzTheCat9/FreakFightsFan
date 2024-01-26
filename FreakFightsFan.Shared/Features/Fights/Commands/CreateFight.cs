@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using FreakFightsFan.Shared.Features.Fighters.Responses;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Fights.Commands
 {
@@ -42,30 +44,36 @@ namespace FreakFightsFan.Shared.Features.Fights.Commands
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 RuleFor(x => x.Teams)
                     .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsNotEmpty)])
                     .Must(teams => teams.Count >= FightsConsts.MinTeamsNumber)
-                    .WithMessage($"At least {FightsConsts.MinTeamsNumber} teams should be added for each fight")
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMinNumber), FightsConsts.MinTeamsNumber])
                     .Must(teams => teams.Count <= FightsConsts.MaxTeamsNumber)
-                    .WithMessage($"Each fight can contain only {FightsConsts.MaxTeamsNumber} teams")
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMaxNumber), FightsConsts.MaxTeamsNumber])
                     .Must(FightHelpers.HaveUniqueFighters)
-                    .WithMessage("Each fighter can only be selected to the team once");
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsUniqueFighters)]);
 
                 RuleForEach(x => x.Teams)
                     .Must(team => team.Fighters.Count >= FightsConsts.MinTeamFighters)
-                    .WithMessage($"At least {FightsConsts.MinTeamFighters} fighter should be added for each team")
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMinTeamFighters), FightsConsts.MinTeamFighters])
                     .Must(team => team.Fighters.Count <= FightsConsts.MaxTeamFighters)
-                    .WithMessage($"Each team can contain only {FightsConsts.MaxTeamFighters} fighters");
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMaxTeamFighters), FightsConsts.MaxTeamFighters]);
 
                 When(x => !string.IsNullOrWhiteSpace(x.VideoUrl), () =>
                 {
                     RuleFor(x => x.VideoUrl)
                         .NotEmpty()
-                        .Matches("^(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?)\\/|\\S*?[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})")
-                        .WithMessage("This is not a valid link to the YouTube video");
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.VideoUrlNotEmpty)])
+                        .Matches(ValidationConsts.YoutubeVideoUrlRegex)
+                        .WithMessage(x => localizer[nameof(ValidationMessageString.VideoUrlMatchesRegex)]);
                 });
+
+                RuleFor(x => x.TypeId)
+                    .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TypeNotEmpty)]);
             }
         }
     }

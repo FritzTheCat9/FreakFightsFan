@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Users.Commands
 {
@@ -13,14 +15,19 @@ namespace FreakFightsFan.Shared.Features.Users.Commands
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 RuleFor(x => x.Email)
                     .NotEmpty()
-                    .EmailAddress();
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailMaximumLength)])
+                    .EmailAddress()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailIsEmailAddress)]);
 
                 RuleFor(x => x.Token)
-                    .NotEmpty();
+                    .NotEmpty()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.TokenNotEmpty)]);
             }
         }
     }

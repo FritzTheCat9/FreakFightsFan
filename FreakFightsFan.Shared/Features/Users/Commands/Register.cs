@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using FreakFightsFan.Shared.Localization;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Shared.Features.Users.Commands
 {
@@ -15,28 +17,40 @@ namespace FreakFightsFan.Shared.Features.Users.Commands
 
         public class Validator : AbstractValidator<Command>
         {
-            public Validator()
+            public Validator(IStringLocalizer<ValidationMessage> localizer)
             {
                 RuleFor(x => x.Email)
                     .NotEmpty()
-                    .EmailAddress();
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailNotEmpty)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailMaximumLength)])
+                    .EmailAddress()
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.EmailIsEmailAddress)]);
+
 
                 RuleFor(x => x.UserName)
                     .NotEmpty()
-                    .MinimumLength(7)
-                    .MaximumLength(30)
-                    .Matches("^[a-zA-Z0-9_]+$")
-                        .WithMessage("UserName can contain only: a-z, A-Z, 0-9 and _ characters");
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.UserNameNotEmpty)])
+                    .MinimumLength(ValidationConsts.MinimumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.UserNameMinimumLength)])
+                    .MaximumLength(ValidationConsts.MaximumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.UserNameMaximumLength)])
+                    .Matches(ValidationConsts.UserNameRegex)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.UserNameMatchesRegex)]);
 
                 RuleFor(x => x.Password)
                     .NotEmpty()
-                    .MinimumLength(7);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.PasswordNotEmpty)])
+                    .MinimumLength(ValidationConsts.MinimumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.PasswordMinimumLength)]);
 
                 RuleFor(x => x.RepeatPassword)
                     .NotEmpty()
-                    .MinimumLength(7)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.PasswordNotEmpty)])
+                    .MinimumLength(ValidationConsts.MinimumStringLength)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.PasswordMinimumLength)])
                     .Equal(x => x.Password)
-                        .WithMessage("The passwords entered must match");
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.RepeatPasswordEqualPassword)]);
             }
         }
     }
