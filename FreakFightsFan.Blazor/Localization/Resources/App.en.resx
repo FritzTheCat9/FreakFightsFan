@@ -336,6 +336,9 @@
   <data name="Promote" xml:space="preserve">
     <value>Promote</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
   <data name="RepeatPassword" xml:space="preserve">
     <value>Repeat Password</value>
   </data>
