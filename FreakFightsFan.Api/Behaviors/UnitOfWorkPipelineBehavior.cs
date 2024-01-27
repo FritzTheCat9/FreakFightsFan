@@ -6,15 +6,20 @@ namespace FreakFightsFan.Api.Behaviors
     public class UnitOfWorkPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly AppDbContext _dbContext;
-        private static bool IsNotCommand => !typeof(TRequest).Name.EndsWith("Command");
-        private static bool IsImportFighterImagesCommand => typeof(TRequest).Name.EndsWith("ImportFighterImagesCommand");
+        private static bool IsNotCommand
+            => !typeof(TRequest).Name.EndsWith("Command");
+        private static bool IsImportFighterImagesCommand
+            => typeof(TRequest).Name.EndsWith("ImportFighterImagesCommand");
 
         public UnitOfWorkPipelineBehavior(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(
+            TRequest request,
+            RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
         {
             if (IsNotCommand || IsImportFighterImagesCommand)
             {

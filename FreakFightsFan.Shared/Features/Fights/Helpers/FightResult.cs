@@ -11,14 +11,15 @@
 
     public static class FightResultExtensions
     {
-        public static string ToText(this FightResult fightResult) => fightResult switch
-        {
-            FightResult.UPCOMING => "Upcoming",
-            FightResult.WIN => "Win",
-            FightResult.LOSS => "Loss",
-            FightResult.DRAW => "Draw",
-            FightResult.NO_CONTEST => "No Contest",
-            _ => "Upcoming",
-        };
+        public static string ToText(this FightResult fightResult)
+            => fightResult switch
+            {
+                FightResult.UPCOMING => "Upcoming",
+                FightResult.WIN => "Win",
+                FightResult.LOSS => "Loss",
+                FightResult.DRAW => "Draw",
+                FightResult.NO_CONTEST => "No Contest",
+                _ => "Upcoming",
+            };
     }
 }

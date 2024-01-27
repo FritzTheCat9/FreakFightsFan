@@ -39,8 +39,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IFightRepository fightRepository, IClock clock, ITeamService teamService,
-                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IFightRepository fightRepository,
+                IClock clock,
+                ITeamService teamService,
+                IMyDictionaryService dictionaryService,
+                IMyDictionaryItemRepository dictionaryItemRepository,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
@@ -50,7 +55,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 _localizer = localizer;
             }
 
-            public async Task<Unit> Handle(UpdateFight.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateFight.Command command,
+                CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
@@ -69,7 +76,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(UpdateFight.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                UpdateFight.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 if (command.TypeId is not null)
                 {

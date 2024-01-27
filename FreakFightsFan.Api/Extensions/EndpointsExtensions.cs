@@ -14,15 +14,15 @@ namespace FreakFightsFan.Api.Extensions
     {
         public static WebApplication AddEndpoints(this WebApplication app)
         {
-            app.AddMyDictionaryEndpoints();
-            app.AddMyDictionaryItemEndpoints();
-            app.AddEventEndpoints();
-            app.AddFederationEndpoints();
-            app.AddFighterEndpoints();
-            app.AddFightEndpoints();
-            app.AddImageEndpoints();
-            app.AddTeamEndpoints();
-            app.AddUserEndpoints();
+            app.AddMyDictionaryEndpoints()
+               .AddMyDictionaryItemEndpoints()
+               .AddEventEndpoints()
+               .AddFederationEndpoints()
+               .AddFighterEndpoints()
+               .AddFightEndpoints()
+               .AddImageEndpoints()
+               .AddTeamEndpoints()
+               .AddUserEndpoints();
 
             return app;
         }

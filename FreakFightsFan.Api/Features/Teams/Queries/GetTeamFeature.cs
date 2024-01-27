@@ -36,7 +36,9 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
                 _teamRepository = teamRepository;
             }
 
-            public async Task<TeamDto> Handle(GetTeam.Query query, CancellationToken cancellationToken)
+            public async Task<TeamDto> Handle(
+                GetTeam.Query query,
+                CancellationToken cancellationToken)
             {
                 var team = await _teamRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return team.ToDto();

@@ -25,7 +25,9 @@ namespace FreakFightsFan.Api.Auth
         private readonly SigningCredentials _signingCredencials;
         private readonly JwtSecurityTokenHandler _jwtHandler = new();
 
-        public Authenticator(IClock clock, IOptions<AuthOptions> options)
+        public Authenticator(
+            IClock clock,
+            IOptions<AuthOptions> options)
         {
             _clock = clock;
             _options = options.Value;
@@ -60,10 +62,7 @@ namespace FreakFightsFan.Api.Auth
             var jwt = new JwtSecurityToken(_issuer, _audience, claims, now, expires, _signingCredencials);
             var accessToken = _jwtHandler.WriteToken(jwt);
 
-            return new()
-            {
-                AccessToken = accessToken
-            };
+            return new() { AccessToken = accessToken };
         }
     }
 }

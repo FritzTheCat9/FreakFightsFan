@@ -10,9 +10,11 @@ namespace FreakFightsFan.Api.Data.Configurations
         {
             builder.HasKey(e => e.Id);
 
-            builder.HasIndex(e => e.Email).IsUnique();
+            builder.HasIndex(e => e.Email)
+                   .IsUnique();
 
-            builder.HasIndex(e => e.UserName).IsUnique();
+            builder.HasIndex(e => e.UserName)
+                   .IsUnique();
         }
     }
 }

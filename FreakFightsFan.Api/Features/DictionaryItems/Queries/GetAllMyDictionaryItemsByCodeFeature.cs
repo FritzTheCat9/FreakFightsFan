@@ -35,7 +35,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 _myDictionaryRepository = myDictionaryRepository;
             }
 
-            public async Task<PagedList<MyDictionaryItemDto>> Handle(GetAllMyDictionaryItemsByCode.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<MyDictionaryItemDto>> Handle(
+                GetAllMyDictionaryItemsByCode.Query query,
+                CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(query.DictionaryCode);
 
@@ -43,9 +45,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 {
                     // log to file - field on frontend tried to access a non-existent dictionary
 
-                    var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(
-                        query.Page,
-                        query.PageSize);
+                    var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(query.Page,
+                                                                                             query.PageSize);
 
                     return emptyPagedList;
                 }
@@ -55,10 +56,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
                 dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
-                    dictionaryItemsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(dictionaryItemsQuery.Select(x => x.ToDto()),
+                                                                                              query.Page,
+                                                                                              query.PageSize);
 
                 return dictionaryItemsPagedList;
             }

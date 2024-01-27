@@ -4,7 +4,9 @@
     {
         private const string _sectionName = "Image";
 
-        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddScoped<IFightService, FightService>();
             services.AddScoped<IMyDictionaryService, MyDictionaryService>();

@@ -21,13 +21,9 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query)
-        {
-            return await _apiClient.Post<GetAllTeams.Query, PagedList<TeamDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllTeams.Query, PagedList<TeamDto>>($"{_url}/all", query);
 
         public async Task<TeamDto> GetTeam(int id)
-        {
-            return await _apiClient.Get<TeamDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<TeamDto>($"{_url}/{id}");
     }
 }

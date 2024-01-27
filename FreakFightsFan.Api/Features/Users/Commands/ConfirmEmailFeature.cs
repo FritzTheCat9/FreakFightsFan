@@ -31,14 +31,19 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IEmailService _emailService;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IUserRepository userRepository, IEmailService emailService, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IUserRepository userRepository,
+                IEmailService emailService,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _userRepository = userRepository;
                 _emailService = emailService;
                 _localizer = localizer;
             }
 
-            public async Task<bool> Handle(ConfirmEmail.Command command, CancellationToken cancellationToken)
+            public async Task<bool> Handle(
+                ConfirmEmail.Command command,
+                CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
                     throw new MyValidationException(nameof(ConfirmEmail.Command.Email),

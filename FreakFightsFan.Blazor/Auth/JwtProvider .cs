@@ -19,20 +19,13 @@ namespace FreakFightsFan.Blazor.Auth
             _localStorageService = localStorageService;
         }
 
-        public async Task<JwtDto> GetJwtDto()
-        {
-            var token = await _localStorageService.GetItemAsync<JwtDto>(Jwt.Dto);
-            return token ?? null;
-        }
+        public async Task<JwtDto> GetJwtDto() 
+            => await _localStorageService.GetItemAsync<JwtDto>(Jwt.Dto) ?? null;
 
-        public async Task SetJwtDto(JwtDto token)
-        {
-            await _localStorageService.SetItemAsync(Jwt.Dto, token);
-        }
+        public async Task SetJwtDto(JwtDto token) 
+            => await _localStorageService.SetItemAsync(Jwt.Dto, token);
 
-        public async Task RemoveJwtDto()
-        {
-            await _localStorageService.RemoveItemAsync(Jwt.Dto);
-        }
+        public async Task RemoveJwtDto() 
+            => await _localStorageService.RemoveItemAsync(Jwt.Dto);
     }
 }

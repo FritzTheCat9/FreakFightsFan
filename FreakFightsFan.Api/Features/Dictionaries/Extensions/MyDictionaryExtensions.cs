@@ -17,7 +17,6 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             UpdateMyDictionaryFeature.Endpoint(app);
             GetAllMyDictionariesFeature.Endpoint(app);
             GetMyDictionaryFeature.Endpoint(app);
-
             return app;
         }
 
@@ -33,18 +32,25 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             };
         }
 
-        public static IQueryable<MyDictionary> FilterMyDictionaries(this IQueryable<MyDictionary> dictionaries, GetAllMyDictionaries.Query query)
+        public static IQueryable<MyDictionary> FilterMyDictionaries(
+            this IQueryable<MyDictionary> dictionaries,
+            GetAllMyDictionaries.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                dictionaries = dictionaries.Where(x => 
-                    x.Name.ToLower().Contains(searchTerm) ||
-                    x.Code.ToLower().Contains(searchTerm));
+            {
+                dictionaries = dictionaries.Where(x =>
+                    x.Name.ToLower().Contains(searchTerm)
+                    || x.Code.ToLower().Contains(searchTerm));
+            }
 
             return dictionaries;
         }
 
-        public static IQueryable<MyDictionary> SortMyDictionaries(this IQueryable<MyDictionary> dictionaries, GetAllMyDictionaries.Query query)
+        public static IQueryable<MyDictionary> SortMyDictionaries(
+            this IQueryable<MyDictionary> dictionaries,
+            GetAllMyDictionaries.Query query)
         {
             return query.SortOrder switch
             {

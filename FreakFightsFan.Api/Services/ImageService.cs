@@ -23,7 +23,11 @@ namespace FreakFightsFan.Api.Services
         private readonly ImageOptions _options;
         private readonly string _folderPath;
 
-        public ImageService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, IOptions<ImageOptions> options, IClock clock)
+        public ImageService(
+            IWebHostEnvironment webHostEnvironment,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<ImageOptions> options,
+            IClock clock)
         {
             _webHostEnvironment = webHostEnvironment;
             _httpContextAccessor = httpContextAccessor;

@@ -25,28 +25,18 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<PagedList<FederationDto>> GetAllFederations(GetAllFederations.Query query)
-        {
-            return await _apiClient.Post<GetAllFederations.Query, PagedList<FederationDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllFederations.Query, PagedList<FederationDto>>($"{_url}/all", query);
 
         public async Task<FederationDto> GetFederation(int id)
-        {
-            return await _apiClient.Get<FederationDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<FederationDto>($"{_url}/{id}");
 
         public async Task CreateFederation(CreateFederation.Command command)
-        {
-            await _apiClient.Post(_url, command);
-        }
+            => await _apiClient.Post(_url, command);
 
         public async Task UpdateFederation(UpdateFederation.Command command)
-        {
-            await _apiClient.Put($"{_url}/{command.Id}", command);
-        }
+            => await _apiClient.Put($"{_url}/{command.Id}", command);
 
         public async Task DeleteFederation(int id)
-        {
-            await _apiClient.Delete($"{_url}/{id}");
-        }
+            => await _apiClient.Delete($"{_url}/{id}");
     }
 }

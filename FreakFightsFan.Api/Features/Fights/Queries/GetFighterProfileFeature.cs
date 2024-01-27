@@ -32,13 +32,17 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
             private readonly IFightRepository _fightRepository;
             private readonly IFightService _fightService;
 
-            public Handler(IFightRepository fightRepository, IFightService fightService)
+            public Handler(
+                IFightRepository fightRepository,
+                IFightService fightService)
             {
                 _fightRepository = fightRepository;
                 _fightService = fightService;
             }
 
-            public async Task<FighterProfileDto> Handle(GetFighterProfile.Query query, CancellationToken cancellationToken)
+            public async Task<FighterProfileDto> Handle(
+                GetFighterProfile.Query query,
+                CancellationToken cancellationToken)
             {
                 var fights = await _fightRepository.GetFighterFights(query.Id) ?? throw new MyNotFoundException();
 

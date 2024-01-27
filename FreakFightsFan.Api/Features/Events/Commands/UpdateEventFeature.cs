@@ -38,8 +38,12 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             private readonly IMyDictionaryService _dictionaryService;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IEventRepository eventRepository, IClock clock,
-                IMyDictionaryItemRepository dictionaryItemRepository, IMyDictionaryService dictionaryService, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IEventRepository eventRepository,
+                IClock clock,
+                IMyDictionaryItemRepository dictionaryItemRepository,
+                IMyDictionaryService dictionaryService,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _eventRepository = eventRepository;
                 _clock = clock;
@@ -64,20 +68,24 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(UpdateEvent.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                UpdateEvent.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 if (command.CityId is not null)
                 {
                     var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
                     if (!isCityValid)
-                        throw new MyValidationException(nameof(UpdateEvent.Command.CityId), localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.City]);
+                        throw new MyValidationException(nameof(UpdateEvent.Command.CityId),
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.City]);
                 }
 
                 if (command.HallId is not null)
                 {
                     var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
                     if (!isHallValid)
-                        throw new MyValidationException(nameof(UpdateEvent.Command.HallId), localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.Hall]);
+                        throw new MyValidationException(nameof(UpdateEvent.Command.HallId),
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.Hall]);
                 }
             }
         }

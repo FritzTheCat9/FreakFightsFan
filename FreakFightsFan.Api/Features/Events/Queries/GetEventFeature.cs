@@ -35,7 +35,9 @@ namespace FreakFightsFan.Api.Features.Events.Queries
                 _eventRepository = eventRepository;
             }
 
-            public async Task<EventDto> Handle(GetEvent.Query query, CancellationToken cancellationToken)
+            public async Task<EventDto> Handle(
+                GetEvent.Query query,
+                CancellationToken cancellationToken)
             {
                 var myEvent = await _eventRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return myEvent.ToDto();

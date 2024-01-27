@@ -35,14 +35,15 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
                 _teamRepository = teamRepository;
             }
 
-            public async Task<PagedList<TeamDto>> Handle(GetAllTeams.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<TeamDto>> Handle(
+                GetAllTeams.Query query,
+                CancellationToken cancellationToken)
             {
                 var teamsQuery = _teamRepository.AsQueryable();
 
-                var teamsPagedList = PageListExtensions<TeamDto>.Create(
-                    teamsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var teamsPagedList = PageListExtensions<TeamDto>.Create(teamsQuery.Select(x => x.ToDto()),
+                                                                        query.Page,
+                                                                        query.PageSize);
 
                 return await Task.FromResult(teamsPagedList);
             }

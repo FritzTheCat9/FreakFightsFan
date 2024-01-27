@@ -19,14 +19,9 @@ namespace FreakFightsFan.Blazor.Localization
         }
 
         public async Task<string> GetCulture()
-        {
-            var culture = await _localStorage.GetItemAsync<string>(LocalizationConsts.CultureKey);
-            return culture;
-        }
+            => await _localStorage.GetItemAsync<string>(LocalizationConsts.CultureKey);
 
         public async Task SetCulture(string culture)
-        {
-            await _localStorage.SetItemAsync(LocalizationConsts.CultureKey, culture);
-        }
+            => await _localStorage.SetItemAsync(LocalizationConsts.CultureKey, culture);
     }
 }

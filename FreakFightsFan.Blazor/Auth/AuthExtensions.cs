@@ -20,11 +20,12 @@ namespace FreakFightsFan.Blazor.Auth
                 {
                     x.RequireClaim(ClaimTypes.Role, Policy.Admin);
                 });
-                config.AddPolicy("superAdmin", x =>
+                config.AddPolicy(Policy.SuperAdmin, x =>
                 {
-                    x.RequireClaim(ClaimTypes.Role, "superAdmin");
+                    x.RequireClaim(ClaimTypes.Role, Policy.SuperAdmin);
                 });
             });
+
             services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             services.AddScoped<IJwtProvider, JwtProvider>();
 

@@ -11,9 +11,9 @@ namespace FreakFightsFan.Api.Data.Configurations
             builder.HasKey(d => d.Id);
 
             builder.HasMany(d => d.DictionaryItems)
-                .WithOne(di => di.Dictionary)
-                .HasForeignKey(di => di.DictionaryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(di => di.Dictionary)
+                   .HasForeignKey(di => di.DictionaryId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

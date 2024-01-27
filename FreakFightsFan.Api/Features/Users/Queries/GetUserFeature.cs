@@ -37,7 +37,9 @@ namespace FreakFightsFan.Api.Features.Users.Queries
                 _userRepository = userRepository;
             }
 
-            public async Task<UserDto> Handle(GetUser.Query query, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(
+                GetUser.Query query,
+                CancellationToken cancellationToken)
             {
                 var user = await _userRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return user.ToDto();

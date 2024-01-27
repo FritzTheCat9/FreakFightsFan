@@ -25,28 +25,18 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<PagedList<EventDto>> GetAllEvents(GetAllEvents.Query query)
-        {
-            return await _apiClient.Post<GetAllEvents.Query, PagedList<EventDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllEvents.Query, PagedList<EventDto>>($"{_url}/all", query);
 
         public async Task<EventDto> GetEvent(int id)
-        {
-            return await _apiClient.Get<EventDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<EventDto>($"{_url}/{id}");
 
         public async Task CreateEvent(CreateEvent.Command command)
-        {
-            await _apiClient.Post(_url, command);
-        }
+            => await _apiClient.Post(_url, command);
 
         public async Task UpdateEvent(UpdateEvent.Command command)
-        {
-            await _apiClient.Put($"{_url}/{command.Id}", command);
-        }
+            => await _apiClient.Put($"{_url}/{command.Id}", command);
 
         public async Task DeleteEvent(int id)
-        {
-            await _apiClient.Delete($"{_url}/{id}");
-        }
+            => await _apiClient.Delete($"{_url}/{id}");
     }
 }

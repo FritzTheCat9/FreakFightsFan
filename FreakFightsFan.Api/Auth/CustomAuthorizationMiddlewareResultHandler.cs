@@ -6,7 +6,11 @@ namespace FreakFightsFan.Api.Auth
 {
     public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
     {
-        public async Task HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
+        public async Task HandleAsync(
+            RequestDelegate next,
+            HttpContext context,
+            AuthorizationPolicy policy,
+            PolicyAuthorizationResult authorizeResult)
         {
             if (authorizeResult.Challenged)
                 throw new MyUnauthorizedException();

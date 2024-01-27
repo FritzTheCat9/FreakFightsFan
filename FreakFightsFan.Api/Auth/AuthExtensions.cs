@@ -14,7 +14,9 @@ namespace FreakFightsFan.Api.Auth
     {
         private const string _sectionName = "Auth";
 
-        public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuth(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<AuthOptions>(configuration.GetRequiredSection(_sectionName));
             var authOptions = configuration.GetOptions<AuthOptions>(_sectionName);

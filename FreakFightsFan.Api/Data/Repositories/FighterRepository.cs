@@ -24,26 +24,23 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Fighter> AsQueryable() => 
-            _dbContext.Fighters
-                .Include(x => x.Image)
-                .Include(x => x.Teams)
-                .Include(x => x.TeamFighters)
-                .AsQueryable();
+        public IQueryable<Fighter> AsQueryable() 
+            => _dbContext.Fighters.Include(x => x.Image)
+                                  .Include(x => x.Teams)
+                                  .Include(x => x.TeamFighters)
+                                  .AsQueryable();
 
-        public async Task<IEnumerable<Fighter>> GetAll() => 
-            await _dbContext.Fighters
-                .Include(x => x.Image)
-                .Include(x => x.Teams)
-                .Include(x => x.TeamFighters)
-                .ToListAsync();
+        public async Task<IEnumerable<Fighter>> GetAll() 
+            => await _dbContext.Fighters.Include(x => x.Image)
+                                        .Include(x => x.Teams)
+                                        .Include(x => x.TeamFighters)
+                                        .ToListAsync();
 
-        public async Task<Fighter> Get(int id) => 
-            await _dbContext.Fighters
-                .Include(x => x.Image)
-                .Include(x => x.Teams)
-                .Include(x => x.TeamFighters)
-                .FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<Fighter> Get(int id) 
+            => await _dbContext.Fighters.Include(x => x.Image)
+                                        .Include(x => x.Teams)
+                                        .Include(x => x.TeamFighters)
+                                        .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Fighter fighter)
         {
@@ -64,9 +61,7 @@ namespace FreakFightsFan.Api.Data.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task SaveChanges()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
+        public async Task SaveChanges() 
+            => await _dbContext.SaveChangesAsync();
     }
 }

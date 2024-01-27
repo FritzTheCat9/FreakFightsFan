@@ -35,7 +35,9 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 _fighterRepository = fighterRepository;
             }
 
-            public async Task<FighterDto> Handle(GetFighter.Query query, CancellationToken cancellationToken)
+            public async Task<FighterDto> Handle(
+                GetFighter.Query query,
+                CancellationToken cancellationToken)
             {
                 var fighter = await _fighterRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return fighter.ToDto();

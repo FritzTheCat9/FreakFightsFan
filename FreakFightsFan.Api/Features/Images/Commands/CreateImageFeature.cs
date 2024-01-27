@@ -32,14 +32,19 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private readonly IClock _clock;
             private readonly IImageService _imageService;
 
-            public Handler(IImageRepository imageRepository, IClock clock, IImageService imageService)
+            public Handler(
+                IImageRepository imageRepository,
+                IClock clock,
+                IImageService imageService)
             {
                 _imageRepository = imageRepository;
                 _clock = clock;
                 _imageService = imageService;
             }
 
-            public async Task<int> Handle(CreateImage.Command command, CancellationToken cancellationToken)
+            public async Task<int> Handle(
+                CreateImage.Command command,
+                CancellationToken cancellationToken)
             {
                 string name = _imageService.SaveImage(command.ImageBase64);
 

@@ -11,20 +11,20 @@ namespace FreakFightsFan.Api.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder.HasOne(f => f.Event)
-                .WithMany(e => e.Fights)
-                .HasForeignKey(f => f.EventId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithMany(e => e.Fights)
+                   .HasForeignKey(f => f.EventId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(f => f.Type)
-                .WithMany(di => di.Fights_Types)
-                .HasForeignKey(f => f.TypeId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.NoAction);
+                   .WithMany(di => di.Fights_Types)
+                   .HasForeignKey(f => f.TypeId)
+                   .IsRequired(false)
+                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(f => f.Teams)
-                .WithOne(t => t.Fight)
-                .HasForeignKey(t => t.FightId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(t => t.Fight)
+                   .HasForeignKey(t => t.FightId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

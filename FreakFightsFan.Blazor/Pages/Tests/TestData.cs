@@ -33,10 +33,7 @@ namespace FreakFightsFan.Blazor.Pages.Tests
                 new() { Id = 41, DictionaryId = 1, Code = "JASIONKA", Name = "Jasionka", Created = DateTime.UtcNow, Modified = DateTime.UtcNow },
         };
 
-        public static List<TestDto> GetTests()
-        {
-            return _tests;
-        }
+        public static List<TestDto> GetTests() => _tests;
 
         public static void AddTest(CreateTest.Command command)
         {
@@ -55,6 +52,7 @@ namespace FreakFightsFan.Blazor.Pages.Tests
         public static void UpdateTest(UpdateTest.Command command)
         {
             var toUpdate = _tests.FirstOrDefault(x => x.Id == command.Id);
+
             if (toUpdate is not null)
             {
                 toUpdate.Name = command.Name;
@@ -69,6 +67,7 @@ namespace FreakFightsFan.Blazor.Pages.Tests
         public static void DeleteTest(int id)
         {
             var toRemove = _tests.FirstOrDefault(x => x.Id == id);
+
             if (toRemove is not null)
             {
                 _tests.Remove(toRemove);

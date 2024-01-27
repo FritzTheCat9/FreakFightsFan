@@ -35,7 +35,9 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 _federationRepository = federationRepository;
             }
 
-            public async Task<FederationDto> Handle(GetFederation.Query query, CancellationToken cancellationToken)
+            public async Task<FederationDto> Handle(
+                GetFederation.Query query,
+                CancellationToken cancellationToken)
             {
                 var federation = await _federationRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return federation.ToDto();

@@ -13,7 +13,10 @@ namespace FreakFightsFan.Api.Behaviors
             _validators = validators;
         }
 
-        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(
+            TRequest request,
+            RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
         {
             var validationContext = new ValidationContext<TRequest>(request);
 
@@ -21,9 +24,12 @@ namespace FreakFightsFan.Api.Behaviors
                 .Select(validator => validator.Validate(validationContext))
                 .Where(validationResult => !validationResult.IsValid)
                 .SelectMany(validationResult => validationResult.Errors)
-                .Select(validationFailure => new ValidationError(validationFailure.PropertyName, validationFailure.ErrorMessage))
+                .Select(validationFailure => new ValidationError(
+                    validationFailure.PropertyName,
+                    validationFailure.ErrorMessage))
                 .GroupBy(failure => failure.PropertyName)
-                .ToDictionary(group => group.Key, group => group.Select(failure => failure.ErrorMessage).ToList());
+                .ToDictionary(group => group.Key, group => group.Select(failure => failure.ErrorMessage)
+                                                                .ToList());
 
             if (errors.Any())
                 throw new MyValidationException(errors);

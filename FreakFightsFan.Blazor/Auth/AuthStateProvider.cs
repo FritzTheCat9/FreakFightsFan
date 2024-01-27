@@ -35,7 +35,10 @@ namespace FreakFightsFan.Blazor.Auth
                 if (jsonToken != null)
                 {
                     return new AuthenticationState(new ClaimsPrincipal(
-                        new ClaimsIdentity(jsonToken.Claims, Jwt.AuthnticationType, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType)));
+                        new ClaimsIdentity(jsonToken.Claims,
+                                           Jwt.AuthnticationType,
+                                           ClaimsIdentity.DefaultNameClaimType,
+                                           ClaimsIdentity.DefaultRoleClaimType)));
                 }
             }
             catch (Exception)
@@ -47,9 +50,7 @@ namespace FreakFightsFan.Blazor.Auth
             return authenticationState;
         }
 
-        public void NotifyAuthStateChanged()
-        {
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-        }
+        public void NotifyAuthStateChanged() 
+            => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }

@@ -33,7 +33,11 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IAuthenticator _authenticator;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IPasswordService passwordService, IUserRepository userRepository, IAuthenticator authenticator, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IPasswordService passwordService,
+                IUserRepository userRepository,
+                IAuthenticator authenticator,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _passwordService = passwordService;
                 _userRepository = userRepository;

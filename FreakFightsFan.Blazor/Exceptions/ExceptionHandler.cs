@@ -16,7 +16,9 @@ namespace FreakFightsFan.Blazor.Exceptions
         private readonly NavigationManager _navigationManager;
         private readonly ValidationErrors _validationErrors;
 
-        public ExceptionHandler(NavigationManager navigationManager, ValidationErrors validationErrors)
+        public ExceptionHandler(
+            NavigationManager navigationManager,
+            ValidationErrors validationErrors)
         {
             _navigationManager = navigationManager;
             _validationErrors = validationErrors;

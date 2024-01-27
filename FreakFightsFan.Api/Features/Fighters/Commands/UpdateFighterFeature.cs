@@ -33,14 +33,19 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
             private readonly IClock _clock;
             private readonly IImageService _imageService;
 
-            public Handler(IFighterRepository fighterRepository, IClock clock, IImageService imageService)
+            public Handler(
+                IFighterRepository fighterRepository,
+                IClock clock,
+                IImageService imageService)
             {
                 _fighterRepository = fighterRepository;
                 _clock = clock;
                 _imageService = imageService;
             }
 
-            public async Task<Unit> Handle(UpdateFighter.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateFighter.Command command,
+                CancellationToken cancellationToken)
             {
                 var fighter = await _fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 fighter.FirstName = command.FirstName;

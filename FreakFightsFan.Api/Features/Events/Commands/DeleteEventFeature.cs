@@ -33,7 +33,9 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 _eventRepository = eventRepository;
             }
 
-            public async Task<Unit> Handle(DeleteEvent.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                DeleteEvent.Command command,
+                CancellationToken cancellationToken)
             {
                 var myEvent = await _eventRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 await _eventRepository.Delete(myEvent);

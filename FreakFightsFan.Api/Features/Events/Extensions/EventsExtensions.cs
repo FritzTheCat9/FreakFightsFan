@@ -37,18 +37,23 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
             };
         }
 
-        public static IQueryable<Event> FilterEvents(this IQueryable<Event> events, GetAllEvents.Query query)
+        public static IQueryable<Event> FilterEvents(
+            this IQueryable<Event> events,
+            GetAllEvents.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                events = events.Where(x =>
-                    x.Name.ToLower().Contains(searchTerm));
+                events = events.Where(x => x.Name.ToLower().Contains(searchTerm));
             }
+
             return events;
         }
 
-        public static IQueryable<Event> SortEvents(this IQueryable<Event> events, GetAllEvents.Query query)
+        public static IQueryable<Event> SortEvents(
+            this IQueryable<Event> events,
+            GetAllEvents.Query query)
         {
             return query.SortOrder switch
             {

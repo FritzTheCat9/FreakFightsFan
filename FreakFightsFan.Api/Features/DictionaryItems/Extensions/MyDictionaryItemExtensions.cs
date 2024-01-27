@@ -37,18 +37,23 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         /* GetAllMyDictionaryItems.Query */
 
-        public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItems.Query query)
+        public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(
+            this IQueryable<MyDictionaryItem> dictionaryItems,
+            GetAllMyDictionaryItems.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x => 
-                    x.Name.ToLower().Contains(searchTerm) ||
-                    x.Code.ToLower().Contains(searchTerm));
+                    x.Name.ToLower().Contains(searchTerm)
+                    || x.Code.ToLower().Contains(searchTerm));
 
             return dictionaryItems;
         }
 
-        public static IQueryable<MyDictionaryItem> SortMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItems.Query query)
+        public static IQueryable<MyDictionaryItem> SortMyDictionaryItems(
+            this IQueryable<MyDictionaryItem> dictionaryItems,
+            GetAllMyDictionaryItems.Query query)
         {
             return query.SortOrder switch
             {
@@ -71,18 +76,22 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         /* GetAllMyDictionaryItemsByCode.Query */
 
-        public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItemsByCode.Query query)
+        public static IQueryable<MyDictionaryItem> FilterMyDictionaryItems(
+            this IQueryable<MyDictionaryItem> dictionaryItems,
+            GetAllMyDictionaryItemsByCode.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
-                    x.Name.ToLower().Contains(searchTerm) ||
-                    x.Code.ToLower().Contains(searchTerm));
+                    x.Name.ToLower().Contains(searchTerm)
+                    || x.Code.ToLower().Contains(searchTerm));
 
             return dictionaryItems;
         }
 
-        public static IQueryable<MyDictionaryItem> SortMyDictionaryItems(this IQueryable<MyDictionaryItem> dictionaryItems, GetAllMyDictionaryItemsByCode.Query query)
+        public static IQueryable<MyDictionaryItem> SortMyDictionaryItems(
+            this IQueryable<MyDictionaryItem> dictionaryItems,
+            GetAllMyDictionaryItemsByCode.Query query)
         {
             return query.SortOrder switch
             {

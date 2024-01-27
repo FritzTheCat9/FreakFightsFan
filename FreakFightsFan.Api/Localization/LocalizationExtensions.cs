@@ -13,7 +13,8 @@ namespace FreakFightsFan.Api.Localization
 
         public static WebApplication UseMyLocalization(this WebApplication app)
         {
-            var supportedCultures = LocalizationConsts.SupportedCultures.Select(x => x.CultureInfo.Name).ToArray();
+            var supportedCultures = LocalizationConsts.SupportedCultures.Select(x => x.CultureInfo.Name)
+                                                                        .ToArray();
             var localizationOptions = new RequestLocalizationOptions()
                 .SetDefaultCulture(LocalizationConsts.DefaultCulture)
                 .AddSupportedCultures(supportedCultures)

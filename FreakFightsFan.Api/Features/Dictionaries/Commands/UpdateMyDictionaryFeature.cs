@@ -34,14 +34,19 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             private readonly IClock _clock;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IMyDictionaryRepository myDictionaryRepository,
+                IClock clock,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryRepository = myDictionaryRepository;
                 _clock = clock;
                 _localizer = localizer;
             }
 
-            public async Task<Unit> Handle(UpdateMyDictionary.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateMyDictionary.Command command,
+                CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
@@ -55,11 +60,14 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(UpdateMyDictionary.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                UpdateMyDictionary.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
                 if (codeExists)
-                    throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code), localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                    throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code),
+                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

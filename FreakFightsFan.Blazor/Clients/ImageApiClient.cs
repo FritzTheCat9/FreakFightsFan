@@ -25,28 +25,18 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<PagedList<ImageDto>> GetAllImages(GetAllImages.Query query)
-        {
-            return await _apiClient.Post<GetAllImages.Query, PagedList<ImageDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllImages.Query, PagedList<ImageDto>>($"{_url}/all", query);
 
         public async Task<ImageDto> GetImage(int id)
-        {
-            return await _apiClient.Get<ImageDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<ImageDto>($"{_url}/{id}");
 
         public async Task CreateImage(CreateImage.Command command)
-        {
-            await _apiClient.Post(_url, command);
-        }
+            => await _apiClient.Post(_url, command);
 
         public async Task UpdateImage(UpdateImage.Command command)
-        {
-            await _apiClient.Put($"{_url}/{command.Id}", command);
-        }
+            => await _apiClient.Put($"{_url}/{command.Id}", command);
 
         public async Task DeleteImage(int id)
-        {
-            await _apiClient.Delete($"{_url}/{id}");
-        }
+            => await _apiClient.Delete($"{_url}/{id}");
     }
 }

@@ -20,10 +20,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 CancellationToken cancellationToken) =>
             {
                 int dictionaryId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetMyDictionary", new
-                {
-                    id = dictionaryId
-                });
+                return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
             })
                 .WithTags("MyDictionaries")
                 .RequireAuthorization(Policy.Admin);
@@ -37,14 +34,19 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
             private readonly IClock _clock;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IMyDictionaryRepository myDictionaryRepository,
+                IClock clock,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryRepository = myDictionaryRepository;
                 _clock = clock;
                 _localizer = localizer;
             }
 
-            public async Task<int> Handle(CreateMyDictionary.Command command, CancellationToken cancellationToken)
+            public async Task<int> Handle(
+                CreateMyDictionary.Command command,
+                CancellationToken cancellationToken)
             {
                 await ValidateCommand(command, _localizer);
 
@@ -60,11 +62,14 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return await _myDictionaryRepository.Create(dictionary);
             }
 
-            private async Task ValidateCommand(CreateMyDictionary.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                CreateMyDictionary.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
                 if (codeExists)
-                    throw new MyValidationException(nameof(CreateMyDictionary.Command.Code), localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                    throw new MyValidationException(nameof(CreateMyDictionary.Command.Code),
+                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

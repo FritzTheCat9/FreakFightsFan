@@ -34,18 +34,23 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
             };
         }
 
-        public static IQueryable<Federation> FilterFederations(this IQueryable<Federation> federations, GetAllFederations.Query query)
+        public static IQueryable<Federation> FilterFederations(
+            this IQueryable<Federation> federations,
+            GetAllFederations.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                federations = federations.Where(x =>
-                    x.Name.ToLower().Contains(searchTerm));
+                federations = federations.Where(x => x.Name.ToLower().Contains(searchTerm));
             }
+
             return federations;
         }
 
-        public static IQueryable<Federation> SortFederations(this IQueryable<Federation> federations, GetAllFederations.Query query)
+        public static IQueryable<Federation> SortFederations(
+            this IQueryable<Federation> federations,
+            GetAllFederations.Query query)
         {
             return query.SortOrder switch
             {

@@ -22,6 +22,7 @@ namespace FreakFightsFan.Api.Auth
             => _passwordHasher.HashPassword(default, password);
 
         public bool Validate(string password, string hashedPassword)
-            => _passwordHasher.VerifyHashedPassword(default, hashedPassword, password) is PasswordVerificationResult.Success;
+            => _passwordHasher.VerifyHashedPassword(default, hashedPassword, password)
+               is PasswordVerificationResult.Success;
     }
 }

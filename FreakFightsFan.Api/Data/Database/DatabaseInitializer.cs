@@ -44,6 +44,7 @@ namespace FreakFightsFan.Api.Data.Database
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StopAsync(CancellationToken cancellationToken) 
+            => Task.CompletedTask;
     }
 }

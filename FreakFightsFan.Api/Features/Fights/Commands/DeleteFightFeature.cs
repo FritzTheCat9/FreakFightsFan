@@ -33,7 +33,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 _fightRepository = fightRepository;
             }
 
-            public async Task<Unit> Handle(DeleteFight.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                DeleteFight.Command command,
+                CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 

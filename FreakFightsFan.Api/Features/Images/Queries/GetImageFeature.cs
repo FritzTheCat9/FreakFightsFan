@@ -36,7 +36,9 @@ namespace FreakFightsFan.Api.Features.Images.Queries
                 _imageRepository = imageRepository;
             }
 
-            public async Task<ImageDto> Handle(GetImage.Query query, CancellationToken cancellationToken)
+            public async Task<ImageDto> Handle(
+                GetImage.Query query,
+                CancellationToken cancellationToken)
             {
                 var image = await _imageRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return image.ToDto();

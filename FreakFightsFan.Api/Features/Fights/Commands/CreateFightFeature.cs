@@ -41,8 +41,14 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, ITeamService teamService, 
-                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IFightRepository fightRepository,
+                IClock clock,
+                IEventRepository eventRepository,
+                ITeamService teamService,
+                IMyDictionaryService dictionaryService,
+                IMyDictionaryItemRepository dictionaryItemRepository,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
@@ -76,7 +82,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return await _fightRepository.Create(fight);
             }
 
-            private async Task ValidateCommand(CreateFight.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                CreateFight.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
 

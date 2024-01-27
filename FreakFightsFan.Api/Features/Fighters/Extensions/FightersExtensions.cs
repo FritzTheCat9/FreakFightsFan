@@ -37,20 +37,26 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
             };
         }
 
-        public static IQueryable<Fighter> FilterFighters(this IQueryable<Fighter> fighters, GetAllFighters.Query query)
+        public static IQueryable<Fighter> FilterFighters(
+            this IQueryable<Fighter> fighters,
+            GetAllFighters.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 fighters = fighters.Where(x =>
-                    x.Nickname.ToLower().Contains(searchTerm) ||
-                    x.FirstName.ToLower().Contains(searchTerm) ||
-                    x.LastName.ToLower().Contains(searchTerm));
+                    x.Nickname.ToLower().Contains(searchTerm)
+                    || x.FirstName.ToLower().Contains(searchTerm)
+                    || x.LastName.ToLower().Contains(searchTerm));
             }
+
             return fighters;
         }
 
-        public static IQueryable<Fighter> SortFighters(this IQueryable<Fighter> fighters, GetAllFighters.Query query)
+        public static IQueryable<Fighter> SortFighters(
+            this IQueryable<Fighter> fighters,
+            GetAllFighters.Query query)
         {
             return query.SortOrder switch
             {

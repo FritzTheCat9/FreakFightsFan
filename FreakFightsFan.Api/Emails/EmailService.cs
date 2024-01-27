@@ -15,7 +15,10 @@ namespace FreakFightsFan.Api.Emails
         private readonly IFluentEmail _fluentEmail;
         private readonly string _templatesFolder;
 
-        public EmailService(IOptions<EmailOptions> options, IWebHostEnvironment webHostEnvironment, IFluentEmail fluentEmail)
+        public EmailService(
+            IOptions<EmailOptions> options, 
+            IWebHostEnvironment webHostEnvironment, 
+            IFluentEmail fluentEmail)
         {
             _options = options.Value;
             _webHostEnvironment = webHostEnvironment;
@@ -31,11 +34,10 @@ namespace FreakFightsFan.Api.Emails
                 return;
             }
 
-            var email = _fluentEmail
-                .SetFrom(_options.Email)
-                .To(to)
-                .Subject(model.Subject)
-                .UsingTemplateFromFile($"{_templatesFolder}//{model.TemplateFileName}", model);
+            var email = _fluentEmail.SetFrom(_options.Email)
+                                    .To(to)
+                                    .Subject(model.Subject)
+                                    .UsingTemplateFromFile($"{_templatesFolder}//{model.TemplateFileName}", model);
 
             await email.SendAsync();
 

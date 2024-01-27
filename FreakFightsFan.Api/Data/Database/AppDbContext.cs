@@ -1,9 +1,7 @@
 ﻿using FreakFightsFan.Api.Abstractions;
-using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 
 namespace FreakFightsFan.Api.Data.Database
@@ -23,7 +21,9 @@ namespace FreakFightsFan.Api.Data.Database
         public DbSet<MyDictionaryItem> MyDictionaryItems { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IClock clock) : base(options)
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IClock clock) : base(options)
         {
             _clock = clock;
         }

@@ -10,7 +10,9 @@ namespace FreakFightsFan.Api.Data
     {
         private const string _sectionName = "Database";
 
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDatabase(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<DatabaseOptions>(configuration.GetRequiredSection(_sectionName));
             var options = configuration.GetOptions<DatabaseOptions>(_sectionName);

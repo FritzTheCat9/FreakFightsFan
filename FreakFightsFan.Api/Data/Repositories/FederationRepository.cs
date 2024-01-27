@@ -23,23 +23,20 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<Federation> AsQueryable() =>
-            _dbContext.Federations
-                .Include(x => x.Events)
-                .Include(x => x.Image)
-                .AsQueryable();
+        public IQueryable<Federation> AsQueryable()
+            => _dbContext.Federations.Include(x => x.Events)
+                                     .Include(x => x.Image)
+                                     .AsQueryable();
 
-        public async Task<IEnumerable<Federation>> GetAll() => 
-            await _dbContext.Federations
-                .Include(x => x.Events)
-                .Include(x => x.Image)
-                .ToListAsync();
+        public async Task<IEnumerable<Federation>> GetAll()
+            => await _dbContext.Federations.Include(x => x.Events)
+                                           .Include(x => x.Image)
+                                           .ToListAsync();
 
-        public async Task<Federation> Get(int id) => 
-            await _dbContext.Federations
-                .Include(x => x.Events)
-                .Include(x => x.Image)
-                .FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<Federation> Get(int id)
+            => await _dbContext.Federations.Include(x => x.Events)
+                                           .Include(x => x.Image)
+                                           .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Federation federation)
         {

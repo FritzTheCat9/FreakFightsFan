@@ -37,19 +37,26 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
                 IsSuperAdmin = user.IsSuperAdmin,
             };
         }
-        
-        public static IQueryable<User> FilterMyUsers(this IQueryable<User> users, GetAllUsers.Query query)
+
+        public static IQueryable<User> FilterMyUsers(
+            this IQueryable<User> users,
+            GetAllUsers.Query query)
         {
             var searchTerm = query.SearchTerm.ToLower().Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
                 users = users.Where(x =>
-                    x.UserName.ToLower().Contains(searchTerm) ||
-                    x.Email.ToLower().Contains(searchTerm));
+                    x.UserName.ToLower().Contains(searchTerm)
+                    || x.Email.ToLower().Contains(searchTerm));
+            }
 
             return users;
         }
 
-        public static IQueryable<User> SortMyUsers(this IQueryable<User> users, GetAllUsers.Query query)
+        public static IQueryable<User> SortMyUsers(
+            this IQueryable<User> users,
+            GetAllUsers.Query query)
         {
             return query.SortOrder switch
             {

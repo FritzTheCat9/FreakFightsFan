@@ -33,14 +33,19 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
             private readonly IClock _clock;
             private readonly IImageService _imageService;
 
-            public Handler(IFederationRepository federationRepository, IClock clock, IImageService imageService)
+            public Handler(
+                IFederationRepository federationRepository,
+                IClock clock,
+                IImageService imageService)
             {
                 _federationRepository = federationRepository;
                 _clock = clock;
                 _imageService = imageService;
             }
 
-            public async Task<Unit> Handle(UpdateFederation.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateFederation.Command command,
+                CancellationToken cancellationToken)
             {
                 var federation = await _federationRepository.Get(command.Id) ?? throw new MyNotFoundException();
 

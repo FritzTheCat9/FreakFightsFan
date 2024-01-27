@@ -34,17 +34,18 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 _federationRepository = federationRepository;
             }
 
-            public async Task<PagedList<FederationDto>> Handle(GetAllFederations.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<FederationDto>> Handle(
+                GetAllFederations.Query query,
+                CancellationToken cancellationToken)
             {
                 var federationsQuery = _federationRepository.AsQueryable();
 
                 federationsQuery = federationsQuery.FilterFederations(query);
                 federationsQuery = federationsQuery.SortFederations(query);
 
-                var federationsPagedList = PageListExtensions<FederationDto>.Create(
-                    federationsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var federationsPagedList = PageListExtensions<FederationDto>.Create(federationsQuery.Select(x => x.ToDto()),
+                                                                                    query.Page,
+                                                                                    query.PageSize);
 
                 return await Task.FromResult(federationsPagedList);
             }

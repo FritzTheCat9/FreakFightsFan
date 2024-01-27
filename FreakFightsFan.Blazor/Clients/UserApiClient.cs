@@ -28,43 +28,27 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<bool> ConfirmEmail(ConfirmEmail.Command command)
-        {
-            return await _apiClient.Post<ConfirmEmail.Command, bool>($"{_url}/confirmEmail", command);
-        }
+            => await _apiClient.Post<ConfirmEmail.Command, bool>($"{_url}/confirmEmail", command);
 
         public async Task DegradeUser(int id)
-        {
-            await _apiClient.Put($"{_url}/degrade/{id}");
-        }
+            => await _apiClient.Put($"{_url}/degrade/{id}");
 
         public async Task<JwtDto> Login(Login.Command command)
-        {
-            return await _apiClient.Post<Login.Command, JwtDto>($"{_url}/login", command);
-        }
+            => await _apiClient.Post<Login.Command, JwtDto>($"{_url}/login", command);
 
         public async Task PromoteUser(int id)
-        {
-            await _apiClient.Put($"{_url}/promote/{id}");
-        }
+            => await _apiClient.Put($"{_url}/promote/{id}");
 
         public async Task Register(Register.Command command)
-        {
-            await _apiClient.Post($"{_url}/register", command);
-        }
+            => await _apiClient.Post($"{_url}/register", command);
 
         public async Task UpdateUser(UpdateUser.Command command)
-        {
-            await _apiClient.Put($"{_url}/{command.Id}", command);
-        }
+            => await _apiClient.Put($"{_url}/{command.Id}", command);
 
         public async Task<PagedList<UserDto>> GetAllUsers(GetAllUsers.Query query)
-        {
-            return await _apiClient.Post<GetAllUsers.Query, PagedList<UserDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllUsers.Query, PagedList<UserDto>>($"{_url}/all", query);
 
         public async Task<UserDto> GetUser(int id)
-        {
-            return await _apiClient.Get<UserDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<UserDto>($"{_url}/{id}");
     }
 }

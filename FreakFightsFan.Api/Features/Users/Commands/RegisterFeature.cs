@@ -39,8 +39,13 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IEmailConfirmationService _emailConfirmationService;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IClock clock, IPasswordService passwordService, IUserRepository userRepository,
-                IEmailService emailService, IEmailConfirmationService emailConfirmationService, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IClock clock,
+                IPasswordService passwordService,
+                IUserRepository userRepository,
+                IEmailService emailService,
+                IEmailConfirmationService emailConfirmationService,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _clock = clock;
                 _passwordService = passwordService;
@@ -50,7 +55,9 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 _localizer = localizer;
             }
 
-            public async Task<int> Handle(Register.Command command, CancellationToken cancellationToken)
+            public async Task<int> Handle(
+                Register.Command command,
+                CancellationToken cancellationToken)
             {
                 await ValidateCommand(command);
 

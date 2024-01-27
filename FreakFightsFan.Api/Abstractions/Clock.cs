@@ -7,6 +7,7 @@
 
     public class Clock : IClock
     {
-        public DateTime Current() => DateTime.UtcNow;
+        public DateTime Current() 
+            => DateTime.UtcNow;
     }
 }

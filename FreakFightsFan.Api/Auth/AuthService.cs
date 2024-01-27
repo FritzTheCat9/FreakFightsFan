@@ -24,10 +24,8 @@ namespace FreakFightsFan.Api.Auth
             _user = httpContextAccessor.HttpContext.User;
         }
 
-        public bool IsInRole(string roleName)
-        {
-            return _user.IsInRole(roleName);
-        }
+        public bool IsInRole(string roleName) 
+            => _user.IsInRole(roleName);
 
         public bool IsInAnyRole(params string[] roleNames)
         {

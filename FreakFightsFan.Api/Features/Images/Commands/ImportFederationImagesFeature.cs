@@ -32,7 +32,11 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private readonly IWebHostEnvironment _webHostEnvironment;
             private readonly ImageOptions _options;
 
-            public Handler(IFederationRepository federationRepository, IImageService imageService, IWebHostEnvironment webHostEnvironment, IOptions<ImageOptions> options)
+            public Handler(
+                IFederationRepository federationRepository,
+                IImageService imageService,
+                IWebHostEnvironment webHostEnvironment,
+                IOptions<ImageOptions> options)
             {
                 _federationRepository = federationRepository;
                 _imageService = imageService;
@@ -40,7 +44,9 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 _options = options.Value;
             }
 
-            public async Task<Unit> Handle(ImportFederationImages.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                ImportFederationImages.Command command,
+                CancellationToken cancellationToken)
             {
                 var federations = await _federationRepository.GetAll();
                 var extension = ".png";

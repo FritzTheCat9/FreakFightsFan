@@ -39,7 +39,12 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private const string _searchButtonCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > button";
             private const string _downloadButtonCssSelector = "div > div:nth-child(1) > div > div.sf-downloadbtn";
 
-            public Handler(IFighterRepository fighterRepository, IClock clock, IImageService imageService, IWebHostEnvironment webHostEnvironment, IOptions<ImageOptions> options)
+            public Handler(
+                IFighterRepository fighterRepository,
+                IClock clock,
+                IImageService imageService,
+                IWebHostEnvironment webHostEnvironment,
+                IOptions<ImageOptions> options)
             {
                 _fighterRepository = fighterRepository;
                 _clock = clock;
@@ -48,7 +53,9 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 _options = options.Value;
             }
 
-            public async Task<Unit> Handle(ImportFighterImages.ImportFighterImagesCommand command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                ImportFighterImages.ImportFighterImagesCommand command,
+                CancellationToken cancellationToken)
             {
                 var fighters = await _fighterRepository.GetAll();
                 var fullDriverPath = Path.GetFullPath(_webHostEnvironment.ContentRootPath);
@@ -75,7 +82,8 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                             continue;
                         }
 
-                        driver.Navigate().GoToUrl(_options.ImportWebsite);
+                        driver.Navigate()
+                              .GoToUrl(_options.ImportWebsite);
 
                         try
                         {
@@ -110,8 +118,10 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 
                         if (files.Length > 0)
                         {
-                            var newestFile = files.OrderByDescending(file => file.CreationTime).FirstOrDefault();
-                            if (newestFile is not null && newestFile.CreationTime >= _clock.Current().AddMinutes(-1))
+                            var newestFile = files.OrderByDescending(file => file.CreationTime)
+                                                  .FirstOrDefault();
+                            if (newestFile is not null && newestFile.CreationTime >= _clock.Current()
+                                                                                           .AddMinutes(-1))
                             {
                                 Console.WriteLine($"[FILE] - Image for fighter: {fighter.Id} - Downloaded profile image with name {newestFile.Name}");
 

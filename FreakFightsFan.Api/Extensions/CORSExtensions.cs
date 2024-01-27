@@ -7,7 +7,9 @@ namespace FreakFightsFan.Api.Extensions
         private const string _policyName = "MyCorsPolicy";
         private const string _sectionName = "Auth";
 
-        public static IServiceCollection AddCORS(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCORS(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<AuthOptions>(configuration.GetRequiredSection(_sectionName));
             var authOptions = configuration.GetOptions<AuthOptions>(_sectionName);
@@ -17,8 +19,8 @@ namespace FreakFightsFan.Api.Extensions
                 options.AddPolicy(_policyName, policy =>
                 {
                     policy.WithOrigins(authOptions.FrontendUrl)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                 });
             });
 

@@ -16,7 +16,9 @@ namespace FreakFightsFan.Api.Services
         private readonly IFighterRepository _fighterRepository;
         private readonly IClock _clock;
 
-        public TeamService(IFighterRepository fighterRepository, IClock clock)
+        public TeamService(
+            IFighterRepository fighterRepository,
+            IClock clock)
         {
             _fighterRepository = fighterRepository;
             _clock = clock;

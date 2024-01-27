@@ -34,20 +34,29 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             private readonly IClock _clock;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IMyDictionaryItemRepository myDictionaryItemRepository,
+                IClock clock,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryItemRepository = myDictionaryItemRepository;
                 _clock = clock;
                 _localizer = localizer;
             }
 
-            public async Task<Unit> Handle(UpdateMyDictionaryItem.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateMyDictionaryItem.Command command,
+                CancellationToken cancellationToken)
             {
                 var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(command.Code, dictionaryItem.DictionaryId, command.Id);
+                var codeExists = await _myDictionaryItemRepository
+                    .DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(command.Code,
+                                                                                    dictionaryItem.DictionaryId,
+                                                                                    command.Id);
                 if (codeExists)
-                    throw new MyValidationException(nameof(UpdateMyDictionaryItem.Command.Code), _localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                    throw new MyValidationException(nameof(UpdateMyDictionaryItem.Command.Code),
+                                                    _localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
 
                 dictionaryItem.Name = command.Name;
                 dictionaryItem.Code = command.Code;

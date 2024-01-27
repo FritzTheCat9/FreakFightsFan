@@ -35,16 +35,17 @@ namespace FreakFightsFan.Api.Features.Images.Queries
                 _imageRepository = imageRepository;
             }
 
-            public async Task<PagedList<ImageDto>> Handle(GetAllImages.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<ImageDto>> Handle(
+                GetAllImages.Query query,
+                CancellationToken cancellationToken)
             {
                 var imagesQuery = _imageRepository.AsQueryable();
 
                 imagesQuery = imagesQuery.SortImages(query);
 
-                var imagesPagedList = PageListExtensions<ImageDto>.Create(
-                    imagesQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var imagesPagedList = PageListExtensions<ImageDto>.Create(imagesQuery.Select(x => x.ToDto()),
+                                                                          query.Page,
+                                                                          query.PageSize);
 
                 return await Task.FromResult(imagesPagedList);
             }

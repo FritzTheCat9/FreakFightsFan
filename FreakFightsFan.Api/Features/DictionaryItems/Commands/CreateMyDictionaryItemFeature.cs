@@ -3,7 +3,6 @@ using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
-using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.DictionaryItems.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
@@ -36,7 +35,11 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
             private readonly IClock _clock;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository, IMyDictionaryRepository myDictionaryRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IMyDictionaryItemRepository myDictionaryItemRepository,
+                IMyDictionaryRepository myDictionaryRepository,
+                IClock clock,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryItemRepository = myDictionaryItemRepository;
                 _myDictionaryRepository = myDictionaryRepository;
@@ -44,7 +47,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 _localizer = localizer;
             }
 
-            public async Task<int> Handle(CreateMyDictionaryItem.Command command, CancellationToken cancellationToken)
+            public async Task<int> Handle(
+                CreateMyDictionaryItem.Command command,
+                CancellationToken cancellationToken)
             {
                 await ValidateCommand(command, _localizer);
 
@@ -61,13 +66,16 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 return await _myDictionaryItemRepository.Create(dictionaryItem);
             }
 
-            private async Task ValidateCommand(CreateMyDictionaryItem.Command command, IStringLocalizer<ApiValidationMessage> localizer)
+            private async Task ValidateCommand(
+                CreateMyDictionaryItem.Command command,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ?? throw new MyNotFoundException();
 
                 var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
                 if (codeExists)
-                    throw new MyValidationException(nameof(CreateMyDictionaryItem.Command.Code), localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                    throw new MyValidationException(nameof(CreateMyDictionaryItem.Command.Code),
+                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

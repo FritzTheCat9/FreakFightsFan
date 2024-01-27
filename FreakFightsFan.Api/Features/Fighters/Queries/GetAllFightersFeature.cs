@@ -34,7 +34,9 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 _fighterRepository = fighterRepository;
             }
 
-            public async Task<PagedList<FighterDto>> Handle(GetAllFighters.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<FighterDto>> Handle(
+                GetAllFighters.Query query,
+                CancellationToken cancellationToken)
             {
                 var fightersQuery = _fighterRepository.AsQueryable();
 
@@ -46,10 +48,9 @@ namespace FreakFightsFan.Api.Features.Fighters.Queries
                 fightersQuery = fightersQuery.FilterFighters(query);
                 fightersQuery = fightersQuery.SortFighters(query);
 
-                var fightersPagedList = PageListExtensions<FighterDto>.Create(
-                    fightersQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var fightersPagedList = PageListExtensions<FighterDto>.Create(fightersQuery.Select(x => x.ToDto()),
+                                                                              query.Page,
+                                                                              query.PageSize);
 
                 return await Task.FromResult(fightersPagedList);
             }

@@ -17,10 +17,9 @@ namespace FreakFightsFan.Api.Extensions
             Validate(Page, PageSize);
 
             var totalCount = source.Count();
-            var items = source
-                .Skip((Page - 1) * PageSize)
-                .Take(PageSize)
-                .ToList();
+            var items = source.Skip((Page - 1) * PageSize)
+                              .Take(PageSize)
+                              .ToList();
 
             return new PagedList<T>(items, Page, PageSize, totalCount);
         }

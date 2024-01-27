@@ -1,6 +1,5 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using Microsoft.Extensions.Options;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -18,11 +17,12 @@ namespace FreakFightsFan.Api.Auth
         private readonly IClock _clock;
         private readonly string _baseUrl;
 
-        public EmailConfirmationService(IOptions<AuthOptions> options, IClock clock)
+        public EmailConfirmationService(
+            IOptions<AuthOptions> options,
+            IClock clock)
         {
             _options = options.Value;
             _clock = clock;
-
             _baseUrl = $"{_options.FrontendUrl}";
         }
 
@@ -36,7 +36,7 @@ namespace FreakFightsFan.Api.Auth
             return token;
         }
 
-        public string GenerateConfirmationLink(string email, string token) => 
-            $"{_baseUrl}/confirmEmail?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
+        public string GenerateConfirmationLink(string email, string token) 
+            => $"{_baseUrl}/confirmEmail?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
     }
 }

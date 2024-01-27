@@ -36,7 +36,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 _myDictionaryItemRepository = myDictionaryItemRepository;
             }
 
-            public async Task<MyDictionaryItemDto> Handle(GetMyDictionaryItem.Query query, CancellationToken cancellationToken)
+            public async Task<MyDictionaryItemDto> Handle(
+                GetMyDictionaryItem.Query query,
+                CancellationToken cancellationToken)
             {
                 var dictionaryItem = await _myDictionaryItemRepository.Get(query.Id) ?? throw new MyNotFoundException();
                 return dictionaryItem.ToDto();

@@ -33,7 +33,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 _myDictionaryItemRepository = myDictionaryItemRepository;
             }
 
-            public async Task<Unit> Handle(DeleteMyDictionaryItem.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                DeleteMyDictionaryItem.Command command,
+                CancellationToken cancellationToken)
             {
                 var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ?? throw new MyNotFoundException();
                 await _myDictionaryItemRepository.Delete(dictionaryItem);

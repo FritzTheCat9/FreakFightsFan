@@ -30,13 +30,17 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private readonly IImageRepository _imageRepository;
             private readonly IImageService _imageService;
 
-            public Handler(IImageRepository imageRepository, IImageService imageService)
+            public Handler(
+                IImageRepository imageRepository,
+                IImageService imageService)
             {
                 _imageRepository = imageRepository;
                 _imageService = imageService;
             }
 
-            public async Task<Unit> Handle(DeleteImage.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                DeleteImage.Command command,
+                CancellationToken cancellationToken)
             {
                 var image = await _imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
 

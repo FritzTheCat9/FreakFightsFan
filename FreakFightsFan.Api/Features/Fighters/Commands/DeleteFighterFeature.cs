@@ -30,13 +30,17 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
             private readonly IFighterRepository _fighterRepository;
             private readonly IImageService _imageService;
 
-            public Handler(IFighterRepository fighterRepository, IImageService imageService)
+            public Handler(
+                IFighterRepository fighterRepository,
+                IImageService imageService)
             {
                 _fighterRepository = fighterRepository;
                 _imageService = imageService;
             }
 
-            public async Task<Unit> Handle(DeleteFighter.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                DeleteFighter.Command command,
+                CancellationToken cancellationToken)
             {
                 var fighter = await _fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
 

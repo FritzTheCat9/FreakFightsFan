@@ -35,7 +35,11 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IImageService _imageService;
             private readonly IAuthService _authService;
 
-            public Handler(IUserRepository userRepository, IClock clock, IImageService imageService, IAuthService authService)
+            public Handler(
+                IUserRepository userRepository,
+                IClock clock,
+                IImageService imageService,
+                IAuthService authService)
             {
                 _userRepository = userRepository;
                 _clock = clock;
@@ -43,7 +47,9 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 _authService = authService;
             }
 
-            public async Task<Unit> Handle(UpdateUser.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                UpdateUser.Command command,
+                CancellationToken cancellationToken)
             {
                 var user = await _userRepository.Get(command.Id) ?? throw new MyNotFoundException();
 

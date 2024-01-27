@@ -11,15 +11,15 @@ namespace FreakFightsFan.Api.Data.Configurations
             builder.HasKey(f => f.Id);
 
             builder.HasMany(f => f.Events)
-                .WithOne(e => e.Federation)
-                .HasForeignKey(e => e.FederationId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(e => e.Federation)
+                   .HasForeignKey(e => e.FederationId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(f => f.Image)
-                .WithOne(i => i.Federation)
-                .HasForeignKey<Image>(i => i.FederationId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(i => i.Federation)
+                   .HasForeignKey<Image>(i => i.FederationId)
+                   .IsRequired(false)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

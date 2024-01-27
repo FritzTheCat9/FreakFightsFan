@@ -34,14 +34,15 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 _fightRepository = fightRepository;
             }
 
-            public async Task<PagedList<FightDto>> Handle(GetAllFights.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<FightDto>> Handle(
+                GetAllFights.Query query,
+                CancellationToken cancellationToken)
             {
                 var fightsQuery = _fightRepository.AsQueryable(query.EventId);
 
-                var fightsPagedList = PageListExtensions<FightDto>.Create(
-                    fightsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var fightsPagedList = PageListExtensions<FightDto>.Create(fightsQuery.Select(x => x.ToDto()),
+                                                                          query.Page,
+                                                                          query.PageSize);
 
                 return await Task.FromResult(fightsPagedList);
             }

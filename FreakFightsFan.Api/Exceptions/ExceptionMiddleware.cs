@@ -5,7 +5,9 @@ namespace FreakFightsFan.Api.Exceptions
 {
     public class ExceptionMiddleware : IMiddleware
     {
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync(
+            HttpContext context,
+            RequestDelegate next)
         {
             try
             {
@@ -18,22 +20,36 @@ namespace FreakFightsFan.Api.Exceptions
             }
         }
 
-        private static async Task HandleExceptionAsync(Exception exception, HttpContext context)
+        private static async Task HandleExceptionAsync(
+            Exception exception,
+            HttpContext context)
         {
             var errorHelperModel = exception switch
             {
                 MyValidationException validationException =>
-                    new ErrorHelperModel(StatusCodes.Status400BadRequest, new ValidationErrorResponse(validationException.Type, validationException.Message, validationException.Errors)),
+                    new ErrorHelperModel(
+                        StatusCodes.Status400BadRequest,
+                        new ValidationErrorResponse(validationException.Type, validationException.Message, validationException.Errors)),
                 MyServerException serverException =>
-                    new ErrorHelperModel(StatusCodes.Status500InternalServerError, new ServerErrorResponse(serverException.Type, serverException.Message)),
+                    new ErrorHelperModel(
+                        StatusCodes.Status500InternalServerError,
+                        new ServerErrorResponse(serverException.Type, serverException.Message)),
                 MyUnauthorizedException unauthorizedException =>
-                    new ErrorHelperModel(StatusCodes.Status401Unauthorized, new UnauthorizedErrorResponse(unauthorizedException.Type, unauthorizedException.Message)),
+                    new ErrorHelperModel(
+                        StatusCodes.Status401Unauthorized,
+                        new UnauthorizedErrorResponse(unauthorizedException.Type, unauthorizedException.Message)),
                 MyForbiddenException forbiddenException =>
-                    new ErrorHelperModel(StatusCodes.Status403Forbidden, new ForbiddenErrorResponse(forbiddenException.Type, forbiddenException.Message)),
+                    new ErrorHelperModel(
+                        StatusCodes.Status403Forbidden,
+                        new ForbiddenErrorResponse(forbiddenException.Type, forbiddenException.Message)),
                 MyNotFoundException notFoundException =>
-                    new ErrorHelperModel(StatusCodes.Status404NotFound, new NotFoundErrorResponse(notFoundException.Type, notFoundException.Message)),
+                    new ErrorHelperModel(
+                        StatusCodes.Status404NotFound,
+                        new NotFoundErrorResponse(notFoundException.Type, notFoundException.Message)),
                 _ =>
-                    new ErrorHelperModel(StatusCodes.Status500InternalServerError, new ServerErrorResponse(ExceptionType.Server, "Server Error")),
+                    new ErrorHelperModel(
+                        StatusCodes.Status500InternalServerError,
+                        new ServerErrorResponse(ExceptionType.Server, "Server Error")),
             };
 
             context.Response.StatusCode = errorHelperModel.StatusCode;

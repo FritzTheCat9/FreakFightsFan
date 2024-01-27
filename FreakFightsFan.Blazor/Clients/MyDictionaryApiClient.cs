@@ -25,28 +25,18 @@ namespace FreakFightsFan.Blazor.Clients
         }
 
         public async Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionaries.Query query)
-        {
-            return await _apiClient.Post<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>($"{_url}/all", query);
-        }
+            => await _apiClient.Post<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>($"{_url}/all", query);
 
         public async Task<MyDictionaryDto> GetMyDictionary(int id)
-        {
-            return await _apiClient.Get<MyDictionaryDto>($"{_url}/{id}");
-        }
+            => await _apiClient.Get<MyDictionaryDto>($"{_url}/{id}");
 
         public async Task CreateMyDictionary(CreateMyDictionary.Command command)
-        {
-            await _apiClient.Post(_url, command);
-        }
+            => await _apiClient.Post(_url, command);
 
         public async Task UpdateMyDictionary(UpdateMyDictionary.Command command)
-        {
-            await _apiClient.Put($"{_url}/{command.Id}", command);
-        }
+            => await _apiClient.Put($"{_url}/{command.Id}", command);
 
         public async Task DeleteMyDictionary(int id)
-        {
-            await _apiClient.Delete($"{_url}/{id}");
-        }
+            => await _apiClient.Delete($"{_url}/{id}");
     }
 }

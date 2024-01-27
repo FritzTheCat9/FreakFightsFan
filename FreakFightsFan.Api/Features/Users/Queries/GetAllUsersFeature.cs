@@ -35,17 +35,18 @@ namespace FreakFightsFan.Api.Features.Users.Queries
                 _userRepository = userRepository;
             }
 
-            public async Task<PagedList<UserDto>> Handle(GetAllUsers.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<UserDto>> Handle(
+                GetAllUsers.Query query,
+                CancellationToken cancellationToken)
             {
                 var usersQuery = _userRepository.AsQueryable();
 
                 usersQuery = usersQuery.FilterMyUsers(query);
                 usersQuery = usersQuery.SortMyUsers(query);
 
-                var usersPagedList = PageListExtensions<UserDto>.Create(
-                    usersQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var usersPagedList = PageListExtensions<UserDto>.Create(usersQuery.Select(x => x.ToDto()),
+                                                                        query.Page,
+                                                                        query.PageSize);
 
                 return await Task.FromResult(usersPagedList);
             }

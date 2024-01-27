@@ -37,7 +37,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 _myDictionaryRepository = myDictionaryRepository;
             }
 
-            public async Task<PagedList<MyDictionaryItemDto>> Handle(GetAllMyDictionaryItems.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<MyDictionaryItemDto>> Handle(
+                GetAllMyDictionaryItems.Query query,
+                CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(query.DictionaryId) ?? throw new MyNotFoundException();
                 
@@ -46,10 +48,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
                 dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
-                    dictionaryItemsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(dictionaryItemsQuery.Select(x => x.ToDto()),
+                                                                                              query.Page,
+                                                                                              query.PageSize);
 
                 return dictionaryItemsPagedList;
             }

@@ -25,7 +25,9 @@ namespace FreakFightsFan.Blazor.Clients
         private readonly string _authScheme = "Bearer";
         private readonly string _languageHeader = "Accept-Language";
 
-        public ApiClient(HttpClient client, IJwtProvider jwtProvider)
+        public ApiClient(
+            HttpClient client,
+            IJwtProvider jwtProvider)
         {
             _client = client;
             _jwtProvider = jwtProvider;

@@ -35,7 +35,9 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
             };
         }
 
-        public static IQueryable<Image> SortImages(this IQueryable<Image> images, GetAllImages.Query query)
+        public static IQueryable<Image> SortImages(
+            this IQueryable<Image> images,
+            GetAllImages.Query query)
         {
             return query.SortOrder switch
             {

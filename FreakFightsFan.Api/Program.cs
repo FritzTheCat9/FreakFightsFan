@@ -10,15 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwagger();
-builder.Services.AddCORS(builder.Configuration);
-builder.Services.AddMediatr();
-builder.Services.AddDatabase(builder.Configuration);
-builder.Services.AddAuth(builder.Configuration);
-builder.Services.AddServices(builder.Configuration);
-builder.Services.AddEmails(builder.Configuration);
-builder.Services.AddExceptionMiddleware();
-builder.Services.AddMyLocalization();
+builder.Services.AddSwagger()
+                .AddCORS(builder.Configuration)
+                .AddMediatr()
+                .AddDatabase(builder.Configuration)
+                .AddAuth(builder.Configuration)
+                .AddServices(builder.Configuration)
+                .AddEmails(builder.Configuration)
+                .AddExceptionMiddleware()
+                .AddMyLocalization();
 
 var app = builder.Build();
 
@@ -30,12 +30,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseMyLocalization();
-app.UseExceptionMiddleware();
-app.UseCORS();
-app.UseAuth();
+app.UseMyLocalization()
+   .UseExceptionMiddleware()
+   .UseCORS()
+   .UseAuth()
+   .AddEndpoints();
+
 app.UseFileServer();
-app.AddEndpoints();
 
 app.Run();
 

@@ -28,37 +28,30 @@ namespace FreakFightsFan.Api.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public IQueryable<User> AsQueryable() =>
-            _dbContext.Users
-                .AsQueryable();
+        public IQueryable<User> AsQueryable() 
+            => _dbContext.Users.AsQueryable();
 
-        public async Task<IEnumerable<User>> GetAll() =>
-            await _dbContext.Users
-                .ToListAsync();
+        public async Task<IEnumerable<User>> GetAll() 
+            => await _dbContext.Users.ToListAsync();
 
-        public async Task<User> Get(int id) =>
-            await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<User> Get(int id) 
+            => await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-        public async Task<User> GetByEmail(string email) =>
-            await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Email == email);
+        public async Task<User> GetByEmail(string email) 
+            => await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
 
-        public async Task<User> GetByUserName(string userName) =>
-            await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.UserName == userName);
+        public async Task<User> GetByUserName(string userName) 
+            => await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == userName);
 
-        public async Task<bool> EmailExists(string email) =>
-            await _dbContext.Users
-                .AnyAsync(x => x.Email == email);
+        public async Task<bool> EmailExists(string email) 
+            => await _dbContext.Users.AnyAsync(x => x.Email == email);
 
-        public async Task<bool> UserNameExists(string userName) =>
-            await _dbContext.Users
-                .AnyAsync(x => x.UserName == userName);
+        public async Task<bool> UserNameExists(string userName) 
+            => await _dbContext.Users.AnyAsync(x => x.UserName == userName);
 
-        public async Task<bool> IsTokenAssignedToUser(string email, string token) =>
-            await _dbContext.Users
-                .AnyAsync(x => x.Email == email && x.EmailConfirmationToken == token);
+        public async Task<bool> IsTokenAssignedToUser(string email, string token) 
+            => await _dbContext.Users.AnyAsync(x => x.Email == email
+                                                    && x.EmailConfirmationToken == token);
 
         public async Task<int> Create(User user)
         {

@@ -35,17 +35,18 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
                 _myDictionaryRepository = myDictionaryRepository;
             }
 
-            public async Task<PagedList<MyDictionaryDto>> Handle(GetAllMyDictionaries.Query query, CancellationToken cancellationToken)
+            public async Task<PagedList<MyDictionaryDto>> Handle(
+                GetAllMyDictionaries.Query query,
+                CancellationToken cancellationToken)
             {
                 var dictionariesQuery = _myDictionaryRepository.AsQueryable();
 
                 dictionariesQuery = dictionariesQuery.FilterMyDictionaries(query);
                 dictionariesQuery = dictionariesQuery.SortMyDictionaries(query);
 
-                var dictionariesPagedList = PageListExtensions<MyDictionaryDto>.Create(
-                    dictionariesQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+                var dictionariesPagedList = PageListExtensions<MyDictionaryDto>.Create(dictionariesQuery.Select(x => x.ToDto()),
+                                                                                       query.Page,
+                                                                                       query.PageSize);
 
                 return await Task.FromResult(dictionariesPagedList);
             }

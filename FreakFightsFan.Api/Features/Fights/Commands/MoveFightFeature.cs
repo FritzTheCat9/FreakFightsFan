@@ -33,7 +33,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly IFightRepository _fightRepository;
             private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IFightRepository fightRepository, IStringLocalizer<ApiValidationMessage> localizer)
+            public Handler(
+                IFightRepository fightRepository,
+                IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
                 _localizer = localizer;
@@ -45,21 +47,25 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 var eventFights = _fightRepository.AsQueryable(fight.EventId);
                 var orderNumberToMove = fight.OrderNumber;
 
-                if (fight.OrderNumber >= eventFights.Count() && command.Direction == MoveDirection.Upwards)
+                if (fight.OrderNumber >= eventFights.Count()
+                    && command.Direction == MoveDirection.Upwards)
                 {
                     throw new MyValidationException(nameof(MoveFight.Command.Direction),
                         _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheTop)]);
                 }
-                else if (fight.OrderNumber <= 1 && command.Direction == MoveDirection.Downwards)
+                else if (fight.OrderNumber <= 1
+                    && command.Direction == MoveDirection.Downwards)
                 {
                     throw new MyValidationException(nameof(MoveFight.Command.Direction),
                         _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheBottom)]);
                 }
-                else if (fight.OrderNumber < eventFights.Count() && command.Direction == MoveDirection.Upwards)
+                else if (fight.OrderNumber < eventFights.Count()
+                    && command.Direction == MoveDirection.Upwards)
                 {
                     orderNumberToMove += 1;
                 }
-                else if (fight.OrderNumber > 1 && command.Direction == MoveDirection.Downwards)
+                else if (fight.OrderNumber > 1
+                    && command.Direction == MoveDirection.Downwards)
                 {
                     orderNumberToMove -= 1;
                 }

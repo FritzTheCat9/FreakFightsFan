@@ -30,13 +30,17 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IUserRepository _userRepository;
             private readonly IClock _clock;
 
-            public Handler(IUserRepository userRepository, IClock clock)
+            public Handler(
+                IUserRepository userRepository,
+                IClock clock)
             {
                 _userRepository = userRepository;
                 _clock = clock;
             }
 
-            public async Task<Unit> Handle(PromoteUser.Command command, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(
+                PromoteUser.Command command,
+                CancellationToken cancellationToken)
             {
                 var user = await _userRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
