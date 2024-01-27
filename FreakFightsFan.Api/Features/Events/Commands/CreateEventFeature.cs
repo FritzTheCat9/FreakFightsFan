@@ -1,12 +1,14 @@
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Events.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Events.Commands
 {
@@ -35,20 +37,22 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             private readonly IClock _clock;
             private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
             private readonly IMyDictionaryService _dictionaryService;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
             public Handler(IEventRepository eventRepository, IFederationRepository federationRepository, IClock clock,
-                IMyDictionaryItemRepository dictionaryItemRepository, IMyDictionaryService dictionaryService)
+                IMyDictionaryItemRepository dictionaryItemRepository, IMyDictionaryService dictionaryService, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _eventRepository = eventRepository;
                 _federationRepository = federationRepository;
                 _clock = clock;
                 _dictionaryItemRepository = dictionaryItemRepository;
                 _dictionaryService = dictionaryService;
+                _localizer = localizer;
             }
 
             public async Task<int> Handle(CreateEvent.Command command, CancellationToken cancellationToken)
             {
-                await ValidateCommand(command);
+                await ValidateCommand(command, _localizer);
 
                 var myEvent = new Event
                 {
@@ -65,7 +69,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 return await _eventRepository.Create(myEvent);
             }
 
-            private async Task ValidateCommand(CreateEvent.Command command)
+            private async Task ValidateCommand(CreateEvent.Command command, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var federation = await _federationRepository.Get(command.FederationId) ?? throw new MyNotFoundException();
 
@@ -73,14 +77,14 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 {
                     var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
                     if (!isCityValid)
-                        throw new MyValidationException($"{nameof(command.CityId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.City}");
+                        throw new MyValidationException(nameof(CreateEvent.Command.CityId), localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.City]);
                 }
 
                 if (command.HallId is not null)
                 {
                     var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
                     if (!isHallValid)
-                        throw new MyValidationException($"{nameof(command.HallId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.Hall}");
+                        throw new MyValidationException(nameof(CreateEvent.Command.HallId), localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.Hall]);
                 }
             }
         }

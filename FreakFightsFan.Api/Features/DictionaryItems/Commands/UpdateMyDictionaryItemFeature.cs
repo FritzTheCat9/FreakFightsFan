@@ -1,9 +1,11 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 {
@@ -30,11 +32,13 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
         {
             private readonly IMyDictionaryItemRepository _myDictionaryItemRepository;
             private readonly IClock _clock;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository, IClock clock)
+            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryItemRepository = myDictionaryItemRepository;
                 _clock = clock;
+                _localizer = localizer;
             }
 
             public async Task<Unit> Handle(UpdateMyDictionaryItem.Command command, CancellationToken cancellationToken)
@@ -43,7 +47,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 
                 var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExistsInOtherDictionaryItemsInThisDictionary(command.Code, dictionaryItem.DictionaryId, command.Id);
                 if (codeExists)
-                    throw new MyValidationException(nameof(UpdateMyDictionaryItem.Command.Code), $"{nameof(UpdateMyDictionaryItem.Command.Code)} must be unique");
+                    throw new MyValidationException(nameof(UpdateMyDictionaryItem.Command.Code), _localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
 
                 dictionaryItem.Name = command.Name;
                 dictionaryItem.Code = command.Code;

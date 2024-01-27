@@ -1,6 +1,7 @@
 ﻿using FreakFightsFan.Blazor.Auth;
 using FreakFightsFan.Shared.Exceptions;
 using Newtonsoft.Json;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -21,6 +22,8 @@ namespace FreakFightsFan.Blazor.Clients
         private readonly HttpClient _client;
         private readonly IJwtProvider _jwtProvider;
         private readonly string _baseUrl;
+        private readonly string _authScheme = "Bearer";
+        private readonly string _languageHeader = "Accept-Language";
 
         public ApiClient(HttpClient client, IJwtProvider jwtProvider)
         {
@@ -31,7 +34,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<TResponse> Get<TResponse>(string url)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.GetAsync($"{_baseUrl}{url}");
 
             if (!response.IsSuccessStatusCode)
@@ -43,7 +46,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Post<TRequest>(string url, TRequest tRequest)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.PostAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
@@ -52,7 +55,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task<TResponse> Post<TRequest, TResponse>(string url, TRequest tRequest)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.PostAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
@@ -64,7 +67,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Put<TRequest>(string url, TRequest tRequest)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.PutAsJsonAsync($"{_baseUrl}{url}", tRequest);
 
             if (!response.IsSuccessStatusCode)
@@ -73,7 +76,7 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Put(string url)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.PutAsync($"{_baseUrl}{url}", null);
 
             if (!response.IsSuccessStatusCode)
@@ -82,17 +85,20 @@ namespace FreakFightsFan.Blazor.Clients
 
         public async Task Delete(string url)
         {
-            await AddJwtAccessTokenToHeader();
+            await AddHeaderValues();
             var response = await _client.DeleteAsync($"{_baseUrl}{url}");
 
             if (!response.IsSuccessStatusCode)
                 await HandleErrors(response);
         }
 
-        private async Task AddJwtAccessTokenToHeader()
+        private async Task AddHeaderValues()
         {
             var token = await _jwtProvider.GetJwtDto();
-            _client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
+            _client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue(_authScheme, token.AccessToken) : null;
+
+            var currentCultureName = CultureInfo.CurrentCulture.Name;
+            _client.DefaultRequestHeaders.Add(_languageHeader, currentCultureName);
         }
 
         private static async Task HandleErrors(HttpResponseMessage response)

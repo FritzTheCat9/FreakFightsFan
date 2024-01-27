@@ -1,12 +1,13 @@
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
 using FreakFightsFan.Shared.Features.Fights.Commands;
-using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
 {
@@ -36,22 +37,24 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly ITeamService _teamService;
             private readonly IMyDictionaryService _dictionaryService;
             private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
             public Handler(IFightRepository fightRepository, IClock clock, ITeamService teamService,
-                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository)
+                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
                 _teamService = teamService;
                 _dictionaryService = dictionaryService;
                 _dictionaryItemRepository = dictionaryItemRepository;
+                _localizer = localizer;
             }
 
             public async Task<Unit> Handle(UpdateFight.Command command, CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                await ValidateCommand(command);
+                await ValidateCommand(command, _localizer);
 
                 var teamsToAdd = await _teamService.CreateFightTeams(command.Teams);
                 var teamsToRemove = fight.Teams.Select(x => x.Id).ToList();
@@ -66,13 +69,14 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(UpdateFight.Command command)
+            private async Task ValidateCommand(UpdateFight.Command command, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 if (command.TypeId is not null)
                 {
                     var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
                     if (!isTypeValid)
-                        throw new MyValidationException($"{nameof(command.TypeId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
+                        throw new MyValidationException(nameof(UpdateFight.Command.TypeId),
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.FightType]);
                 }
             }
         }

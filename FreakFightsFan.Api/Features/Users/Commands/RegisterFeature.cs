@@ -4,9 +4,11 @@ using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Emails.Templates;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Users.Commands
 {
@@ -35,15 +37,17 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IUserRepository _userRepository;
             private readonly IEmailService _emailService;
             private readonly IEmailConfirmationService _emailConfirmationService;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IClock clock, IPasswordService passwordService, IUserRepository userRepository, 
-                IEmailService emailService, IEmailConfirmationService emailConfirmationService)
+            public Handler(IClock clock, IPasswordService passwordService, IUserRepository userRepository,
+                IEmailService emailService, IEmailConfirmationService emailConfirmationService, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _clock = clock;
                 _passwordService = passwordService;
                 _userRepository = userRepository;
                 _emailService = emailService;
                 _emailConfirmationService = emailConfirmationService;
+                _localizer = localizer;
             }
 
             public async Task<int> Handle(Register.Command command, CancellationToken cancellationToken)
@@ -79,11 +83,13 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             {
                 var emailExists = await _userRepository.EmailExists(command.Email);
                 if (emailExists)
-                    throw new MyValidationException($"{nameof(command.Email)}", $"{nameof(command.Email)} is already taken");
+                    throw new MyValidationException(nameof(Register.Command.Email),
+                        _localizer[nameof(ApiValidationMessageString.EmailIsAlreadyTaken)]);
 
                 var userNameExists = await _userRepository.UserNameExists(command.UserName);
                 if (userNameExists)
-                    throw new MyValidationException($"{nameof(command.UserName)}", $"{nameof(command.UserName)} is already taken");
+                    throw new MyValidationException(nameof(Register.Command.UserName),
+                        _localizer[nameof(ApiValidationMessageString.UserNameIsAlreadyTaken)]);
             }
         }
     }

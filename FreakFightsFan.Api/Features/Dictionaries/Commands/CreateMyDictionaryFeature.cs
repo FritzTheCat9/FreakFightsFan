@@ -1,10 +1,12 @@
-﻿    using FreakFightsFan.Api.Abstractions;
+﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
 using MediatR;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Dictionaries.Commands;
+using FreakFightsFan.Api.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
@@ -18,7 +20,10 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 CancellationToken cancellationToken) =>
             {
                 int dictionaryId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
+                return Results.CreatedAtRoute("GetMyDictionary", new
+                {
+                    id = dictionaryId
+                });
             })
                 .WithTags("MyDictionaries")
                 .RequireAuthorization(Policy.Admin);
@@ -30,16 +35,18 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
             private readonly IClock _clock;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock)
+            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryRepository = myDictionaryRepository;
                 _clock = clock;
+                _localizer = localizer;
             }
 
             public async Task<int> Handle(CreateMyDictionary.Command command, CancellationToken cancellationToken)
             {
-                await ValidateCommand(command);
+                await ValidateCommand(command, _localizer);
 
                 var dictionary = new MyDictionary
                 {
@@ -53,11 +60,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return await _myDictionaryRepository.Create(dictionary);
             }
 
-            private async Task ValidateCommand(CreateMyDictionary.Command command)
+            private async Task ValidateCommand(CreateMyDictionary.Command command, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
                 if (codeExists)
-                    throw new MyValidationException(nameof(CreateMyDictionary.Command.Code), $"{nameof(CreateMyDictionary.Command.Code)} must be unique");
+                    throw new MyValidationException(nameof(CreateMyDictionary.Command.Code), localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

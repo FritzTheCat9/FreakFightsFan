@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using FreakFightsFan.Shared.Localization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Globalization;
 

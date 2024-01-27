@@ -1,9 +1,11 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
 {
@@ -29,10 +31,12 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
         public class Handler : IRequestHandler<MoveFight.Command, Unit>
         {
             private readonly IFightRepository _fightRepository;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IFightRepository fightRepository)
+            public Handler(IFightRepository fightRepository, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
+                _localizer = localizer;
             }
 
             public async Task<Unit> Handle(MoveFight.Command command, CancellationToken cancellationToken)
@@ -43,11 +47,13 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
                 if (fight.OrderNumber >= eventFights.Count() && command.Direction == MoveDirection.Upwards)
                 {
-                    throw new MyValidationException($"{nameof(command.Direction)}", $"Invalid {nameof(command.Direction)} - Fight is already on top");
+                    throw new MyValidationException(nameof(MoveFight.Command.Direction),
+                        _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheTop)]);
                 }
                 else if (fight.OrderNumber <= 1 && command.Direction == MoveDirection.Downwards)
                 {
-                    throw new MyValidationException($"{nameof(command.Direction)}", $"Invalid {nameof(command.Direction)} - Fight is already on bottom");
+                    throw new MyValidationException(nameof(MoveFight.Command.Direction),
+                        _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheBottom)]);
                 }
                 else if (fight.OrderNumber < eventFights.Count() && command.Direction == MoveDirection.Upwards)
                 {

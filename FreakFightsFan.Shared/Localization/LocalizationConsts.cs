@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace FreakFightsFan.Blazor.Localization
+namespace FreakFightsFan.Shared.Localization
 {
     public static class LocalizationConsts
     {

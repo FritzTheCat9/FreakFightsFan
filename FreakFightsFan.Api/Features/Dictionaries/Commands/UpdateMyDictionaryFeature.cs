@@ -1,9 +1,11 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
@@ -30,18 +32,20 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
             private readonly IClock _clock;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock)
+            public Handler(IMyDictionaryRepository myDictionaryRepository, IClock clock, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _myDictionaryRepository = myDictionaryRepository;
                 _clock = clock;
+                _localizer = localizer;
             }
 
             public async Task<Unit> Handle(UpdateMyDictionary.Command command, CancellationToken cancellationToken)
             {
                 var dictionary = await _myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                await ValidateCommand(command);
+                await ValidateCommand(command, _localizer);
 
                 dictionary.Name = command.Name;
                 dictionary.Code = command.Code;
@@ -51,11 +55,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 return Unit.Value;
             }
 
-            private async Task ValidateCommand(UpdateMyDictionary.Command command)
+            private async Task ValidateCommand(UpdateMyDictionary.Command command, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
                 if (codeExists)
-                    throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code), $"{nameof(UpdateMyDictionary.Command.Code)} must be unique");
+                    throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code), localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

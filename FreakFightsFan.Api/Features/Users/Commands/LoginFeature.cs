@@ -1,9 +1,11 @@
 ﻿using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
 using FreakFightsFan.Shared.Features.Users.Responses;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Users.Commands
 {
@@ -29,24 +31,29 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IPasswordService _passwordService;
             private readonly IUserRepository _userRepository;
             private readonly IAuthenticator _authenticator;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IPasswordService passwordService, IUserRepository userRepository, IAuthenticator authenticator)
+            public Handler(IPasswordService passwordService, IUserRepository userRepository, IAuthenticator authenticator, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _passwordService = passwordService;
                 _userRepository = userRepository;
                 _authenticator = authenticator;
+                _localizer = localizer;
             }
 
             public async Task<JwtDto> Handle(Login.Command command, CancellationToken cancellationToken)
             {
-                var user = await _userRepository.GetByEmail(command.Email) ?? 
-                    throw new MyValidationException($"{nameof(command.Email)}", $"User with given {nameof(command.Email)} does not exist");
+                var user = await _userRepository.GetByEmail(command.Email) ??
+                    throw new MyValidationException(nameof(Login.Command.Email),
+                        _localizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
 
                 if (!user.EmailConfirmed)
-                    throw new MyValidationException($"{nameof(command.Email)}", $"{nameof(command.Email)} is not confirmed");
+                    throw new MyValidationException(nameof(Login.Command.Email),
+                        _localizer[nameof(ApiValidationMessageString.EmailIsNotConfirmed)]);
 
                 if (!_passwordService.Validate(command.Password, user.Password))
-                    throw new MyValidationException($"{nameof(command.Password)}", $"Incorrect {nameof(command.Password)}");
+                    throw new MyValidationException(nameof(Login.Command.Password),
+                        _localizer[nameof(ApiValidationMessageString.PasswordIsIncorrect)]);
 
                 var jwt = _authenticator.CreateToken(user);
 

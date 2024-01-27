@@ -1,6 +1,7 @@
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Helpers;
@@ -8,6 +9,7 @@ using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Fights.Commands
 {
@@ -37,9 +39,10 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             private readonly ITeamService _teamService;
             private readonly IMyDictionaryService _dictionaryService;
             private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
             public Handler(IFightRepository fightRepository, IClock clock, IEventRepository eventRepository, ITeamService teamService, 
-                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository)
+                IMyDictionaryService dictionaryService, IMyDictionaryItemRepository dictionaryItemRepository, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _fightRepository = fightRepository;
                 _clock = clock;
@@ -47,11 +50,12 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 _teamService = teamService;
                 _dictionaryService = dictionaryService;
                 _dictionaryItemRepository = dictionaryItemRepository;
+                _localizer = localizer;
             }
 
             public async Task<int> Handle(CreateFight.Command command, CancellationToken cancellationToken)
             {
-                await ValidateCommand(command);
+                await ValidateCommand(command, _localizer);
 
                 var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
                 var teamsInFight = await _teamService.CreateFightTeams(command.Teams);
@@ -72,18 +76,20 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 return await _fightRepository.Create(fight);
             }
 
-            private async Task ValidateCommand(CreateFight.Command command)
+            private async Task ValidateCommand(CreateFight.Command command, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
 
                 if (myEvent.Fights.Count >= FightsConsts.MaxFightsInOneEvent)
-                    throw new MyValidationException($"{nameof(command.EventId)}", $"You cannot add more than {FightsConsts.MaxFightsInOneEvent} fights in one event");
+                    throw new MyValidationException(nameof(CreateFight.Command.EventId), 
+                        localizer[nameof(ApiValidationMessageString.EventIdMaxFightsInOneEvent), FightsConsts.MaxFightsInOneEvent]);
 
                 if (command.TypeId is not null)
                 {
                     var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
                     if (!isTypeValid)
-                        throw new MyValidationException($"{nameof(command.TypeId)}", $"Dictionary item should be chosen from dictionary with code: {DictionaryCode.FightType}");
+                        throw new MyValidationException(nameof(CreateFight.Command.TypeId),
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.FightType]);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using FreakFightsFan.Shared.Localization;
 
 namespace FreakFightsFan.Blazor.Localization
 {

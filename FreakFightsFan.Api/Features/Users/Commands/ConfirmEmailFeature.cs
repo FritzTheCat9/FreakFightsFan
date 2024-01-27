@@ -1,9 +1,11 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Emails.Templates;
+using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Api.Features.Users.Commands
 {
@@ -27,24 +29,29 @@ namespace FreakFightsFan.Api.Features.Users.Commands
         {
             private readonly IUserRepository _userRepository;
             private readonly IEmailService _emailService;
+            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
 
-            public Handler(IUserRepository userRepository, IEmailService emailService)
+            public Handler(IUserRepository userRepository, IEmailService emailService, IStringLocalizer<ApiValidationMessage> localizer)
             {
                 _userRepository = userRepository;
                 _emailService = emailService;
+                _localizer = localizer;
             }
 
             public async Task<bool> Handle(ConfirmEmail.Command command, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
-                    throw new MyValidationException($"{nameof(command.Email)}", $"User with given {nameof(command.Email)} does not exist");
+                    throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
+                        _localizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
 
                 if (user.EmailConfirmed)
-                    throw new MyValidationException($"{nameof(command.Email)}", $"Provided {nameof(command.Email)} has already been confirmed");
+                    throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
+                        _localizer[nameof(ApiValidationMessageString.EmailAlreadyConfirmed)]);
 
                 var isTokenAssignedToUser = await _userRepository.IsTokenAssignedToUser(user.Email, command.Token);
                 if (!isTokenAssignedToUser)
-                    throw new MyValidationException($"{nameof(command.Token)}", $"Provided {nameof(command.Token)} is not assigned to this user");
+                    throw new MyValidationException(nameof(ConfirmEmail.Command.Token),
+                        _localizer[nameof(ApiValidationMessageString.TokenIsNotAssignedToThisUser)]);
 
                 user.EmailConfirmed = true;
                 user.EmailConfirmationToken = null;
