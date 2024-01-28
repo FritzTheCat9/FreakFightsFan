@@ -7,6 +7,7 @@ using FreakFightsFan.Blazor.Extensions;
 using FreakFightsFan.Blazor.Clients;
 using FreakFightsFan.Blazor.Exceptions;
 using FreakFightsFan.Blazor.Localization;
+using FreakFightsFan.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
