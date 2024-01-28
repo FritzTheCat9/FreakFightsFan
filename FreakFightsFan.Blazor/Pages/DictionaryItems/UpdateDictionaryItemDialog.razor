@@ -2,20 +2,28 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IStringLocalizer<App> Localizer
 
-<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label="@Localizer[nameof(AppStrings.Name)]" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.Name)]"
+                            @bind-Value="Command.Name"
+                            For="() => Command.Name" />
             <FritzValidationMessage For="() => Command.Name" />
 
-            <FritzTextField Label="@Localizer[nameof(AppStrings.Code)]" @bind-Value="Command.Code" For="() => Command.Code" />
+            <FritzTextField Label="@Localizer[nameof(AppStrings.Code)]"
+                            @bind-Value="Command.Code"
+                            For="() => Command.Code" />
             <FritzValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Update)]</MudButton>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
+                @Localizer[nameof(AppStrings.Update)]
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

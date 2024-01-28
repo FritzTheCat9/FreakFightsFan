@@ -1,29 +1,46 @@
 ﻿@inject IExceptionHandler ExceptionHandler
 
-<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label="Name" @bind-Value="Command.Name" For="() => Command.Name" />
+            <FritzTextField Label="Name"
+                            @bind-Value="Command.Name"
+                            For="() => Command.Name" />
             <FritzValidationMessage For="() => Command.Name" />
 
-            <FritzDatePicker Label="Date" @bind-Date="Command.Date" For="() => Command.Date" />
+            <FritzDatePicker Label="Date"
+                             @bind-Date="Command.Date"
+                             For="() => Command.Date" />
             <FritzValidationMessage For="() => Command.Date" />
 
-            <FritzDictionaryItemPicker Label="City" @bind-Value="Command.DictionaryItemId" For="() => Command.DictionaryItemId"
-                                       DictionaryCode="@DictionaryCode.City" DictionaryItemDto="City" OnDictionaryItemDtoChanged="(item) => City = item" />
+            <FritzDictionaryItemPicker Label="City"
+                                       @bind-Value="Command.DictionaryItemId"
+                                       For="() => Command.DictionaryItemId"
+                                       DictionaryCode="@DictionaryCode.City"
+                                       DictionaryItemDto="City"
+                                       OnDictionaryItemDtoChanged="(item) => City = item" />
             <FritzValidationMessage For="() => Command.DictionaryItemId" />
 
-            <FritzFighterPicker Label="Fighter" @bind-Value="Command.Fighter" For="() => Command.Fighter" />
+            <FritzFighterPicker Label="Fighter"
+                                @bind-Value="Command.Fighter"
+                                For="() => Command.Fighter" />
             <FritzValidationMessage For="() => Command.Fighter" />
 
-            <FritzSelect T="int" Label="Number" @bind-Value="Command.Number" For="() => Command.Number" ItemsToSelect="[1, 2, 3, 4, 5]" />
+            <FritzSelect T="int" Label="Number"
+                         @bind-Value="Command.Number"
+                         For="() => Command.Number"
+                         ItemsToSelect="[1, 2, 3, 4, 5]" />
             <FritzValidationMessage For="() => Command.Number" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Create</MudButton>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
+                Create
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

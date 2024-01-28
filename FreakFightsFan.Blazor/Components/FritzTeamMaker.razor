@@ -9,33 +9,49 @@
               OnlyValidateIfDirty="true"
               style="display: none;" />
 
-<MudGrid Spacing="1" Justify="Justify.FlexStart">
+<MudGrid Spacing="1"
+         Justify="Justify.FlexStart">
     <MudItem xs="10">
-        <FritzFighterPicker @ref="addFighterField" Label="@Localizer[nameof(AppStrings.Fighter)]" @bind-Value="_fighter" Teams="_teams" />
-
+        <FritzFighterPicker @ref="addFighterField"
+                            Label="@Localizer[nameof(AppStrings.Fighter)]"
+                            @bind-Value="_fighter"
+                            Teams="_teams" />
         <FritzValidationMessage For="ForTeams" />
         @if (ForEventId is not null)
         {
             <FritzValidationMessage For="ForEventId" />
         }
     </MudItem>
-    <MudItem xs="2" Class="d-flex">
-        <MudButton OnClick="AddFighterToSelectedTeam" Class="align-self-end" Color="Color.Primary" Variant="Variant.Filled">@Localizer[nameof(AppStrings.Add)]</MudButton>
+    <MudItem xs="2"
+             Class="d-flex">
+        <MudButton OnClick="AddFighterToSelectedTeam"
+                   Class="align-self-end"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled">
+            @Localizer[nameof(AppStrings.Add)]
+        </MudButton>
     </MudItem>
     @foreach (var team in _teams)
     {
-        <MudItem xs="12" md="6" @onclick="() => SelectTeam(team.Number)" Style="cursor: pointer;">
-            <MudText Typo="Typo.h6" Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default" GutterBottom="true">
+        <MudItem xs="12"
+                 md="6"
+                 @onclick="() => SelectTeam(team.Number)"
+                 Style="cursor: pointer;">
+            <MudText Typo="Typo.h6"
+                     Color="(_selectedTeam == team.Number) ? Color.Primary : Color.Default"
+                     GutterBottom="true">
                 @Localizer[nameof(AppStrings.Team)] @($"{team.Number + 1}")
             </MudText>
             @if (team.Fighters.Any())
             {
-                <MudPaper Width="100%" Class="@((_selectedTeam == team.Number) ? "mud-theme-primary" : "")">
+                <MudPaper Width="100%"
+                          Class="@((_selectedTeam == team.Number) ? "mud-theme-primary" : "")">
                     <MudList Style="cursor: auto;">
                         @foreach (var fighter in team.Fighters)
                         {
                             <MudListItem>
-                                <FighterListItem FighterHelperModel="@fighter" OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
+                                <FighterListItem FighterHelperModel="@fighter"
+                                                 OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
                             </MudListItem>
                         }
                     </MudList>

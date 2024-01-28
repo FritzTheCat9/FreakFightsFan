@@ -7,33 +7,71 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<App> Localizer
 
-<PageTitle>@Localizer[nameof(AppStrings.Events)]</PageTitle>
+<PageTitle>
+    @Localizer[nameof(AppStrings.Events)]
+</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<EventDto>>>(ServerReload)"
-          Dense="true" Hover="true" @ref="table" Context="myEvent">
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          Context="myEvent">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Events)]</MudText>
+        <MudText Typo="Typo.h6">
+            @Localizer[nameof(AppStrings.Events)]
+        </MudText>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateEvent()"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Size="Size.Small"
+                           OnClick="() => CreateEvent()" />
         </AuthorizeView>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
+        <FritzSearchTextField @bind-Value="searchString"
+                              OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortLabel="name" T="EventDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="date" T="EventDto">@Localizer[nameof(AppStrings.Date)]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="city" T="EventDto">@Localizer[nameof(AppStrings.City)]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="hall" T="EventDto">@Localizer[nameof(AppStrings.Hall)]</MudTableSortLabel></MudTh>
-        <MudTh>@Localizer[nameof(AppStrings.Fights)]</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T="EventDto">
+                @Localizer[nameof(AppStrings.Name)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="date"
+                               T="EventDto">
+                @Localizer[nameof(AppStrings.Date)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="city"
+                               T="EventDto">
+                @Localizer[nameof(AppStrings.City)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="hall"
+                               T="EventDto">
+                @Localizer[nameof(AppStrings.Hall)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Fights)]
+        </MudTh>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
+            <MudTh>
+                @Localizer[nameof(AppStrings.Actions)]
+            </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">@myEvent.Name</MudTd>
-        <MudTd DataLabel="Date">@myEvent.Date.ToString("dd/MM/yyyy")</MudTd>
+        <MudTd DataLabel="Name">
+            @myEvent.Name
+        </MudTd>
+        <MudTd DataLabel="Date">
+            @myEvent.Date.ToString("dd/MM/yyyy")
+        </MudTd>
         <MudTd DataLabel="City">
             <DisplayDictionaryItemDto DictionaryItemDto="myEvent.City" />
         </MudTd>
@@ -41,23 +79,34 @@
             <DisplayDictionaryItemDto DictionaryItemDto="myEvent.Hall" />
         </MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="() => RedirectToFightsPage(myEvent.Id)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.List"
+                           Size="Size.Small"
+                           OnClick="() => RedirectToFightsPage(myEvent.Id)" />
         </MudTd>
         <AuthorizeView Policy=@Policy.Admin>
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateEvent(myEvent)"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteEvent(myEvent.Id)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small"
+                               OnClick="() => UpdateEvent(myEvent)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Size="Size.Small"
+                               OnClick="() => DeleteEvent(myEvent.Id)" />
             </MudTd>
         </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]"
+                       InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
@@ -81,14 +130,14 @@
     private async Task<TableData<EventDto>> ServerReload(TableState state)
     {
         var query = new GetAllEvents.Query
-        {
-            Page = state.Page + 1,
-            PageSize = state.PageSize,
-            SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = searchString,
-            FederationId = FederationId,
-        };
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+                FederationId = FederationId,
+            };
 
         try
         {
@@ -101,10 +150,10 @@
         }
 
         return new()
-        {
-            TotalItems = MyEvents.TotalCount,
-            Items = MyEvents.Items
-        };
+            {
+                TotalItems = MyEvents.TotalCount,
+                Items = MyEvents.Items
+            };
     }
 
     private void RedirectToFightsPage(int eventId)
@@ -137,13 +186,13 @@
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateEventDialog>();
         parameters.Add(x => x.Command, new()
-        {
-            Id = eventDto.Id,
-            Name = eventDto.Name,
-            Date = eventDto.Date,
-            CityId = eventDto.City?.Id,
-            HallId = eventDto.Hall?.Id
-        });
+            {
+                Id = eventDto.Id,
+                Name = eventDto.Name,
+                Date = eventDto.Date,
+                CityId = eventDto.City?.Id,
+                HallId = eventDto.Hall?.Id
+            });
         parameters.Add(x => x.City, eventDto.City);
         parameters.Add(x => x.Hall, eventDto.Hall);
 
@@ -158,13 +207,13 @@
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateEventDialog>();
         parameters.Add(x => x.Command, new()
-        {
-            Name = "",
-            Date = DateTime.UtcNow,
-            FederationId = FederationId,
-            CityId = null,
-            HallId = null,
-        });
+            {
+                Name = "",
+                Date = DateTime.UtcNow,
+                FederationId = FederationId,
+                CityId = null,
+                HallId = null,
+            });
 
         var dialog = await DialogService.ShowAsync<CreateEventDialog>(Localizer[nameof(AppStrings.CreateEvent)], parameters, options);
         var result = await dialog.Result;

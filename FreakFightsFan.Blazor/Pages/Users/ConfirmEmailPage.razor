@@ -7,16 +7,23 @@
 
 @if (!success)
 {
-    <MudText>@Localizer[nameof(AppStrings.ConfirmEmailInfo)]</MudText>
+    <MudText>
+        @Localizer[nameof(AppStrings.ConfirmEmailInfo)]
+    </MudText>
 
-    <EditForm Model="Command" OnValidSubmit="OnValidSubmit">
+    <EditForm Model="Command"
+              OnValidSubmit="OnValidSubmit">
         <CustomValidator @ref="CustomValidator" />
         <FluentValidationValidator />
 
-        <FritzTextField @bind-Value="Command.Email" For="() => Command.Email" HideField="true" />
+        <FritzTextField @bind-Value="Command.Email"
+                        For="() => Command.Email"
+                        HideField="true" />
         <FritzValidationMessage For="() => Command.Email" />
 
-        <FritzTextField @bind-Value="Command.Token" For="() => Command.Token" HideField="true" />
+        <FritzTextField @bind-Value="Command.Token"
+                        For="() => Command.Token"
+                        HideField="true" />
         <FritzValidationMessage For="() => Command.Token" />
 
         <FritzProcessingButton @ref="ProcessingButton"
@@ -28,12 +35,16 @@
 }
 else
 {
-    <MudText Color="Color.Success">@Localizer[nameof(AppStrings.SuccessfulEmailConfirmation)]</MudText>
+    <MudText Color="Color.Success">
+        @Localizer[nameof(AppStrings.SuccessfulEmailConfirmation)]
+    </MudText>
 }
 
 @if (parsingError)
 {
-    <MudText Color="Color.Error">@Localizer[nameof(AppStrings.InvalidEmailOrToken)]</MudText>
+    <MudText Color="Color.Error">
+        @Localizer[nameof(AppStrings.InvalidEmailOrToken)]
+    </MudText>
 }
 
 @code {

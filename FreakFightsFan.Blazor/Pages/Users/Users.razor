@@ -6,56 +6,89 @@
 @inject IDialogService DialogService
 @inject IStringLocalizer<App> Localizer
 
-<PageTitle>@Localizer[nameof(AppStrings.Users)]</PageTitle>
+<PageTitle>
+    @Localizer[nameof(AppStrings.Users)]
+</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<UserDto>>>(ServerReload)"
-          Dense="true" Hover="true" @ref="table" Context="user">
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          Context="user">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Users)]</MudText>
+        <MudText Typo="Typo.h6">
+            @Localizer[nameof(AppStrings.Users)]
+        </MudText>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
+        <FritzSearchTextField @bind-Value="searchString"
+                              OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         @* <MudTh>Image</MudTh> *@
-        <MudTh><MudTableSortLabel SortLabel="username" T="UserDto">@Localizer[nameof(AppStrings.UserName)]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="email" T="UserDto">@Localizer[nameof(AppStrings.Email)]</MudTableSortLabel></MudTh>
-        <MudTh>@Localizer[nameof(AppStrings.Role)]</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="username"
+                               T="UserDto">
+                @Localizer[nameof(AppStrings.UserName)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="email"
+                               T="UserDto">
+                @Localizer[nameof(AppStrings.Email)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Role)]
+        </MudTh>
         <AuthorizeView Policy=@Policy.SuperAdmin>
-            <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
+            <MudTh>
+                @Localizer[nameof(AppStrings.Actions)]
+            </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-       @*  <MudTd>
-            @if (user.Image != null)
-            {
-                <MudLink Href="@user.Image.Url" Target="_blank">
-                    <MudImage Src="@user.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
-                </MudLink>
-            }
-            else
-            {
-                <MudText>-</MudText>
-            }
+        @*  <MudTd>
+        @if (user.Image != null)
+        {
+        <MudLink Href="@user.Image.Url" Target="_blank">
+        <MudImage Src="@user.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
+        </MudLink>
+        }
+        else
+        {
+        <MudText>-</MudText>
+        }
         </MudTd> *@
-        <MudTd DataLabel="UserName">@user.UserName</MudTd>
-        <MudTd DataLabel="Email">@user.Email</MudTd>
+        <MudTd DataLabel="UserName">
+            @user.UserName
+        </MudTd>
+        <MudTd DataLabel="Email">
+            @user.Email
+        </MudTd>
         <MudTh>
-            <MudChip Variant="Variant.Outlined" Color="GetColorBasedOnPolicy(GetUserHighestPolicy(user))">@GetUserHighestPolicy(user)</MudChip>
+            <MudChip Variant="Variant.Outlined"
+                     Color="GetColorBasedOnPolicy(GetUserHighestPolicy(user))">
+                @GetUserHighestPolicy(user)
+            </MudChip>
         </MudTh>
         <AuthorizeView Policy=@Policy.SuperAdmin>
             <MudTd>
-                @if(!user.IsSuperAdmin && user.IsAdmin)
+                @if (!user.IsSuperAdmin && user.IsAdmin)
                 {
                     <MudTooltip Text="@Localizer[nameof(AppStrings.Degrade)]">
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" OnClick="() => DegradeUser(user.Id)"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
+                                       Size="Size.Small"
+                                       OnClick="() => DegradeUser(user.Id)" />
                     </MudTooltip>
-                } 
-                else if(!user.IsSuperAdmin && !user.IsAdmin)
+                }
+                else if (!user.IsSuperAdmin && !user.IsAdmin)
                 {
                     <MudTooltip Text="@Localizer[nameof(AppStrings.Promote)]">
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" OnClick="() => PromoteUser(user.Id)"/>
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
+                                       Size="Size.Small"
+                                       OnClick="() => PromoteUser(user.Id)" />
                     </MudTooltip>
                 }
 
@@ -63,13 +96,18 @@
         </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]"
+                       InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
@@ -91,13 +129,13 @@
     private async Task<TableData<UserDto>> ServerReload(TableState state)
     {
         var query = new GetAllUsers.Query
-        {
-            Page = state.Page + 1,
-            PageSize = state.PageSize,
-            SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = searchString,
-        };
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+            };
 
         try
         {
@@ -110,10 +148,10 @@
         }
 
         return new()
-        {
-            TotalItems = MyUsers.TotalCount,
-            Items = MyUsers.Items
-        };
+            {
+                TotalItems = MyUsers.TotalCount,
+                Items = MyUsers.Items
+            };
     }
 
     private async Task PromoteUser(int id)
@@ -145,7 +183,7 @@
             await table.ReloadServerData();
         }
     }
-    
+
     private string GetUserHighestPolicy(UserDto user)
     {
         if (user.IsSuperAdmin)
@@ -161,7 +199,7 @@
     {
         if (policy == Policy.SuperAdmin)
             return Color.Info;
-            
+
         if (policy == Policy.Admin)
             return Color.Error;
 

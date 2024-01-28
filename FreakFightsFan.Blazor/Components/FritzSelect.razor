@@ -7,12 +7,12 @@
            For="For"
            Label="@Label"
            MultiSelection="false">
-
     @if (ItemsToSelect is not null)
     {
         @foreach (var item in ItemsToSelect)
         {
-            <MudSelectItem T="T" Value="item" />
+            <MudSelectItem T="T"
+                           Value="item" />
         }
     }
     else

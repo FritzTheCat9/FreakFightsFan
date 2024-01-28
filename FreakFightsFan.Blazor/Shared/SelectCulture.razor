@@ -2,10 +2,14 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<App> Localizer
 
-<MudSelect Label="@Localizer[nameof(AppStrings.SelectLanguage)]" T=Culture Value="CurrentCulture" ValueChanged="OnValueChanged">
+<MudSelect Label="@Localizer[nameof(AppStrings.SelectLanguage)]"
+           T=Culture
+           Value="CurrentCulture"
+           ValueChanged="OnValueChanged">
     @foreach (var culture in LocalizationConsts.SupportedCultures)
     {
-        <MudSelectItem T="Culture" Value="culture">
+        <MudSelectItem T="Culture"
+                       Value="culture">
             @culture.Country
         </MudSelectItem>
     }

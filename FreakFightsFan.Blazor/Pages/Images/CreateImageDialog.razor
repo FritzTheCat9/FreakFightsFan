@@ -2,18 +2,23 @@
 @inject IExceptionHandler ExceptionHandler
 @inject IStringLocalizer<App> Localizer
 
-<EditForm Model="Command" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
     <CustomValidator @ref="CustomValidator" />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzFileInput @bind-Value="Command.ImageBase64" For="() => Command.ImageBase64"
+            <FritzFileInput @bind-Value="Command.ImageBase64"
+                            For="() => Command.ImageBase64"
                             OnImageBase64Changed="(image) => Command.ImageBase64 = image" />
             <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@Localizer[nameof(AppStrings.Create)]</MudButton>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
+                @Localizer[nameof(AppStrings.Create)]
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

@@ -8,28 +8,42 @@
                 <ChildContent>
                     @if (!string.IsNullOrEmpty(FighterHelperModel.Fighter.Image?.Url))
                     {
-                        <MudImage Src="@FighterHelperModel.Fighter.Image.Url" Alt="@Localizer[nameof(AppStrings.Image)]" />
+                        <MudImage Src="@FighterHelperModel.Fighter.Image.Url"
+                                  Alt="@Localizer[nameof(AppStrings.Image)]" />
                     }
                     else
                     {
-                        <MudImage Src="images_default/default_user_image.png" ObjectFit="ObjectFit.Contain" Fluid="true" Alt="@Localizer[nameof(AppStrings.Image)]" Style="max-height: 250px;" />
+                        <MudImage Src="images_default/default_user_image.png"
+                                  ObjectFit="ObjectFit.Contain"
+                                  Fluid="true"
+                                  Alt="@Localizer[nameof(AppStrings.Image)]"
+                                  Style="max-height: 250px;" />
                     }
                 </ChildContent>
             </MudAvatar>
-            <MudText Class="align-self-center">@FighterHelperModel.Fighter.FirstName @FighterHelperModel.Fighter.LastName - @FighterHelperModel.Fighter.Nickname</MudText>
+            <MudText Class="align-self-center">
+                @FighterHelperModel.Fighter.FirstName @FighterHelperModel.Fighter.LastName - @FighterHelperModel.Fighter.Nickname
+            </MudText>
             @if (OnDeleteFighter.HasDelegate)
             {
-                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="DeleteFighter" />
+                <MudIconButton Class="align-self-center"
+                               Icon="@Icons.Material.Filled.Delete"
+                               Size="Size.Small"
+                               OnClick="DeleteFighter" />
             }
         </MudStack>
     </MudItem>
 
-    <MudGrid Spacing="1" Justify="Justify.Center">
+    <MudGrid Spacing="1"
+             Justify="Justify.Center">
         <MudItem xs="12">
-            <MudSelect @bind-Value="FighterHelperModel.FightResult" Label="@Localizer[nameof(AppStrings.FightResult)]">
+            <MudSelect @bind-Value="FighterHelperModel.FightResult"
+                       Label="@Localizer[nameof(AppStrings.FightResult)]">
                 @foreach (FightResult fightResult in Enum.GetValues(typeof(FightResult)))
                 {
-                    <MudSelectItem Value="fightResult">@fightResult.ToText()</MudSelectItem>
+                    <MudSelectItem Value="fightResult">
+                        @fightResult.ToText()
+                    </MudSelectItem>
                 }
             </MudSelect>
         </MudItem>

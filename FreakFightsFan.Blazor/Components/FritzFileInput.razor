@@ -10,15 +10,21 @@
 
 @if ((IsImageValid && !string.IsNullOrEmpty(Value)))
 {
-    <MudImage Src="@Value" Width="400" Alt="@Localizer[nameof(AppStrings.Image)]" />
+    <MudImage Src="@Value"
+              Width="400"
+              Alt="@Localizer[nameof(AppStrings.Image)]" />
 }
 else if (!string.IsNullOrEmpty(Url))
 {
-    <MudImage Src="@Url" Width="400" Alt="@Localizer[nameof(AppStrings.Image)]" />
+    <MudImage Src="@Url"
+              Width="400"
+              Alt="@Localizer[nameof(AppStrings.Image)]" />
 }
 else
 {
-    <MudItem>@Localizer[nameof(AppStrings.NoImageLoaded)]</MudItem>
+    <MudItem>
+        @Localizer[nameof(AppStrings.NoImageLoaded)]
+    </MudItem>
 }
 
 <MudFileUpload T="IBrowserFile"
@@ -28,7 +34,11 @@ else
                Accept="@AllowedFileTypesString"
                AppendMultipleFiles="false">
     <ButtonTemplate>
-        <MudButton HtmlTag="label" for="@context" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AttachFile">
+        <MudButton HtmlTag="label"
+                   for="@context"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.AttachFile">
             @Localizer[nameof(AppStrings.UploadImage)]
         </MudButton>
     </ButtonTemplate>

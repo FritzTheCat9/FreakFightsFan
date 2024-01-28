@@ -7,60 +7,101 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<App> Localizer
 
-<PageTitle>@Localizer[nameof(AppStrings.Federations)]</PageTitle>
+<PageTitle>
+    @Localizer[nameof(AppStrings.Federations)]
+</PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
 
 <MudTable ServerData="new Func<TableState, Task<TableData<FederationDto>>>(ServerReload)"
-          Dense="true" Hover="true" @ref="table" Context="federation">
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          Context="federation">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">@Localizer[nameof(AppStrings.Federations)]</MudText>
+        <MudText Typo="Typo.h6">
+            @Localizer[nameof(AppStrings.Federations)]
+        </MudText>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => CreateFederation()"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Size="Size.Small"
+                           OnClick="() => CreateFederation()" />
         </AuthorizeView>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value="searchString" OnSearch="() => table.ReloadServerData()" />
+        <FritzSearchTextField @bind-Value="searchString"
+                              OnSearch="() => table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>@Localizer[nameof(AppStrings.Image)]</MudTh>
-        <MudTh><MudTableSortLabel SortLabel="name" T="FederationDto">@Localizer[nameof(AppStrings.Name)]</MudTableSortLabel></MudTh>
-        <MudTh>@Localizer[nameof(AppStrings.Events)]</MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Image)]
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T="FederationDto">
+                @Localizer[nameof(AppStrings.Name)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Events)]
+        </MudTh>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudTh>@Localizer[nameof(AppStrings.Actions)]</MudTh>
+            <MudTh>
+                @Localizer[nameof(AppStrings.Actions)]
+            </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
             @if (federation.Image != null)
             {
-                <MudLink Href="@federation.Image.Url" Target="_blank">
-                    <MudImage Src="@federation.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="@Localizer[nameof(AppStrings.Image)]" />
+                <MudLink Href="@federation.Image.Url"
+                         Target="_blank">
+                    <MudImage Src="@federation.Image.Url"
+                              ObjectFit="ObjectFit.Contain"
+                              Width="200"
+                              Height="150"
+                              Alt="@Localizer[nameof(AppStrings.Image)]" />
                 </MudLink>
             }
             else
             {
-                <MudText>-</MudText>
+                <MudText>
+                    -
+                </MudText>
             }
         </MudTd>
-        <MudTd DataLabel="Name">@federation.Name</MudTd>
+        <MudTd DataLabel="Name">
+            @federation.Name
+        </MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.List" Size="Size.Small" OnClick="() => RedirectToEventsPage(federation.Id)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.List"
+                           Size="Size.Small"
+                           OnClick="() => RedirectToEventsPage(federation.Id)" />
         </MudTd>
         <AuthorizeView Policy=@Policy.Admin>
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" OnClick="() => UpdateFederation(federation)"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" OnClick="() => DeleteFederation(federation.Id)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small"
+                               OnClick="() => UpdateFederation(federation)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Size="Size.Small"
+                               OnClick="() => DeleteFederation(federation.Id)" />
             </MudTd>
         </AuthorizeView>
     </RowTemplate>
     <NoRecordsContent>
-        <MudText>@Localizer[nameof(AppStrings.NoMatchingRecordsFound)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
     </NoRecordsContent>
     <LoadingContent>
-        <MudText>@Localizer[nameof(AppStrings.Loading)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
+        <MudTablePager RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]"
+                       InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]" />
     </PagerContent>
 </MudTable>
 
@@ -82,13 +123,13 @@
     private async Task<TableData<FederationDto>> ServerReload(TableState state)
     {
         var query = new GetAllFederations.Query
-        {
-            Page = state.Page + 1,
-            PageSize = state.PageSize,
-            SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = searchString,
-        };
+            {
+                Page = state.Page + 1,
+                PageSize = state.PageSize,
+                SortColumn = state.SortLabel,
+                SortOrder = ((SortOrder)state.SortDirection),
+                SearchTerm = searchString,
+            };
 
         try
         {
@@ -101,10 +142,10 @@
         }
 
         return new()
-        {
-            TotalItems = MyFederations.TotalCount,
-            Items = MyFederations.Items
-        };
+            {
+                TotalItems = MyFederations.TotalCount,
+                Items = MyFederations.Items
+            };
     }
 
     private void RedirectToEventsPage(int id)
@@ -128,7 +169,7 @@
             catch (Exception ex)
             {
                 ExceptionHandler.HandleExceptions(ex);
-            }   
+            }
         }
     }
 
@@ -137,11 +178,11 @@
         var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFederationDialog>();
         parameters.Add(x => x.Command, new()
-        {
-            Id = federationDto.Id,
-            Name = federationDto.Name,
-            ImageBase64 = "",
-        });
+            {
+                Id = federationDto.Id,
+                Name = federationDto.Name,
+                ImageBase64 = "",
+            });
         parameters.Add(x => x.Url, federationDto.Image?.Url);
 
         var dialog = await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)], parameters, options);

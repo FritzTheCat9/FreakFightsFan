@@ -13,8 +13,11 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle" />
-            @Localizer[nameof(AppStrings.AppName)]
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="DrawerToggle" />
+        @Localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
         <Auth />
     </MudAppBar>
@@ -22,7 +25,8 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 20px;">
+        <MudContainer MaxWidth="MaxWidth.Large"
+                      Style="margin-top: 20px;">
             @Body
         </MudContainer>
     </MudMainContent>

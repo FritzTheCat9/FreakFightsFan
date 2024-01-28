@@ -18,7 +18,9 @@
                  FullWidth="true"
                  OnlyValidateIfDirty="true">
     <NoItemsTemplate>
-        <MudText>@Localizer[nameof(AppStrings.NoFightersFound)]</MudText>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoFightersFound)]
+        </MudText>
     </NoItemsTemplate>
     <ItemTemplate Context="item">
         <DisplayFighterListItem Fighter="item" />
@@ -28,8 +30,8 @@
 @code {
     [Parameter] public List<CreateFight.TeamHelperModel> Teams { get; set; } = [];
 
-    private Func<FighterDto, string> DisplayFighter = fighter =>
-        fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
+    private Func<FighterDto, string> DisplayFighter = fighter
+        => fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
 
     private MudAutocomplete<FighterDto> Autocomplete;
 
@@ -48,14 +50,14 @@
         PagedList<FighterDto> FightersPagedList = null;
 
         var query = new GetAllFighters.Query
-        {
-            Page = 1,
-            PageSize = 10,
-            SortColumn = "name",
-            SortOrder = SortOrder.Ascending,
-            SearchTerm = value ?? "",
-            HiddenFightersIds = GetHiddenFightersIds(),
-        };
+            {
+                Page = 1,
+                PageSize = 10,
+                SortColumn = "name",
+                SortOrder = SortOrder.Ascending,
+                SearchTerm = value ?? "",
+                HiddenFightersIds = GetHiddenFightersIds(),
+            };
 
         try
         {

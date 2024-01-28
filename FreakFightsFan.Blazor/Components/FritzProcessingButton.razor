@@ -1,15 +1,22 @@
 ﻿@inherits MudButton
 @inject IStringLocalizer<App> Localizer
 
-<MudButton ButtonType="ButtonType" Color="Color" Disabled="_processing">
+<MudButton ButtonType="ButtonType"
+           Color="Color"
+           Disabled="_processing">
     @if (_processing)
     {
-        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-        <MudText>@ProcessingButtonText</MudText>
+        <MudProgressCircular Size="Size.Small"
+                             Indeterminate="true" />
+        <MudText>
+            @ProcessingButtonText
+        </MudText>
     }
     else
     {
-        <MudText Typo="Typo.subtitle2">@ButtonText</MudText>
+        <MudText Typo="Typo.subtitle2">
+            @ButtonText
+        </MudText>
     }
 </MudButton>
 
