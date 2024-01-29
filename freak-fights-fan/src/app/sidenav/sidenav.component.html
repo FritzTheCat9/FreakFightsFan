@@ -1,0 +1,49 @@
+<div>
+    <mat-toolbar color="primary">
+        <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <h1>Freak Fights Fan</h1>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="sidenav-container">
+        <mat-sidenav mode="side" #sidenav opened>
+            <mat-nav-list>
+                <a mat-list-item>
+                    Home
+                </a>
+                <a mat-list-item>
+                    Fighters
+                </a>
+                <a mat-list-item>
+                    Federations
+                </a>
+                <a mat-list-item>
+                    Settings
+                </a>
+                <mat-accordion>
+                    <mat-expansion-panel class="mat-elevation-z0" [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Admin Panel
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <a mat-list-item>
+                            Images
+                        </a>
+                        <a mat-list-item>
+                            Dictionaries
+                        </a>
+                        <a mat-list-item>
+                            Users
+                        </a>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-nav-list>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <!-- <router-outlet /> -->
+            <div>Welcome to Freak Fights Fan App</div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
