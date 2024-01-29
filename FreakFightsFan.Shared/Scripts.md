@@ -65,3 +65,7 @@ cd .\freak-fights-fan\
 ng serve --open
 http://localhost:4200/
 ```
+5. Install Angular Material
+```
+ng add @angular/material
+```
