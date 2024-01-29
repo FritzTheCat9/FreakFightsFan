@@ -39,3 +39,29 @@ builder.Services.AddScoped<IFighterHttpService, FighterHttpService>();
 @using FreakFightsFan.Shared.Features.Fighters.Requests
 @using FreakFightsFan.Shared.Features.Fighters.Responses
 ```
+
+## Angular commands
+1. Download node.js (https://nodejs.org/en/download)
+```
+node -v
+``` 
+2. Install Angular CLI
+```
+npm install -g @angular/cli
+ng version
+``` 
+3. Create Angular Application
+```
+ng new freak-fights-fan
+```
+If any problems to run above command try this:
+Remove ng.ps1 from the directory C:\Users\%username%\AppData\Roaming\npm\
+Then try clearing the npm cache at C:\Users\%username%\AppData\Roaming\npm-cache\
+```
+cd .\freak-fights-fan\
+```
+4. Serve and open app
+```
+ng serve --open
+http://localhost:4200/
+```
