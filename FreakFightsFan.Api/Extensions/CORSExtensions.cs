@@ -21,6 +21,10 @@ namespace FreakFightsFan.Api.Extensions
                     policy.WithOrigins(authOptions.FrontendUrl)
                           .AllowAnyHeader()
                           .AllowAnyMethod();
+
+                    policy.WithOrigins(authOptions.AngularFrontendUrl)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                 });
             });
 

@@ -7,5 +7,6 @@
         public string SigningKey { get; set; }
         public TimeSpan Expiry { get; set; }
         public string FrontendUrl { get; set; }
+        public string AngularFrontendUrl { get; set; }
     }
 }

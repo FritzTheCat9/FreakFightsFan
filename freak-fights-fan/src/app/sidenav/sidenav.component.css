@@ -11,3 +11,8 @@
         top: 56px !important;
     }
 }
+
+mat-expansion-panel,
+mat-expansion-panel * {
+    transition: none !important;
+}
