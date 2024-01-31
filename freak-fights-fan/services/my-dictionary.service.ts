@@ -10,7 +10,7 @@ import { PagedList } from '../shared/abstractions/PagedList';
 @Injectable({
   providedIn: 'root'
 })
-export class MyDictionaryApiService {
+export class MyDictionaryService {
   url = "api/myDictionaries";
 
   constructor(private apiService: ApiService) { }
