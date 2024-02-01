@@ -1,8 +1,12 @@
+@if (isLoading) {
+<mat-spinner style="margin:0 auto;"></mat-spinner>
+}
+@else {
 <div class="mat-elevation-z1">
     <table mat-table matSort [dataSource]="dataSource">
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        <!-- <tr *matNoDataRow>NoMatchingRecordsFound</tr> -->
+        <tr *matNoDataRow style="font-size: large;">No matching records found</tr>
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
@@ -39,5 +43,5 @@
     <mat-paginator [pageSizeOptions]="paginationData.pageSizeOptions" [pageIndex]="paginationData.pageIndex"
         [pageSize]="paginationData.pageSize" [length]="paginationData.totalCount" (page)="onPageChange($event)"
         showFirstLastButtons></mat-paginator>
-    <!-- <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar> -->
 </div>
+}

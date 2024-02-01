@@ -11,11 +11,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PaginationData } from '../../../shared/abstractions/PaginationData';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-dictionaries',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule],
+  imports: [MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule, MatProgressSpinnerModule],
   templateUrl: './dictionaries.component.html',
   styleUrl: './dictionaries.component.css'
 })
@@ -30,6 +31,8 @@ export class DictionariesComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   paginationData: PaginationData = new PaginationData();
 
+  isLoading = false;
+
   constructor(private myDictionaryApiService: MyDictionaryService) {
     this.serverReload();
   }
@@ -42,17 +45,20 @@ export class DictionariesComponent {
     query.sortOrder = SortOrder.None;   //SortDirection - add sort field
     query.searchTerm = "";
 
+    this.isLoading = true;
     this.myDictionaryApiService.getAllMyDictionaries(query).subscribe({
       next: (v) => {
         console.log(v);
         this.myDictionaries = v;
         this.dataSource = new MatTableDataSource<MyDictionaryDto>(this.myDictionaries.items);
         this.paginationData.totalCount = this.myDictionaries.totalCount;
+        this.isLoading = false;
       },
       error: (e) => {
         console.error(e);
         this.dataSource = new MatTableDataSource<MyDictionaryDto>([]);
         this.paginationData.totalCount = 0;
+        this.isLoading = false;
       },
       complete: () => {
         console.info('complete');
