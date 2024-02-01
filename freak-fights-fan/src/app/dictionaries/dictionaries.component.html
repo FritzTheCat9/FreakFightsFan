@@ -1,11 +1,13 @@
 @if (isLoading) {
-<mat-spinner style="margin:0 auto;"></mat-spinner>
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }
 @else {
 <div class="mat-elevation-z1">
-    <table mat-table matSort [dataSource]="dataSource">
+    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortingData.active"
+        [matSortDirection]="sortingData.direction" (matSortChange)="onSortChange($event)">
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
         <tr *matNoDataRow style="font-size: large;">No matching records found</tr>
 
         <ng-container matColumnDef="name">
