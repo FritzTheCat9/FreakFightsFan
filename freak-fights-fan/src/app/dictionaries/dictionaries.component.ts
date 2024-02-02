@@ -13,11 +13,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { PaginationData } from '../../../shared/abstractions/PaginationData';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SortingData } from '../../../shared/abstractions/SortingData';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CreateDictionaryDialogComponent } from './create-dictionary-dialog/create-dictionary-dialog.component';
 
 @Component({
   selector: 'app-dictionaries',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule, MatProgressBarModule],
+  imports: [MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule, MatProgressBarModule, MatInputModule, FormsModule, MatDialogModule],
   templateUrl: './dictionaries.component.html',
   styleUrl: './dictionaries.component.css'
 })
@@ -33,9 +37,14 @@ export class DictionariesComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   paginationData: PaginationData = new PaginationData();
 
+  searchString: string = "";
+
   isLoading = false;
 
-  constructor(private myDictionaryApiService: MyDictionaryService) {
+  constructor(
+    private myDictionaryService: MyDictionaryService,
+    private dialog: MatDialog
+  ) {
     this.serverReload();
   }
 
@@ -45,10 +54,10 @@ export class DictionariesComponent {
     query.pageSize = this.paginationData.pageSize;
     query.sortColumn = this.sortingData.active;
     query.sortOrder = ToSortOrder(this.sortingData.direction);
-    query.searchTerm = "";
+    query.searchTerm = this.searchString;
 
     this.isLoading = true;
-    this.myDictionaryApiService.getAllMyDictionaries(query).subscribe({
+    this.myDictionaryService.getAllMyDictionaries(query).subscribe({
       next: (v) => {
         console.log(v);
         this.myDictionaries = v;
@@ -80,5 +89,19 @@ export class DictionariesComponent {
     this.sortingData.direction = event.direction;
 
     this.serverReload();
+  }
+
+  onSearch(event: Event) {
+    this.serverReload();
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(CreateDictionaryDialogComponent, {
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.serverReload();
+    });
   }
 }

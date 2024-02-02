@@ -23,7 +23,7 @@ export class MyDictionaryService {
     return this.apiService.get<MyDictionaryDto>(`${this.url}/${id}`);
   }
 
-  createMyDictionary(command: CreateMyDictionary.Command) {
+  createMyDictionary(command: CreateMyDictionary.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 

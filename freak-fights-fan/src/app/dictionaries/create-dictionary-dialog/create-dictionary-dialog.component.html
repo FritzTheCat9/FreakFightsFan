@@ -1,0 +1,33 @@
+<form [formGroup]="createDictionaryForm" (submit)="submit()">
+    <h1 mat-dialog-title>Create Dictionary
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </h1>
+
+    <mat-dialog-content>
+        <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
+            <mat-label>
+                Name
+            </mat-label>
+            <input matInput formControlName="name">
+            <mat-error
+                *ngIf="createDictionaryForm.controls['name'].touched && createDictionaryForm.controls['name'].invalid">
+                <span *ngIf="createDictionaryForm.controls['name'].errors">This field is mandatory.</span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
+            <mat-label>
+                Code
+            </mat-label>
+            <input matInput formControlName="code">
+            <mat-error
+                *ngIf="createDictionaryForm.controls['code'].touched && createDictionaryForm.controls['code'].invalid">
+                <span *ngIf="createDictionaryForm.controls['code'].errors">This field is mandatory.</span>
+            </mat-error>
+        </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button type="submit">CREATE</button>
+    </mat-dialog-actions>
+</form>

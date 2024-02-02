@@ -1,10 +1,24 @@
+<h1>Dictionaries</h1>
+
+<button mat-icon-button (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+</button>
+
+<mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput [(ngModel)]="searchString" (keydown.enter)="onSearch($event)" (focusout)="onSearch($event)">
+    <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
 @if (isLoading) {
 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }
 @else {
 <div class="mat-elevation-z1">
+
     <table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortingData.active"
         [matSortDirection]="sortingData.direction" (matSortChange)="onSortChange($event)">
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 

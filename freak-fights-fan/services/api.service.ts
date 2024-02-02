@@ -14,8 +14,8 @@ export class ApiService {
     return this.http.get<TResponse>(`${this.baseUrl}/${url}`);
   }
 
-  post<TRequest>(url: string, tRequest: TRequest): void {
-    this.http.post<TRequest>(`${this.baseUrl}/${url}`, tRequest);
+  post<TRequest>(url: string, tRequest: TRequest): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${url}`, tRequest);
   }
 
   postWithResponse<TRequest, TResponse>(url: string, tRequest: TRequest): Observable<TResponse> {
