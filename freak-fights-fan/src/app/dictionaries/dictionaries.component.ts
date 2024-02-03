@@ -1,107 +1,115 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MyDictionaryService } from '../../../services/my-dictionary.service';
-import { GetAllMyDictionaries } from '../../../shared/features/dictionaries/queries/GetAllMyDictionaries';
-import { ToSortOrder } from '../../../shared/abstractions/SortOrder';
-import { PagedList } from '../../../shared/abstractions/PagedList';
-import { MyDictionaryDto } from '../../../shared/features/dictionaries/responses/MyDictionaryDto';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { PaginationData } from '../../../shared/abstractions/PaginationData';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { SortingData } from '../../../shared/abstractions/SortingData';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MyDictionaryService } from '../../../services/my-dictionary.service';
+import { GetAllMyDictionaries } from '../../../shared/features/dictionaries/queries/GetAllMyDictionaries';
+import { SortOrder, ToSortOrder } from '../../../shared/abstractions/SortOrder';
+import { DictionariesDataSource } from './DictionariesDataSource';
+import { MyDictionaryDto } from '../../../shared/features/dictionaries/responses/MyDictionaryDto';
 import { CreateDictionaryDialogComponent } from './create-dictionary-dialog/create-dictionary-dialog.component';
+import { UpdateDictionaryDialogComponent } from './update-dictionary-dialog/update-dictionary-dialog.component';
 
 @Component({
   selector: 'app-dictionaries',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule, MatProgressBarModule, MatInputModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatIconModule, MatButtonModule, MatSortModule, MatFormFieldModule, MatProgressBarModule, MatInputModule, FormsModule, MatDialogModule],
   templateUrl: './dictionaries.component.html',
   styleUrl: './dictionaries.component.css'
 })
-export class DictionariesComponent {
+export class DictionariesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'code', 'dictionaryItems', 'actions'];
 
-  myDictionaries!: PagedList<MyDictionaryDto>;
-  dataSource!: MatTableDataSource<MyDictionaryDto>;
+  searchString = "";
+  query: GetAllMyDictionaries.Query =
+    {
+      page: 1,
+      pageSize: 10,
+      sortColumn: "",
+      sortOrder: SortOrder.None,
+      searchTerm: ""
+    }
 
-  @ViewChild(MatSort) sort!: MatSort;
-  sortingData: SortingData = new SortingData();
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  paginationData: PaginationData = new PaginationData();
-
-  searchString: string = "";
-
-  isLoading = false;
+  dataSource: DictionariesDataSource;
+  totalCount = 0;
+  loading = false;
 
   constructor(
+    private dictionariesDataSource: DictionariesDataSource,
     private myDictionaryService: MyDictionaryService,
     private dialog: MatDialog
   ) {
-    this.serverReload();
+    this.dataSource = dictionariesDataSource;
   }
 
-  serverReload(): void {
-    let query = <GetAllMyDictionaries.Query>{};
-    query.page = this.paginationData.pageIndex + 1;
-    query.pageSize = this.paginationData.pageSize;
-    query.sortColumn = this.sortingData.active;
-    query.sortOrder = ToSortOrder(this.sortingData.direction);
-    query.searchTerm = this.searchString;
+  ngOnInit(): void {
+    this.dataSource.loadData(this.query);
 
-    this.isLoading = true;
-    this.myDictionaryService.getAllMyDictionaries(query).subscribe({
-      next: (v) => {
-        console.log(v);
-        this.myDictionaries = v;
-        this.dataSource = new MatTableDataSource<MyDictionaryDto>(this.myDictionaries.items);
-        this.paginationData.totalCount = this.myDictionaries.totalCount;
-        this.isLoading = false;
-      },
-      error: (e) => {
-        console.error(e);
-        this.dataSource = new MatTableDataSource<MyDictionaryDto>([]);
-        this.paginationData.totalCount = 0;
-        this.isLoading = false;
-      },
-      complete: () => {
-        console.info('complete');
-      }
+    this.dataSource.totalCount$.subscribe(totalCount => {
+      this.totalCount = totalCount;
+    });
+
+    this.dataSource.loading$.subscribe(loading => {
+      this.loading = loading;
     });
   }
 
   onPageChange(event: PageEvent): void {
-    this.paginationData.pageSize = event.pageSize;
-    this.paginationData.pageIndex = event.pageIndex;
-
-    this.serverReload();
+    this.query.page = event.pageIndex + 1;
+    this.query.pageSize = event.pageSize;
+    this.dataSource.loadData(this.query);
   }
 
-  onSortChange(event: Sort) {
-    this.sortingData.active = event.active;
-    this.sortingData.direction = event.direction;
-
-    this.serverReload();
+  onSortChange(event: Sort): void {
+    this.query.sortColumn = event.active;
+    this.query.sortOrder = ToSortOrder(event.direction);
+    this.dataSource.loadData(this.query);
   }
 
-  onSearch(event: Event) {
-    this.serverReload();
+  onSearch(event: Event): void {
+    this.query.searchTerm = this.searchString;
+    this.dataSource.loadData(this.query);
   }
 
-  openDialog() {
+  createDictionary() {
     const dialogRef = this.dialog.open(CreateDictionaryDialogComponent, {
       autoFocus: false
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.serverReload();
+      this.dataSource.loadData(this.query);
+    });
+  }
+
+  updateDictionary(myDictionaryDto: MyDictionaryDto) {
+    const dialogRef = this.dialog.open(UpdateDictionaryDialogComponent, {
+      autoFocus: false,
+      data: { myDictionaryDto: myDictionaryDto }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.dataSource.loadData(this.query);
+    });
+  }
+
+  deleteDictionary(id: number) {
+    // TODO: add dialog
+
+    this.myDictionaryService.deleteMyDictionary(id).subscribe({
+      next: () => {
+        this.dataSource.loadData(this.query);
+      },
+      error: (e) => {
+        console.error(e);
+      }
     });
   }
 }

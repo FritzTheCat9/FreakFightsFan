@@ -22,15 +22,15 @@ export class ApiService {
     return this.http.post<TResponse>(`${this.baseUrl}/${url}`, tRequest);
   }
 
-  put<TRequest>(url: string, tRequest: TRequest): void {
-    this.http.put<TRequest>(`${this.baseUrl}/${url}`, tRequest);
+  put<TRequest>(url: string, tRequest: TRequest): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${url}`, tRequest);
   }
 
   putWithoutBody(url: string): void {
     this.http.put(`${this.baseUrl}/${url}`, null);
   }
 
-  delete(url: string): void {
-    this.http.delete(`${this.baseUrl}/${url}`);
+  delete(url: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${url}`);
   }
 }

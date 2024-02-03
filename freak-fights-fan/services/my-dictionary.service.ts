@@ -27,11 +27,11 @@ export class MyDictionaryService {
     return this.apiService.post(this.url, command);
   }
 
-  updateMyDictionary(command: UpdateMyDictionary.Command) {
+  updateMyDictionary(command: UpdateMyDictionary.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteMyDictionary(id: number) {
+  deleteMyDictionary(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }

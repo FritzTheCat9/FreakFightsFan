@@ -1,6 +1,6 @@
 <h1>Dictionaries</h1>
 
-<button mat-icon-button (click)="openDialog()">
+<button mat-icon-button (click)="createDictionary()">
     <mat-icon>add</mat-icon>
 </button>
 
@@ -10,14 +10,11 @@
     <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 
-@if (isLoading) {
-<mat-progress-bar mode="indeterminate"></mat-progress-bar>
-}
-@else {
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
 <div class="mat-elevation-z1">
 
-    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortingData.active"
-        [matSortDirection]="sortingData.direction" (matSortChange)="onSortChange($event)">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -46,18 +43,17 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element">
-                <button mat-icon-button>
+                <button mat-icon-button (click)="updateDictionary(element)">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button>
+                <button mat-icon-button (click)="deleteDictionary(element.id)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </td>
         </ng-container>
     </table>
 
-    <mat-paginator [pageSizeOptions]="paginationData.pageSizeOptions" [pageIndex]="paginationData.pageIndex"
-        [pageSize]="paginationData.pageSize" [length]="paginationData.totalCount" (page)="onPageChange($event)"
-        showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" [length]="totalCount" (page)="onPageChange($event)"
+        showFirstLastButtons>
+    </mat-paginator>
 </div>
-}
