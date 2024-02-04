@@ -29,10 +29,14 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
         public class Handler : IRequestHandler<GetAllMyDictionaryItemsByCode.Query, PagedList<MyDictionaryItemDto>>
         {
             private readonly IMyDictionaryRepository _myDictionaryRepository;
+            private readonly ILogger<Handler> _logger;
 
-            public Handler(IMyDictionaryRepository myDictionaryRepository)
+            public Handler(
+                IMyDictionaryRepository myDictionaryRepository,
+                ILogger<Handler> logger)
             {
                 _myDictionaryRepository = myDictionaryRepository;
+                _logger = logger;
             }
 
             public async Task<PagedList<MyDictionaryItemDto>> Handle(
@@ -43,7 +47,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
 
                 if (dictionary is null)
                 {
-                    // log to file - field on frontend tried to access a non-existent dictionary
+                    _logger.LogError("[Dictionary Code] Field on frontend tried to access a non-existent dictionary with code: {DictionaryCode}", 
+                        query.DictionaryCode);
 
                     var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(query.Page,
                                                                                              query.PageSize);

@@ -22,7 +22,7 @@ namespace FreakFightsFan.Api.Data
             services.AddDbContext<AppDbContext>(x =>
             {
                 x.UseSqlServer(options.ConnectionString);
-                x.EnableSensitiveDataLogging();
+                //x.EnableSensitiveDataLogging();
             });
 
             services.AddScoped<IFederationRepository, FederationRepository>();

@@ -18,7 +18,8 @@ builder.Services.AddSwagger()
                 .AddServices(builder.Configuration)
                 .AddEmails(builder.Configuration)
                 .AddExceptionMiddleware()
-                .AddMyLocalization();
+                .AddMyLocalization()
+                .AddMySerilog(builder.Configuration);
 
 var app = builder.Build();
 

@@ -34,6 +34,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private readonly IClock _clock;
             private readonly IImageService _imageService;
             private readonly IWebHostEnvironment _webHostEnvironment;
+            private readonly ILogger<Handler> _logger;
             private readonly ImageOptions _options;
             private const string _textFieldCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > div > input[type=text]";
             private const string _searchButtonCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > button";
@@ -44,12 +45,14 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 IClock clock,
                 IImageService imageService,
                 IWebHostEnvironment webHostEnvironment,
-                IOptions<ImageOptions> options)
+                IOptions<ImageOptions> options,
+                ILogger<Handler> logger)
             {
                 _fighterRepository = fighterRepository;
                 _clock = clock;
                 _imageService = imageService;
                 _webHostEnvironment = webHostEnvironment;
+                _logger = logger;
                 _options = options.Value;
             }
 
@@ -64,21 +67,29 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 {
                     foreach (var fighter in fighters)
                     {
+                        _logger.LogInformation("[IMPORT FIGHTERS - START] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                            fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
+
                         if (fighter.Image is not null)
                         {
-                            Console.WriteLine($"[IMAGE EXISTS] - Image for fighter: {fighter.Id} - Fighter already have image");
-                            Console.WriteLine($"[END] - Image for fighter: {fighter.Id} - {fighter.FirstName} {fighter.LastName} {fighter.Nickname}");
+                            _logger.LogInformation("[IMPORT FIGHTERS - IMAGE EXISTS] - Image for fighter: {FighterId} - Fighter already have image", fighter.Id);
+
+                            _logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                                fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
+
                             continue;
                         }
-
-                        Console.WriteLine($"[START] - Image for fighter: {fighter.Id} - {fighter.FirstName} {fighter.LastName} {fighter.Nickname}");
 
                         var nick = fighter.InstagramUrl?.Replace("https://www.instagram.com/", "")?.Replace("/", "");
 
                         if (string.IsNullOrEmpty(nick))
                         {
-                            Console.WriteLine($"[NO INSTAGRAM] - Image for fighter: {fighter.Id} - Fighter instagram nick is null or empty: '{nick}'");
-                            Console.WriteLine($"[END] - Image for fighter: {fighter.Id} - {fighter.FirstName} {fighter.LastName} {fighter.Nickname}");
+                            _logger.LogInformation("[IMPORT FIGHTERS - NO INSTAGRAM] - Image for fighter: {FighterId} - Fighter instagram nick is null or empty: '{Nick}'",
+                                fighter.Id, fighter.Nickname);
+
+                            _logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                                fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
+
                             continue;
                         }
 
@@ -105,8 +116,11 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                         }
                         catch (Exception)
                         {
-                            Console.WriteLine($"[NO BUTTON] - Image for fighter: {fighter.Id} - : Button error");
-                            Console.WriteLine($"[END] - Image for fighter: {fighter.Id} - {fighter.FirstName} {fighter.LastName} {fighter.Nickname}");
+                            _logger.LogInformation("[IMPORT FIGHTERS - NO BUTTON] - Image for fighter: {FighterId} - Button error", fighter.Id);
+
+                            _logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                                fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
+
                             continue;
                         }
 
@@ -123,7 +137,8 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                             if (newestFile is not null && newestFile.CreationTime >= _clock.Current()
                                                                                            .AddMinutes(-1))
                             {
-                                Console.WriteLine($"[FILE] - Image for fighter: {fighter.Id} - Downloaded profile image with name {newestFile.Name}");
+                                _logger.LogInformation("[IMPORT FIGHTERS - FILE] - Image for fighter: {FighterId} - Downloaded profile image with name {NewestFileName}",
+                                    fighter.Id, newestFile.Name);
 
                                 var fileBytes = File.ReadAllBytes(newestFile.FullName);
                                 var imageBase64 = Convert.ToBase64String(fileBytes);
@@ -134,23 +149,24 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                                 await _fighterRepository.Update(fighter);
                                 await _fighterRepository.SaveChanges();
 
-                                Console.WriteLine($"[UPDATED] - Image for fighter: {fighter.Id} - Updated fighter image");
+                                _logger.LogInformation("[IMPORT FIGHTERS - UPDATED] - Image for fighter: {FighterId} - Updated fighter image", fighter.Id);
 
                                 newestFile.Delete();
 
-                                Console.WriteLine($"[DELETED] - Image for fighter: {fighter.Id} - Deleted downloaded image");
+                                _logger.LogInformation("[IMPORT FIGHTERS - DELETED] - Image for fighter: {FighterId} - Deleted downloaded image", fighter.Id);
                             }
                             else
                             {
-                                Console.WriteLine($"[NO FILE] - Image for fighter: {fighter.Id} - No profile image downloaded");
+                                _logger.LogInformation("[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded", fighter.Id);
                             }
                         }
                         else
                         {
-                            Console.WriteLine($"[NO FILE] - Image for fighter: {fighter.Id} - No profile image downloaded");
+                            _logger.LogInformation("[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded", fighter.Id);
                         }
 
-                        Console.WriteLine($"[END] - Image for fighter: {fighter.Id} - {fighter.FirstName} {fighter.LastName} {fighter.Nickname}");
+                        _logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                            fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
                     }
                 }
 

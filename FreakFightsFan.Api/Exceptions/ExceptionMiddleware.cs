@@ -5,6 +5,13 @@ namespace FreakFightsFan.Api.Exceptions
 {
     public class ExceptionMiddleware : IMiddleware
     {
+        private readonly ILogger<ExceptionMiddleware> _logger;
+
+        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger)
+        {
+            _logger = logger;
+        }
+
         public async Task InvokeAsync(
             HttpContext context,
             RequestDelegate next)
@@ -15,7 +22,7 @@ namespace FreakFightsFan.Api.Exceptions
             }
             catch (Exception exception)
             {
-                //TODO: log exception to file
+                _logger.LogError("[Api Exception] {Exception}", exception);
                 await HandleExceptionAsync(exception, context);
             }
         }

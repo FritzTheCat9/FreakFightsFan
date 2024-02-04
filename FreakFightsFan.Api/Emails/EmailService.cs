@@ -13,16 +13,19 @@ namespace FreakFightsFan.Api.Emails
         private readonly EmailOptions _options;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IFluentEmail _fluentEmail;
+        private readonly ILogger<EmailService> _logger;
         private readonly string _templatesFolder;
 
         public EmailService(
             IOptions<EmailOptions> options, 
             IWebHostEnvironment webHostEnvironment, 
-            IFluentEmail fluentEmail)
+            IFluentEmail fluentEmail, 
+            ILogger<EmailService> logger)
         {
             _options = options.Value;
             _webHostEnvironment = webHostEnvironment;
             _fluentEmail = fluentEmail;
+            _logger = logger;
             _templatesFolder = $"{_webHostEnvironment.ContentRootPath}\\Emails\\Templates";
         }
 
@@ -30,7 +33,8 @@ namespace FreakFightsFan.Api.Emails
         {
             if (!_options.SendEmails)
             {
-                // TODO: log that sending emails is disabled in appsettings
+                _logger.LogError("[Email Service] Sending emails is disabled in appsettings.json {SendEmails}", _options.SendEmails);
+
                 return;
             }
 
@@ -41,7 +45,7 @@ namespace FreakFightsFan.Api.Emails
 
             await email.SendAsync();
 
-            // TODO: log that sending email is successfully send
+            _logger.LogInformation("[Email Service] {Subject} email successfully sent to: {To}, ({TemplateFileName})", model.Subject,  to, model.TemplateFileName);
         }
     }
 

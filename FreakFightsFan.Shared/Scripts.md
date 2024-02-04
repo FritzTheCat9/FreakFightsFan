@@ -8,6 +8,16 @@ dotnet ef migrations add MIGRATION_NAME -o ./Data/Migrations --startup-project .
 dotnet ef database update
 ```
 
+## Update docker-compose.yaml
+``` 
+cd C:\Users\bartl\source\repos\FreakFightsFan
+docker compose up -d
+docker ps
+``` 
+
+## Seq logs url
+http://localhost:8081
+
 ## .http files bug
 1. Open %temp% folder
 2. Close Visual Studio 2022

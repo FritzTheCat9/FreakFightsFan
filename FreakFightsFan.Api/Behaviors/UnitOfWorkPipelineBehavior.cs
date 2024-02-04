@@ -6,14 +6,19 @@ namespace FreakFightsFan.Api.Behaviors
     public class UnitOfWorkPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly AppDbContext _dbContext;
+        private readonly ILogger<UnitOfWorkPipelineBehavior<TRequest, TResponse>> _logger;
+
         private static bool IsNotCommand
             => !typeof(TRequest).Name.EndsWith("Command");
         private static bool IsImportFighterImagesCommand
             => typeof(TRequest).Name.EndsWith("ImportFighterImagesCommand");
 
-        public UnitOfWorkPipelineBehavior(AppDbContext dbContext)
+        public UnitOfWorkPipelineBehavior(
+            AppDbContext dbContext,
+            ILogger<UnitOfWorkPipelineBehavior<TRequest, TResponse>> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -26,6 +31,8 @@ namespace FreakFightsFan.Api.Behaviors
                 return await next();
             }
 
+            _logger.LogInformation("[UnitOfWork] Begin Transaction");
+
             await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
 
             try
@@ -33,10 +40,15 @@ namespace FreakFightsFan.Api.Behaviors
                 var response = await next();
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
+
+                _logger.LogInformation("[UnitOfWork] Commited Transaction");
+
                 return response;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.LogError("[UnitOfWork] Rollback Transaction {Exception}", exception);
+
                 await transaction.RollbackAsync(cancellationToken);
                 throw;
             }

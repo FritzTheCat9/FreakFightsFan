@@ -12,6 +12,7 @@ namespace FreakFightsFan.Api.Extensions
             services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
                 config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
                 config.AddOpenBehavior(typeof(UnitOfWorkPipelineBehavior<,>));
             });
