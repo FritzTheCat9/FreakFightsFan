@@ -1,0 +1,34 @@
+<mxfile host="app.diagrams.net" modified="2024-02-05T17:05:51.758Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="sxPSxCph993tfZ4lV3H1" version="23.1.1" type="device">
+  <diagram name="Strona-1" id="cPO7CmWAKdkuu5Yoqa3q">
+    <mxGraphModel dx="819" dy="422" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="80" y="70" width="250" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-2" value="Api" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#b1ddf0;strokeColor=#10739e;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="230" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-3" value="Blazor / Angular" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#b1ddf0;strokeColor=#10739e;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="110" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="65wTJWh5iXQVkFAHW9L2-3" target="65wTJWh5iXQVkFAHW9L2-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="190" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.49;exitY=0.997;exitDx=0;exitDy=0;entryX=0.471;entryY=0.031;entryDx=0;entryDy=0;entryPerimeter=0;labelBackgroundColor=none;fontColor=default;exitPerimeter=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="203.30000000000007" y="310" as="sourcePoint" />
+            <mxPoint x="203.30000000000004" y="352.42" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="65wTJWh5iXQVkFAHW9L2-13" value="Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="165.5" y="353" width="75" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,40 @@
+<mxfile host="app.diagrams.net" modified="2024-02-05T15:40:36.847Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="UYOO3hAIAtiZpvc7AgC9" version="23.1.1" type="device">
+  <diagram id="kgpKYQtTHZ0yAKxKKP6v" name="Page-1">
+    <mxGraphModel dx="1434" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-3" value="Api" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="120" y="230" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-4" value="Blazor" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-5" value="FeatureGenerator" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="510" y="230" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-18" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="yd3PXSfPq3Q2cmo3WYKi-6" target="yd3PXSfPq3Q2cmo3WYKi-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-6" value="IntegrationTests" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="120" y="110" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-7" value="Shared" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="120" y="350" width="350" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-8" value="Angular" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="510" y="110" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.236;entryY=-0.01;entryDx=0;entryDy=0;entryPerimeter=0;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="yd3PXSfPq3Q2cmo3WYKi-3" target="yd3PXSfPq3Q2cmo3WYKi-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yd3PXSfPq3Q2cmo3WYKi-16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="yd3PXSfPq3Q2cmo3WYKi-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="386" y="311" as="sourcePoint" />
+            <mxPoint x="385" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

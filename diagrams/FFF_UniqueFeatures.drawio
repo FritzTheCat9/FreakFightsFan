@@ -1,0 +1,40 @@
+<mxfile host="app.diagrams.net" modified="2024-02-05T18:38:01.644Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="OALuavPsLcW12ogrLR8O" version="23.1.1" type="device">
+  <diagram name="Strona-1" id="zkBkroBtWqzy3IAwnlxd">
+    <mxGraphModel dx="1434" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BVouxYWnViqfbmxueGc--1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="400" width="790" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--7" value="" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#b1ddf0;strokeColor=#10739e;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="470" y="620" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--11" value="Shared" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="615" y="620" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--13" value="&lt;ul&gt;&lt;li&gt;Api contracts (Commands, Queries, Responses)&lt;/li&gt;&lt;li&gt;Api contracts validators&lt;/li&gt;&lt;li&gt;Shared code between Api and Blazor (Helpers)&lt;/li&gt;&lt;li&gt;Locallized validation error messages&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="480" y="650" width="330" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--14" value="" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#b1ddf0;strokeColor=#10739e;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="440" width="350" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--15" value="Api" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="235" y="440" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--16" value="&lt;ul&gt;&lt;li&gt;Jwt Authentication (Login / Register / Confirm Email)&lt;/li&gt;&lt;li&gt;Authorization (SuperAdmin, Admin and User roles)&lt;/li&gt;&lt;li&gt;Logging / Validation / UnitOfWork behaviors&lt;/li&gt;&lt;li&gt;Entities configuration&lt;/li&gt;&lt;li&gt;Database configuration&lt;/li&gt;&lt;li&gt;Repositories&lt;/li&gt;&lt;li&gt;Emails (Confirm email feature)&lt;/li&gt;&lt;li&gt;Custom exceptions middleware&lt;/li&gt;&lt;li&gt;MediatR CQRS pattern&lt;/li&gt;&lt;li&gt;Vertical slices (code separated by features)&lt;/li&gt;&lt;li&gt;Pagination / sorting / filtering&lt;/li&gt;&lt;li&gt;Swagger / .http files for testing&lt;/li&gt;&lt;li&gt;Locallized validation errors&lt;/li&gt;&lt;li&gt;Images (saving images, file server)&lt;/li&gt;&lt;li&gt;Import images from Instagram&lt;/li&gt;&lt;li&gt;Logging to console, file and Seq&lt;/li&gt;&lt;li&gt;Services&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="451.5" width="330" height="287" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--18" value="" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#b1ddf0;strokeColor=#10739e;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="470" y="440" width="350" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--19" value="Blazor" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="615" y="440" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BVouxYWnViqfbmxueGc--20" value="&lt;ul&gt;&lt;li&gt;Jwt Authentication&lt;/li&gt;&lt;li&gt;Api clients&lt;/li&gt;&lt;li&gt;Custom razor components (MudBlazor wrappers)&lt;/li&gt;&lt;li&gt;Api exception handling&lt;/li&gt;&lt;li&gt;Frontend&amp;nbsp;and backend validation errors&lt;/li&gt;&lt;li&gt;Pages&lt;/li&gt;&lt;li&gt;Pages locallization&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="480" y="459" width="310" height="130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
