@@ -1,20 +1,23 @@
-﻿using Serilog;
+﻿using FreakFightsFan.Api.Extensions;
+using Serilog;
 
-namespace FreakFightsFan.Api.Extensions
+namespace FreakFightsFan.Api.Logging
 {
-    public static class SerilogExtensions
+    public static class LoggingExtensions
     {
         private const string _sectionName = "Log";
+        private const string _logTemplate = "[{Timestamp:HH:mm:ss} {Level:u3} {CorrelationId}] {Message}{NewLine}{Exception}";
 
-        public static IServiceCollection AddMySerilog(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddLogging(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<LogOptions>(configuration.GetRequiredSection(_sectionName));
             var logOptions = configuration.GetOptions<LogOptions>(_sectionName);
 
             services.AddSerilog(x =>
             {
-                x.WriteTo.Console();
-                x.WriteTo.File(logOptions.FilePath, rollingInterval: RollingInterval.Day);
+                x.Enrich.WithCorrelationIdHeader();
+                x.WriteTo.Console(outputTemplate: _logTemplate);
+                x.WriteTo.File(logOptions.FilePath, rollingInterval: RollingInterval.Day, outputTemplate: _logTemplate);
                 x.WriteTo.Seq(logOptions.SeqUrl);
                 x.MinimumLevel.Information();
                 x.MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Information);
@@ -23,11 +26,5 @@ namespace FreakFightsFan.Api.Extensions
 
             return services;
         }
-    }
-
-    public class LogOptions
-    {
-        public string FilePath { get; set; }
-        public string SeqUrl { get; set; }
     }
 }

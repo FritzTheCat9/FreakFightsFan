@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Exceptions;
 using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Localization;
+using FreakFightsFan.Api.Logging;
 using FreakFightsFan.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,7 @@ builder.Services.AddSwagger()
                 .AddEmails(builder.Configuration)
                 .AddExceptionMiddleware()
                 .AddMyLocalization()
-                .AddMySerilog(builder.Configuration);
+                .AddLogging(builder.Configuration);
 
 var app = builder.Build();
 
