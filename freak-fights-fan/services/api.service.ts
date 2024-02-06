@@ -26,8 +26,8 @@ export class ApiService {
     return this.http.put<void>(`${this.baseUrl}/${url}`, tRequest);
   }
 
-  putWithoutBody(url: string): void {
-    this.http.put(`${this.baseUrl}/${url}`, null);
+  putWithoutBody(url: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${url}`, null);
   }
 
   delete(url: string): Observable<void> {

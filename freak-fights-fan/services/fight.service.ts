@@ -29,19 +29,19 @@ export class FightService {
     return this.apiService.get<FightDto>(`${this.url}/${id}`);
   }
 
-  createFight(command: CreateFight.Command) {
+  createFight(command: CreateFight.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateFight(command: UpdateFight.Command) {
+  updateFight(command: UpdateFight.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteFight(id: number) {
+  deleteFight(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 
-  moveFight(command: MoveFight.Command) {
+  moveFight(command: MoveFight.Command): Observable<void> {
     return this.apiService.put(`${this.url}/move/${command.id}`, command);
   }
 }

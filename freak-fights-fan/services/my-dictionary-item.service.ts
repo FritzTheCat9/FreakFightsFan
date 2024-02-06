@@ -28,15 +28,15 @@ export class MyDictionaryItemService {
     return this.apiService.get<MyDictionaryItemDto>(`${this.url}/${id}`);
   }
 
-  createMyDictionaryItem(command: CreateMyDictionaryItem.Command) {
+  createMyDictionaryItem(command: CreateMyDictionaryItem.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateMyDictionaryItem(command: UpdateMyDictionaryItem.Command) {
+  updateMyDictionaryItem(command: UpdateMyDictionaryItem.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteMyDictionaryItem(id: number) {
+  deleteMyDictionaryItem(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }

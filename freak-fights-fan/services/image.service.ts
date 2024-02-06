@@ -24,15 +24,15 @@ export class ImageService {
     return this.apiService.get<ImageDto>(`${this.url}/${id}`);
   }
 
-  createImage(command: CreateImage.Command) {
+  createImage(command: CreateImage.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateImage(command: UpdateImage.Command) {
+  updateImage(command: UpdateImage.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteImage(id: number) {
+  deleteImage(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }

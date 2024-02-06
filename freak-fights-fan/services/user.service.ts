@@ -18,11 +18,11 @@ export class UserService {
 
   constructor(private apiService: ApiService) { }
 
-  confirmEmail(command: ConfirmEmail.Command) {
+  confirmEmail(command: ConfirmEmail.Command): Observable<void> {
     return this.apiService.post(`${this.url}/confirmEmail`, command);
   }
 
-  degradeUser(id: number) {
+  degradeUser(id: number): Observable<void> {
     return this.apiService.putWithoutBody(`${this.url}/degrade/${id}`);
   }
 
@@ -30,15 +30,15 @@ export class UserService {
     return this.apiService.postWithResponse<Login.Command, JwtDto>(`${this.url}/login`, command);
   }
 
-  promoteUser(id: number) {
+  promoteUser(id: number): Observable<void> {
     return this.apiService.putWithoutBody(`${this.url}/promote/${id}`);
   }
 
-  register(command: Register.Command) {
+  register(command: Register.Command): Observable<void> {
     return this.apiService.post(`${this.url}/register`, command);
   }
 
-  updateUser(command: UpdateUser.Command) {
+  updateUser(command: UpdateUser.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 

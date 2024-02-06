@@ -23,15 +23,15 @@ export class EventService {
     return this.apiService.get<EventDto>(`${this.url}/${id}`);
   }
 
-  createEvent(command: CreateEvent.Command) {
+  createEvent(command: CreateEvent.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateEvent(command: UpdateEvent.Command) {
+  updateEvent(command: UpdateEvent.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteEvent(id: number) {
+  deleteEvent(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }

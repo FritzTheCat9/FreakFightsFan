@@ -23,15 +23,15 @@ export class FighterService {
     return this.apiService.get<FighterDto>(`${this.url}/${id}`);
   }
 
-  createFighter(command: CreateFighter.Command) {
+  createFighter(command: CreateFighter.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateFighter(command: UpdateFighter.Command) {
+  updateFighter(command: UpdateFighter.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteFighter(id: number) {
+  deleteFighter(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }

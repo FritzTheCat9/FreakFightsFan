@@ -23,15 +23,15 @@ export class FederationService {
     return this.apiService.get<FederationDto>(`${this.url}/${id}`);
   }
 
-  createFederation(command: CreateFederation.Command) {
+  createFederation(command: CreateFederation.Command): Observable<void> {
     return this.apiService.post(this.url, command);
   }
 
-  updateFederation(command: UpdateFederation.Command) {
+  updateFederation(command: UpdateFederation.Command): Observable<void> {
     return this.apiService.put(`${this.url}/${command.id}`, command);
   }
 
-  deleteFederation(id: number) {
+  deleteFederation(id: number): Observable<void> {
     return this.apiService.delete(`${this.url}/${id}`);
   }
 }
