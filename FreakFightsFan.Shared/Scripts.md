@@ -1,6 +1,19 @@
-﻿
-## Entity Framework Core Migrations
+﻿## Docker containers links
+- Api https (swagger): 
+	https://localhost:5001
+- Api http (swagger):  
+	http://localhost:5000
+- MSSQL database:
+	Host: localhost 
+	Port: 1433 
+	Database/Schema: FreakFightsFan
+	Username: sa
+	Password: Password1!
+	Server: freakfightsfan.database
+- Seq logs
+	http://localhost:8081
 
+## Entity Framework Core Migrations
 Remember to change ***MIGRATION_NAME*** 
 ``` 
 cd C:\Users\bartl\source\repos\FreakFightsFan\FreakFightsFan.Api
@@ -15,9 +28,6 @@ docker compose up -d
 docker ps
 ``` 
 
-## Seq logs url
-http://localhost:8081
-
 ## .http files bug
 1. Open %temp% folder
 2. Close Visual Studio 2022
@@ -25,7 +35,6 @@ http://localhost:8081
 4. .http files should work
 
 ## FreakFightsFan.FeatureGenerator
-
 CLI app used to generate simple CRUD code in folders for a named feature
 1. Generate feature code with FeatureGenerator (select FreakFightsFan.FeatureGenerator for a starting project). Enter a name for a new featue.
 2. Add new entity DbSet to "AppDbContext.cs" file

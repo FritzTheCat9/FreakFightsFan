@@ -27,16 +27,18 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "freakfightsfan.api");
+        options.RoutePrefix = string.Empty;
+    });
 }
-
-app.UseHttpsRedirection();
 
 app.UseMyLocalization()
    .UseExceptionMiddleware()
+   .AddEndpoints()
    .UseCORS()
-   .UseAuth()
-   .AddEndpoints();
+   .UseAuth();
 
 app.UseFileServer();
 
