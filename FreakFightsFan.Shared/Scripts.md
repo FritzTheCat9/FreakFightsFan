@@ -12,6 +12,10 @@
 	Server: freakfightsfan.database
 - Seq logs
 	http://localhost:8081
+- Blazor WASM https
+	https://localhost:6001
+- Blazor WASM http
+	http://localhost:6000
 
 ## Entity Framework Core Migrations
 Remember to change ***MIGRATION_NAME*** 
