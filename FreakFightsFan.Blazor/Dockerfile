@@ -17,4 +17,4 @@ EXPOSE 80
 EXPOSE 443
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot/ .
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./FreakFightsFan.Blazor/nginx.conf /etc/nginx/nginx.conf
