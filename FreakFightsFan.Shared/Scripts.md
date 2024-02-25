@@ -13,9 +13,9 @@
 - Seq logs
 	http://localhost:8081
 - Blazor WASM https
-	https://localhost:6001
+	https://localhost:7001
 - Blazor WASM http
-	http://localhost:6000
+	http://localhost:7000
 
 ## Entity Framework Core Migrations
 Remember to change ***MIGRATION_NAME*** 
