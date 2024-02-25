@@ -17,6 +17,20 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      
+  freakfightsfan.blazor:
+    image: ${DOCKER_REGISTRY-}freakfightsfanblazor
+    container_name: freakfightsfan.blazor
+    build:
+      context: .
+      dockerfile: FreakFightsFan.Blazor/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=7000
+      - ASPNETCORE_HTTPS_PORTS=7001
+    ports:
+      - 7000:80
+      - 7001:443
 
   freakfightsfan.database:
     image: mcr.microsoft.com/mssql/server:latest

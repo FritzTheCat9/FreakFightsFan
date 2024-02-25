@@ -4,7 +4,7 @@
     {
         public static IServiceCollection AddApiClients(this IServiceCollection services)
         {
-            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001") });
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5000") });
 
             services.AddScoped<IApiClient, ApiClient>();
             services.AddScoped<IFederationApiClient, FederationApiClient>();
