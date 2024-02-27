@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images_default\**" />
+    <Content Remove="wwwroot\images_default\**" />
+    <EmbeddedResource Remove="wwwroot\images_default\**" />
+    <None Remove="wwwroot\images_default\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="FluentValidation" Version="11.8.0" />
@@ -40,10 +47,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FreakFightsFan.Shared\FreakFightsFan.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images_default\" />
   </ItemGroup>
 
 </Project>

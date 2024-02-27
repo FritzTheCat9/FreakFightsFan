@@ -1,4 +1,6 @@
-﻿namespace FreakFightsFan.Api.Extensions
+﻿using Microsoft.Extensions.Configuration;
+
+namespace FreakFightsFan.Shared.Extensions
 {
     public static class OptionsExtensions
     {

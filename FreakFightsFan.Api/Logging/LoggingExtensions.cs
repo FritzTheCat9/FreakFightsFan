@@ -1,4 +1,4 @@
-﻿using FreakFightsFan.Api.Extensions;
+﻿using FreakFightsFan.Shared.Extensions;
 using Serilog;
 
 namespace FreakFightsFan.Api.Logging

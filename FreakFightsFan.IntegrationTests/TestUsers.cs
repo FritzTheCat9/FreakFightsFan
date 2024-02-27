@@ -15,7 +15,7 @@ namespace FreakFightsFan.IntegrationTests
             public SuperAdmin()
             {
                 Email = "freakfightsfan@gmail.com";
-                Password = "Asd123!";
+                Password = "AQAAAAIAAYagAAAAECWFTp9uY78qPzaRu0d3uaJNo3WOlRpwCuCyDLH+yg/TowsjzlMGxMurTnvyZaYSxA==";
             }
 
             public IEnumerator<object[]> GetEnumerator()
@@ -36,7 +36,7 @@ namespace FreakFightsFan.IntegrationTests
             public Admin()
             {
                 Email = "freakfightsfan1@gmail.com";
-                Password = "Asd123!";
+                Password = "AQAAAAIAAYagAAAAECWFTp9uY78qPzaRu0d3uaJNo3WOlRpwCuCyDLH+yg/TowsjzlMGxMurTnvyZaYSxA==";
             }
 
             public IEnumerator<object[]> GetEnumerator()
@@ -57,7 +57,7 @@ namespace FreakFightsFan.IntegrationTests
             public User()
             {
                 Email = "freakfightsfan2@gmail.com";
-                Password = "Asd123!";
+                Password = "AQAAAAIAAYagAAAAECWFTp9uY78qPzaRu0d3uaJNo3WOlRpwCuCyDLH+yg/TowsjzlMGxMurTnvyZaYSxA==";
             }
 
             public IEnumerator<object[]> GetEnumerator()

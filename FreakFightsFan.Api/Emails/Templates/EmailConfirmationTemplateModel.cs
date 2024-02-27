@@ -1,14 +1,17 @@
-﻿namespace FreakFightsFan.Api.Emails.Templates
+﻿using FreakFightsFan.Api.Localization;
+using Microsoft.Extensions.Localization;
+
+namespace FreakFightsFan.Api.Emails.Templates
 {
     public class EmailConfirmationTemplateModel : BaseTemplateModel
     {
         public string UserName { get; set; }
         public string Link { get; set; }
 
-        public EmailConfirmationTemplateModel()
+        public EmailConfirmationTemplateModel(IStringLocalizer<EmailTranslation> localizer)
         {
-            Subject = "Email confirmation";
-            TemplateFileName = "EmailConfirmationTemplate.cshtml";
+            Subject = localizer[nameof(EmailTranslationString.EmailConfirmationSubject)];
+            TemplateFileName = localizer[nameof(EmailTranslationString.EmailConfirmationTemplateFileName)];
         }
     }
 }

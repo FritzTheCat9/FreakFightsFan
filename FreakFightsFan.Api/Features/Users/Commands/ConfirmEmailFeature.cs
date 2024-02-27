@@ -29,16 +29,19 @@ namespace FreakFightsFan.Api.Features.Users.Commands
         {
             private readonly IUserRepository _userRepository;
             private readonly IEmailService _emailService;
-            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
+            private readonly IStringLocalizer<ApiValidationMessage> _validationLocalizer;
+            private readonly IStringLocalizer<EmailTranslation> _emailLocalizer;
 
             public Handler(
                 IUserRepository userRepository,
                 IEmailService emailService,
-                IStringLocalizer<ApiValidationMessage> localizer)
+                IStringLocalizer<ApiValidationMessage> validationLocalizer,
+                IStringLocalizer<EmailTranslation> emailLocalizer)
             {
                 _userRepository = userRepository;
                 _emailService = emailService;
-                _localizer = localizer;
+                _validationLocalizer = validationLocalizer;
+                _emailLocalizer = emailLocalizer;
             }
 
             public async Task<bool> Handle(
@@ -47,23 +50,23 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
                     throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
-                        _localizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
+                        _validationLocalizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
 
                 if (user.EmailConfirmed)
                     throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
-                        _localizer[nameof(ApiValidationMessageString.EmailAlreadyConfirmed)]);
+                        _validationLocalizer[nameof(ApiValidationMessageString.EmailAlreadyConfirmed)]);
 
                 var isTokenAssignedToUser = await _userRepository.IsTokenAssignedToUser(user.Email, command.Token);
                 if (!isTokenAssignedToUser)
                     throw new MyValidationException(nameof(ConfirmEmail.Command.Token),
-                        _localizer[nameof(ApiValidationMessageString.TokenIsNotAssignedToThisUser)]);
+                        _validationLocalizer[nameof(ApiValidationMessageString.TokenIsNotAssignedToThisUser)]);
 
                 user.EmailConfirmed = true;
                 user.EmailConfirmationToken = null;
 
                 await _userRepository.Update(user);
 
-                await _emailService.SendEmail(user.Email, new EmailConfirmationSuccessfulTemplateModel
+                await _emailService.SendEmail(user.Email, new EmailConfirmationSuccessfulTemplateModel(_emailLocalizer)
                 {
                     UserName = user.UserName,
                 });

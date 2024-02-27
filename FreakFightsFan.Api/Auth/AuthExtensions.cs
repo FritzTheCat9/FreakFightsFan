@@ -1,5 +1,5 @@
 ﻿using FreakFightsFan.Api.Data.Entities;
-using FreakFightsFan.Api.Extensions;
+using FreakFightsFan.Shared.Extensions;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

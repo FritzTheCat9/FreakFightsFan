@@ -37,7 +37,8 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             private readonly IUserRepository _userRepository;
             private readonly IEmailService _emailService;
             private readonly IEmailConfirmationService _emailConfirmationService;
-            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
+            private readonly IStringLocalizer<ApiValidationMessage> _validationLocalizer;
+            private readonly IStringLocalizer<EmailTranslation> _emailLocalizer;
 
             public Handler(
                 IClock clock,
@@ -45,14 +46,16 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 IUserRepository userRepository,
                 IEmailService emailService,
                 IEmailConfirmationService emailConfirmationService,
-                IStringLocalizer<ApiValidationMessage> localizer)
+                IStringLocalizer<ApiValidationMessage> validationLocalizer,
+                IStringLocalizer<EmailTranslation> emailLocalizer)
             {
                 _clock = clock;
                 _passwordService = passwordService;
                 _userRepository = userRepository;
                 _emailService = emailService;
                 _emailConfirmationService = emailConfirmationService;
-                _localizer = localizer;
+                _validationLocalizer = validationLocalizer;
+                _emailLocalizer = emailLocalizer;
             }
 
             public async Task<int> Handle(
@@ -77,7 +80,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 
                 var userId = await _userRepository.Create(user);
 
-                await _emailService.SendEmail(user.Email, new EmailConfirmationTemplateModel
+                await _emailService.SendEmail(user.Email, new EmailConfirmationTemplateModel(_emailLocalizer)
                 {
                     UserName = command.UserName,
                     Link = _emailConfirmationService.GenerateConfirmationLink(user.Email, user.EmailConfirmationToken),
@@ -91,12 +94,12 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 var emailExists = await _userRepository.EmailExists(command.Email);
                 if (emailExists)
                     throw new MyValidationException(nameof(Register.Command.Email),
-                        _localizer[nameof(ApiValidationMessageString.EmailIsAlreadyTaken)]);
+                        _validationLocalizer[nameof(ApiValidationMessageString.EmailIsAlreadyTaken)]);
 
                 var userNameExists = await _userRepository.UserNameExists(command.UserName);
                 if (userNameExists)
                     throw new MyValidationException(nameof(Register.Command.UserName),
-                        _localizer[nameof(ApiValidationMessageString.UserNameIsAlreadyTaken)]);
+                        _validationLocalizer[nameof(ApiValidationMessageString.UserNameIsAlreadyTaken)]);
             }
         }
     }

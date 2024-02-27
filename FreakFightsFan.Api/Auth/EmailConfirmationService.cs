@@ -23,7 +23,7 @@ namespace FreakFightsFan.Api.Auth
         {
             _options = options.Value;
             _clock = clock;
-            _baseUrl = $"{_options.FrontendUrl}";
+            _baseUrl = _options.FrontendUrl;
         }
 
         public string GenerateEmailConfirmationToken(string email)

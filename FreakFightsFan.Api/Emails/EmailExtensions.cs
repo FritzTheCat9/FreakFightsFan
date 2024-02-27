@@ -1,4 +1,4 @@
-﻿using FreakFightsFan.Api.Extensions;
+﻿using FreakFightsFan.Shared.Extensions;
 
 namespace FreakFightsFan.Api.Emails
 {

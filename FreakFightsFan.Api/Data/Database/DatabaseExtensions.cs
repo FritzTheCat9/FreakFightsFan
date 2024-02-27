@@ -1,7 +1,7 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Data.Repositories;
-using FreakFightsFan.Api.Extensions;
+using FreakFightsFan.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FreakFightsFan.Api.Data

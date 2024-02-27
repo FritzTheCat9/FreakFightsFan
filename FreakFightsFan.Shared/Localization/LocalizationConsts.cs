@@ -10,7 +10,7 @@ namespace FreakFightsFan.Shared.Localization
 
         public static readonly Culture[] SupportedCultures = [
             new() { Country = "English", CultureInfo = new CultureInfo("en") },
-            new() { Country = "Polish", CultureInfo = new CultureInfo("pl") },
+            new() { Country = "Polski", CultureInfo = new CultureInfo("pl") },
         ];
     }
 

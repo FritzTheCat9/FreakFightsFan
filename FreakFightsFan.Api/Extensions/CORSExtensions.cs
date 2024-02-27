@@ -1,4 +1,5 @@
 ﻿using FreakFightsFan.Api.Auth;
+using FreakFightsFan.Shared.Extensions;
 
 namespace FreakFightsFan.Api.Extensions
 {
