@@ -41,6 +41,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                 .Include(x => x.Type)
                                 .Where(x => x.EventId == eventId)
                                 .OrderByDescending(x => x.OrderNumber)
+                                .AsSplitQuery()
                                 .AsQueryable();
 
         public async Task<IEnumerable<Fight>> GetAll()
@@ -56,6 +57,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                             .ThenInclude(x => x.Fighter)
                                                 .ThenInclude(x => x.Image)
                                       .Include(x => x.Type)
+                                      .AsSplitQuery()
                                       .ToListAsync();
 
 
@@ -74,6 +76,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                             .ThenInclude(x => x.Fighter)
                                                 .ThenInclude(x => x.Image)
                                       .Include(x => x.Type)
+                                      .AsSplitQuery()
                                       .ToListAsync();
 
         public async Task<Fight> Get(int id) 
@@ -89,6 +92,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                             .ThenInclude(x => x.Fighter)
                                                 .ThenInclude(x => x.Image)
                                       .Include(x => x.Type)
+                                      .AsSplitQuery()
                                       .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Fight fight)

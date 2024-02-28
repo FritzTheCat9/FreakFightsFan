@@ -29,6 +29,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                 .Include(x => x.Hall)
                                 .Include(x => x.Fights)
                                 .Where(x => x.FederationId == federationId)
+                                .AsSplitQuery()
                                 .AsQueryable();
 
         public async Task<IEnumerable<Event>> GetAll() 
@@ -36,6 +37,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                       .Include(x => x.City)
                                       .Include(x => x.Hall)
                                       .Include(x => x.Fights)
+                                      .AsSplitQuery()
                                       .ToListAsync();
 
         public async Task<Event> Get(int id) 
@@ -43,6 +45,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                       .Include(x => x.City)
                                       .Include(x => x.Hall)
                                       .Include(x => x.Fights)
+                                      .AsSplitQuery()
                                       .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Event myEvent)

@@ -62,8 +62,8 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
             {
                 SortOrder.Ascending => fighters.OrderBy(GetFighterSortProperty(query)),
                 SortOrder.Descending => fighters.OrderByDescending(GetFighterSortProperty(query)),
-                SortOrder.None => fighters,
-                _ => fighters,
+                SortOrder.None => fighters.OrderBy(x => x.LastName),
+                _ => fighters.OrderBy(x => x.LastName),
             };
         }
 

@@ -28,18 +28,21 @@ namespace FreakFightsFan.Api.Data.Repositories
             => _dbContext.Fighters.Include(x => x.Image)
                                   .Include(x => x.Teams)
                                   .Include(x => x.TeamFighters)
+                                  .AsSplitQuery()
                                   .AsQueryable();
 
         public async Task<IEnumerable<Fighter>> GetAll() 
             => await _dbContext.Fighters.Include(x => x.Image)
                                         .Include(x => x.Teams)
                                         .Include(x => x.TeamFighters)
+                                        .AsSplitQuery()
                                         .ToListAsync();
 
         public async Task<Fighter> Get(int id) 
             => await _dbContext.Fighters.Include(x => x.Image)
                                         .Include(x => x.Teams)
                                         .Include(x => x.TeamFighters)
+                                        .AsSplitQuery()
                                         .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<int> Create(Fighter fighter)

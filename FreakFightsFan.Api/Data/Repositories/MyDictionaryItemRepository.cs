@@ -33,6 +33,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                            .Include(x => x.Events_Halls)
                                            .Include(x => x.Fights_Types)
                                            .Where(x => x.DictionaryId == dictionaryId)
+                                           .AsSplitQuery()
                                            .AsQueryable();
 
         public async Task<IEnumerable<MyDictionaryItem>> GetAll() 
@@ -40,6 +41,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                                  .Include(x => x.Events_Cities)
                                                  .Include(x => x.Events_Halls)
                                                  .Include(x => x.Fights_Types)
+                                                 .AsSplitQuery()
                                                  .ToListAsync();
 
         public async Task<MyDictionaryItem> Get(int id) 
@@ -47,6 +49,7 @@ namespace FreakFightsFan.Api.Data.Repositories
                                                  .Include(x => x.Events_Cities)
                                                  .Include(x => x.Events_Halls)
                                                  .Include(x => x.Fights_Types)
+                                                 .AsSplitQuery()
                                                  .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<bool> DictionaryItemCodeExists(string code, int dictionaryId) 

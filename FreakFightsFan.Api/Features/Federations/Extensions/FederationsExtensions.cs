@@ -56,8 +56,8 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
             {
                 SortOrder.Ascending => federations.OrderBy(GetFederationSortProperty(query)),
                 SortOrder.Descending => federations.OrderByDescending(GetFederationSortProperty(query)),
-                SortOrder.None => federations,
-                _ => federations,
+                SortOrder.None => federations.OrderByDescending(x => x.Events.Count),
+                _ => federations.OrderByDescending(x => x.Events.Count),
             };
         }
 
