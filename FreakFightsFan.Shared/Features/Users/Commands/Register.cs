@@ -27,7 +27,6 @@ namespace FreakFightsFan.Shared.Features.Users.Commands
                     .EmailAddress()
                     .WithMessage(x => localizer[nameof(ValidationMessageString.EmailIsEmailAddress)]);
 
-
                 RuleFor(x => x.UserName)
                     .NotEmpty()
                     .WithMessage(x => localizer[nameof(ValidationMessageString.UserNameNotEmpty)])
