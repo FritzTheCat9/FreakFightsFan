@@ -41,7 +41,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             this IQueryable<MyDictionaryItem> dictionaryItems,
             GetAllMyDictionaryItems.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x => 
@@ -80,7 +80,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             this IQueryable<MyDictionaryItem> dictionaryItems,
             GetAllMyDictionaryItemsByCode.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
+
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
                     x.Name.ToLower().Contains(searchTerm)

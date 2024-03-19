@@ -38,7 +38,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
             this IQueryable<Federation> federations,
             GetAllFederations.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {

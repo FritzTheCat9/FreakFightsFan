@@ -36,7 +36,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             this IQueryable<MyDictionary> dictionaries,
             GetAllMyDictionaries.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {

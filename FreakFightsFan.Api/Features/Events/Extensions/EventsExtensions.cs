@@ -41,7 +41,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
             this IQueryable<Event> events,
             GetAllEvents.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {

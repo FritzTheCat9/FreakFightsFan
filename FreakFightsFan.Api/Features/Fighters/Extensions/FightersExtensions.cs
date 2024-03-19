@@ -41,7 +41,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
             this IQueryable<Fighter> fighters,
             GetAllFighters.Query query)
         {
-            var searchTerm = query.SearchTerm.ToLower().Trim();
+            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
