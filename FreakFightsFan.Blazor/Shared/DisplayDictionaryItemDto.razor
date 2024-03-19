@@ -1,4 +1,4 @@
-﻿@if (DictionaryItemDto != null)
+﻿@if (DictionaryItemDto is not null)
 {
     @DictionaryItemDto.Name
 }
@@ -6,8 +6,4 @@ else
 {
     @("-")
     ;
-}
-
-@code {
-    [Parameter] public MyDictionaryItemDto DictionaryItemDto { get; set; }
 }

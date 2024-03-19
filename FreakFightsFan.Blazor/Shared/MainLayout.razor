@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IStringLocalizer<App> Localizer
 
 <MudThemeProvider />
 <MudDialogProvider FullWidth="true" />
@@ -13,30 +12,21 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                       Color="Color.Inherit"
-                       Edge="Edge.Start"
-                       OnClick="DrawerToggle" />
+        <MudIconButton Icon=@Icons.Material.Filled.Menu
+                       Color=Color.Inherit
+                       Edge=Edge.Start
+                       OnClick=DrawerToggle />
         @Localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
         <Auth />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen">
+    <MudDrawer @bind-Open=_drawerOpen>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large"
+        <MudContainer MaxWidth=MaxWidth.Large
                       Style="margin-top: 20px;">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-@code {
-    private bool _drawerOpen = true;
-
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-}

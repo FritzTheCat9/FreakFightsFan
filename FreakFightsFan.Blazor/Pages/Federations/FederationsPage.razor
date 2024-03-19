@@ -1,0 +1,100 @@
+@page "/federations"
+@attribute [AllowAnonymous]
+
+<PageTitle>
+    @Localizer[nameof(AppStrings.Federations)]
+</PageTitle>
+
+<FritzBreadcrumbs Items=_items />
+
+<MudTable ServerData=ServerReload
+          Dense=true
+          Hover=true
+          @ref=_table
+          Context="federation">
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>
+            @Localizer[nameof(AppStrings.Federations)]
+        </MudText>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudIconButton Icon=@Icons.Material.Filled.Add
+                           Size=Size.Small
+                           OnClick=CreateFederation />
+        </AuthorizeView>
+        <MudSpacer />
+        <FritzSearchTextField @bind-Value=_searchString
+                              OnSearch="() => _table.ReloadServerData()" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Image)]
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T=FederationDto>
+                @Localizer[nameof(AppStrings.Name)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Events)]
+        </MudTh>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudTh>
+                @Localizer[nameof(AppStrings.Actions)]
+            </MudTh>
+        </AuthorizeView>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            @if (federation.Image != null)
+            {
+                <MudLink Href=@federation.Image.Url
+                         Target="_blank">
+                    <MudImage Src=@federation.Image.Url
+                              ObjectFit=ObjectFit.Contain
+                              Width=200
+                              Height=150
+                              Alt=@Localizer[nameof(AppStrings.Image)] />
+                </MudLink>
+            }
+            else
+            {
+                <MudText>
+                    -
+                </MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="Name">
+            @federation.Name
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon=@Icons.Material.Filled.List
+                           Size=Size.Small
+                           OnClick="() => RedirectToEventsPage(federation.Id)" />
+        </MudTd>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudTd>
+                <MudIconButton Icon=@Icons.Material.Filled.Edit
+                               Size=Size.Small
+                               OnClick="() => UpdateFederation(federation)" />
+                <MudIconButton Icon=@Icons.Material.Filled.Delete
+                               Size=Size.Small
+                               OnClick="() => DeleteFederation(federation.Id)" />
+            </MudTd>
+        </AuthorizeView>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
+                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+    </PagerContent>
+</MudTable>

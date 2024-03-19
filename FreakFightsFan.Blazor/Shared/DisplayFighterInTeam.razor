@@ -1,60 +1,47 @@
-﻿@inject NavigationManager NavigationManager
-@inject IStringLocalizer<App> Localizer
-
-@if (FighterInTeam.Fighter != null)
+﻿@if (FighterInTeam.Fighter is not null)
 {
-    <MudStack Justify="Justify.Center"
-              Spacing="1">
+    <MudStack Justify=Justify.Center
+              Spacing=1>
         @if (!string.IsNullOrEmpty(FighterInTeam.Fighter.Image?.Url))
         {
             <MudLink Class="align-self-center"
-                     Href="@FighterInTeam.Fighter.Image.Url"
+                     Href=@FighterInTeam.Fighter.Image.Url
                      Target="_blank">
-                <MudImage Src="@FighterInTeam.Fighter.Image.Url"
-                          ObjectFit="ObjectFit.Contain"
-                          Fluid="true"
-                          Alt="@Localizer[nameof(AppStrings.Image)]"
+                <MudImage Src=@FighterInTeam.Fighter.Image.Url
+                          ObjectFit=ObjectFit.Contain
+                          Fluid=true
+                          Alt=@Localizer[nameof(AppStrings.Image)]
                           Style="max-height: 250px;" />
             </MudLink>
         }
         else
         {
             <MudImage Src="images_default/default_user_image.png"
-                      ObjectFit="ObjectFit.Contain"
-                      Fluid="true"
-                      Alt="@Localizer[nameof(AppStrings.Image)]"
+                      ObjectFit=ObjectFit.Contain
+                      Fluid=true
+                      Alt=@Localizer[nameof(AppStrings.Image)]
                       Style="max-height: 250px;" />
         }
-        <div onclick="@(() => RedirectToFighterProfile(FighterInTeam.Fighter.Id))"
+        <div onclick=@(() => RedirectToFighterProfile(FighterInTeam.Fighter.Id))
              style="cursor: pointer;">
-            <MudText Typo="Typo.subtitle1"
+            <MudText Typo=Typo.subtitle1
                      Class="align-self-center"
                      Style="font-weight: bold; text-align: center;">
                 @FighterInTeam.Fighter.Nickname.ToUpper()
             </MudText>
-            <MudText Typo="Typo.subtitle2"
+            <MudText Typo=Typo.subtitle2
                      Class="align-self-center"
                      Style="text-align: center;">
                 @FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()
             </MudText>
         </div>
-        <MudPaper Style="@($"background:{FighterHelpers.GetFightResultColor(FighterInTeam.FightResult)};")"
-                  Square="true">
-            <MudText Typo="Typo.subtitle2"
+        <MudPaper Style=@($"background:{FighterHelpers.GetFightResultColor(FighterInTeam.FightResult)};")
+                  Square=true>
+            <MudText Typo=Typo.subtitle2
                      Class="align-self-center"
                      Style="text-align: center;">
                 @FighterInTeam.FightResult.ToText().ToUpper()
             </MudText>
         </MudPaper>
     </MudStack>
-}
-
-
-@code {
-    [Parameter] public FighterInTeamDto FighterInTeam { get; set; }
-
-    private void RedirectToFighterProfile(int fighterId)
-    {
-        NavigationManager.NavigateTo($"/fighter/{fighterId}");
-    }
 }

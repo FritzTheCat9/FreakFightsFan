@@ -1,10 +1,6 @@
-﻿<MudStack Spacing="1">
+﻿<MudStack Spacing=1>
     @foreach (var fighter in TeamDto.FighterInTeams)
     {
-        <DisplayFighterInTeam FighterInTeam="fighter" />
+        <DisplayFighterInTeam FighterInTeam=fighter />
     }
 </MudStack>
-
-@code {
-    [Parameter] public TeamDto TeamDto { get; set; }
-}

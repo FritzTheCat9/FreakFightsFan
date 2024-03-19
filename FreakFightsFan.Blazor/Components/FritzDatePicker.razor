@@ -1,14 +1,7 @@
 ﻿@inherits MudDatePicker
 
-<MudDatePicker Date="Date"
-               DateChanged="OnDateChanged"
-               For="For"
-               Label="@Label"
-               Editable="true" />
-
-@code {
-    private void OnDateChanged(DateTime? value)
-    {
-        SetDateAsync(value, updateValue: true);
-    }
-}
+<MudDatePicker Date=Date
+               DateChanged=OnDateChanged
+               For=For
+               Label=@Label
+               Editable=true />

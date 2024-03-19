@@ -1,0 +1,72 @@
+﻿@page "/dictionary/{DictionaryId:int}"
+@attribute [Authorize(Policy = Policy.Admin)]
+
+<PageTitle>
+    @Localizer[nameof(AppStrings.DictionaryItems)]
+</PageTitle>
+
+<FritzBreadcrumbs Items=_items />
+
+<MudTable ServerData=ServerReload
+          @ref=_table
+          Dense=true
+          Hover=true>
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>
+            @Localizer[nameof(AppStrings.DictionaryItems)]
+        </MudText>
+        <MudIconButton Icon=@Icons.Material.Filled.Add
+                       Size=Size.Small
+                       OnClick=CreateDictionaryItem />
+        <MudSpacer />
+        <FritzSearchTextField @bind-Value=_searchString
+                              OnSearch="() => _table.ReloadServerData()" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T=MyDictionaryItemDto>
+                @Localizer[nameof(AppStrings.Name)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="code"
+                               T=MyDictionaryItemDto>
+                @Localizer[nameof(AppStrings.Code)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Actions)]
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Code">
+            @context.Code
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon=@Icons.Material.Filled.Edit
+                           Size=Size.Small
+                           OnClick="() => UpdateDictionaryItem(context)" />
+            <MudIconButton Icon=@Icons.Material.Filled.Delete
+                           Size=Size.Small
+                           OnClick="() => DeleteDictionaryItem(context.Id)" />
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
+                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+    </PagerContent>
+</MudTable>

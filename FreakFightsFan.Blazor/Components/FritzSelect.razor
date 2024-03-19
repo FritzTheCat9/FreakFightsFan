@@ -1,18 +1,18 @@
 ﻿@typeparam T
 @inherits MudSelect<T>
 
-<MudSelect T="T"
-           Value="Value"
-           SelectedValuesChanged="OnSelectedValuesChanged"
-           For="For"
-           Label="@Label"
-           MultiSelection="false">
+<MudSelect T=T
+           Value=Value
+           SelectedValuesChanged=OnSelectedValuesChanged
+           For=For
+           Label=@Label
+           MultiSelection=false>
     @if (ItemsToSelect is not null)
     {
         @foreach (var item in ItemsToSelect)
         {
-            <MudSelectItem T="T"
-                           Value="item" />
+            <MudSelectItem T=T
+                           Value=item />
         }
     }
     else
@@ -20,15 +20,3 @@
         @ChildContent
     }
 </MudSelect>
-
-@code {
-    [Parameter] public List<T> ItemsToSelect { get; set; } = [];
-    [Parameter] public EventCallback<T> OnSelect { get; set; }
-
-    private async Task OnSelectedValuesChanged(IEnumerable<T> value)
-    {
-        var selected = value.FirstOrDefault();
-        await SetValueAsync(selected);
-        await OnSelect.InvokeAsync(selected);
-    }
-}

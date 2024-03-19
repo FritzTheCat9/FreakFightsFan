@@ -1,0 +1,117 @@
+@page "/fights/{FederationId:int}/{EventId:int}"
+@attribute [AllowAnonymous]
+
+<PageTitle>
+    @Localizer[nameof(AppStrings.Fights)]
+</PageTitle>
+
+<FritzBreadcrumbs Items=_items />
+
+<AuthorizeView Policy=@Policy.Admin>
+    <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;"
+              Class="rounded-0"
+              Elevation=0>
+        <MudStack Row=true
+                  Justify=Justify.FlexStart>
+            <MudIconButton Icon=@Icons.Material.Filled.Add
+                           Size=Size.Small
+                           OnClick=CreateFight />
+        </MudStack>
+    </MudPaper>
+</AuthorizeView>
+
+@if (_event is not null)
+{
+    <MudStack AlignItems=AlignItems.Center
+              Style="margin: 0px 0px 40px 0px;">
+        <MudText Typo=Typo.h4>
+            @_event.Name
+        </MudText>
+        <MudText Typo=Typo.h5>
+            @(_event.Date.ToString("dd/MM/yyyy") + ", ")
+            <DisplayDictionaryItemDto DictionaryItemDto=_event.Hall />
+            @(" ")
+            <DisplayDictionaryItemDto DictionaryItemDto=_event.City />
+        </MudText>
+    </MudStack>
+}
+
+@if (_myFights == null)
+{
+    <MudText>
+        @Localizer[nameof(AppStrings.Loading)]
+    </MudText>
+}
+else if (_myFights.Count == 0)
+{
+    <MudText>
+        @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+    </MudText>
+}
+else
+{
+    <MudCard>
+        <MudStack Justify=Justify.Center
+                  Spacing=0>
+            @foreach (var fight in _myFights)
+            {
+                <MudPaper Style="padding: 10px 10px; background: #888;"
+                          Class="rounded-0"
+                          Elevation=0>
+                    <MudStack Row=true
+                              Justify=Justify.FlexEnd>
+                        <MudIconButton Icon=@Icons.Material.Filled.OndemandVideo
+                                       Size=Size.Small
+                                       OnClick="() => RedirectToVideo(fight)"
+                                       Disabled=string.IsNullOrEmpty(fight.VideoUrl) />
+                        <AuthorizeView Policy=@Policy.Admin>
+                            <MudIconButton Icon=@Icons.Material.Filled.Edit
+                                           Size=Size.Small
+                                           OnClick="() => UpdateFight(fight)" />
+                            <MudIconButton Icon=@Icons.Material.Filled.Delete
+                                           Size=Size.Small
+                                           OnClick="() => DeleteFight(fight.Id)" />
+                            <MudIconButton Icon=@Icons.Material.Filled.ArrowDownward
+                                           Size=Size.Small
+                                           OnClick="() => MoveFight(fight.Id, MoveDirection.Downwards)"
+                                           Disabled=@(fight.OrderNumber <= 1) />
+                            <MudIconButton Icon=@Icons.Material.Filled.ArrowUpward
+                                           Size=Size.Small
+                                           OnClick="() => MoveFight(fight.Id, MoveDirection.Upwards)"
+                                           Disabled=@(fight.OrderNumber >= _myFights.Count()) />
+                        </AuthorizeView>
+                    </MudStack>
+                </MudPaper>
+                <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;"
+                          Class="rounded-0"
+                          Elevation=0>
+                    <MudStack AlignItems=AlignItems.Center
+                              Style="margin-bottom: 20px;">
+                        <MudText Typo=Typo.h5>
+                            <DisplayDictionaryItemDto DictionaryItemDto=fight.Type />
+                            @(" ")
+                        </MudText>
+                    </MudStack>
+                    <MudStack Row=true
+                              Justify=Justify.SpaceEvenly>
+                        @foreach (var team in fight.Teams)
+                        {
+                            <MudPaper Class="rounded-0"
+                                      Elevation=1
+                                      Style="padding: 5px 5px 5px 5px;">
+                                @if (team.FighterInTeams.Count == 1)
+                                {
+                                    <DisplayFighterInTeam FighterInTeam=team.FighterInTeams.FirstOrDefault() />
+                                }
+                                else
+                                {
+                                    <DisplayTeam TeamDto=team />
+                                }
+                            </MudPaper>
+                        }
+                    </MudStack>
+                </MudPaper>
+            }
+        </MudStack>
+    </MudCard>
+}

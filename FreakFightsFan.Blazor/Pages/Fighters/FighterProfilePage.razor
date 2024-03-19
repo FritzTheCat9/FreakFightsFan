@@ -1,0 +1,168 @@
+﻿@page "/fighter/{FighterId:int}"
+@attribute [AllowAnonymous]
+
+@if (_fighter is not null)
+{
+    <MudStack AlignItems=AlignItems.Center
+              Style="margin: 0px 0px 40px 0px;">
+        @if (!string.IsNullOrEmpty(_fighter.Image?.Url))
+        {
+            <MudLink Class="align-self-center"
+                     Href=@_fighter.Image.Url
+                     Target="_blank">
+                <MudImage Src=@_fighter.Image.Url
+                          ObjectFit=ObjectFit.Contain
+                          Fluid=true
+                          Alt=@Localizer[nameof(AppStrings.Image)]
+                          Style="max-height: 250px;" />
+            </MudLink>
+        }
+        else
+        {
+            <MudImage Src="images_default/default_user_image.png"
+                      ObjectFit=ObjectFit.Contain
+                      Fluid=true
+                      Alt=@Localizer[nameof(AppStrings.Image)]
+                      Style="max-height: 250px;" />
+        }
+        <MudText Typo=Typo.h4>
+            @_fighter.FirstName @_fighter.LastName
+        </MudText>
+        <MudText Typo=Typo.h4>
+            @_fighter.Nickname
+        </MudText>
+        @if (!string.IsNullOrEmpty(_fighter.InstagramUrl))
+        {
+            <MudStack Row=true
+                      Spacing=2>
+                <MudImage Src="images_default/instagram.png"
+                          Alt=@Localizer[nameof(AppStrings.Image)]
+                          Style="height: 30px; width: 30px" />
+                <MudLink Typo=Typo.h5
+                         Href=@_fighter.InstagramUrl
+                         Color=Color.Primary
+                         Target="_blank">
+                    @InstagramUrlToNickname(_fighter.InstagramUrl)
+                </MudLink>
+            </MudStack>
+        }
+    </MudStack>
+}
+
+@if (_profile is not null)
+{
+    <MudStack Row=true
+              Justify=Justify.SpaceEvenly
+              AlignItems=AlignItems.Center
+              Style="background: #E0E0E0; padding: 30px 10px 10px 10px">
+        <MudStack Spacing=1>
+            <MudText Typo=Typo.subtitle1
+                     Style=@($"color:{Colors.Grey.Darken4}; font-weight: 500;")>
+                @Localizer[nameof(AppStrings.Wins)]: @_profile.Stats.Win
+            </MudText>
+            <MudText Typo=Typo.subtitle1
+                     Style=@($"color:{Colors.Grey.Darken4}; font-weight: 500;")>
+                @Localizer[nameof(AppStrings.Losses)]: @_profile.Stats.Loss
+            </MudText>
+            <MudText Typo=Typo.subtitle1
+                     Style=@($"color:{Colors.Grey.Darken4}; font-weight: 500;")>
+                @Localizer[nameof(AppStrings.Draws)]: @_profile.Stats.Draw
+            </MudText>
+            <MudText Typo=Typo.subtitle1
+                     Style=@($"color:{Colors.Grey.Darken4}; font-weight: 500;")>
+                @Localizer[nameof(AppStrings.NoContest)]: @_profile.Stats.NoContest
+            </MudText>
+        </MudStack>
+        <MudChart ChartType=ChartType.Pie
+                  InputData=_data
+                  InputLabels=_labels
+                  Width="150px"
+                  Height="150px"
+                  LegendPosition=Position.Bottom
+                  ChartOptions=_chartOptions />
+    </MudStack>
+}
+
+@if (_profile?.ProfileFights is null)
+{
+    <MudText>
+        @Localizer[nameof(AppStrings.Loading)]
+    </MudText>
+}
+else if (_profile?.ProfileFights.Count == 0)
+{
+    <MudText>
+        @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+    </MudText>
+}
+else
+{
+    @foreach (var profileFight in _profile.ProfileFights)
+    {
+        <MudPaper Style="background: #888;"
+                  Class="rounded-0"
+                  Elevation=0>
+            <MudStack Row=true
+                      Spacing=2>
+                <MudItem Style=@($"padding: 16px 16px; background:{FighterHelpers.GetFightResultColor(profileFight.FightResult)};")>
+                    <MudText Typo=Typo.subtitle1
+                             Style=@($"color:{Colors.Grey.Darken4}; font-weight: 500;")>
+                        @profileFight.FightResult.ToText().ToUpper()
+                    </MudText>
+                </MudItem>
+                <MudItem Class="flex-auto">
+                    <MudStack Row=true
+                              Justify=Justify.SpaceBetween
+                              AlignItems=AlignItems.End>
+                        <MudText Typo=Typo.h6
+                                 Style=@($"color:{Colors.Grey.Darken4};")>
+                            @profileFight.Fight.Event.Name
+                        </MudText>
+                        <MudIconButton Class="align-self-center"
+                                       Style="margin: 0px 10px;"
+                                       Icon=@Icons.Material.Filled.OndemandVideo
+                                       Size=Size.Small
+                                       OnClick="() => RedirectToVideo(profileFight.Fight)"
+                                       Disabled=string.IsNullOrEmpty(profileFight.Fight.VideoUrl) />
+                    </MudStack>
+                    <MudText Typo=Typo.subtitle1
+                             Style=@($"color:{Colors.Grey.Darken4};")>
+                        @(profileFight.Fight.Event.Date.ToString("dd/MM/yyyy") + ", ")
+                        <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Event.Hall />
+                        @(" ")
+                        <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Event.City />
+                    </MudText>
+                </MudItem>
+            </MudStack>
+        </MudPaper>
+        <MudPaper Style="margin: 0px 0px 0px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;"
+                  Class="rounded-0"
+                  Elevation=0>
+            <MudStack AlignItems=AlignItems.Center
+                      Style="margin-bottom: 20px;">
+                <MudText Typo=Typo.h5>
+                    <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Type />
+                    @(" ")
+                </MudText>
+            </MudStack>
+            <MudStack Row=true
+                      Justify=Justify.SpaceEvenly>
+                @foreach (var team in profileFight.Fight.Teams)
+                {
+                    <MudPaper Class="rounded-0"
+                              Elevation=1
+                              Style="padding: 5px 5px 5px 5px;">
+                        @if (team.FighterInTeams.Count == 1)
+                        {
+                            <DisplayFighterInTeam FighterInTeam=team.FighterInTeams.FirstOrDefault() />
+                        }
+                        else
+                        {
+                            <DisplayTeam TeamDto=team />
+                        }
+                    </MudPaper>
+                }
+            </MudStack>
+        </MudPaper>
+    }
+}

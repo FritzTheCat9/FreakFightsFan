@@ -1,26 +1,13 @@
-﻿@using System.Net.Http
-@using System.Net.Http.Json
-@using System.Web
-@using System.Security.Claims
-@using System.Linq.Expressions
-@using System.Net
-@using System.Globalization
-
-@using Microsoft.AspNetCore.Components.Forms
+﻿@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Web.Virtualization
-@using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.JSInterop
-@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
 
-@using FreakFightsFan.Blazor
-@using FreakFightsFan.Blazor.Auth
-@using FreakFightsFan.Blazor.Clients
+@using MudBlazor
+@using Blazored.FluentValidation
+
 @using FreakFightsFan.Blazor.Components
-@using FreakFightsFan.Blazor.Exceptions
 @using FreakFightsFan.Blazor.Localization
 @using FreakFightsFan.Blazor.Pages.Error
 @using FreakFightsFan.Blazor.Pages.Fighters
@@ -28,41 +15,14 @@
 @using FreakFightsFan.Blazor.Shared
 
 @using FreakFightsFan.Shared.Abstractions
-@using FreakFightsFan.Shared.Exceptions
-@using FreakFightsFan.Shared.Features.Dictionaries.Commands
 @using FreakFightsFan.Shared.Features.Dictionaries.Helpers
-@using FreakFightsFan.Shared.Features.Dictionaries.Queries
 @using FreakFightsFan.Shared.Features.Dictionaries.Responses
-@using FreakFightsFan.Shared.Features.DictionaryItems.Commands
-@using FreakFightsFan.Shared.Features.DictionaryItems.Queries
 @using FreakFightsFan.Shared.Features.DictionaryItems.Responses
-@using FreakFightsFan.Shared.Features.Events.Commands
-@using FreakFightsFan.Shared.Features.Events.Queries
 @using FreakFightsFan.Shared.Features.Events.Responses
-@using FreakFightsFan.Shared.Features.Federations.Commands
-@using FreakFightsFan.Shared.Features.Federations.Queries
 @using FreakFightsFan.Shared.Features.Federations.Responses
-@using FreakFightsFan.Shared.Features.Fighters.Commands
-@using FreakFightsFan.Shared.Features.Fighters.Queries
 @using FreakFightsFan.Shared.Features.Fighters.Responses
-@using FreakFightsFan.Shared.Features.Fights.Commands
 @using FreakFightsFan.Shared.Features.Fights.Helpers
-@using FreakFightsFan.Shared.Features.Fights.Queries
-@using FreakFightsFan.Shared.Features.Fights.Responses
-@using FreakFightsFan.Shared.Features.Images.Commands
-@using FreakFightsFan.Shared.Features.Images.Helpers
-@using FreakFightsFan.Shared.Features.Images.Queries
 @using FreakFightsFan.Shared.Features.Images.Responses
-@using FreakFightsFan.Shared.Features.Teams.Queries
-@using FreakFightsFan.Shared.Features.Teams.Responses
-@using FreakFightsFan.Shared.Features.Users.Commands
 @using FreakFightsFan.Shared.Features.Users.Helpers
-@using FreakFightsFan.Shared.Features.Users.Queries
 @using FreakFightsFan.Shared.Features.Users.Responses
 @using FreakFightsFan.Shared.Localization
-
-@using MudBlazor
-
-@using Blazored.LocalStorage
-@using Blazored.FluentValidation
-@using FluentValidation

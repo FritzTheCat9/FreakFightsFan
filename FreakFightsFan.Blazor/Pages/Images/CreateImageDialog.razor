@@ -1,48 +1,20 @@
-@inject IImageApiClient ImageApiClient
-@inject IExceptionHandler ExceptionHandler
-@inject IStringLocalizer<App> Localizer
-
-<EditForm Model="Command"
-          OnValidSubmit="HandleValidSubmit">
-    <CustomValidator @ref="CustomValidator" />
+<EditForm Model=Command
+          OnValidSubmit=HandleValidSubmit>
+    <CustomValidator @ref=_customValidator />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+    <MudDialog DefaultFocus=DefaultFocus.LastChild>
         <DialogContent>
-            <FritzFileInput @bind-Value="Command.ImageBase64"
+            <FritzFileInput @bind-Value=Command.ImageBase64
                             For="() => Command.ImageBase64"
-                            OnImageBase64Changed="(image) => Command.ImageBase64 = image" />
+                            OnImageBase64Changed=@((image) => Command.ImageBase64 = image) />
             <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit"
-                       Color="Color.Primary">
+            <MudButton ButtonType=ButtonType.Submit
+                       Color=Color.Primary>
                 @Localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
-
-@code {
-    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateImage.Command Command { get; set; } = new();
-
-    private CustomValidator CustomValidator = new();
-
-    private async Task HandleValidSubmit()
-    {
-        try
-        {
-            await ImageApiClient.CreateImage(Command);
-            MudDialog.Close(DialogResult.Ok(true));
-        }
-        catch (MyValidationException validationException)
-        {
-            CustomValidator.DisplayErrors(validationException.Errors);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-        }
-    }
-}

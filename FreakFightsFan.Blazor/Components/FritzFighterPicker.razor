@@ -1,90 +1,25 @@
 ﻿@inherits MudAutocomplete<FighterDto>
-@inject IFighterApiClient FighterApiClient
-@inject IExceptionHandler ExceptionHandler
-@inject IStringLocalizer<App> Localizer
 
-<MudAutocomplete @ref="Autocomplete"
-                 T="FighterDto"
-                 Value="Value"
-                 ValueChanged="OnValueChanged"
-                 Label="@Label"
-                 For="For"
-                 SearchFuncWithCancel="Search"
-                 ToStringFunc="DisplayFighter"
-                 Variant="Variant.Text"
-                 ShowProgressIndicator="true"
-                 SelectValueOnTab="true"
-                 ResetValueOnEmptyText="true"
-                 FullWidth="true"
-                 OnlyValidateIfDirty="true">
+<MudAutocomplete @ref=_autocomplete
+                 T=FighterDto
+                 Value=Value
+                 ValueChanged=OnValueChanged
+                 Label=@Label
+                 For=For
+                 SearchFuncWithCancel=Search
+                 ToStringFunc=_displayFighter
+                 Variant=Variant.Text
+                 ShowProgressIndicator=true
+                 SelectValueOnTab=true
+                 ResetValueOnEmptyText=true
+                 FullWidth=true
+                 OnlyValidateIfDirty=true>
     <NoItemsTemplate>
         <MudText>
             @Localizer[nameof(AppStrings.NoFightersFound)]
         </MudText>
     </NoItemsTemplate>
     <ItemTemplate Context="item">
-        <DisplayFighterListItem Fighter="item" />
+        <DisplayFighterListItem Fighter=item />
     </ItemTemplate>
 </MudAutocomplete>
-
-@code {
-    [Parameter] public List<CreateFight.TeamHelperModel> Teams { get; set; } = [];
-
-    private Func<FighterDto, string> DisplayFighter = fighter
-        => fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
-
-    private MudAutocomplete<FighterDto> Autocomplete;
-
-    public async Task Focus()
-    {
-        await Autocomplete.FocusAsync();
-    }
-
-    private async Task OnValueChanged(FighterDto value)
-    {
-        await SelectOption(value);
-    }
-
-    private async Task<IEnumerable<FighterDto>> Search(string value, CancellationToken token)
-    {
-        PagedList<FighterDto> FightersPagedList = null;
-
-        var query = new GetAllFighters.Query
-            {
-                Page = 1,
-                PageSize = 10,
-                SortColumn = "name",
-                SortOrder = SortOrder.Ascending,
-                SearchTerm = value ?? "",
-                HiddenFightersIds = GetHiddenFightersIds(),
-            };
-
-        try
-        {
-            FightersPagedList = await FighterApiClient.GetAllFighters(query);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-            return [];
-        }
-
-        return FightersPagedList.Items;
-    }
-
-    private List<int> GetHiddenFightersIds()
-    {
-        var fightersToHide = new List<int>();
-
-        foreach (var team in Teams)
-        {
-            foreach (var fighter in team.Fighters)
-            {
-                if (!fightersToHide.Contains(fighter.Fighter.Id))
-                    fightersToHide.Add(fighter.Fighter.Id);
-            }
-        }
-
-        return fightersToHide;
-    }
-}

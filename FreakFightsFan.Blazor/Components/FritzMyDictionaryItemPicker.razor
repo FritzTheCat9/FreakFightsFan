@@ -1,69 +1,21 @@
 ﻿@inherits MudAutocomplete<MyDictionaryItemDto>
-@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
-@inject IExceptionHandler ExceptionHandler
-@inject IStringLocalizer<App> Localizer
 
-<MudAutocomplete T="MyDictionaryItemDto"
-                 Value="Value"
-                 ValueChanged="OnDictionaryItemChanged"
-                 For="For"
-                 Label="@Label"
-                 SearchFuncWithCancel="Search"
-                 ToStringFunc="DisplayDictionaryItem"
-                 Variant="Variant.Text"
-                 ShowProgressIndicator="true"
-                 SelectValueOnTab="true"
-                 ResetValueOnEmptyText="true"
-                 FullWidth="true"
-                 OnlyValidateIfDirty="true">
+<MudAutocomplete T=MyDictionaryItemDto
+                 Value=Value
+                 ValueChanged=OnDictionaryItemChanged
+                 For=For
+                 Label=@Label
+                 SearchFuncWithCancel=Search
+                 ToStringFunc=DisplayDictionaryItem
+                 Variant=Variant.Text
+                 ShowProgressIndicator=true
+                 SelectValueOnTab=true
+                 ResetValueOnEmptyText=true
+                 FullWidth=true
+                 OnlyValidateIfDirty=true>
     <NoItemsTemplate>
         <MudText>
             @Localizer[nameof(AppStrings.NoDictionaryItemsFound), DictionaryCode]
         </MudText>
     </NoItemsTemplate>
 </MudAutocomplete>
-
-@code {
-    [Parameter, EditorRequired] public string DictionaryCode { get; set; }
-    [Parameter] public EventCallback<MyDictionaryItemDto> OnItemChanged { get; set; }
-
-    private Func<MyDictionaryItemDto, string> DisplayDictionaryItem => item => item?.Name;
-
-    private async Task OnDictionaryItemChanged(MyDictionaryItemDto value)
-    {
-        await SelectOption(value);
-        await OnItemChanged.InvokeAsync(value);
-    }
-
-    private async Task<IEnumerable<MyDictionaryItemDto>> Search(string value, CancellationToken token)
-    {
-        return await ReturnMyDictionaryItems(value, DictionaryCode);
-    }
-
-    private async Task<IEnumerable<MyDictionaryItemDto>> ReturnMyDictionaryItems(string value, string dictionaryCode)
-    {
-        PagedList<MyDictionaryItemDto> DictionaryItemsPagedList;
-
-        var query = new GetAllMyDictionaryItemsByCode.Query
-            {
-                Page = 1,
-                PageSize = 10,
-                SortColumn = "name",
-                SortOrder = SortOrder.Ascending,
-                SearchTerm = value ?? "",
-                DictionaryCode = dictionaryCode,
-            };
-
-        try
-        {
-            DictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(query);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-            return new List<MyDictionaryItemDto>();
-        }
-
-        return DictionaryItemsPagedList.Items;
-    }
-}

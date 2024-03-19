@@ -1,32 +1,12 @@
-﻿@inject ILocalizationProvider LocalizationProvider
-@inject NavigationManager NavigationManager
-@inject IStringLocalizer<App> Localizer
-
-<MudSelect Label="@Localizer[nameof(AppStrings.SelectLanguage)]"
+﻿<MudSelect Label=@Localizer[nameof(AppStrings.SelectLanguage)]
            T=Culture
-           Value="CurrentCulture"
-           ValueChanged="OnValueChanged">
+           Value=CurrentCulture
+           ValueChanged=OnValueChanged>
     @foreach (var culture in LocalizationConsts.SupportedCultures)
     {
-        <MudSelectItem T="Culture"
-                       Value="culture">
+        <MudSelectItem T=Culture
+                       Value=culture>
             @culture.Country
         </MudSelectItem>
     }
 </MudSelect>
-
-@code {
-    private Culture CurrentCulture { get; set; }
-
-    protected override void OnInitialized()
-    {
-        var culture = LocalizationConsts.SupportedCultures.FirstOrDefault(x => x.CultureInfo.Name == CultureInfo.CurrentCulture.Name);
-        CurrentCulture = culture is not null ? culture : LocalizationConsts.SupportedCultures[0];
-    }
-
-    public void OnValueChanged(Culture culture)
-    {
-        LocalizationProvider.SetCulture(culture.CultureInfo.Name);
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-    }
-}

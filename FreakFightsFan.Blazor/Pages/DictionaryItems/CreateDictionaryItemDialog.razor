@@ -1,53 +1,25 @@
-﻿@inject IMyDictionaryItemApiClient MyDictionaryItemApiClient
-@inject IExceptionHandler ExceptionHandler
-@inject IStringLocalizer<App> Localizer
-
-<EditForm Model="Command"
-          OnValidSubmit="HandleValidSubmit">
-    <CustomValidator @ref="CustomValidator" />
+﻿<EditForm Model=Command
+          OnValidSubmit=HandleValidSubmit>
+    <CustomValidator @ref=_customValidator />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+    <MudDialog DefaultFocus=DefaultFocus.LastChild>
         <DialogContent>
-            <FritzTextField Label="@Localizer[nameof(AppStrings.Name)]"
-                            @bind-Value="Command.Name"
+            <FritzTextField Label=@Localizer[nameof(AppStrings.Name)]
+                            @bind-Value=Command.Name
                             For="() => Command.Name" />
             <FritzValidationMessage For="() => Command.Name" />
 
-            <FritzTextField Label="@Localizer[nameof(AppStrings.Code)]"
-                            @bind-Value="Command.Code"
+            <FritzTextField Label=@Localizer[nameof(AppStrings.Code)]
+                            @bind-Value=Command.Code
                             For="() => Command.Code" />
             <FritzValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit"
-                       Color="Color.Primary">
+            <MudButton ButtonType=ButtonType.Submit
+                       Color=Color.Primary>
                 @Localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
-
-@code {
-    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public CreateMyDictionaryItem.Command Command { get; set; } = new();
-
-    private CustomValidator CustomValidator = new();
-
-    private async Task HandleValidSubmit()
-    {
-        try
-        {
-            await MyDictionaryItemApiClient.CreateMyDictionaryItem(Command);
-            MudDialog.Close(DialogResult.Ok(true));
-        }
-        catch (MyValidationException validationException)
-        {
-            CustomValidator.DisplayErrors(validationException.Errors);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-        }
-    }
-}

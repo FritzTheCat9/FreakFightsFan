@@ -1,24 +1,10 @@
 ﻿@page "/settings"
 @attribute [AllowAnonymous]
 
-@inject IStringLocalizer<App> Localizer
-
 <PageTitle>
     @Localizer[nameof(AppStrings.Settings)]
 </PageTitle>
 
-<FritzBreadcrumbs Items="_items" />
+<FritzBreadcrumbs Items=_items />
 
 <SelectCulture />
-
-@code {
-    private List<BreadcrumbItem> _items;
-
-    protected override void OnInitialized()
-    {
-        _items = new()
-        {
-            new(Localizer[nameof(AppStrings.Settings)], href: null, disabled: true),
-        };
-    }
-}

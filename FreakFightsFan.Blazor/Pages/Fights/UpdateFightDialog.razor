@@ -1,58 +1,52 @@
-@inject IFightApiClient FightApiClient
-@inject IFighterApiClient FighterApiClient
-@inject IExceptionHandler ExceptionHandler
-@inject IStringLocalizer<App> Localizer
-
-<EditForm Model="Command"
-          OnValidSubmit="HandleValidSubmit"
-          @ref=editForm>
-    <CustomValidator @ref="CustomValidator" />
+<EditForm Model=Command
+          OnValidSubmit=HandleValidSubmit>
+    <CustomValidator @ref=_customValidator />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+    <MudDialog DefaultFocus=DefaultFocus.LastChild>
         <TitleContent>
-            <MudStack Row="true"
-                      Justify="Justify.SpaceBetween">
-                <MudText Typo="Typo.h6">
+            <MudStack Row=true
+                      Justify=Justify.SpaceBetween>
+                <MudText Typo=Typo.h6>
                     @Localizer[nameof(AppStrings.UpdateFight)]
                 </MudText>
             </MudStack>
         </TitleContent>
         <DialogContent>
-            <MudTabs Rounded="true">
-                <MudTabPanel Text="@Localizer[nameof(AppStrings.Fight)]">
-                    <FritzTeamMaker @bind-Value="Command.Teams"
+            <MudTabs Rounded=true>
+                <MudTabPanel Text=@Localizer[nameof(AppStrings.Fight)]>
+                    <FritzTeamMaker @bind-Value=Command.Teams
                                     For="() => Command.Teams"
-                                    _teams="_teams"
-                                    _selectedTeam="_selectedTeam"
-                                    OnTeamsChanged="(teams) => Command.Teams = teams"
+                                    TeamHelperModel=_teams
+                                    SelectedTeam=_selectedTeam
+                                    OnTeamsChanged=@((teams) => Command.Teams = teams)
                                     ForTeams="() => Command.Teams"
                                     NumberOfTeams=NumberOfTeams />
                 </MudTabPanel>
-                <MudTabPanel Text="@Localizer[nameof(AppStrings.Options)]"
-                             Icon="@Icons.Material.Filled.Settings">
-                    <MudGrid Spacing="1"
-                             Justify="Justify.FlexStart">
-                        <MudItem xs="12">
-                            <FritzSelect T="int"
-                                         Label="@Localizer[nameof(AppStrings.NumberOfTeams)]"
-                                         @bind-Value="NumberOfTeams"
-                                         OnSelect="OnTeamsCountSelect"
+                <MudTabPanel Text=@Localizer[nameof(AppStrings.Options)]
+                             Icon=@Icons.Material.Filled.Settings>
+                    <MudGrid Spacing=1
+                             Justify=Justify.FlexStart>
+                        <MudItem xs=12>
+                            <FritzSelect T=int
+                                         Label=@Localizer[nameof(AppStrings.NumberOfTeams)]
+                                         @bind-Value=NumberOfTeams
+                                         OnSelect=OnTeamsCountSelect
                                          For="() => NumberOfTeams"
-                                         ItemsToSelect="allowedTeamSizes" />
+                                         ItemsToSelect=_allowedTeamSizes />
                         </MudItem>
-                        <MudItem xs="12">
-                            <FritzDictionaryItemPicker Label="@Localizer[nameof(AppStrings.FightType)]"
-                                                       @bind-Value="Command.TypeId"
+                        <MudItem xs=12>
+                            <FritzDictionaryItemPicker Label=@Localizer[nameof(AppStrings.FightType)]
+                                                       @bind-Value=Command.TypeId
                                                        For="() => Command.TypeId"
-                                                       DictionaryCode="@DictionaryCode.FightType"
-                                                       DictionaryItemDto="FightType"
-                                                       OnDictionaryItemDtoChanged="(item) => FightType = item" />
+                                                       DictionaryCode=@DictionaryCode.FightType
+                                                       DictionaryItemDto=FightType
+                                                       OnDictionaryItemDtoChanged=@((item) => FightType = item) />
                             <FritzValidationMessage For="() => Command.TypeId" />
                         </MudItem>
-                        <MudItem xs="12">
-                            <FritzTextField Label="@Localizer[nameof(AppStrings.YoutubeVideoUrl)]"
-                                            @bind-Value="Command.VideoUrl"
+                        <MudItem xs=12>
+                            <FritzTextField Label=@Localizer[nameof(AppStrings.YoutubeVideoUrl)]
+                                            @bind-Value=Command.VideoUrl
                                             For="() => Command.VideoUrl" />
                             <FritzValidationMessage For="() => Command.VideoUrl" />
                         </MudItem>
@@ -61,99 +55,10 @@
             </MudTabs>
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit"
-                       Color="Color.Primary">
+            <MudButton ButtonType=ButtonType.Submit
+                       Color=Color.Primary>
                 @Localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
-
-@code {
-    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-    [Parameter] public UpdateFight.Command Command { get; set; } = new();
-    [Parameter] public List<TeamDto> Teams { get; set; } = [];
-    [Parameter] public int NumberOfTeams { get; set; }
-    [Parameter] public MyDictionaryItemDto FightType { get; set; }
-
-    protected EditForm editForm { get; set; }
-    private CustomValidator CustomValidator = new();
-
-    private List<int> allowedTeamSizes = [2, 3, 4, 5];
-    private List<CreateFight.TeamHelperModel> _teams = [];
-    private int _selectedTeam;
-
-    protected override void OnInitialized()
-    {
-        SetUpUpdate();
-    }
-
-    private void SetUpUpdate()
-    {
-        _teams = [];
-
-        foreach (var team in Teams)
-        {
-            var fighters = new List<CreateFight.FighterHelperModel>();
-            foreach (var teamFighters in team.FighterInTeams)
-            {
-                fighters.Add(new()
-                    {
-                        Fighter = teamFighters.Fighter,
-                        FightResult = teamFighters.FightResult,
-                    });
-            }
-
-            var teamHelperModel = new CreateFight.TeamHelperModel()
-                {
-                    Number = team.Number,
-                    Fighters = fighters,
-                };
-
-            _teams.Add(teamHelperModel);
-        }
-    }
-
-    private void SelectTeam(int number)
-    {
-        _selectedTeam = number;
-    }
-
-    private void OnTeamsCountSelect(int teamsCount)
-    {
-        ResetTeams(teamsCount);
-    }
-
-    private void ResetTeams(int teamsCount)
-    {
-        _teams = [];
-
-        for (int i = 0; i < teamsCount; i++)
-        {
-            _teams.Add(new()
-                {
-                    Number = i,
-                    Fighters = [],
-                });
-        }
-
-        _selectedTeam = 0;
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        try
-        {
-            await FightApiClient.UpdateFight(Command);
-            MudDialog.Close(DialogResult.Ok(true));
-        }
-        catch (MyValidationException validationException)
-        {
-            CustomValidator.DisplayErrors(validationException.Errors);
-        }
-        catch (Exception ex)
-        {
-            ExceptionHandler.HandleExceptions(ex);
-        }
-    }
-}

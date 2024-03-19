@@ -1,0 +1,105 @@
+@page "/events/{FederationId:int}"
+@attribute [AllowAnonymous]
+
+<PageTitle>
+    @Localizer[nameof(AppStrings.Events)]
+</PageTitle>
+
+<FritzBreadcrumbs Items=_items />
+
+<MudTable ServerData=ServerReload
+          Dense=true
+          Hover=true
+          @ref=_table
+          Context="myEvent">
+    <ToolBarContent>
+        <MudText Typo=Typo.h6>
+            @Localizer[nameof(AppStrings.Events)]
+        </MudText>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudIconButton Icon=@Icons.Material.Filled.Add
+                           Size=Size.Small
+                           OnClick=CreateEvent />
+        </AuthorizeView>
+        <MudSpacer />
+        <FritzSearchTextField @bind-Value=_searchString
+                              OnSearch="() => _table.ReloadServerData()" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T=EventDto>
+                @Localizer[nameof(AppStrings.Name)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="date"
+                               T=EventDto>
+                @Localizer[nameof(AppStrings.Date)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="city"
+                               T=EventDto>
+                @Localizer[nameof(AppStrings.City)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="hall"
+                               T=EventDto>
+                @Localizer[nameof(AppStrings.Hall)]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            @Localizer[nameof(AppStrings.Fights)]
+        </MudTh>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudTh>
+                @Localizer[nameof(AppStrings.Actions)]
+            </MudTh>
+        </AuthorizeView>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">
+            @myEvent.Name
+        </MudTd>
+        <MudTd DataLabel="Date">
+            @myEvent.Date.ToString("dd/MM/yyyy")
+        </MudTd>
+        <MudTd DataLabel="City">
+            <DisplayDictionaryItemDto DictionaryItemDto=myEvent.City />
+        </MudTd>
+        <MudTd DataLabel="Hall">
+            <DisplayDictionaryItemDto DictionaryItemDto=myEvent.Hall />
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon=@Icons.Material.Filled.List
+                           Size=Size.Small
+                           OnClick="() => RedirectToFightsPage(myEvent.Id)" />
+        </MudTd>
+        <AuthorizeView Policy=@Policy.Admin>
+            <MudTd>
+                <MudIconButton Icon=@Icons.Material.Filled.Edit
+                               Size=Size.Small
+                               OnClick="() => UpdateEvent(myEvent)" />
+                <MudIconButton Icon=@Icons.Material.Filled.Delete
+                               Size=Size.Small
+                               OnClick="() => DeleteEvent(myEvent.Id)" />
+            </MudTd>
+        </AuthorizeView>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        </MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>
+            @Localizer[nameof(AppStrings.Loading)]
+        </MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
+                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+    </PagerContent>
+</MudTable>
