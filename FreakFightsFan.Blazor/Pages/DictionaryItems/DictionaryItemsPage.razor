@@ -40,13 +40,13 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
             @context.Name
         </MudTd>
-        <MudTd DataLabel="Code">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Code)]>
             @context.Code
         </MudTd>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
             <MudIconButton Icon=@Icons.Material.Filled.Edit
                            Size=Size.Small
                            OnClick="() => UpdateDictionaryItem(context)" />

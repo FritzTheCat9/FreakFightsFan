@@ -45,7 +45,7 @@
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Image)]>
             @if (federation.Image != null)
             {
                 <MudLink Href=@federation.Image.Url
@@ -64,16 +64,16 @@
                 </MudText>
             }
         </MudTd>
-        <MudTd DataLabel="Name">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
             @federation.Name
         </MudTd>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Events)]>
             <MudIconButton Icon=@Icons.Material.Filled.List
                            Size=Size.Small
                            OnClick="() => RedirectToEventsPage(federation.Id)" />
         </MudTd>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudTd>
+            <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
                 <MudIconButton Icon=@Icons.Material.Filled.Edit
                                Size=Size.Small
                                OnClick="() => UpdateFederation(federation)" />

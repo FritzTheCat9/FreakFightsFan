@@ -56,20 +56,20 @@
         <MudText>-</MudText>
         }
         </MudTd> *@
-        <MudTd DataLabel="UserName">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.UserName)]>
             @user.UserName
         </MudTd>
-        <MudTd DataLabel="Email">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Email)]>
             @user.Email
         </MudTd>
-        <MudTh>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Role)]>
             <MudChip Variant=Variant.Outlined
                      Color=GetColorBasedOnPolicy(GetUserHighestPolicy(user))>
                 @GetUserHighestPolicy(user)
             </MudChip>
-        </MudTh>
+        </MudTd>
         <AuthorizeView Policy=@Policy.SuperAdmin>
-            <MudTd>
+            <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
                 @if (!user.IsSuperAdmin && user.IsAdmin)
                 {
                     <MudTooltip Text=@Localizer[nameof(AppStrings.Degrade)]>

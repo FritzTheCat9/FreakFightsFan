@@ -46,7 +46,7 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Image)]>
             @if (!string.IsNullOrEmpty(context.Url))
             {
                 <MudLink Href=@context.Url
@@ -65,16 +65,16 @@
                 </MudText>
             }
         </MudTd>
-        <MudTd DataLabel="Created">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Created)]>
             @context.Created
         </MudTd>
-        <MudTd DataLabel="Modified">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Modified)]>
             @context.Modified
         </MudTd>
-        <MudTd DataLabel="Modified">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
             @context.Name
         </MudTd>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
             <MudIconButton Icon=@Icons.Material.Filled.Edit
                            Size=Size.Small
                            OnClick="() => UpdateImage(context)" />

@@ -52,7 +52,7 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Image)]>
             @if (fighter.Image is not null)
             {
                 <MudLink Href=@fighter.Image.Url
@@ -73,16 +73,16 @@
                           Alt=@Localizer[nameof(AppStrings.Image)] />
             }
         </MudTd>
-        <MudTd DataLabel="FirstName">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.FirstName)]>
             @fighter.FirstName
         </MudTd>
-        <MudTd DataLabel="LastName">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.LastName)]>
             @fighter.LastName
         </MudTd>
-        <MudTd DataLabel="Nickname">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Nickname)]>
             @fighter.Nickname
         </MudTd>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
             <MudIconButton Icon=@Icons.Material.Filled.AccountCircle
                            Size=Size.Small
                            OnClick="() => RedirectToFighterProfile(fighter.Id)" />

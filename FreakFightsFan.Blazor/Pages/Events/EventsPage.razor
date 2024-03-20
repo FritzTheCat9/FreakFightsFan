@@ -60,25 +60,25 @@
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
             @myEvent.Name
         </MudTd>
-        <MudTd DataLabel="Date">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Date)]>
             @myEvent.Date.ToString("dd/MM/yyyy")
         </MudTd>
-        <MudTd DataLabel="City">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.City)]>
             <DisplayDictionaryItemDto DictionaryItemDto=myEvent.City />
         </MudTd>
-        <MudTd DataLabel="Hall">
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Hall)]>
             <DisplayDictionaryItemDto DictionaryItemDto=myEvent.Hall />
         </MudTd>
-        <MudTd>
+        <MudTd DataLabel=@Localizer[nameof(AppStrings.Fights)]>
             <MudIconButton Icon=@Icons.Material.Filled.List
                            Size=Size.Small
                            OnClick="() => RedirectToFightsPage(myEvent.Id)" />
         </MudTd>
         <AuthorizeView Policy=@Policy.Admin>
-            <MudTd>
+            <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
                 <MudIconButton Icon=@Icons.Material.Filled.Edit
                                Size=Size.Small
                                OnClick="() => UpdateEvent(myEvent)" />
