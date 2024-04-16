@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
@@ -19,7 +20,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 var command = new DegradeUser.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Users")
+                .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.SuperAdmin);
 
             return app;

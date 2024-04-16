@@ -1,4 +1,5 @@
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Images.Commands;
@@ -19,7 +20,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 var command = new DeleteImage.Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Images")
+                .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Fights.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
@@ -21,7 +22,7 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 var query = new GetFighterProfile.Query() { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("Fights")
+                .WithTags(Tags.Fights)
                 .AllowAnonymous();
 
             return app;

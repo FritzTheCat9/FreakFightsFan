@@ -5,6 +5,7 @@ using HeyRed.Mime;
 using Microsoft.Extensions.Options;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Images.Commands;
+using FreakFightsFan.Api.Helpers;
 
 namespace FreakFightsFan.Api.Features.Images.Commands
 {
@@ -19,7 +20,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 var command = new ImportFederationImages.Command();
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Images")
+                .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

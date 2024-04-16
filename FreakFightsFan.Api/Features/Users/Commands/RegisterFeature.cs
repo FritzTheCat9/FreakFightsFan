@@ -4,6 +4,7 @@ using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Emails.Templates;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
@@ -24,7 +25,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 int userId = await mediator.Send(command, cancellationToken);
                 return Results.CreatedAtRoute("GetUser", new { id = userId });
             })
-                .WithTags("Users")
+                .WithTags(Tags.Users)
                 .AllowAnonymous();
 
             return app;

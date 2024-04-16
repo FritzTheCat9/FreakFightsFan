@@ -7,6 +7,7 @@ using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Api.Localization;
 using Microsoft.Extensions.Localization;
+using FreakFightsFan.Api.Helpers;
 
 namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
@@ -22,7 +23,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 int dictionaryId = await mediator.Send(command, cancellationToken);
                 return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
             })
-                .WithTags("MyDictionaries")
+                .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

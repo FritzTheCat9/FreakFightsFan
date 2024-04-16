@@ -1,6 +1,7 @@
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Federations.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
                 int federationId = await mediator.Send(command, cancellationToken);
                 return Results.CreatedAtRoute("GetFederation", new { id = federationId });
             })
-                .WithTags("Federations")
+                .WithTags(Tags.Federations)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

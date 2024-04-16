@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Commands;
@@ -22,7 +23,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 command.Id = id;
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("MyDictionaryItems")
+                .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

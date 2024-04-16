@@ -1,4 +1,5 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
@@ -18,7 +19,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 var command = new DeleteMyDictionary.Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("MyDictionaries")
+                .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

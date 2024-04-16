@@ -1,6 +1,7 @@
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Features.Teams.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Teams.Queries;
 using FreakFightsFan.Shared.Features.Teams.Responses;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
             {
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("Teams")
+                .WithTags(Tags.Teams)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

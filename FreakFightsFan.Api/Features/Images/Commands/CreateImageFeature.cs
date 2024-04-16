@@ -1,6 +1,7 @@
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Features.Images.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 int imageId = await mediator.Send(command, cancellationToken);
                 return Results.CreatedAtRoute("GetImage", new { id = imageId });
             })
-                .WithTags("Images")
+                .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

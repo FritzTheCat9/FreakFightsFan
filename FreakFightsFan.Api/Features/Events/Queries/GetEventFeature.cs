@@ -1,5 +1,6 @@
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Events.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Events.Queries;
 using FreakFightsFan.Shared.Features.Events.Responses;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Events.Queries
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
                 .WithName("GetEvent")
-                .WithTags("Events")
+                .WithTags(Tags.Events)
                 .AllowAnonymous();
 
             return app;

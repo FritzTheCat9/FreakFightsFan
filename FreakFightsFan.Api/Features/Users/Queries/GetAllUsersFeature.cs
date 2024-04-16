@@ -1,6 +1,7 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Features.Users.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Users.Queries;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Users.Queries
             {
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("Users")
+                .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

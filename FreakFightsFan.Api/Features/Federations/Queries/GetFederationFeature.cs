@@ -1,5 +1,6 @@
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.Federations.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Federations.Queries;
 using FreakFightsFan.Shared.Features.Federations.Responses;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
                 .WithName("GetFederation")
-                .WithTags("Federations")
+                .WithTags(Tags.Federations)
                 .AllowAnonymous();
 
             return app;

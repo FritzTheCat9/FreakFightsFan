@@ -1,6 +1,7 @@
 ﻿using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Services;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
@@ -22,7 +23,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 command.Id = id;
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Users")
+                .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.User);
 
             return app;

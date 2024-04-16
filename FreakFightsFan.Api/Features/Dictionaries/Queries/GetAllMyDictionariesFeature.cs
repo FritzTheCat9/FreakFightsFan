@@ -1,6 +1,7 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Dictionaries.Queries;
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
             {
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("MyDictionaries")
+                .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

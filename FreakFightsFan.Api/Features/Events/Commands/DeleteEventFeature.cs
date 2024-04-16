@@ -1,4 +1,5 @@
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Events.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
@@ -18,7 +19,7 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 var command = new DeleteEvent.Command() { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Events")
+                .WithTags(Tags.Events)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

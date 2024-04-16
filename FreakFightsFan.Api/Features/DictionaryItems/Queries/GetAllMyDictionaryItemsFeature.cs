@@ -2,6 +2,7 @@
 using FreakFightsFan.Api.Extensions;
 using FreakFightsFan.Api.Features.Dictionaries.Extensions;
 using FreakFightsFan.Api.Features.DictionaryItems.Extensions;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.DictionaryItems.Queries;
@@ -22,7 +23,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
             {
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
-                .WithTags("MyDictionaryItems")
+                .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);
 
             return app;

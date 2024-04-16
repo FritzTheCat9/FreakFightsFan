@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Api.Data.Repositories;
+using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
@@ -20,7 +21,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             {
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags("Users")
+                .WithTags(Tags.Users)
                 .AllowAnonymous();
 
             return app;
