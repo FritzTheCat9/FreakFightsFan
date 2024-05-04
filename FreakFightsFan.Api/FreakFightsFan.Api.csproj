@@ -49,4 +49,19 @@
     <ProjectReference Include="..\FreakFightsFan.Shared\FreakFightsFan.Shared.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+	<ItemGroup>
+		<Content Update="Emails\Templates\EmailConfirmationSuccessfulTemplate.en.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Emails\Templates\EmailConfirmationSuccessfulTemplate.pl.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Emails\Templates\EmailConfirmationTemplate.en.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Emails\Templates\EmailConfirmationTemplate.pl.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>

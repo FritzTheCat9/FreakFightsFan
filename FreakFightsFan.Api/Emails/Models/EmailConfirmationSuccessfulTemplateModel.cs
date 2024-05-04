@@ -1,7 +1,7 @@
 ﻿using FreakFightsFan.Api.Localization;
 using Microsoft.Extensions.Localization;
 
-namespace FreakFightsFan.Api.Emails.Templates
+namespace FreakFightsFan.Api.Emails.Models
 {
     public class EmailConfirmationSuccessfulTemplateModel : BaseTemplateModel
     {

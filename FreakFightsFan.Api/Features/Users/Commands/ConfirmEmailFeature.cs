@@ -1,6 +1,6 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Emails;
-using FreakFightsFan.Api.Emails.Templates;
+using FreakFightsFan.Api.Emails.Models;
 using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Api.Localization;
 using FreakFightsFan.Shared.Exceptions;

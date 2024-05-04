@@ -10,6 +10,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["FreakFightsFan.Api/FreakFightsFan.Api.csproj", "FreakFightsFan.Api/"]
+# Copy email templates
+COPY ["FreakFightsFan.Api/Emails/Templates/", "/src/Emails/Templates/"]
 COPY ["FreakFightsFan.Shared/FreakFightsFan.Shared.csproj", "FreakFightsFan.Shared/"]
 RUN dotnet restore "./FreakFightsFan.Api/FreakFightsFan.Api.csproj"
 COPY . .
@@ -23,4 +25,6 @@ RUN dotnet publish "./FreakFightsFan.Api.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# Copy email templates
+COPY --from=build /src/Emails/Templates /app/Emails/Templates
 ENTRYPOINT ["dotnet", "FreakFightsFan.Api.dll"]
