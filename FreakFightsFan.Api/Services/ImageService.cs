@@ -33,13 +33,13 @@ namespace FreakFightsFan.Api.Services
             _httpContextAccessor = httpContextAccessor;
             _clock = clock;
             _options = options.Value;
-            _folderPath = $"{_webHostEnvironment.WebRootPath}\\{_options.FolderName}";
+            _folderPath = Path.Combine(Path.GetFullPath(_webHostEnvironment.WebRootPath), _options.FolderName);
         }
 
         public string SaveImage(string imageBase64)
         {
             var name = ImageHelpers.GenerateNameWithExtension(imageBase64);
-            var imagePath = $"{_folderPath}\\{name}";
+            var imagePath = Path.Combine(_folderPath, name);
 
             Directory.CreateDirectory(_folderPath);
 
@@ -52,7 +52,7 @@ namespace FreakFightsFan.Api.Services
 
         public void DeleteImage(string name)
         {
-            var imagePath = $"{_folderPath}\\{name}";
+            var imagePath = Path.Combine(_folderPath, name);
 
             File.Delete(imagePath);
         }
@@ -60,7 +60,7 @@ namespace FreakFightsFan.Api.Services
         public string GetImageUrl(string name)
         {
             var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            return $"{url}\\{_options.FolderName}\\{name}";
+            return $"{url}/{_options.FolderName}/{name}";
         }
 
         public Image CreateEntityImage(string imageBase64)

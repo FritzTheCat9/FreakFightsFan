@@ -58,7 +58,8 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 
                 foreach (var federation in federations)
                 {
-                    var federation_image_name = $"{_webHostEnvironment.WebRootPath}\\{_options.FederationImagesFolderName}\\{federation.Id}{extension}";
+                    var federation_image_name = Path.Combine(Path.GetFullPath(_webHostEnvironment.WebRootPath), _options.FederationImagesFolderName, $"{federation.Id}{extension}");
+                    Console.WriteLine(federation_image_name);
 
                     try
                     {

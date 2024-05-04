@@ -40,7 +40,8 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             private const string _textFieldCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > div > input[type=text]";
             private const string _searchButtonCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > button";
             private const string _downloadButtonCssSelector = "div > div:nth-child(1) > div > div.sf-downloadbtn";
-
+            private const string _cookieDialog = "body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button > p";
+            
             public Handler(
                 IFighterRepository fighterRepository,
                 IClock clock,
@@ -62,10 +63,20 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 CancellationToken cancellationToken)
             {
                 var fighters = await _fighterRepository.GetAll();
-                var fullDriverPath = Path.GetFullPath(_webHostEnvironment.ContentRootPath);
+                var fullDriverPath = Path.Combine(
+                    Path.GetFullPath(_webHostEnvironment.ContentRootPath), 
+                    "chromedriver",
+                    OperatingSystem.IsLinux() ? "linux64" : "win64");
 
                 using (var driver = new ChromeDriver(fullDriverPath))
                 {
+                    driver.Navigate()
+                          .GoToUrl(_options.ImportWebsite);
+
+                    var cookieDialog = driver.FindElement(By.CssSelector(_cookieDialog));
+                    if (cookieDialog.Displayed)
+                        cookieDialog.Click();
+
                     foreach (var fighter in fighters)
                     {
                         _logger.LogInformation("[IMPORT FIGHTERS - START] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
@@ -94,11 +105,11 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                             continue;
                         }
 
-                        driver.Navigate()
-                              .GoToUrl(_options.ImportWebsite);
-
                         try
                         {
+                            driver.Navigate()
+                                  .GoToUrl(_options.ImportWebsite);
+
                             var textField = driver.FindElement(By.CssSelector(_textFieldCssSelector));
                             if (textField.Displayed)
                                 textField.SendKeys(nick);
@@ -125,7 +136,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                             continue;
                         }
 
-                        var downloadsFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+                        var downloadsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
                         var targetDirectory = new DirectoryInfo(downloadsFolderPath);
                         var files = targetDirectory.GetFiles();
 
