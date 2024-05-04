@@ -1,7 +1,11 @@
-## FreakFightsFan - app for freak fights fans
-Freak fights are fights between popular people. The FreakFightsFan app contains information and statistics about federations, events, fights and fighters of freak fight federations. I created this app because I'm a fan of freak fights and I wanted to practice building fullstack app with .NET technologies.
+# FreakFightsFan
+Freak fights are fights between popular people.\
+The FreakFightsFan application contains information and statistics about federations, events, fights and fighters of freak fight federations.\
+I created this application because I am a fan of freak fights and I wanted to practice building fullstack application with .NET technologies.
 
 ## Table of contents
+* [Launch](#launch)
+* [Presentation](#presentation)
 * [Technologies](#technologies)
 * [Architecture](#architecture)
 * [Project types and references](#project-types-and-references)
@@ -9,8 +13,53 @@ Freak fights are fights between popular people. The FreakFightsFan app contains 
 * [Packages](#packages)
 * [Features](#features)
 * [Roles](#roles)
-* [Launch](#launch)
 * [Project status](#project-status)
+
+## Launch
+Run application with one command (setup all docker containers, create database, apply migrations):
+```
+cd C:\Users\bartl\source\repos\FreakFightsFan
+docker compose up --build -d
+```
+
+Created containers:
+- C# Web API backend:
+```
+http://localhost:5000
+```
+- Blazor WASM frontend:
+```
+http://localhost:7000
+```
+- MSSQL database:
+```
+Host: localhost 
+Port: 1433 
+Database/Schema: FreakFightsFan
+Username: sa
+Password: Password1!
+Server: freakfightsfan.database
+```
+- Seq Api logs:
+```
+http://localhost:8081
+```
+
+Login credentials:
+```
+SuperAdmin:
+- Email: freakfightsfan@gmail.com
+- Password: Asd123!
+Admin:
+- Email: freakfightsfan1@gmail.com
+- Password: Asd123!
+User:
+- Email: freakfightsfan2@gmail.com
+- Password: Asd123!
+```
+
+## Presentation
+//TODO: Add some images
 
 ## Technologies
 - C# 12
@@ -29,6 +78,7 @@ Blazor WebAssembly frontend with .NET Minimal API connecting to the MSSQL databa
 - FreakFightsFan.FeatureGenerator - Console App (Code generation for feature)
 - FreakFightsFan.IntegrationTests - xUnit Test Project (Integration Tests)
 - FreakFightsFan.Shared - Class Library (Backend and Frontend shared code)
+- FreakFightsFan.UnitTests - xUnit Test Project (Unit Tests)
 - freak-fights-fan - Angular Project (Frontend 2)
 
 ![Algorithm schema](./diagrams/FFF_ArchitectureReferences.png)
@@ -128,15 +178,6 @@ Nuget packages and libraries used in projects.
 - Admin - can do CRUD operations across website, access to Admin Panel
 - User - can view website data
 - Anonymous - can view website data
-
-## Launch
-// TODO: Add launch instruction
-
-Docker MSSQL database and Seq for logging.
-
-Blazor WASM App frontend.
-
-C# Minimal Web Api for backend.
 
 ## Project status
 Web Api and Blazor frontend are working. Im currently adding more features and improvements.

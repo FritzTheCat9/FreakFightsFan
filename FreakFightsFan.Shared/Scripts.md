@@ -1,23 +1,4 @@
-﻿## Docker containers links
-- Api https (swagger): 
-	https://localhost:5001
-- Api http (swagger):  
-	http://localhost:5000
-- MSSQL database:
-	Host: localhost 
-	Port: 1433 
-	Database/Schema: FreakFightsFan
-	Username: sa
-	Password: Password1!
-	Server: freakfightsfan.database
-- Seq logs
-	http://localhost:8081
-- Blazor WASM https
-	https://localhost:7001
-- Blazor WASM http
-	http://localhost:7000
-
-## Entity Framework Core Migrations
+﻿## Entity Framework Core Migrations
 Remember to change ***MIGRATION_NAME*** 
 ``` 
 cd C:\Users\bartl\source\repos\FreakFightsFan\FreakFightsFan.Api
