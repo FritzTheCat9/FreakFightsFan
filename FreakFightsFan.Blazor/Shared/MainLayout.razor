@@ -1,12 +1,24 @@
 ﻿@inherits LayoutComponentBase
+@inject TokenRefreshService tokenRefreshService
 
-<MudThemeProvider />
+<MudThemeProvider @ref=@_mudThemeProvider
+                  @bind-IsDarkMode=@_isDarkMode
+                  Theme="_customTheme" />
 <MudDialogProvider FullWidth="true" />
 <MudSnackbarProvider />
 
 <style>
     .mud-input-control-helper-container {
         display: none !important;
+    }
+
+    .validation-message {
+        color: var(--mud-palette-error) !important;
+        margin-top: 5px;
+    }
+
+    .my-link:hover {
+        color: var(--mud-palette-primary) !important;
     }
 </style>
 
@@ -18,9 +30,15 @@
                        OnClick=DrawerToggle />
         @Localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
-        <Auth />
+        <MudTooltip Text=@_text>
+            <MudIconButton Icon=@_icon
+                           OnClick=OnThemeChange
+                           Style="margin-right: 5px;" />
+        </MudTooltip>
+        <Auth ChangeThemeColor="ChangeThemeColor" />
     </MudAppBar>
-    <MudDrawer @bind-Open=_drawerOpen>
+    <MudDrawer @bind-Open=_drawerOpen
+               Variant=DrawerVariant.Mini>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>

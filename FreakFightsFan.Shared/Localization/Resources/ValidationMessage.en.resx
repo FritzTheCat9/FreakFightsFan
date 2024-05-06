@@ -216,6 +216,9 @@
   <data name="TeamsUniqueFighters" xml:space="preserve">
     <value>Each fighter can only be selected to the team once.</value>
   </data>
+  <data name="ThemeColorIsInEnum" xml:space="preserve">
+    <value>ThemeColor has a range of values which does not include: {PropertyValue}.</value>
+  </data>
   <data name="TokenNotEmpty" xml:space="preserve">
     <value>Token should not be empty.</value>
   </data>

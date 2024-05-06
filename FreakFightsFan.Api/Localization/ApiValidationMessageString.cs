@@ -14,5 +14,6 @@
         PasswordIsIncorrect,
         EmailIsAlreadyTaken,
         UserNameIsAlreadyTaken,
+        RefreshTokenIsNotValid,
     }
 }

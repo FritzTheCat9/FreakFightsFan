@@ -216,6 +216,9 @@
   <data name="TeamsUniqueFighters" xml:space="preserve">
     <value>Każdy zawodnik może zostać wybrany do drużyny tylko raz.</value>
   </data>
+  <data name="ThemeColorIsInEnum" xml:space="preserve">
+    <value>Motyw nie zawiera wartości: {PropertyValue}.</value>
+  </data>
   <data name="TokenNotEmpty" xml:space="preserve">
     <value>Token nie może być pusty.</value>
   </data>

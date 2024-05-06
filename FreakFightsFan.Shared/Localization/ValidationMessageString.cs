@@ -43,5 +43,6 @@
         UserNameMaximumLength,
         UserNameMatchesRegex,
         RepeatPasswordEqualPassword,
+        ThemeColorIsInEnum,
     }
 }

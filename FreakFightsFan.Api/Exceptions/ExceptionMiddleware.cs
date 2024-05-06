@@ -1,5 +1,6 @@
 ﻿using FreakFightsFan.Shared.Exceptions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace FreakFightsFan.Api.Exceptions
 {
@@ -61,7 +62,19 @@ namespace FreakFightsFan.Api.Exceptions
 
             context.Response.StatusCode = errorHelperModel.StatusCode;
             context.Response.ContentType = "application/json";
-            string jsonString = JsonConvert.SerializeObject(errorHelperModel.ErrorResponse);
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy
+                    {
+                        ProcessDictionaryKeys = false,
+                    }
+                }
+            };
+
+            string jsonString = JsonConvert.SerializeObject(errorHelperModel.ErrorResponse, settings);
             await context.Response.WriteAsync(jsonString);
         }
 

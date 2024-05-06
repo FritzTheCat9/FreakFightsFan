@@ -8,6 +8,7 @@ using FreakFightsFan.Blazor.Clients;
 using FreakFightsFan.Blazor.Exceptions;
 using FreakFightsFan.Blazor.Localization;
 using FreakFightsFan.Blazor;
+using FreakFightsFan.Blazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,10 +18,13 @@ builder.Services.AddApiClients(builder.Configuration)
                 .AddFluentValidation()
                 .AddExceptions()
                 .AddAuth()
-                .AddMyLocalization();
+                .AddMyLocalization()
+                .AddServices();
 
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
+
+builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization.*", LogLevel.None);
 
 var host = builder.Build();
 

@@ -16,7 +16,9 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
             DegradeUserFeature.Endpoint(app);
             LoginFeature.Endpoint(app);
             PromoteUserFeature.Endpoint(app);
+            RefreshTokenFeature.Endpoint(app);
             RegisterFeature.Endpoint(app);
+            UpdateUserThemeFeature.Endpoint(app);
             UpdateUserFeature.Endpoint(app);
             GetAllUsersFeature.Endpoint(app);
             GetUserFeature.Endpoint(app);
@@ -35,6 +37,7 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
                 Email = user.Email,
                 IsAdmin = user.IsAdmin,
                 IsSuperAdmin = user.IsSuperAdmin,
+                ThemeColor = user.ThemeColor,
             };
         }
 

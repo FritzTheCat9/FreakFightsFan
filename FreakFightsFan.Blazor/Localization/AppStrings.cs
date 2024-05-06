@@ -102,5 +102,8 @@
         Settings,
         RowsPerPage,
         PaginationInfoFormat,
+        SwitchToDarkTheme,
+        SwitchToSystemTheme,
+        SwitchToLightTheme,
     }
 }

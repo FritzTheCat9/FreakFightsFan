@@ -147,6 +147,9 @@
   <data name="PasswordIsIncorrect" xml:space="preserve">
     <value>Niepoprawne hasło.</value>
   </data>
+  <data name="RefreshTokenIsNotValid" xml:space="preserve">
+    <value>Token logowania nie jest prawidłowy.</value>
+  </data>
   <data name="TokenIsNotAssignedToThisUser" xml:space="preserve">
     <value>Podany token nie jest przypisany do tego użytkownika.</value>
   </data>

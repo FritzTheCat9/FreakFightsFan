@@ -8,9 +8,9 @@
 <FritzBreadcrumbs Items=_items />
 
 <AuthorizeView Policy=@Policy.Admin>
-    <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px; background: #888;"
+    <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px;"
               Class="rounded-0"
-              Elevation=0>
+              Elevation=3>
         <MudStack Row=true
                   Justify=Justify.FlexStart>
             <MudIconButton Icon=@Icons.Material.Filled.Add
@@ -50,12 +50,13 @@ else if (_myFights.Count == 0)
 }
 else
 {
-    <MudCard>
-        <MudStack Justify=Justify.Center
-                  Spacing=0>
-            @foreach (var fight in _myFights)
-            {
-                <MudPaper Style="padding: 10px 10px; background: #888;"
+    <MudStack Justify=Justify.Center
+              Spacing=0>
+        @foreach (var fight in _myFights)
+        {
+            <MudPaper Class="rounded-0" Style="margin: 0px 0px 20px 0px;"
+                      Elevation=3>
+                <MudPaper Style="padding: 10px 10px 0px 0px;"
                           Class="rounded-0"
                           Elevation=0>
                     <MudStack Row=true
@@ -82,11 +83,11 @@ else
                         </AuthorizeView>
                     </MudStack>
                 </MudPaper>
-                <MudPaper Style="margin: 0px 0px 80px 0px; padding: 20px 20px 20px 20px; background: #E0E0E0;"
+                <MudPaper Style="margin: 0px 0px 0px 0px; padding: 10px 20px 20px 20px;"
                           Class="rounded-0"
                           Elevation=0>
                     <MudStack AlignItems=AlignItems.Center
-                              Style="margin-bottom: 20px;">
+                              Style="margin-bottom: 10px;">
                         <MudText Typo=Typo.h5>
                             <DisplayDictionaryItemDto DictionaryItemDto=fight.Type />
                             @(" ")
@@ -97,7 +98,7 @@ else
                         @foreach (var team in fight.Teams)
                         {
                             <MudPaper Class="rounded-0"
-                                      Elevation=1
+                                      Elevation=5
                                       Style="padding: 5px 5px 5px 5px;">
                                 @if (team.FighterInTeams.Count == 1)
                                 {
@@ -111,7 +112,7 @@ else
                         }
                     </MudStack>
                 </MudPaper>
-            }
-        </MudStack>
-    </MudCard>
+            </MudPaper>
+        }
+    </MudStack>
 }

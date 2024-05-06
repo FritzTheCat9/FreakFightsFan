@@ -1,9 +1,11 @@
 using FreakFightsFan.Blazor.Auth;
+using FreakFightsFan.Blazor.Clients;
+using FreakFightsFan.Blazor.Exceptions;
 using FreakFightsFan.Blazor.Localization;
 using FreakFightsFan.Blazor.Shared;
+using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Users.Responses;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
@@ -11,12 +13,20 @@ namespace FreakFightsFan.Blazor.Pages.Users
 {
     public partial class Auth : ComponentBase
     {
-        [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-        [Inject] public IJwtProvider JwtProvider { get; set; }
+        [Parameter] public EventCallback<ThemeColor> ChangeThemeColor { get; set; }
+
+        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+        [Inject] public IUserApiClient UserApiClient { get; set; }
+        [Inject] public IAuthService AuthService { get; set; }
+
         [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
-        [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public IDialogService DialogService { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await AuthService.RefreshToken();
+        }
 
         private async Task Login()
         {
@@ -35,11 +45,28 @@ namespace FreakFightsFan.Blazor.Pages.Users
             {
                 if (result.Data is JwtDto token)
                 {
-                    await JwtProvider.SetJwtDto(token);
+                    await AuthService.Login(token);
 
-                    var authStateProvider = (AuthenticationStateProvider as AuthStateProvider);
-                    authStateProvider.NotifyAuthStateChanged();
+                    await LoadUserTheme();
                 }
+            }
+        }
+
+        private async Task LoadUserTheme()
+        {
+            var userId = await AuthService.GetCurrentUserId();
+            if (userId is null)
+                return;
+
+            try
+            {
+                var user = await UserApiClient.GetUser(userId.Value);
+
+                await ChangeThemeColor.InvokeAsync(user.ThemeColor);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleExceptions(ex);
             }
         }
 
@@ -76,12 +103,7 @@ namespace FreakFightsFan.Blazor.Pages.Users
 
         private async Task Logout()
         {
-            await JwtProvider.RemoveJwtDto();
-
-            var authStateProvider = (AuthenticationStateProvider as AuthStateProvider);
-            authStateProvider.NotifyAuthStateChanged();
-
-            NavigationManager.NavigateTo("/");
+            await AuthService.Logout("/");
         }
     }
 }

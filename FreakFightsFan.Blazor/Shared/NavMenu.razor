@@ -1,33 +1,43 @@
-﻿<MudNavMenu>
+﻿<MudNavMenu Color="Color.Primary"
+            Rounded="true"
+            Margin="Margin.Normal">
     <MudNavLink Href="/"
-                Match=NavLinkMatch.All>
+                Match=NavLinkMatch.All
+                Icon=@Icons.Material.Filled.Home>
         @Localizer[nameof(AppStrings.Home)]
     </MudNavLink>
     <MudNavLink Href="/fighters"
-                Match=NavLinkMatch.Prefix>
+                Match=NavLinkMatch.Prefix
+                Icon=@Icons.Material.Filled.Groups3>
         @Localizer[nameof(AppStrings.Fighters)]
     </MudNavLink>
     <MudNavLink Href="/federations"
-                Match=NavLinkMatch.Prefix>
+                Match=NavLinkMatch.Prefix
+                Icon=@Icons.Material.Filled.CorporateFare>
         @Localizer[nameof(AppStrings.Federations)]
     </MudNavLink>
     <MudNavLink Href="/settings"
-                Match=NavLinkMatch.Prefix>
+                Match=NavLinkMatch.Prefix
+                Icon=@Icons.Material.Filled.Settings>
         @Localizer[nameof(AppStrings.Settings)]
     </MudNavLink>
     <AuthorizeView Policy=@Policy.Admin>
         <MudNavGroup Title=@Localizer[nameof(AppStrings.AdminPanel)]
+                     Icon=@Icons.Material.Filled.AdminPanelSettings
                      Expanded=true>
             <MudNavLink Href="/images"
-                        Match=NavLinkMatch.Prefix>
+                        Match=NavLinkMatch.Prefix
+                        Icon=@Icons.Material.Filled.PhotoLibrary>
                 @Localizer[nameof(AppStrings.Images)]
             </MudNavLink>
             <MudNavLink Href="/dictionaries"
-                        Match=NavLinkMatch.Prefix>
+                        Match=NavLinkMatch.Prefix
+                        Icon=@Icons.Material.Filled.LibraryBooks>
                 @Localizer[nameof(AppStrings.Dictionaries)]
             </MudNavLink>
             <MudNavLink Href="/users"
-                        Match=NavLinkMatch.Prefix>
+                        Match=NavLinkMatch.Prefix
+                        Icon=@Icons.Material.Filled.Group>
                 @Localizer[nameof(AppStrings.Users)]
             </MudNavLink>
         </MudNavGroup>

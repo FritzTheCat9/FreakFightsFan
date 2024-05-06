@@ -366,6 +366,15 @@
   <data name="SuccessfulEmailConfirmation" xml:space="preserve">
     <value>Twój e-mail został pomyślnie potwierdzony.</value>
   </data>
+  <data name="SwitchToDarkTheme" xml:space="preserve">
+    <value>Ciemny motyw</value>
+  </data>
+  <data name="SwitchToLightTheme" xml:space="preserve">
+    <value>Jasny motyw</value>
+  </data>
+  <data name="SwitchToSystemTheme" xml:space="preserve">
+    <value>Systemowy motyw</value>
+  </data>
   <data name="Team" xml:space="preserve">
     <value>Drużyna</value>
   </data>

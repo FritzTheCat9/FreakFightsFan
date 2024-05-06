@@ -27,7 +27,10 @@ namespace FreakFightsFan.Blazor.Auth
             });
 
             services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtProvider, JwtProvider>();
+
+            services.AddSingleton<TokenRefreshService>();
 
             return services;
         }
