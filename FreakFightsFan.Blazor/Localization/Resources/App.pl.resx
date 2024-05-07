@@ -159,6 +159,9 @@
   <data name="Created" xml:space="preserve">
     <value>Utworzony</value>
   </data>
+  <data name="CreatedByText" xml:space="preserve">
+    <value>Autor: Bartłomiej Umiński (FritzTheCat9)</value>
+  </data>
   <data name="CreateDictionary" xml:space="preserve">
     <value>Dodaj Słownik</value>
   </data>

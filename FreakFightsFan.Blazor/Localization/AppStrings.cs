@@ -105,6 +105,7 @@
         SwitchToDarkTheme,
         SwitchToSystemTheme,
         SwitchToLightTheme,
-        CheckProjectOnGithubText,
+        CheckProjectOnGithubText, 
+        CreatedByText,
     }
 }
