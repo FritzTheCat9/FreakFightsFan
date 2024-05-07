@@ -168,8 +168,10 @@ Nuget packages and libraries used in projects.
     - Degrade selected user (Admin -> User)
     - Login user if email is confirmed
     - Promote selected user (User -> Admin)
+    - Refresh Jwt Token
     - Register new user and send confirmation email
     <!-- - Update user image -->
+    - Update user theme
     - Get all users (paginated, sorted and filtered)
     - Get selected user
 
@@ -186,7 +188,6 @@ Planned features and updates:
 - Request CorrelationId visible on frontend page with error (user can give error correlationId to admin and ask for help) 
 - Blazor logging
 - Fix bug with validation on create / update fight modal
-- Blazor select theme for user (stored in database) 
 - Api Health Checks
 - Fight Types (MMA, BOXING, K1, ...)
 - Fight Result (KO, TKO, ...)
@@ -195,7 +196,6 @@ Planned features and updates:
 - Github actions
 - App deployment
 - Update user image feature
-- Refresh Jwt Tokens
 - Resend email confirmation email
 - Send fight card email to users before incomming event
 - Fix Feature Generator
