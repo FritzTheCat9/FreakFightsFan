@@ -3,7 +3,6 @@ using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Users.Extensions;
 using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
-using FreakFightsFan.Shared.Features.Users.Helpers;
 using FreakFightsFan.Shared.Features.Users.Queries;
 using FreakFightsFan.Shared.Features.Users.Responses;
 using MediatR;
@@ -24,7 +23,7 @@ namespace FreakFightsFan.Api.Features.Users.Queries
             })
                 .WithName("GetUser")
                 .WithTags(Tags.Users)
-                .RequireAuthorization(Policy.Admin);
+                .AllowAnonymous();
 
             return app;
         }

@@ -23,11 +23,6 @@ namespace FreakFightsFan.Blazor.Pages.Users
 
         [Inject] public IDialogService DialogService { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await AuthService.RefreshToken();
-        }
-
         private async Task Login()
         {
             var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
