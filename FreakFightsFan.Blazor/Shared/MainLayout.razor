@@ -34,6 +34,12 @@
             <MudIconButton Icon=@_icon
                            OnClick=OnThemeChange
                            Style="margin-right: 5px;" />
+        </MudTooltip>       
+        <MudTooltip Text=@Localizer[nameof(AppStrings.CheckProjectOnGithubText)]>
+            <MudIconButton Icon=@Icons.Custom.Brands.GitHub
+                           Href=https://github.com/FritzTheCat9/FreakFightsFan
+                           Target=_blank
+                           Style="margin-right: 5px;" />
         </MudTooltip>
         <Auth ChangeThemeColor="ChangeThemeColor" />
     </MudAppBar>

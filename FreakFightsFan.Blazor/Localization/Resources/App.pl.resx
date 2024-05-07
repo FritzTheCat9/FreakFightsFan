@@ -138,6 +138,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>Anuluj</value>
   </data>
+  <data name="CheckProjectOnGithubText" xml:space="preserve">
+    <value>Sprawdź projekt na GitHubie</value>
+  </data>
   <data name="City" xml:space="preserve">
     <value>Miasto</value>
   </data>
