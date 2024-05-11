@@ -34,12 +34,11 @@ namespace FreakFightsFan.Blazor.Shared
                 ErrorDarken = Colors.Red.Default,
                 ErrorLighten = Colors.Red.Default,
 
-                AppbarBackground = "80BCBD",
-                DrawerBackground = "AAD9BB",
-                Background = "D5F0C1",
-                TableLines = "D5F0C1",
-                Surface = "F9F7C9",
-                Primary = "9A3E88",
+                AppbarBackground = "00A9FF",
+                DrawerBackground = "89CFF3",
+                Background = "A0E9FF",
+                TableLines = "A0E9FF",
+                Surface = "CDF5FD",
                 Warning = Colors.Yellow.Darken4,
 
                 AppbarText = Colors.Grey.Darken4,
