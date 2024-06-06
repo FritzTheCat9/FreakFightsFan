@@ -35,7 +35,9 @@
     <MudGrid Spacing=1
              Justify=Justify.Center>
         <MudItem xs=12>
-            <MudSelect @bind-Value=FighterHelperModel.FightResult
+            <MudSelect T=FightResult
+                       Value=FighterHelperModel.FightResult
+                       ValueChanged=OnFightResultChanged
                        Label=@Localizer[nameof(AppStrings.FightResult)]>
                 @foreach (FightResult fightResult in Enum.GetValues(typeof(FightResult)))
                 {

@@ -50,6 +50,7 @@
                         {
                             <MudListItem>
                                 <FighterListItem FighterHelperModel=@fighter
+                                                 FightResultChanged=UpdateTeams
                                                  OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
                             </MudListItem>
                         }

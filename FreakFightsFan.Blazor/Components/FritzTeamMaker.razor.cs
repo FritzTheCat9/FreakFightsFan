@@ -35,7 +35,7 @@ namespace FreakFightsFan.Blazor.Components
             await OnTeamsChanged.InvokeAsync(teams);
         }
 
-        private void SelectTeam(int number) 
+        private void SelectTeam(int number)
             => SelectedTeam = number;
 
         private async Task DeleteFighterListItem(CreateFight.TeamHelperModel team, CreateFight.FighterHelperModel fighter)
