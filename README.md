@@ -59,7 +59,39 @@ User:
 ```
 
 ## Presentation
-//TODO: Add some images
+
+Federations view:
+![Federations image](./images/1_federations.png)
+
+Events view:
+![Events image](./images/2_events.png)
+
+Fights view:
+![Fights image](./images/3_fights.png)
+
+Create fight dialog:
+![Create fight image](./images/4_create_fight_dialog.png)
+
+Fighters view:
+![Fighters image](./images/5_fighters.png)
+
+Fighter profile view:
+![Fighter profile image](./images/6_fighter_profile.png)
+
+Users view:
+![Users image](./images/7_users.png)
+
+Dictionaries view:
+![Dictionaries image](./images/8_dictionaries.png)
+
+Dictionary items view:
+![Dictionary items image](./images/9_dictionary_items.png)
+
+Images view:
+![Images image](./images/10_images.png)
+
+Settings view:
+![Settings image](./images/11_settings.png)
 
 ## Technologies
 - C# 12
