@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Shared
+namespace FreakFightsFan.Blazor.Layout
 {
     public partial class MainLayout : LayoutComponentBase
     {
