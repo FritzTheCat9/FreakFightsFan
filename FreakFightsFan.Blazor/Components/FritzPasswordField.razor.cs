@@ -1,15 +1,27 @@
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzPasswordField : MudTextField<string>
+    public partial class FritzPasswordField : ComponentBase
     {
         private bool _passwordShown;
         private InputType _passwordInputType = InputType.Password;
         private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
 
-        private void OnValueChanged(string value) 
-            => SetValueAsync(value);
+        [Parameter] public string Value { get; set; }
+        [Parameter] public EventCallback<string> ValueChanged { get; set; }
+        [Parameter] public Expression<Func<string>> For { get; set; }
+
+        [Parameter] public string Label { get; set; }
+        [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
+
+        private async Task OnValueChanged(string newValue)
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
 
         private void ShowPassword()
         {

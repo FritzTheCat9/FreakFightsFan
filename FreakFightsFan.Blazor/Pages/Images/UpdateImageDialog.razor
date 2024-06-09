@@ -7,7 +7,6 @@
         <DialogContent>
             <FritzFileInput @bind-Value=Command.ImageBase64
                             For="() => Command.ImageBase64"
-                            OnImageBase64Changed=@((image) => Command.ImageBase64 = image)
                             Url=@Url />
             <FritzValidationMessage For="() => Command.ImageBase64" />
         </DialogContent>

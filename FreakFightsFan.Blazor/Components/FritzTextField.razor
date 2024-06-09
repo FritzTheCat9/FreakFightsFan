@@ -1,9 +1,7 @@
-﻿@inherits MudTextField<string>
-
-<MudTextField T=string
+﻿<MudTextField T=string
               Value=Value
               ValueChanged=OnValueChanged
               For=For
               Label=@Label
-              OnlyValidateIfDirty=true
-              style=@(HideField ? $"display: none;" : "") />
+              OnlyValidateIfDirty=OnlyValidateIfDirty 
+              Style="@HiddenStyle" />

@@ -3,24 +3,26 @@ using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using MudBlazor;
 using System.Linq.Expressions;
 using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzTeamMaker : MudTextField<List<CreateTeamModel>>
+    public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
     {
         private FritzFighterPicker _addFighterField;
         private FighterDto _fighter;
 
         [Parameter] public List<CreateTeamModel> Teams { get; set; }
+        [Parameter] public EventCallback<List<CreateTeamModel>> TeamsChanged { get; set; }
+
         [Parameter] public List<TeamHelperModel> TeamHelperModel { get; set; } = [];
         [Parameter] public int SelectedTeam { get; set; }
-        [Parameter] public EventCallback<List<CreateTeamModel>> OnTeamsChanged { get; set; }
-        [Parameter] public Expression<Func<List<CreateTeamModel>>> ForTeams { get; set; }
-        [Parameter] public Expression<Func<int>> ForEventId { get; set; }
         [Parameter] public int NumberOfTeams { get; set; }
+
+        [Parameter] public Expression<Func<int>> ForEventId { get; set; }
+
+        [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
 
         [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
@@ -31,8 +33,9 @@ namespace FreakFightsFan.Blazor.Components
 
         private async Task OnValueChanged(List<CreateTeamModel> teams)
         {
-            await SetValueAsync(teams);
-            await OnTeamsChanged.InvokeAsync(teams);
+            Teams = teams;
+            await TeamsChanged.InvokeAsync(teams);
+            ValidateField();
         }
 
         private void SelectTeam(int number)

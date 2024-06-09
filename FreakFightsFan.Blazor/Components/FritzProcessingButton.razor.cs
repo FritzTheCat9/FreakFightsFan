@@ -5,12 +5,16 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzProcessingButton : MudButton
+    public partial class FritzProcessingButton
     {
         private bool _processing;
 
         [Parameter] public string ProcessingButtonText { get; set; }
         [Parameter] public string ButtonText { get; set; }
+
+        [Parameter] public ButtonType ButtonType { get; set; }
+        [Parameter] public Color Color { get; set; }
+        [Parameter] public Variant Variant { get; set; }
 
         [Inject] public IStringLocalizer<App> Localizer { get; set; }
 

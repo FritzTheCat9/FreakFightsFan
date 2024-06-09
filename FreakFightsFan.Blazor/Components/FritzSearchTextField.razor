@@ -1,9 +1,8 @@
-﻿@inherits MudTextField<string>
-
-<MudTextField T=string
+﻿<MudTextField T=string
               Value=Value
               ValueChanged=OnValueChanged
-              Placeholder=@Localizer[nameof(AppStrings.Search)]
+              For=For
+              Placeholder=@Placeholder
               Adornment=Adornment.Start
               AdornmentIcon=@Icons.Material.Filled.Search
               IconSize=Size.Medium />

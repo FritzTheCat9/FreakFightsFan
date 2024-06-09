@@ -1,21 +1,22 @@
-﻿@using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
-@inherits MudTextField<List<CreateTeamModel>>
+﻿@inherits FritzFormInputBase<List<CreateTeamModel>>
+@using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 
-<MudTextField T="List<CreateTeamModel>"
+@* <MudTextField T="List<CreateTeamModel>"
               Value=Teams
               ValueChanged=OnValueChanged
               For=For
-              OnlyValidateIfDirty=true
-              style="display: none;" />
+              OnlyValidateIfDirty=OnlyValidateIfDirty
+              Style="display: none;" /> *@
 
 <MudGrid Spacing=1
          Justify=Justify.FlexStart>
     <MudItem xs=10>
         <FritzFighterPicker @ref=_addFighterField
-                            Label=@Localizer[nameof(AppStrings.Fighter)]
                             @bind-Value=_fighter
+                            For="() => _fighter"
+                            Label=@Localizer[nameof(AppStrings.Fighter)]
                             Teams=TeamHelperModel />
-        <FritzValidationMessage For=ForTeams />
+        <FritzValidationMessage For=For />
         @if (ForEventId is not null)
         {
             <FritzValidationMessage For=ForEventId />

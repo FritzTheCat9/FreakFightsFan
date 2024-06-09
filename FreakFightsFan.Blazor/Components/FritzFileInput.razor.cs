@@ -3,11 +3,11 @@ using FreakFightsFan.Shared.Features.Images.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Localization;
-using MudBlazor;
+using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzFileInput: MudTextField<string>
+    public partial class FritzFileInput : ComponentBase
     {
         private readonly int _maxFileSize = ImageConsts.MaxFileSize;
         private readonly List<string> _allowedFileTypes = ImageConsts.AllowedFileTypes;
@@ -17,17 +17,20 @@ namespace FreakFightsFan.Blazor.Components
         private bool _isImageValid;
 
         [Parameter] public string Url { get; set; }
-        [Parameter] public EventCallback<string> OnImageBase64Changed { get; set; }
+
+        [Parameter] public string Value { get; set; }
+        [Parameter] public EventCallback<string> ValueChanged { get; set; }
+        [Parameter] public Expression<Func<string>> For { get; set; }
 
         [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
         protected override void OnInitialized() 
             => SetIsImageValid(Value);
 
-        private async Task OnValueChanged(string value)
+        private async Task OnValueChanged(string newValue)
         {
-            await SetValueAsync(value);
-            await OnImageBase64Changed.InvokeAsync(Value);
+            Value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
         }
 
         private void SetIsImageValid(string imageBase64)

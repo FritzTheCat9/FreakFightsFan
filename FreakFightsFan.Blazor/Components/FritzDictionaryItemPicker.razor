@@ -1,4 +1,4 @@
-﻿@inherits MudNumericField<int?>
+﻿@inherits FritzFormInputBase<int?>
 
 <InputNumber TValue=int?
              Value=Value
@@ -8,7 +8,7 @@
 
 <MudAutocomplete T=MyDictionaryItemDto
                  Value=DictionaryItemDto
-                 ValueChanged=OnDictionaryItemChanged
+                 ValueChanged=OnDictionaryItemDtoChanged
                  Label=@Label
                  SearchFuncWithCancel=Search
                  ToStringFunc=DisplayDictionaryItem

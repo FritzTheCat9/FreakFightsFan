@@ -7,10 +7,11 @@ using FreakFightsFan.Shared.Features.Fights.Commands;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
+using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzFighterPicker : MudAutocomplete<FighterDto>
+    public partial class FritzFighterPicker : ComponentBase
     {
         private MudAutocomplete<FighterDto> _autocomplete;
 
@@ -18,6 +19,12 @@ namespace FreakFightsFan.Blazor.Components
             => fighter is null ? null : $@"{fighter.FirstName} {fighter.LastName} - ""{fighter.Nickname}""";
 
         [Parameter] public List<CreateFight.TeamHelperModel> Teams { get; set; } = [];
+        [Parameter] public string Label { get; set; }
+        [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
+
+        [Parameter] public FighterDto Value { get; set; }
+        [Parameter] public EventCallback<FighterDto> ValueChanged { get; set; }
+        [Parameter] public Expression<Func<FighterDto>> For { get; set; }
 
         [Inject] public IExceptionHandler ExceptionHandler { get; set; }
         [Inject] public IFighterApiClient FighterApiClient { get; set; }
@@ -27,8 +34,11 @@ namespace FreakFightsFan.Blazor.Components
         public async Task Focus()
             => await _autocomplete.FocusAsync();
 
-        private async Task OnValueChanged(FighterDto value)
-            => await SelectOption(value);
+        private async Task OnValueChanged(FighterDto newValue)
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
 
         private async Task<IEnumerable<FighterDto>> Search(string value, CancellationToken token)
         {

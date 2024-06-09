@@ -1,11 +1,9 @@
-﻿@inherits MudAutocomplete<FighterDto>
-
-<MudAutocomplete @ref=_autocomplete
+﻿<MudAutocomplete @ref=_autocomplete
                  T=FighterDto
                  Value=Value
                  ValueChanged=OnValueChanged
-                 Label=@Label
                  For=For
+                 Label=@Label
                  SearchFuncWithCancel=Search
                  ToStringFunc=_displayFighter
                  Variant=Variant.Text
@@ -13,7 +11,7 @@
                  SelectValueOnTab=true
                  ResetValueOnEmptyText=true
                  FullWidth=true
-                 OnlyValidateIfDirty=true>
+                 OnlyValidateIfDirty=OnlyValidateIfDirty>
     <NoItemsTemplate>
         <MudText>
             @Localizer[nameof(AppStrings.NoFightersFound)]
