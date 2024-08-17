@@ -27,7 +27,7 @@ namespace FreakFightsFan.Blazor.Layout
             {
                 DefaultBorderRadius = "10px",
             },
-            Palette = new PaletteLight()
+            PaletteLight = new PaletteLight()
             {
                 Error = Colors.Red.Default,
                 ErrorContrastText = Colors.Red.Default,
@@ -41,11 +41,11 @@ namespace FreakFightsFan.Blazor.Layout
                 Surface = "CDF5FD",
                 Warning = Colors.Yellow.Darken4,
 
-                AppbarText = Colors.Grey.Darken4,
-                DrawerIcon = Colors.Grey.Darken3,
+                AppbarText = Colors.Gray.Darken4,
+                DrawerIcon = Colors.Gray.Darken3,
 
-                TextPrimary = Colors.Grey.Darken3,
-                TextSecondary = Colors.Grey.Darken2,
+                TextPrimary = Colors.Gray.Darken3,
+                TextSecondary = Colors.Gray.Darken2,
             },
             PaletteDark = new PaletteDark()
             {

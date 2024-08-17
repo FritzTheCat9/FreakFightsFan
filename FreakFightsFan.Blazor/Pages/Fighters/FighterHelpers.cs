@@ -8,12 +8,12 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
         public static string GetFightResultColor(FightResult fightResult)
             => fightResult switch
             {
-                FightResult.UPCOMING => Colors.Grey.Default,
+                FightResult.UPCOMING => Colors.Gray.Default,
                 FightResult.WIN => Colors.Green.Default,
                 FightResult.LOSS => Colors.Red.Default,
-                FightResult.DRAW => Colors.Grey.Default,
+                FightResult.DRAW => Colors.Gray.Default,
                 FightResult.NO_CONTEST => Colors.Blue.Default,
-                _ => Colors.Grey.Default,
+                _ => Colors.Gray.Default,
             };
     }
 }

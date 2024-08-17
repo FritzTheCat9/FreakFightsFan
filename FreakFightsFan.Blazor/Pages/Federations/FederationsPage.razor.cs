@@ -35,7 +35,7 @@ namespace FreakFightsFan.Blazor.Pages.Federations
             ];
         }
 
-        private async Task<TableData<FederationDto>> ServerReload(TableState state)
+        private async Task<TableData<FederationDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllFederations.Query
             {
@@ -92,7 +92,7 @@ namespace FreakFightsFan.Blazor.Pages.Federations
             var parameters = new DialogParameters<UpdateFederationDialog>
             {
                 {
-                    x => x.Command,
+                    x => x.FormModel,
                     new()
                     {
                         Id = federationDto.Id,
@@ -118,7 +118,7 @@ namespace FreakFightsFan.Blazor.Pages.Federations
             var parameters = new DialogParameters<CreateFederationDialog>
             {
                 {
-                    x => x.Command,
+                    x => x.FormModel,
                     new()
                 }
             };

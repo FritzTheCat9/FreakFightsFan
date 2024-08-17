@@ -46,7 +46,7 @@
             {
                 <MudPaper Width="100%"
                           Class=@((SelectedTeam == team.Number) ? "mud-theme-primary" : "")>
-                    <MudList Style="cursor: auto;">
+                    <MudList T=FighterHelperModel Style="cursor: auto;">
                         @foreach (var fighter in team.Fighters)
                         {
                             <MudListItem>

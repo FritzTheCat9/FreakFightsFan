@@ -34,7 +34,7 @@ namespace FreakFightsFan.Blazor.Pages.Users
             ];
         }
 
-        private async Task<TableData<UserDto>> ServerReload(TableState state)
+        private async Task<TableData<UserDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllUsers.Query
             {

@@ -34,7 +34,7 @@ namespace FreakFightsFan.Blazor.Pages.Images
             ];
         }
 
-        private async Task<TableData<ImageDto>> ServerReload(TableState state)
+        private async Task<TableData<ImageDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllImages.Query
             {
@@ -87,7 +87,7 @@ namespace FreakFightsFan.Blazor.Pages.Images
             var parameters = new DialogParameters<UpdateImageDialog>
             {
                 {
-                    x => x.Command,
+                    x => x.FormModel,
                     new()
                     {
                         Id = imageDto.Id,
@@ -112,8 +112,8 @@ namespace FreakFightsFan.Blazor.Pages.Images
             var parameters = new DialogParameters<CreateImageDialog>
             {
                 { 
-                    x => x.Command, 
-                    new() 
+                    x => x.FormModel,
+                    new()
                 }
             };
 

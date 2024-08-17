@@ -15,7 +15,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
 
         [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
 
-        [Parameter] public UpdateFighter.Command Command { get; set; } = new();
+        [Parameter] public UpdateFighter.FormModel FormModel { get; set; } = new();
         [Parameter] public string Url { get; set; }
 
         [Inject] IFighterApiClient FighterApiClient { get; set; }
@@ -26,7 +26,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
         {
             try
             {
-                await FighterApiClient.UpdateFighter(Command);
+                await FighterApiClient.UpdateFighter(FormModel);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             catch (MyValidationException validationException)

@@ -1,12 +1,6 @@
-﻿<MudTextField T=string
-              Value=Value
-              ValueChanged=ValueChanged
-              For=For
-              Style="display: none;" />
-
-@if (_isImageValid && !string.IsNullOrEmpty(Value))
+﻿@if (_isImageValid && !string.IsNullOrEmpty(ImageBase64))
 {
-    <MudImage Src=@Value
+    <MudImage Src=@ImageBase64
               Width=400
               Alt=@Localizer[nameof(AppStrings.Image)] />
 }
@@ -26,16 +20,14 @@ else
 <MudFileUpload T=IBrowserFile
                @bind-Files=File
                OnFilesChanged=UploadFiles
-               For="() => File"
+               For=ForFile
                Accept=@_allowedFileTypesString
                AppendMultipleFiles=false>
-    <ButtonTemplate>
-        <MudButton HtmlTag="label"
-                   for=@context
-                   Variant=Variant.Filled
+    <ActivatorContent>
+        <MudButton Variant=Variant.Filled
                    Color=Color.Primary
                    StartIcon=@Icons.Material.Filled.AttachFile>
             @Localizer[nameof(AppStrings.UploadImage)]
         </MudButton>
-    </ButtonTemplate>
+    </ActivatorContent>
 </MudFileUpload>

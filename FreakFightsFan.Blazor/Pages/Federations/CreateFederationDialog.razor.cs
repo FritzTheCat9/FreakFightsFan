@@ -15,7 +15,7 @@ namespace FreakFightsFan.Blazor.Pages.Federations
 
         [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
 
-        [Parameter] public CreateFederation.Command Command { get; set; } = new();
+        [Parameter] public CreateFederation.FormModel FormModel { get; set; } = new();
 
         [Inject] public IExceptionHandler ExceptionHandler { get; set; }
         [Inject] public IFederationApiClient FederationApiClient { get; set; }
@@ -26,7 +26,7 @@ namespace FreakFightsFan.Blazor.Pages.Federations
         {
             try
             {
-                await FederationApiClient.CreateFederation(Command);
+                await FederationApiClient.CreateFederation(FormModel);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             catch (MyValidationException validationException)

@@ -38,7 +38,7 @@ namespace FreakFightsFan.Blazor.Pages.Events
             ];
         }
 
-        private async Task<TableData<EventDto>> ServerReload(TableState state)
+        private async Task<TableData<EventDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllEvents.Query
             {

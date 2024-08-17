@@ -1,8 +1,27 @@
-﻿namespace FreakFightsFan.Shared.Features.Images.Helpers
+﻿using FluentValidation;
+using FreakFightsFan.Shared.Localization;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Localization;
+
+namespace FreakFightsFan.Shared.Features.Images.Helpers
 {
     public static class ImageHelpers
     {
         /* -------------------- Validation Helpers -------------------- */
+
+        public class ImageValidator : AbstractValidator<IBrowserFile>
+        {
+            public ImageValidator(IStringLocalizer<ValidationMessage> localizer)
+            {
+                RuleFor(x => x.Size)
+                    .LessThanOrEqualTo(ImageConsts.MaxFileSize)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize]);
+
+                RuleFor(x => x.ContentType)
+                    .Must(x => ImageConsts.AllowedFileTypes.Contains(x))
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
+            }
+        }
 
         public static bool HaveValidFileType(string imageBase64, List<string> _allowedFileTypes)
         {
@@ -37,14 +56,14 @@
 
         /* -------------------- Model Helpers -------------------- */
 
-        private static string GetImageContentType(string imageBase64)
-        {
-            return imageBase64.Split(',')[0].Split(':')[1].Split(';')[0];
-        }
-
         public static byte[] GetImageData(string imageBase64)
         {
             return Convert.FromBase64String(imageBase64.Split(',')[1]);
+        }
+
+        private static string GetImageContentType(string imageBase64)
+        {
+            return imageBase64.Split(',')[0].Split(':')[1].Split(';')[0];
         }
 
         public static string GenerateNameWithExtension(string imageBase64)

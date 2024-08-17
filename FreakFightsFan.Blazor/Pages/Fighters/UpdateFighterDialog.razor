@@ -1,34 +1,40 @@
-﻿<EditForm Model=Command
+﻿<EditForm Model=FormModel
           OnValidSubmit=HandleValidSubmit>
     <CustomValidator @ref=_customValidator />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus=DefaultFocus.LastChild>
         <DialogContent>
-            <FritzFileInput @bind-Value=Command.ImageBase64
-                            For="() => Command.ImageBase64"
+            <FritzFileInput @bind-File=FormModel.File ForFile="() => FormModel.File"
+                            @bind-ImageBase64=FormModel.ImageBase64 ForImageBase64="() => FormModel.ImageBase64"
                             Url=@Url />
-            <FritzValidationMessage For="() => Command.ImageBase64" />
+            <FritzValidationMessage For="() => FormModel.ImageBase64" />
+            <FritzValidationMessage For="() => FormModel.File" />
+            @if (FormModel?.File is not null)
+            {
+                <FritzValidationMessage For="() => FormModel.File.Size" />
+                <FritzValidationMessage For="() => FormModel.File.ContentType" />
+            }
 
             <FritzTextField Label=@Localizer[nameof(AppStrings.FirstName)]
-                            @bind-Value=Command.FirstName
-                            For="() => Command.FirstName" />
-            <FritzValidationMessage For="() => Command.FirstName" />
+                            @bind-Value=FormModel.FirstName
+                            For="() => FormModel.FirstName" />
+            <FritzValidationMessage For="() => FormModel.FirstName" />
 
             <FritzTextField Label=@Localizer[nameof(AppStrings.LastName)]
-                            @bind-Value=Command.LastName
-                            For="() => Command.LastName" />
-            <FritzValidationMessage For="() => Command.LastName" />
+                            @bind-Value=FormModel.LastName
+                            For="() => FormModel.LastName" />
+            <FritzValidationMessage For="() => FormModel.LastName" />
 
             <FritzTextField Label=@Localizer[nameof(AppStrings.Nickname)]
-                            @bind-Value=Command.Nickname
-                            For="() => Command.Nickname" />
-            <FritzValidationMessage For="() => Command.Nickname" />
+                            @bind-Value=FormModel.Nickname
+                            For="() => FormModel.Nickname" />
+            <FritzValidationMessage For="() => FormModel.Nickname" />
 
             <FritzTextField Label=@Localizer[nameof(AppStrings.InstagramUrl)]
-                            @bind-Value=Command.InstagramUrl
-                            For="() => Command.InstagramUrl" />
-            <FritzValidationMessage For="() => Command.InstagramUrl" />
+                            @bind-Value=FormModel.InstagramUrl
+                            For="() => FormModel.InstagramUrl" />
+            <FritzValidationMessage For="() => FormModel.InstagramUrl" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType=ButtonType.Submit

@@ -64,7 +64,8 @@
             @user.Email
         </MudTd>
         <MudTd DataLabel=@Localizer[nameof(AppStrings.Role)]>
-            <MudChip Variant=Variant.Outlined
+            <MudChip T=string
+                     Variant=Variant.Outlined
                      Color=GetColorBasedOnPolicy(GetUserHighestPolicy(user))>
                 @GetUserHighestPolicy(user)
             </MudChip>

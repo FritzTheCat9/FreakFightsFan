@@ -15,7 +15,7 @@ namespace FreakFightsFan.Blazor.Pages.Images
 
         [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
 
-        [Parameter] public CreateImage.Command Command { get; set; } = new();
+        [Parameter] public CreateImage.FormModel FormModel { get; set; } = new();
 
         [Inject] public IExceptionHandler ExceptionHandler { get; set; }
         [Inject] public IImageApiClient ImageApiClient { get; set; }
@@ -26,7 +26,7 @@ namespace FreakFightsFan.Blazor.Pages.Images
         {
             try
             {
-                await ImageApiClient.CreateImage(Command);
+                await ImageApiClient.CreateImage(FormModel);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             catch (MyValidationException validationException)

@@ -35,7 +35,7 @@ namespace FreakFightsFan.Blazor.Pages.Dictionaries
             ];
         }
 
-        private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state)
+        private async Task<TableData<MyDictionaryDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllMyDictionaries.Query
             {

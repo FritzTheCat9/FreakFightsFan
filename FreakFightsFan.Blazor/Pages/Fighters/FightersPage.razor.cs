@@ -35,7 +35,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
             ];
         }
 
-        private async Task<TableData<FighterDto>> ServerReload(TableState state)
+        private async Task<TableData<FighterDto>> ServerReload(TableState state, CancellationToken token)
         {
             var query = new GetAllFighters.Query
             {
@@ -89,7 +89,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
             var parameters = new DialogParameters<UpdateFighterDialog>
             {
                 {
-                    x => x.Command,
+                    x => x.FormModel,
                     new()
                     {
                         Id = fighterDto.Id,
@@ -118,7 +118,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
             var parameters = new DialogParameters<CreateFighterDialog>
             {
                 { 
-                    x => x.Command, 
+                    x => x.FormModel, 
                     new() 
                 }
             };

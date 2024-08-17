@@ -1,4 +1,4 @@
-using FluentValidation;
+using FreakFightsFan.Shared;
 using FreakFightsFan.Shared.Features.Images.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -7,103 +7,121 @@ using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components
 {
-    public partial class FritzFileInput : ComponentBase
+    public partial class FritzFileInput
     {
         private readonly int _maxFileSize = ImageConsts.MaxFileSize;
-        private readonly List<string> _allowedFileTypes = ImageConsts.AllowedFileTypes;
         private readonly string _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-        
-        private IBrowserFile File { get; set; }
-        private bool _isImageValid;
+
+        private FieldIdentifier _fileFieldIdentifier;
+        private FieldIdentifier _imageBase64FieldIdentifier;
+
+        [CascadingParameter] public EditContext EditContext { get; set; }
+
+        [Parameter] public IBrowserFile File { get; set; }
+        [Parameter] public EventCallback<IBrowserFile> FileChanged { get; set; }
+        [Parameter] public Expression<Func<IBrowserFile>> ForFile { get; set; }
+
+        [Parameter] public string ImageBase64 { get; set; }
+        [Parameter] public EventCallback<string> ImageBase64Changed { get; set; }
+        [Parameter] public Expression<Func<string>> ForImageBase64 { get; set; }
 
         [Parameter] public string Url { get; set; }
-
-        [Parameter] public string Value { get; set; }
-        [Parameter] public EventCallback<string> ValueChanged { get; set; }
-        [Parameter] public Expression<Func<string>> For { get; set; }
+        private bool _isImageValid;
 
         [Inject] public IStringLocalizer<App> Localizer { get; set; }
+        [Inject] public IStringLocalizer<ValidationMessage> SharedLocalizer { get; set; }
 
-        protected override void OnInitialized() 
-            => SetIsImageValid(Value);
-
-        private async Task OnValueChanged(string newValue)
-        {
-            Value = newValue;
-            await ValueChanged.InvokeAsync(newValue);
-        }
+        protected override void OnInitialized()
+            => SetIsImageValid(ImageBase64);
 
         private void SetIsImageValid(string imageBase64)
         {
             if (!string.IsNullOrEmpty(imageBase64))
-            {
                 _isImageValid = true;
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (ForFile is not null)
+                _fileFieldIdentifier = FieldIdentifier.Create(ForFile);
+
+            if (ForImageBase64 is not null)
+                _imageBase64FieldIdentifier = FieldIdentifier.Create(ForImageBase64);
+        }
+
+        private async Task OnFileChanged(IBrowserFile file)
+        {
+            File = file;
+            await FileChanged.InvokeAsync(file);
+            ValidateFile();
+        }
+
+        private async Task OnImageBase64Changed(string url)
+        {
+            ImageBase64 = url;
+            await ImageBase64Changed.InvokeAsync(url);
+            ValidateImageBase64();
+        }
+
+        private void ValidateFile()
+        {
+            if (!string.IsNullOrEmpty(_fileFieldIdentifier.FieldName))
+            {
+                EditContext?.NotifyFieldChanged(_fileFieldIdentifier);
             }
         }
 
-        private async void UploadFiles(InputFileChangeEventArgs e)
+        private void ValidateImageBase64()
         {
-            var validationErrors = ValidateFile(e.File);
-            if (validationErrors.Any())
+            if (!string.IsNullOrEmpty(_imageBase64FieldIdentifier.FieldName))
             {
-                _isImageValid = false;
-                await OnValueChanged(null);
-                StateHasChanged();
-                return;
+                EditContext?.NotifyFieldChanged(_imageBase64FieldIdentifier);
             }
+        }
 
-            var file = e.File;
+        private async Task UploadFiles(InputFileChangeEventArgs e)
+        {
+            try
+            {
+                var file = e.File;
+
+                await OnFileChanged(file);
+                await OnImageBase64Changed(null);
+
+                if (file is null)
+                {
+                    _isImageValid = false;
+                    return;
+                }
+
+                var fileValidator = new ImageHelpers.ImageValidator(SharedLocalizer);
+                var validationResult = await fileValidator.ValidateAsync(e.File);
+                if (!validationResult.IsValid)
+                {
+                    _isImageValid = false;
+                    return;
+                }
+
+                var url = await GetImageBase64Url(file);
+                _isImageValid = true;
+
+                await OnImageBase64Changed(url);
+            }
+            catch (Exception)
+            {
+                // File was not picked
+            }
+        }
+
+        private async Task<string> GetImageBase64Url(IBrowserFile file)
+        {
             var buffer = new byte[file.Size];
             await file.OpenReadStream(_maxFileSize).ReadAsync(buffer);
+
             var imageBase64 = Convert.ToBase64String(buffer);
-            string dataUrl = $"data:{file.ContentType};base64,{imageBase64}";
-            await OnValueChanged(dataUrl);
+            var url = $"data:{file.ContentType};base64,{imageBase64}";
 
-            _isImageValid = true;
-            StateHasChanged();
-        }
-
-        private IDictionary<string, List<string>> ValidateFile(IBrowserFile file)
-        {
-            if (file == null)
-                return new Dictionary<string, List<string>>();
-
-            var validator = new FileFluentValidator(_maxFileSize, _allowedFileTypes, _allowedFileTypesString);
-            var result = validator.Validate(file);
-
-            var validationErrors = new Dictionary<string, List<string>>();
-            if (!result.IsValid)
-            {
-                validationErrors = result.Errors
-                    .GroupBy(failure => failure.PropertyName)
-                    .ToDictionary(group => group.Key, group => group.Select(failure => failure.ErrorMessage).ToList());
-            }
-            return validationErrors;
-        }
-
-        private class FileFluentValidator : AbstractValidator<IBrowserFile>
-        {
-            private readonly int _maxFileSize;
-            private readonly List<string> _allowedFileTypes;
-            private readonly string _allowedFileTypesString;
-
-            public FileFluentValidator(int maxFileSize, List<string> allowedFileTypes, string allowedFileTypesString)
-            {
-                _maxFileSize = maxFileSize;
-                _allowedFileTypes = allowedFileTypes;
-                _allowedFileTypesString = allowedFileTypesString;
-
-                When(x => x != null, () =>
-                {
-                    RuleFor(x => x.Size)
-                    .Must(x => x <= _maxFileSize)
-                    .WithMessage($"The maximum file size is {_maxFileSize} bytes");
-
-                    RuleFor(x => x.ContentType)
-                    .Must(x => _allowedFileTypes.Contains(x))
-                    .WithMessage($"Allowed image types: {_allowedFileTypesString}");
-                });
-            }
+            return url;
         }
     }
 }

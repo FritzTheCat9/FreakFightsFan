@@ -1,14 +1,20 @@
-<EditForm Model=Command
+<EditForm Model=FormModel
           OnValidSubmit=HandleValidSubmit>
     <CustomValidator @ref=_customValidator />
     <FluentValidationValidator />
 
     <MudDialog DefaultFocus=DefaultFocus.LastChild>
         <DialogContent>
-            <FritzFileInput @bind-Value=Command.ImageBase64
-                            For="() => Command.ImageBase64"
+            <FritzFileInput @bind-File=FormModel.File ForFile="() => FormModel.File"
+                            @bind-ImageBase64=FormModel.ImageBase64 ForImageBase64="() => FormModel.ImageBase64"
                             Url=@Url />
-            <FritzValidationMessage For="() => Command.ImageBase64" />
+            <FritzValidationMessage For="() => FormModel.ImageBase64" />
+            <FritzValidationMessage For="() => FormModel.File" />
+            @if (FormModel?.File is not null)
+            {
+                <FritzValidationMessage For="() => FormModel.File.Size" />
+                <FritzValidationMessage For="() => FormModel.File.ContentType" />
+            }
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType=ButtonType.Submit

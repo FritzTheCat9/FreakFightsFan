@@ -23,7 +23,7 @@ namespace FreakFightsFan.Blazor.Pages.Fighters
             [
                 Colors.Green.Default,
                 Colors.Red.Default,
-                Colors.Grey.Default,
+                Colors.Gray.Default,
                 Colors.Blue.Default
             ]
         };
