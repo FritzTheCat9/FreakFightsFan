@@ -11,21 +11,19 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
 {
     public static class UpdateFederationFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/federations/{id}", async (
-                int id,
-                UpdateFederation.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/federations/{id:int}", async (
+                    int id,
+                    UpdateFederation.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Federations)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateFederation.Command, Unit>

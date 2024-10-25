@@ -11,19 +11,15 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
 {
     public static class GetAllFederationsFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/federations/all", async (
-                 GetAllFederations.Query query,
-                 IMediator mediator,
-                 CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllFederations.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Federations)
-                 .AllowAnonymous();
-
-            return app;
+                .AllowAnonymous();
         }
 
         public class Handler : IRequestHandler<GetAllFederations.Query, PagedList<FederationDto>>
@@ -44,9 +40,10 @@ namespace FreakFightsFan.Api.Features.Federations.Queries
                 federationsQuery = federationsQuery.FilterFederations(query);
                 federationsQuery = federationsQuery.SortFederations(query);
 
-                var federationsPagedList = PageListExtensions<FederationDto>.Create(federationsQuery.Select(x => x.ToDto()),
-                                                                                    query.Page,
-                                                                                    query.PageSize);
+                var federationsPagedList = PageListExtensions<FederationDto>.Create(
+                    federationsQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(federationsPagedList);
             }

@@ -9,20 +9,18 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 {
     public static class DeleteMyDictionaryItemFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/myDictionaryItems/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteMyDictionaryItem.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapDelete("/api/myDictionaryItems/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DeleteMyDictionaryItem.Command() { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<DeleteMyDictionaryItem.Command, Unit>
@@ -38,7 +36,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 DeleteMyDictionaryItem.Command command,
                 CancellationToken cancellationToken)
             {
-                var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ?? throw new MyNotFoundException();
+                var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ??
+                                     throw new MyNotFoundException();
+
                 await _myDictionaryItemRepository.Delete(dictionaryItem);
                 return Unit.Value;
             }

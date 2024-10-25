@@ -10,20 +10,18 @@ namespace FreakFightsFan.Api.Features.Federations.Commands
 {
     public static class DeleteFederationFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/federations/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteFederation.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapDelete("/api/federations/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DeleteFederation.Command() { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Federations)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<DeleteFederation.Command, Unit>

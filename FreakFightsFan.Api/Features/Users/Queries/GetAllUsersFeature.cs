@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.Users.Queries
 {
     public static class GetAllUsersFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/users/all", async (
-                GetAllUsers.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllUsers.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllUsers.Query, PagedList<UserDto>>
@@ -46,8 +42,8 @@ namespace FreakFightsFan.Api.Features.Users.Queries
                 usersQuery = usersQuery.SortMyUsers(query);
 
                 var usersPagedList = PageListExtensions<UserDto>.Create(usersQuery.Select(x => x.ToDto()),
-                                                                        query.Page,
-                                                                        query.PageSize);
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(usersPagedList);
             }

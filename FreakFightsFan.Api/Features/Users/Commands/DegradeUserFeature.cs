@@ -10,20 +10,18 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class DegradeUserFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/users/degrade/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DegradeUser.Command { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/users/degrade/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DegradeUser.Command { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.SuperAdmin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<DegradeUser.Command, Unit>

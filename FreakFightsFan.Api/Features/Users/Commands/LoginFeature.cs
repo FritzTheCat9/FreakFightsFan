@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class LoginFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/users/login", async (
-                Login.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+                        Login.Command command,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(command, cancellationToken)))
                 .WithTags(Tags.Users)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<Login.Command, JwtDto>
@@ -49,8 +45,8 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             public async Task<JwtDto> Handle(Login.Command command, CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
-                    throw new MyValidationException(nameof(Login.Command.Email),
-                        _localizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
+                           throw new MyValidationException(nameof(Login.Command.Email),
+                               _localizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
 
                 if (!user.EmailConfirmed)
                     throw new MyValidationException(nameof(Login.Command.Email),
@@ -59,7 +55,7 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 if (!_passwordService.Validate(command.Password, user.Password))
                     throw new MyValidationException(nameof(Login.Command.Password),
                         _localizer[nameof(ApiValidationMessageString.PasswordIsIncorrect)]);
-                
+
                 var jwt = _authenticator.CreateTokens(user);
 
                 user.RefreshToken = jwt.RefreshToken;

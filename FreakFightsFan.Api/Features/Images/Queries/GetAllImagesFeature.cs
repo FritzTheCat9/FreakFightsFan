@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.Images.Queries
 {
     public static class GetAllImagesFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/images/all", async (
-                GetAllImages.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllImages.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllImages.Query, PagedList<ImageDto>>
@@ -45,8 +41,8 @@ namespace FreakFightsFan.Api.Features.Images.Queries
                 imagesQuery = imagesQuery.SortImages(query);
 
                 var imagesPagedList = PageListExtensions<ImageDto>.Create(imagesQuery.Select(x => x.ToDto()),
-                                                                          query.Page,
-                                                                          query.PageSize);
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(imagesPagedList);
             }

@@ -14,7 +14,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 {
     public static class ImportFighterImagesFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/images/import", async (
                 IMediator mediator,
@@ -25,8 +25,6 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             })
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<ImportFighterImages.ImportFighterImagesCommand, Unit>
@@ -152,7 +150,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                                 _logger.LogInformation("[IMPORT FIGHTERS - FILE] - Image for fighter: {FighterId} - Downloaded profile image with name {NewestFileName}",
                                     fighter.Id, newestFile.Name);
 
-                                var fileBytes = File.ReadAllBytes(newestFile.FullName);
+                                var fileBytes = await File.ReadAllBytesAsync(newestFile.FullName, cancellationToken);
                                 var imageBase64 = Convert.ToBase64String(fileBytes);
                                 var contentType = MimeTypesMap.GetMimeType(newestFile.Extension);
                                 var dataUrl = $"data:{contentType};base64,{imageBase64}";

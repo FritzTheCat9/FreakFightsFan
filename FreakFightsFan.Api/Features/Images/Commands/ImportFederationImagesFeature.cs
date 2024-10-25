@@ -11,7 +11,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 {
     public static class ImportFederationImagesFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/images/import/federations", async (
                 IMediator mediator,
@@ -22,8 +22,6 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             })
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<ImportFederationImages.Command, Unit>
@@ -52,7 +50,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 CancellationToken cancellationToken)
             {
                 var federations = await _federationRepository.GetAll();
-                var extension = ".png";
+                const string extension = ".png";
 
                 _logger.LogInformation("[IMPORT FEDERATIONS - START]");
 
@@ -63,7 +61,7 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 
                     try
                     {
-                        var fileBytes = File.ReadAllBytes(federation_image_name);
+                        var fileBytes = await File.ReadAllBytesAsync(federation_image_name, cancellationToken);
                         var imageBase64 = Convert.ToBase64String(fileBytes);
                         var contentType = MimeTypesMap.GetMimeType(extension);
                         var dataUrl = $"data:{contentType};base64,{imageBase64}";

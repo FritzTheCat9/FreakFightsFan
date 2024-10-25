@@ -11,19 +11,15 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
 {
     public static class GetAllFightsFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fights/all", async (
-                GetAllFights.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllFights.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Fights)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllFights.Query, PagedList<FightDto>>
@@ -42,8 +38,8 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 var fightsQuery = _fightRepository.AsQueryable(query.EventId);
 
                 var fightsPagedList = PageListExtensions<FightDto>.Create(fightsQuery.Select(x => x.ToDto()),
-                                                                          query.Page,
-                                                                          query.PageSize);
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(fightsPagedList);
             }

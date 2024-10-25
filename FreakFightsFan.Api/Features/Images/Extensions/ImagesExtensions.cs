@@ -25,7 +25,7 @@ namespace FreakFightsFan.Api.Features.Images.Extensions
 
         public static ImageDto ToDto(this Image image)
         {
-            return new()
+            return new ImageDto
             {
                 Id = image.Id,
                 Created = image.Created,

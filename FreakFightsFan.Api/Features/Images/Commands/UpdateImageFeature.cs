@@ -11,9 +11,9 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 {
     public static class UpdateImageFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/images/{id}", async (
+            app.MapPut("/api/images/{id:int}", async (
                 int id,
                 UpdateImage.Command command,
                 IMediator mediator,
@@ -24,8 +24,6 @@ namespace FreakFightsFan.Api.Features.Images.Commands
             })
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateImage.Command, Unit>

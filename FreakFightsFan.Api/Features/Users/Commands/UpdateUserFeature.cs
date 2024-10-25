@@ -12,21 +12,19 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class UpdateUserFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/users/{id}", async (
-                int id,
-                UpdateUser.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/users/{id:int}", async (
+                    int id,
+                    UpdateUser.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.User);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateUser.Command, Unit>

@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
 
         public static FighterDto ToDto(this Fighter fighter)
         {
-            return new()
+            return new FighterDto
             {
                 Id = fighter.Id,
                 Created = fighter.Created,
@@ -46,9 +46,9 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 fighters = fighters.Where(x =>
-                    x.Nickname.ToLower().Contains(searchTerm)
-                    || x.FirstName.ToLower().Contains(searchTerm)
-                    || x.LastName.ToLower().Contains(searchTerm));
+                    x.Nickname.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.FirstName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.LastName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
             }
 
             return fighters;

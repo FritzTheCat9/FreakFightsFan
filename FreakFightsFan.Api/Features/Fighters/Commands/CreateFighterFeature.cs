@@ -11,20 +11,18 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
 {
     public static class CreateFighterFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fighters", async (
-                CreateFighter.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int fighterId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
-            })
+                    CreateFighter.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int fighterId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetFighter", new { id = fighterId });
+                })
                 .WithTags(Tags.Fighters)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateFighter.Command, int>

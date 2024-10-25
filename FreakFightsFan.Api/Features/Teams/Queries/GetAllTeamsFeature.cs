@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
 {
     public static class GetAllTeamsFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/teams/all", async (
-                GetAllTeams.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllTeams.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Teams)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllTeams.Query, PagedList<TeamDto>>
@@ -43,8 +39,8 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
                 var teamsQuery = _teamRepository.AsQueryable();
 
                 var teamsPagedList = PageListExtensions<TeamDto>.Create(teamsQuery.Select(x => x.ToDto()),
-                                                                        query.Page,
-                                                                        query.PageSize);
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(teamsPagedList);
             }

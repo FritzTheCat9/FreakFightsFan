@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
 {
     public static class GetAllMyDictionariesFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaries/all", async (
-                GetAllMyDictionaries.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllMyDictionaries.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>
@@ -45,9 +41,10 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
                 dictionariesQuery = dictionariesQuery.FilterMyDictionaries(query);
                 dictionariesQuery = dictionariesQuery.SortMyDictionaries(query);
 
-                var dictionariesPagedList = PageListExtensions<MyDictionaryDto>.Create(dictionariesQuery.Select(x => x.ToDto()),
-                                                                                       query.Page,
-                                                                                       query.PageSize);
+                var dictionariesPagedList = PageListExtensions<MyDictionaryDto>.Create(
+                    dictionariesQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
 
                 return await Task.FromResult(dictionariesPagedList);
             }

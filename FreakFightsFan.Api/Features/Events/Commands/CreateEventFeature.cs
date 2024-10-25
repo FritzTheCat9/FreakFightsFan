@@ -15,20 +15,18 @@ namespace FreakFightsFan.Api.Features.Events.Commands
 {
     public static class CreateEventFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/events", async (
-                CreateEvent.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int eventId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetEvent", new { id = eventId });
-            })
+                    CreateEvent.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int eventId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetEvent", new { id = eventId });
+                })
                 .WithTags(Tags.Events)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateEvent.Command, int>
@@ -70,8 +68,12 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                     Name = command.Name,
                     Date = command.Date.GetValueOrDefault(_clock.Current()),
                     FederationId = command.FederationId,
-                    City = (command.CityId is not null) ? await _dictionaryItemRepository.Get(command.CityId.Value) : null,
-                    Hall = (command.HallId is not null) ? await _dictionaryItemRepository.Get(command.HallId.Value) : null,
+                    City = (command.CityId is not null)
+                        ? await _dictionaryItemRepository.Get(command.CityId.Value)
+                        : null,
+                    Hall = (command.HallId is not null)
+                        ? await _dictionaryItemRepository.Get(command.HallId.Value)
+                        : null,
                 };
 
                 return await _eventRepository.Create(myEvent);
@@ -81,22 +83,27 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 CreateEvent.Command command,
                 IStringLocalizer<ApiValidationMessage> localizer)
             {
-                var federation = await _federationRepository.Get(command.FederationId) ?? throw new MyNotFoundException();
+                var federation = await _federationRepository.Get(command.FederationId) ??
+                                 throw new MyNotFoundException();
 
                 if (command.CityId is not null)
                 {
-                    var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
+                    var isCityValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
                     if (!isCityValid)
                         throw new MyValidationException(nameof(CreateEvent.Command.CityId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.City]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.City]);
                 }
 
                 if (command.HallId is not null)
                 {
-                    var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
+                    var isHallValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
                     if (!isHallValid)
                         throw new MyValidationException(nameof(CreateEvent.Command.HallId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.Hall]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.Hall]);
                 }
             }
         }

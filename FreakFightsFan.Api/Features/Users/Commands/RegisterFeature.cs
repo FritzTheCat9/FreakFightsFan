@@ -15,20 +15,18 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class RegisterFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/users/register", async (
-                Register.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int userId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetUser", new { id = userId });
-            })
+                    Register.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int userId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetUser", new { id = userId });
+                })
                 .WithTags(Tags.Users)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<Register.Command, int>
@@ -81,11 +79,13 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 
                 var userId = await _userRepository.Create(user);
 
-                await _emailService.SendEmail(user.Email, new EmailConfirmationTemplateModel(_emailLocalizer)
-                {
-                    UserName = command.UserName,
-                    Link = _emailConfirmationService.GenerateConfirmationLink(user.Email, user.EmailConfirmationToken),
-                });
+                await _emailService.SendEmail(user.Email,
+                    new EmailConfirmationTemplateModel(_emailLocalizer)
+                    {
+                        UserName = command.UserName,
+                        Link = _emailConfirmationService.GenerateConfirmationLink(user.Email,
+                            user.EmailConfirmationToken),
+                    });
 
                 return userId;
             }

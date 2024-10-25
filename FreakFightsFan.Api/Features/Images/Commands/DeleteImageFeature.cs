@@ -10,20 +10,18 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 {
     public static class DeleteImageFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/images/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteImage.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapDelete("/api/images/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DeleteImage.Command() { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<DeleteImage.Command, Unit>

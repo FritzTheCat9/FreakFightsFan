@@ -14,21 +14,19 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 {
     public static class UpdateFightFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/fights/{id}", async (
-                int id,
-                UpdateFight.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/fights/{id:int}", async (
+                    int id,
+                    UpdateFight.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Fights)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateFight.Command, Unit>
@@ -69,7 +67,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 
                 fight.Modified = _clock.Current();
                 fight.VideoUrl = command.VideoUrl;
-                fight.Type = (command.TypeId is not null) ? await _dictionaryItemRepository.Get(command.TypeId.Value) : null;
+                fight.Type = (command.TypeId is not null)
+                    ? await _dictionaryItemRepository.Get(command.TypeId.Value)
+                    : null;
                 fight.Teams.AddRange(teamsToAdd);
                 fight.Teams.RemoveAll(x => teamsToRemove.Contains(x.Id));
 
@@ -83,10 +83,12 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
             {
                 if (command.TypeId is not null)
                 {
-                    var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
+                    var isTypeValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
                     if (!isTypeValid)
                         throw new MyValidationException(nameof(UpdateFight.Command.TypeId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.FightType]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.FightType]);
                 }
             }
         }

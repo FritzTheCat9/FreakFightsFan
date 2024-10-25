@@ -9,20 +9,18 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 {
     public static class DeleteFightFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/fights/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteFight.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapDelete("/api/fights/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DeleteFight.Command() { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Fights)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<DeleteFight.Command, Unit>
@@ -39,7 +37,7 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 CancellationToken cancellationToken)
             {
                 var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
-                
+
                 await _fightRepository.OrderFights(fight.EventId, fight.OrderNumber);
                 await _fightRepository.Delete(fight);
 

@@ -12,18 +12,14 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class ConfirmEmailFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/users/confirmEmail", async (ConfirmEmail.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(command, cancellationToken)))
                 .WithTags(Tags.Users)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<ConfirmEmail.Command, bool>
@@ -50,8 +46,9 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 CancellationToken cancellationToken)
             {
                 var user = await _userRepository.GetByEmail(command.Email) ??
-                    throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
-                        _validationLocalizer[nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
+                           throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
+                               _validationLocalizer[
+                                   nameof(ApiValidationMessageString.EmailUserWithGivenEmailDoesNotExist)]);
 
                 if (user.EmailConfirmed)
                     throw new MyValidationException(nameof(ConfirmEmail.Command.Email),
@@ -67,10 +64,8 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 
                 await _userRepository.Update(user);
 
-                await _emailService.SendEmail(user.Email, new EmailConfirmationSuccessfulTemplateModel(_emailLocalizer)
-                {
-                    UserName = user.UserName,
-                });
+                await _emailService.SendEmail(user.Email,
+                    new EmailConfirmationSuccessfulTemplateModel(_emailLocalizer) { UserName = user.UserName, });
 
                 return isTokenAssignedToUser;
             }

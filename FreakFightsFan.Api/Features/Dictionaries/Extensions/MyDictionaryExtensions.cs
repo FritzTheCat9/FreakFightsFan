@@ -22,7 +22,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
 
         public static MyDictionaryDto ToDto(this MyDictionary dictionary)
         {
-            return new()
+            return new MyDictionaryDto
             {
                 Id = dictionary.Id,
                 Created = dictionary.Created,
@@ -41,8 +41,8 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 dictionaries = dictionaries.Where(x =>
-                    x.Name.ToLower().Contains(searchTerm)
-                    || x.Code.ToLower().Contains(searchTerm));
+                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
             }
 
             return dictionaries;
@@ -61,7 +61,8 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             };
         }
 
-        private static Expression<Func<MyDictionary, object>> GetMyDictionarySortProperty(GetAllMyDictionaries.Query query)
+        private static Expression<Func<MyDictionary, object>> GetMyDictionarySortProperty(
+            GetAllMyDictionaries.Query query)
         {
             return query.SortColumn.ToLowerInvariant() switch
             {

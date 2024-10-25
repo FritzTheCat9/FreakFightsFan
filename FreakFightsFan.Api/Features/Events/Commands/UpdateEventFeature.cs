@@ -14,21 +14,19 @@ namespace FreakFightsFan.Api.Features.Events.Commands
 {
     public static class UpdateEventFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/events/{id}", async (
-                int id,
-                UpdateEvent.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/events/{id:int}", async (
+                    int id,
+                    UpdateEvent.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Events)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateEvent.Command, Unit>
@@ -62,8 +60,12 @@ namespace FreakFightsFan.Api.Features.Events.Commands
                 myEvent.Modified = _clock.Current();
                 myEvent.Name = command.Name;
                 myEvent.Date = command.Date.GetValueOrDefault(_clock.Current());
-                myEvent.City = (command.CityId is not null) ? await _dictionaryItemRepository.Get(command.CityId.Value) : null;
-                myEvent.Hall = (command.HallId is not null) ? await _dictionaryItemRepository.Get(command.HallId.Value) : null;
+                myEvent.City = (command.CityId is not null)
+                    ? await _dictionaryItemRepository.Get(command.CityId.Value)
+                    : null;
+                myEvent.Hall = (command.HallId is not null)
+                    ? await _dictionaryItemRepository.Get(command.HallId.Value)
+                    : null;
 
                 await _eventRepository.Update(myEvent);
                 return Unit.Value;
@@ -75,18 +77,22 @@ namespace FreakFightsFan.Api.Features.Events.Commands
             {
                 if (command.CityId is not null)
                 {
-                    var isCityValid = await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
+                    var isCityValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.CityId.Value, DictionaryCode.City);
                     if (!isCityValid)
                         throw new MyValidationException(nameof(UpdateEvent.Command.CityId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.City]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.City]);
                 }
 
                 if (command.HallId is not null)
                 {
-                    var isHallValid = await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
+                    var isHallValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.HallId.Value, DictionaryCode.Hall);
                     if (!isHallValid)
                         throw new MyValidationException(nameof(UpdateEvent.Command.HallId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.Hall]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.Hall]);
                 }
             }
         }

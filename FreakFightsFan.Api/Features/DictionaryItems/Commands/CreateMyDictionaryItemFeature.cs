@@ -13,20 +13,18 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
 {
     public static class CreateMyDictionaryItemFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaryItems", async (
-                CreateMyDictionaryItem.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int dictionaryItemId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetMyDictionaryItem", new { id = dictionaryItemId });
-            })
+                    CreateMyDictionaryItem.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int dictionaryItemId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetMyDictionaryItem", new { id = dictionaryItemId });
+                })
                 .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateMyDictionaryItem.Command, int>
@@ -71,12 +69,14 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
                 CreateMyDictionaryItem.Command command,
                 IStringLocalizer<ApiValidationMessage> localizer)
             {
-                var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ?? throw new MyNotFoundException();
+                var dictionary = await _myDictionaryRepository.Get(command.DictionaryId) ??
+                                 throw new MyNotFoundException();
 
-                var codeExists = await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
+                var codeExists =
+                    await _myDictionaryItemRepository.DictionaryItemCodeExists(command.Code, command.DictionaryId);
                 if (codeExists)
                     throw new MyValidationException(nameof(CreateMyDictionaryItem.Command.Code),
-                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                        localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

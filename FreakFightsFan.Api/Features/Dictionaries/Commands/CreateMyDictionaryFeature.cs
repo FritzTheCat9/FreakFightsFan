@@ -13,20 +13,18 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
     public static class CreateMyDictionaryFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaries", async (
-                CreateMyDictionary.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int dictionaryId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
-            })
+                    CreateMyDictionary.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int dictionaryId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetMyDictionary", new { id = dictionaryId });
+                })
                 .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateMyDictionary.Command, int>
@@ -70,7 +68,7 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 var codeExists = await _myDictionaryRepository.DictionaryCodeExists(command.Code);
                 if (codeExists)
                     throw new MyValidationException(nameof(CreateMyDictionary.Command.Code),
-                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                        localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace FreakFightsFan.Api.Features.Teams.Extensions
 
         public static TeamDto ToDto(this Team team)
         {
-            return new()
+            return new TeamDto
             {
                 Id = team.Id,
                 Created = team.Created,

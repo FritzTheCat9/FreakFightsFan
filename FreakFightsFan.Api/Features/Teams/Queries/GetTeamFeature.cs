@@ -11,21 +11,19 @@ namespace FreakFightsFan.Api.Features.Teams.Queries
 {
     public static class GetTeamFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/teams/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var query = new GetTeam.Query() { Id = id };
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+            app.MapGet("/api/teams/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var query = new GetTeam.Query() { Id = id };
+                    return Results.Ok(await mediator.Send(query, cancellationToken));
+                })
                 .WithName("GetTeam")
                 .WithTags(Tags.Teams)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetTeam.Query, TeamDto>

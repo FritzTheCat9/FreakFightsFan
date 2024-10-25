@@ -12,21 +12,19 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
 {
     public static class UpdateMyDictionaryFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/myDictionaries/{id}", async (
-                int id,
-                UpdateMyDictionary.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/myDictionaries/{id:int}", async (
+                    int id,
+                    UpdateMyDictionary.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<UpdateMyDictionary.Command, Unit>
@@ -65,10 +63,11 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Commands
                 UpdateMyDictionary.Command command,
                 IStringLocalizer<ApiValidationMessage> localizer)
             {
-                var codeExists = await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
+                var codeExists =
+                    await _myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(command.Code, command.Id);
                 if (codeExists)
                     throw new MyValidationException(nameof(UpdateMyDictionary.Command.Code),
-                                                    localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
+                        localizer[nameof(ApiValidationMessageString.CodeMustBeUnique)]);
             }
         }
     }

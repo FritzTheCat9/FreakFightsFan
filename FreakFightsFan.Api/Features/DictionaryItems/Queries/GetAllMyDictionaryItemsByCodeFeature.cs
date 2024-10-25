@@ -12,19 +12,15 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
 {
     public static class GetAllMyDictionaryItemsByCodeFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/myDictionaryItems/allByCode", async (
-                GetAllMyDictionaryItemsByCode.Query query,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                        GetAllMyDictionaryItemsByCode.Query query,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(query, cancellationToken)))
                 .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetAllMyDictionaryItemsByCode.Query, PagedList<MyDictionaryItemDto>>
@@ -48,11 +44,12 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
 
                 if (dictionary is null)
                 {
-                    _logger.LogError("[Dictionary Code] Field on frontend tried to access a non-existent dictionary with code: {DictionaryCode}", 
+                    _logger.LogError(
+                        "[Dictionary Code] Field on frontend tried to access a non-existent dictionary with code: {DictionaryCode}",
                         query.DictionaryCode);
 
                     var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(query.Page,
-                                                                                             query.PageSize);
+                        query.PageSize);
 
                     return emptyPagedList;
                 }
@@ -62,9 +59,10 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
                 dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
                 dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(dictionaryItemsQuery.Select(x => x.ToDto()),
-                                                                                              query.Page,
-                                                                                              query.PageSize);
+                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
+                    dictionaryItemsQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
 
                 return dictionaryItemsPagedList;
             }

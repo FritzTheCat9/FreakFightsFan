@@ -13,19 +13,15 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class RefreshTokenFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/users/refresh-token", async (
-                RefreshToken.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+                        RefreshToken.Command command,
+                        IMediator mediator,
+                        CancellationToken cancellationToken)
+                    => Results.Ok(await mediator.Send(command, cancellationToken)))
                 .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.User);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<RefreshToken.Command, JwtDto>

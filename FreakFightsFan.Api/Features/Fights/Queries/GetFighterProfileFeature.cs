@@ -12,20 +12,18 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
 {
     public static class GetFighterProfileFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/fights/fighter/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var query = new GetFighterProfile.Query() { Id = id };
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+            app.MapGet("/api/fights/fighter/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var query = new GetFighterProfile.Query() { Id = id };
+                    return Results.Ok(await mediator.Send(query, cancellationToken));
+                })
                 .WithTags(Tags.Fights)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetFighterProfile.Query, FighterProfileDto>
@@ -51,17 +49,12 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
                 foreach (var fight in fights)
                 {
                     var fightResult = await _fightService.GetFightResultForFighter(fight.Id, query.Id);
-                    profileFights.Add(new()
-                    {
-                        Fight = fight.ToDto(),
-                        FightResult = fightResult
-                    });
+                    profileFights.Add(new ProfileFightDto { Fight = fight.ToDto(), FightResult = fightResult });
                 }
 
                 var fighterProfileDto = new FighterProfileDto()
                 {
-                    ProfileFights = profileFights,
-                    Stats = GetFighterStats(profileFights)
+                    ProfileFights = profileFights, Stats = GetFighterStats(profileFights)
                 };
 
                 return fighterProfileDto;

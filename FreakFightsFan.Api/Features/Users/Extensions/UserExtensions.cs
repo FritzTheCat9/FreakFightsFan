@@ -28,7 +28,7 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
 
         public static UserDto ToDto(this User user)
         {
-            return new()
+            return new UserDto
             {
                 Id = user.Id,
                 Created = user.Created,
@@ -50,8 +50,8 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 users = users.Where(x =>
-                    x.UserName.ToLower().Contains(searchTerm)
-                    || x.Email.ToLower().Contains(searchTerm));
+                    x.UserName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.Email.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
             }
 
             return users;

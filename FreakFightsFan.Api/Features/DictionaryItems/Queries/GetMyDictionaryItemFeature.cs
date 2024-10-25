@@ -14,13 +14,13 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapGet("/api/myDictionaryItems/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var query = new GetMyDictionaryItem.Query() { Id = id };
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var query = new GetMyDictionaryItem.Query() { Id = id };
+                    return Results.Ok(await mediator.Send(query, cancellationToken));
+                })
                 .WithName("GetMyDictionaryItem")
                 .WithTags(Tags.DictionaryItems)
                 .RequireAuthorization(Policy.Admin);

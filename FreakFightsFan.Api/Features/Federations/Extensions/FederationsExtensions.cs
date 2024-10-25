@@ -24,12 +24,12 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
         public static FederationDto ToDto(this Federation federation)
         {
-            return new()
+            return new FederationDto
             {
                 Id = federation.Id,
                 Created = federation.Created,
                 Modified = federation.Modified,
-                Name = federation.Name, 
+                Name = federation.Name,
                 Image = federation.Image?.ToDto(),
             };
         }

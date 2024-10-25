@@ -10,21 +10,19 @@ namespace FreakFightsFan.Api.Features.Fights.Queries
 {
     public static class GetFightFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/fights/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var query = new GetFight.Query() { Id = id };
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+            app.MapGet("/api/fights/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var query = new GetFight.Query() { Id = id };
+                    return Results.Ok(await mediator.Send(query, cancellationToken));
+                })
                 .WithName("GetFight")
                 .WithTags(Tags.Fights)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetFight.Query, FightDto>

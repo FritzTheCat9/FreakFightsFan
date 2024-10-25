@@ -10,9 +10,9 @@ namespace FreakFightsFan.Api.Features.Users.Commands
 {
     public static class PromoteUserFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/users/promote/{id}", async (
+            app.MapPut("/api/users/promote/{id:int}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
@@ -22,8 +22,6 @@ namespace FreakFightsFan.Api.Features.Users.Commands
             })
                 .WithTags(Tags.Users)
                 .RequireAuthorization(Policy.SuperAdmin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<PromoteUser.Command, Unit>

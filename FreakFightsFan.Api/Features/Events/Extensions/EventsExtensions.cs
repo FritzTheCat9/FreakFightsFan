@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
         public static EventDto ToDto(this Event myEvent)
         {
-            return new()
+            return new EventDto
             {
                 Id = myEvent.Id,
                 Created = myEvent.Created,
@@ -45,7 +45,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                events = events.Where(x => x.Name.ToLower().Contains(searchTerm));
+                events = events.Where(x => x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
             }
 
             return events;

@@ -11,21 +11,19 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Queries
 {
     public static class GetMyDictionaryFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/myDictionaries/{id}", async (
-                int id,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                var query = new GetMyDictionary.Query() { Id = id };
-                return Results.Ok(await mediator.Send(query, cancellationToken));
-            })
+            app.MapGet("/api/myDictionaries/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var query = new GetMyDictionary.Query() { Id = id };
+                    return Results.Ok(await mediator.Send(query, cancellationToken));
+                })
                 .WithName("GetMyDictionary")
                 .WithTags(Tags.Dictionaries)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetMyDictionary.Query, MyDictionaryDto>

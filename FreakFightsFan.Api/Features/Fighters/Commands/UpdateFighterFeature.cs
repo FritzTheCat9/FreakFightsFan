@@ -13,15 +13,15 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
     {
         public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/fighters/{id}", async (
-                int id,
-                UpdateFighter.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/fighters/{id:int}", async (
+                    int id,
+                    UpdateFighter.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Fighters)
                 .RequireAuthorization(Policy.Admin);
 

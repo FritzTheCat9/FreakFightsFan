@@ -16,20 +16,18 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 {
     public static class CreateFightFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/fights", async (
-                CreateFight.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int fightId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetFight", new { id = fightId });
-            })
+                    CreateFight.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int fightId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetFight", new { id = fightId });
+                })
                 .WithTags(Tags.Fights)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateFight.Command, int>
@@ -75,7 +73,9 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                     EventId = command.EventId,
                     OrderNumber = myEvent.Fights.Count + 1,
                     VideoUrl = command.VideoUrl,
-                    Type = (command.TypeId is not null) ? await _dictionaryItemRepository.Get(command.TypeId.Value) : null,
+                    Type = (command.TypeId is not null)
+                        ? await _dictionaryItemRepository.Get(command.TypeId.Value)
+                        : null,
                 };
 
                 fight.Teams.AddRange(teamsInFight);
@@ -90,15 +90,18 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                 var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
 
                 if (myEvent.Fights.Count >= FightsConsts.MaxFightsInOneEvent)
-                    throw new MyValidationException(nameof(CreateFight.Command.EventId), 
-                        localizer[nameof(ApiValidationMessageString.EventIdMaxFightsInOneEvent), FightsConsts.MaxFightsInOneEvent]);
+                    throw new MyValidationException(nameof(CreateFight.Command.EventId),
+                        localizer[nameof(ApiValidationMessageString.EventIdMaxFightsInOneEvent),
+                            FightsConsts.MaxFightsInOneEvent]);
 
                 if (command.TypeId is not null)
                 {
-                    var isTypeValid = await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
+                    var isTypeValid =
+                        await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
                     if (!isTypeValid)
                         throw new MyValidationException(nameof(CreateFight.Command.TypeId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary), DictionaryCode.FightType]);
+                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                                DictionaryCode.FightType]);
                 }
             }
         }

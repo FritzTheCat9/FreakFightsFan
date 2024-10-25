@@ -24,7 +24,7 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
         public static MyDictionaryItemDto ToDto(this MyDictionaryItem dictionaryItem)
         {
-            return new()
+            return new MyDictionaryItemDto
             {
                 Id = dictionaryItem.Id,
                 Created = dictionaryItem.Created,
@@ -44,9 +44,9 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             var searchTerm = query.SearchTerm?.ToLower()?.Trim();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                dictionaryItems = dictionaryItems.Where(x => 
-                    x.Name.ToLower().Contains(searchTerm)
-                    || x.Code.ToLower().Contains(searchTerm));
+                dictionaryItems = dictionaryItems.Where(x =>
+                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
 
             return dictionaryItems;
         }
@@ -64,7 +64,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             };
         }
 
-        private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(GetAllMyDictionaryItems.Query query)
+        private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(
+            GetAllMyDictionaryItems.Query query)
         {
             return query.SortColumn.ToLowerInvariant() switch
             {
@@ -84,8 +85,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
-                    x.Name.ToLower().Contains(searchTerm)
-                    || x.Code.ToLower().Contains(searchTerm));
+                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
+                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
 
             return dictionaryItems;
         }
@@ -103,7 +104,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
             };
         }
 
-        private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(GetAllMyDictionaryItemsByCode.Query query)
+        private static Expression<Func<MyDictionaryItem, object>> GetMyDictionaryItemsSortProperty(
+            GetAllMyDictionaryItemsByCode.Query query)
         {
             return query.SortColumn.ToLowerInvariant() switch
             {

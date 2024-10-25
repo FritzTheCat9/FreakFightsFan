@@ -17,7 +17,6 @@ namespace FreakFightsFan.Api.Services
 
     public class ImageService : IImageService
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IClock _clock;
         private readonly ImageOptions _options;
@@ -29,11 +28,10 @@ namespace FreakFightsFan.Api.Services
             IOptions<ImageOptions> options,
             IClock clock)
         {
-            _webHostEnvironment = webHostEnvironment;
             _httpContextAccessor = httpContextAccessor;
             _clock = clock;
             _options = options.Value;
-            _folderPath = Path.Combine(Path.GetFullPath(_webHostEnvironment.WebRootPath), _options.FolderName);
+            _folderPath = Path.Combine(Path.GetFullPath(webHostEnvironment.WebRootPath), _options.FolderName);
         }
 
         public string SaveImage(string imageBase64)
@@ -59,7 +57,7 @@ namespace FreakFightsFan.Api.Services
 
         public string GetImageUrl(string name)
         {
-            var url = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            var url = $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host}";
             return $"{url}/{_options.FolderName}/{name}";
         }
 

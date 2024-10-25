@@ -12,21 +12,19 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
 {
     public static class MoveFightFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapPut("/api/fights/move/{id}", async (
-                int id,
-                MoveFight.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                command.Id = id;
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapPut("/api/fights/move/{id:int}", async (
+                    int id,
+                    MoveFight.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    command.Id = id;
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Fights)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<MoveFight.Command, Unit>
@@ -54,19 +52,19 @@ namespace FreakFightsFan.Api.Features.Fights.Commands
                     throw new MyValidationException(nameof(MoveFight.Command.Direction),
                         _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheTop)]);
                 }
-                else if (fight.OrderNumber <= 1
-                    && command.Direction == MoveDirection.Downwards)
+                else if (fight.OrderNumber <= 1 
+                         && command.Direction == MoveDirection.Downwards)
                 {
                     throw new MyValidationException(nameof(MoveFight.Command.Direction),
                         _localizer[nameof(ApiValidationMessageString.DirectionFightIsOnTheBottom)]);
                 }
                 else if (fight.OrderNumber < eventFights.Count()
-                    && command.Direction == MoveDirection.Upwards)
+                         && command.Direction == MoveDirection.Upwards)
                 {
                     orderNumberToMove += 1;
                 }
                 else if (fight.OrderNumber > 1
-                    && command.Direction == MoveDirection.Downwards)
+                         && command.Direction == MoveDirection.Downwards)
                 {
                     orderNumberToMove -= 1;
                 }

@@ -10,20 +10,18 @@ namespace FreakFightsFan.Api.Features.Fighters.Commands
 {
     public static class DeleteFighterFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapDelete("/api/fighters/{id}", async (
-               int id,
-               IMediator mediator,
-               CancellationToken cancellationToken) =>
-            {
-                var command = new DeleteFighter.Command() { Id = id };
-                return Results.Ok(await mediator.Send(command, cancellationToken));
-            })
+            app.MapDelete("/api/fighters/{id:int}", async (
+                    int id,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var command = new DeleteFighter.Command() { Id = id };
+                    return Results.Ok(await mediator.Send(command, cancellationToken));
+                })
                 .WithTags(Tags.Fighters)
-               .RequireAuthorization(Policy.Admin);
-
-            return app;
+                .RequireAuthorization(Policy.Admin);
         }
 
         public class Handler : IRequestHandler<DeleteFighter.Command, Unit>

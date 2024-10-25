@@ -1,5 +1,4 @@
 ﻿using FreakFightsFan.Api.Data.Repositories;
-using FreakFightsFan.Api.Features.Fighters.Extensions;
 using FreakFightsFan.Api.Features.Users.Extensions;
 using FreakFightsFan.Api.Helpers;
 using FreakFightsFan.Shared.Exceptions;
@@ -11,9 +10,9 @@ namespace FreakFightsFan.Api.Features.Users.Queries
 {
     public static class GetUserFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/users/{id}", async (
+            app.MapGet("/api/users/{id:int}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
@@ -24,8 +23,6 @@ namespace FreakFightsFan.Api.Features.Users.Queries
                 .WithName("GetUser")
                 .WithTags(Tags.Users)
                 .AllowAnonymous();
-
-            return app;
         }
 
         public class Handler : IRequestHandler<GetUser.Query, UserDto>

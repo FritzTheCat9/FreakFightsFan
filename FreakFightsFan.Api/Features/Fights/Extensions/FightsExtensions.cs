@@ -25,7 +25,7 @@ namespace FreakFightsFan.Api.Features.Fights.Extensions
 
         public static FightDto ToDto(this Fight fight)
         {
-            return new()
+            return new FightDto
             {
                 Id = fight.Id,
                 Created = fight.Created,

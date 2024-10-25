@@ -11,20 +11,18 @@ namespace FreakFightsFan.Api.Features.Images.Commands
 {
     public static class CreateImageFeature
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
+        public static void Endpoint(this IEndpointRouteBuilder app)
         {
             app.MapPost("/api/images", async (
-                CreateImage.Command command,
-                IMediator mediator,
-                CancellationToken cancellationToken) =>
-            {
-                int imageId = await mediator.Send(command, cancellationToken);
-                return Results.CreatedAtRoute("GetImage", new { id = imageId });
-            })
+                    CreateImage.Command command,
+                    IMediator mediator,
+                    CancellationToken cancellationToken) =>
+                {
+                    int imageId = await mediator.Send(command, cancellationToken);
+                    return Results.CreatedAtRoute("GetImage", new { id = imageId });
+                })
                 .WithTags(Tags.Images)
                 .RequireAuthorization(Policy.Admin);
-
-            return app;
         }
 
         public class Handler : IRequestHandler<CreateImage.Command, int>
