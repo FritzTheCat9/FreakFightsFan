@@ -1,10 +1,9 @@
 ﻿using FreakFightsFan.Shared.Features.Fights.Helpers;
 
-namespace FreakFightsFan.Shared.Features.Fighters.Responses
+namespace FreakFightsFan.Shared.Features.Fighters.Responses;
+
+public class FighterInTeamDto
 {
-    public class FighterInTeamDto
-    {
-        public FighterDto Fighter { get; set; }
-        public FightResult FightResult { get; set; }
-    }
+    public FighterDto Fighter { get; set; }
+    public FightResult FightResult { get; set; }
 }

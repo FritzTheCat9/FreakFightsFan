@@ -2,41 +2,40 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Linq.Expressions;
 
-namespace FreakFightsFan.Blazor.Components
+namespace FreakFightsFan.Blazor.Components;
+
+public partial class FritzPasswordField : ComponentBase
 {
-    public partial class FritzPasswordField : ComponentBase
+    private bool _passwordShown;
+    private InputType _passwordInputType = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    [Parameter] public string Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<string>> For { get; set; }
+
+    [Parameter] public string Label { get; set; }
+    [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
+
+    private async Task OnValueChanged(string newValue)
     {
-        private bool _passwordShown;
-        private InputType _passwordInputType = InputType.Password;
-        private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+    }
 
-        [Parameter] public string Value { get; set; }
-        [Parameter] public EventCallback<string> ValueChanged { get; set; }
-        [Parameter] public Expression<Func<string>> For { get; set; }
-
-        [Parameter] public string Label { get; set; }
-        [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
-
-        private async Task OnValueChanged(string newValue)
+    private void ShowPassword()
+    {
+        if (_passwordShown)
         {
-            Value = newValue;
-            await ValueChanged.InvokeAsync(newValue);
+            _passwordShown = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInputType = InputType.Password;
         }
-
-        private void ShowPassword()
+        else
         {
-            if (_passwordShown)
-            {
-                _passwordShown = false;
-                _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
-                _passwordInputType = InputType.Password;
-            }
-            else
-            {
-                _passwordShown = true;
-                _passwordInputIcon = Icons.Material.Filled.Visibility;
-                _passwordInputType = InputType.Text;
-            }
+            _passwordShown = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInputType = InputType.Text;
         }
     }
 }

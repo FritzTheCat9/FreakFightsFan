@@ -12,96 +12,81 @@ using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 using Microsoft.Extensions.Localization;
 
-namespace FreakFightsFan.Api.Features.Fights.Commands
+namespace FreakFightsFan.Api.Features.Fights.Commands;
+
+public static class CreateFightFeature
 {
-    public static class CreateFightFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
+        app.MapPost("/api/fights", async (
+                CreateFight.Command command,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
+            {
+                var fightId = await mediator.Send(command, cancellationToken);
+                return Results.CreatedAtRoute("GetFight", new { id = fightId });
+            })
+            .WithTags(Tags.Fights)
+            .RequireAuthorization(Policy.Admin);
+    }
+
+    public class Handler(
+        IFightRepository fightRepository,
+        IClock clock,
+        IEventRepository eventRepository,
+        ITeamService teamService,
+        IMyDictionaryService dictionaryService,
+        IMyDictionaryItemRepository dictionaryItemRepository,
+        IStringLocalizer<ApiValidationMessage> localizer)
+        : IRequestHandler<CreateFight.Command, int>
+    {
+        public async Task<int> Handle(CreateFight.Command command, CancellationToken cancellationToken)
         {
-            app.MapPost("/api/fights", async (
-                    CreateFight.Command command,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    int fightId = await mediator.Send(command, cancellationToken);
-                    return Results.CreatedAtRoute("GetFight", new { id = fightId });
-                })
-                .WithTags(Tags.Fights)
-                .RequireAuthorization(Policy.Admin);
+            await ValidateCommand(command, localizer);
+
+            var myEvent = await eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
+            var teamsInFight = await teamService.CreateFightTeams(command.Teams);
+
+            var fight = new Fight
+            {
+                Id = 0,
+                Created = clock.Current(),
+                Modified = clock.Current(),
+                EventId = command.EventId,
+                OrderNumber = myEvent.Fights.Count + 1,
+                VideoUrl = command.VideoUrl,
+                Type = (command.TypeId is not null)
+                    ? await dictionaryItemRepository.Get(command.TypeId.Value)
+                    : null,
+            };
+
+            fight.Teams.AddRange(teamsInFight);
+
+            return await fightRepository.Create(fight);
         }
 
-        public class Handler : IRequestHandler<CreateFight.Command, int>
+        private async Task ValidateCommand(
+            CreateFight.Command command,
+            IStringLocalizer<ApiValidationMessage> localizer)
         {
-            private readonly IFightRepository _fightRepository;
-            private readonly IClock _clock;
-            private readonly IEventRepository _eventRepository;
-            private readonly ITeamService _teamService;
-            private readonly IMyDictionaryService _dictionaryService;
-            private readonly IMyDictionaryItemRepository _dictionaryItemRepository;
-            private readonly IStringLocalizer<ApiValidationMessage> _localizer;
+            var myEvent = await eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
 
-            public Handler(
-                IFightRepository fightRepository,
-                IClock clock,
-                IEventRepository eventRepository,
-                ITeamService teamService,
-                IMyDictionaryService dictionaryService,
-                IMyDictionaryItemRepository dictionaryItemRepository,
-                IStringLocalizer<ApiValidationMessage> localizer)
+            if (myEvent.Fights.Count >= FightsConsts.MaxFightsInOneEvent)
             {
-                _fightRepository = fightRepository;
-                _clock = clock;
-                _eventRepository = eventRepository;
-                _teamService = teamService;
-                _dictionaryService = dictionaryService;
-                _dictionaryItemRepository = dictionaryItemRepository;
-                _localizer = localizer;
+                throw new MyValidationException(nameof(CreateFight.Command.EventId),
+                    localizer[nameof(ApiValidationMessageString.EventIdMaxFightsInOneEvent),
+                        FightsConsts.MaxFightsInOneEvent]);
             }
 
-            public async Task<int> Handle(CreateFight.Command command, CancellationToken cancellationToken)
+            if (command.TypeId is not null)
             {
-                await ValidateCommand(command, _localizer);
-
-                var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
-                var teamsInFight = await _teamService.CreateFightTeams(command.Teams);
-
-                var fight = new Fight
+                var isTypeValid =
+                    await dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
+                if (!isTypeValid)
                 {
-                    Id = 0,
-                    Created = _clock.Current(),
-                    Modified = _clock.Current(),
-                    EventId = command.EventId,
-                    OrderNumber = myEvent.Fights.Count + 1,
-                    VideoUrl = command.VideoUrl,
-                    Type = (command.TypeId is not null)
-                        ? await _dictionaryItemRepository.Get(command.TypeId.Value)
-                        : null,
-                };
-
-                fight.Teams.AddRange(teamsInFight);
-
-                return await _fightRepository.Create(fight);
-            }
-
-            private async Task ValidateCommand(
-                CreateFight.Command command,
-                IStringLocalizer<ApiValidationMessage> localizer)
-            {
-                var myEvent = await _eventRepository.Get(command.EventId) ?? throw new MyNotFoundException();
-
-                if (myEvent.Fights.Count >= FightsConsts.MaxFightsInOneEvent)
-                    throw new MyValidationException(nameof(CreateFight.Command.EventId),
-                        localizer[nameof(ApiValidationMessageString.EventIdMaxFightsInOneEvent),
-                            FightsConsts.MaxFightsInOneEvent]);
-
-                if (command.TypeId is not null)
-                {
-                    var isTypeValid =
-                        await _dictionaryService.ItemIsFromDictionary(command.TypeId.Value, DictionaryCode.FightType);
-                    if (!isTypeValid)
-                        throw new MyValidationException(nameof(CreateFight.Command.TypeId),
-                            localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
-                                DictionaryCode.FightType]);
+                    throw new MyValidationException(nameof(CreateFight.Command.TypeId),
+                        localizer[nameof(ApiValidationMessageString.DictionaryItemMustBeInDictionary),
+                            DictionaryCode.FightType]);
                 }
             }
         }

@@ -7,73 +7,72 @@ using FreakFightsFan.Shared.Features.Events.Queries;
 using FreakFightsFan.Shared.Features.Events.Responses;
 using System.Linq.Expressions;
 
-namespace FreakFightsFan.Api.Features.Events.Extensions
+namespace FreakFightsFan.Api.Features.Events.Extensions;
+
+public static class EventsExtensions
 {
-    public static class EventsExtensions
+    public static IEndpointRouteBuilder AddEventEndpoints(this IEndpointRouteBuilder app)
     {
-        public static IEndpointRouteBuilder AddEventEndpoints(this IEndpointRouteBuilder app)
-        {
-            CreateEventFeature.Endpoint(app);
-            DeleteEventFeature.Endpoint(app);
-            UpdateEventFeature.Endpoint(app);
-            GetAllEventsFeature.Endpoint(app);
-            GetEventFeature.Endpoint(app);
+        CreateEventFeature.Endpoint(app);
+        DeleteEventFeature.Endpoint(app);
+        UpdateEventFeature.Endpoint(app);
+        GetAllEventsFeature.Endpoint(app);
+        GetEventFeature.Endpoint(app);
 
-            return app;
+        return app;
+    }
+
+    public static EventDto ToDto(this Event myEvent)
+    {
+        return new EventDto
+        {
+            Id = myEvent.Id,
+            Created = myEvent.Created,
+            Modified = myEvent.Modified,
+            Name = myEvent.Name,
+            Date = myEvent.Date,
+            FederationId = myEvent.FederationId,
+            City = myEvent.City?.ToDto(),
+            Hall = myEvent.Hall?.ToDto(),
+        };
+    }
+
+    public static IQueryable<Event> FilterEvents(
+        this IQueryable<Event> events,
+        GetAllEvents.Query query)
+    {
+        var searchTerm = query.SearchTerm?.ToLower()?.Trim();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            events = events.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()));
         }
 
-        public static EventDto ToDto(this Event myEvent)
+        return events;
+    }
+
+    public static IQueryable<Event> SortEvents(
+        this IQueryable<Event> events,
+        GetAllEvents.Query query)
+    {
+        return query.SortOrder switch
         {
-            return new EventDto
-            {
-                Id = myEvent.Id,
-                Created = myEvent.Created,
-                Modified = myEvent.Modified,
-                Name = myEvent.Name,
-                Date = myEvent.Date,
-                FederationId = myEvent.FederationId,
-                City = myEvent.City?.ToDto(),
-                Hall = myEvent.Hall?.ToDto(),
-            };
-        }
+            SortOrder.Ascending => events.OrderBy(GetEventSortProperty(query)),
+            SortOrder.Descending => events.OrderByDescending(GetEventSortProperty(query)),
+            SortOrder.None => events.OrderByDescending(myEvent => myEvent.Date),
+            _ => events.OrderByDescending(myEvent => myEvent.Date),
+        };
+    }
 
-        public static IQueryable<Event> FilterEvents(
-            this IQueryable<Event> events,
-            GetAllEvents.Query query)
+    private static Expression<Func<Event, object>> GetEventSortProperty(GetAllEvents.Query query)
+    {
+        return query.SortColumn.ToLowerInvariant() switch
         {
-            var searchTerm = query.SearchTerm?.ToLower()?.Trim();
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                events = events.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()));
-            }
-
-            return events;
-        }
-
-        public static IQueryable<Event> SortEvents(
-            this IQueryable<Event> events,
-            GetAllEvents.Query query)
-        {
-            return query.SortOrder switch
-            {
-                SortOrder.Ascending => events.OrderBy(GetEventSortProperty(query)),
-                SortOrder.Descending => events.OrderByDescending(GetEventSortProperty(query)),
-                SortOrder.None => events.OrderByDescending(myEvent => myEvent.Date),
-                _ => events.OrderByDescending(myEvent => myEvent.Date),
-            };
-        }
-
-        private static Expression<Func<Event, object>> GetEventSortProperty(GetAllEvents.Query query)
-        {
-            return query.SortColumn.ToLowerInvariant() switch
-            {
-                "name" => myEvent => myEvent.Name,
-                "date" => myEvent => myEvent.Date,
-                "city" => myEvent => myEvent.City.Name,
-                "hall" => myEvent => myEvent.Hall.Name,
-                _ => myEvent => myEvent.Date,
-            };
-        }
+            "name" => myEvent => myEvent.Name,
+            "date" => myEvent => myEvent.Date,
+            "city" => myEvent => myEvent.City.Name,
+            "hall" => myEvent => myEvent.Hall.Name,
+            _ => myEvent => myEvent.Date,
+        };
     }
 }

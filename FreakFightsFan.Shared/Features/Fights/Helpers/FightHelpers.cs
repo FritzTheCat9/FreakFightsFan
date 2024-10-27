@@ -1,25 +1,26 @@
 ﻿using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 
-namespace FreakFightsFan.Shared.Features.Fights.Helpers
+namespace FreakFightsFan.Shared.Features.Fights.Helpers;
+
+public static class FightHelpers
 {
-    public static class FightHelpers
+    public static bool HaveUniqueFighters(List<CreateTeamModel> teams)
     {
-        public static bool HaveUniqueFighters(List<CreateTeamModel> teams)
+        var allFightersIds = new List<int>();
+
+        foreach (var createTeamModel in teams)
         {
-            var allFightersIds = new List<int>();
-
-            foreach (var createTeamModel in teams)
+            foreach (var fighter in createTeamModel.Fighters)
             {
-                foreach (var fighter in createTeamModel.Fighters)
+                if (allFightersIds.Contains(fighter.FighterId))
                 {
-                    if (allFightersIds.Contains(fighter.FighterId))
-                        return false;
-
-                    allFightersIds.Add(fighter.FighterId);
+                    return false;
                 }
-            }
 
-            return true;
+                allFightersIds.Add(fighter.FighterId);
+            }
         }
+
+        return true;
     }
 }

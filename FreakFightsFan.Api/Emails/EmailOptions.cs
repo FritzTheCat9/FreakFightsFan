@@ -1,11 +1,10 @@
-﻿namespace FreakFightsFan.Api.Emails
+﻿namespace FreakFightsFan.Api.Emails;
+
+public class EmailOptions
 {
-    public class EmailOptions
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string SMTPHost { get; set; }
-        public int Port { get; set; }
-        public bool SendEmails { get; set; }
-    }
+    public string Email { get; init; }
+    public string Password { get; init; }
+    public string SmtpHost { get; init; }
+    public int Port { get; init; }
+    public bool SendEmails { get; init; }
 }

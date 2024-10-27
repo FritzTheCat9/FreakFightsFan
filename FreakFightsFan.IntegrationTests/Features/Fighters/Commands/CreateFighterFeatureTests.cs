@@ -1,121 +1,116 @@
 ﻿using FluentAssertions;
-using System.Net.Http.Json;
-using System.Net;
-using Xunit;
-using FreakFightsFan.Shared.Features.Fighters.Commands;
-using static FreakFightsFan.IntegrationTests.TestUsers;
-using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.IntegrationTests.Features.Fighters.Helpers;
+using FreakFightsFan.Shared.Exceptions;
+using FreakFightsFan.Shared.Features.Fighters.Commands;
+using System.Net;
+using System.Net.Http.Json;
+using Xunit;
+using static FreakFightsFan.IntegrationTests.TestUsers;
 
-namespace FreakFightsFan.IntegrationTests.Features.Fighters.Commands
+namespace FreakFightsFan.IntegrationTests.Features.Fighters.Commands;
+
+public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
+    : IClassFixture<FreakFightsFanApiFactory>
 {
-    public class CreateFighterFeatureTests : IClassFixture<FreakFightsFanApiFactory>
+    private readonly HttpClient _client = apiFactory.CreateClient();
+
+    [Theory]
+    [ClassData(typeof(Admin))]
+    [ClassData(typeof(SuperAdmin))]
+    public async Task CreateFighterFeature_ShouldCreateFighter(UserBase user)
     {
-        private readonly HttpClient _client;
+        await _client.Login(user);
 
-        public CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
-        {
-            _client = apiFactory.CreateClient();
-        }
+        var id = await FighterTestHelpers.CreateFighter(_client);
+        var fighter = await FighterTestHelpers.GetFighter(_client, id);
 
-        [Theory]
-        [ClassData(typeof(Admin))]
-        [ClassData(typeof(SuperAdmin))]
-        public async Task CreateFighterFeature_ShouldCreateFighter(UserBase user)
-        {
-            await _client.Login(user);
+        fighter.Should().NotBeNull();
 
-            var id = await FighterTestHelpers.CreateFighter(_client);
-            var fighter = await FighterTestHelpers.GetFighter(_client, id);
+        await FighterTestHelpers.DeleteFighter(_client, id);
+    }
 
-            fighter.Should().NotBeNull();
+    [Theory]
+    [ClassData(typeof(User))]
+    public async Task CreateFighterFeature_ShouldReturnForbiddenIfUserRoleIsUser(UserBase user)
+    {
+        await _client.Login(user);
 
-            await FighterTestHelpers.DeleteFighter(_client, id);
-        }
+        var response = await _client.PostAsJsonAsync("api/fighters", new CreateFighter.Command());
+        var forbiddenError = await response.Content.ReadFromJsonAsync<ForbiddenErrorResponse>();
 
-        [Theory]
-        [ClassData(typeof(User))]
-        public async Task CreateFighterFeature_ShouldReturnForbiddenIfUserRoleIsUser(UserBase user)
-        {
-            await _client.Login(user);
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        forbiddenError.Should().NotBeNull();
+    }
 
-            var response = await _client.PostAsJsonAsync("api/fighters", new CreateFighter.Command());
-            var forbiddenError = await response.Content.ReadFromJsonAsync<ForbiddenErrorResponse>();
+    [Fact]
+    public async Task CreateFighterFeature_ShouldReturnUnauthorizedIfUserIsNotLoggedIn()
+    {
+        _client.Logout();
 
-            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            forbiddenError.Should().NotBeNull();
-        }
+        var response = await _client.PostAsJsonAsync("api/fighters", new CreateFighter.Command());
+        var unauthorizedError = await response.Content.ReadFromJsonAsync<UnauthorizedErrorResponse>();
 
-        [Fact]
-        public async Task CreateFighterFeature_ShouldReturnUnauthorizedIfUserIsNotLoggedIn()
-        {
-            _client.Logout();
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        unauthorizedError.Should().NotBeNull();
+    }
 
-            var response = await _client.PostAsJsonAsync("api/fighters", new CreateFighter.Command());
-            var unauthorizedError = await response.Content.ReadFromJsonAsync<UnauthorizedErrorResponse>();
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("     ")]
+    public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidFistName(string fistName)
+    {
+        await _client.Login(new Admin());
+        var command = FighterTestHelpers.GenerateCreateFighterCommand();
+        command.FirstName = fistName;
 
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            unauthorizedError.Should().NotBeNull();
-        }
+        var response = await _client.PostAsJsonAsync("api/fighters", command);
+        var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("     ")]
-        public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidFistName(string fistName)
-        {
-            await _client.Login(new Admin());
-            var command = FighterTestHelpers.GenerateCreateFighterCommand();
-            command.FirstName = fistName;
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationError.Should().NotBeNull();
+        validationError?.Errors.Should()
+            .Contain(x => x.Key == nameof(command.FirstName) && x.Value.Any(x => x == "First name should not be empty"));
+    }
 
-            var response = await _client.PostAsJsonAsync("api/fighters", command);
-            var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("     ")]
+    public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidLastName(string lastName)
+    {
+        await _client.Login(new Admin());
+        var command = FighterTestHelpers.GenerateCreateFighterCommand();
+        command.LastName = lastName;
 
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            validationError.Should().NotBeNull();
-            validationError?.Errors.Should()
-                .Contain(x => x.Key == nameof(command.FirstName) && x.Value.Any(x => x == "First name should not be empty"));
-        }
+        var response = await _client.PostAsJsonAsync("api/fighters", command);
+        var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("     ")]
-        public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidLastName(string lastName)
-        {
-            await _client.Login(new Admin());
-            var command = FighterTestHelpers.GenerateCreateFighterCommand();
-            command.LastName = lastName;
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationError.Should().NotBeNull();
+        validationError?.Errors.Should()
+            .Contain(x => x.Key == nameof(command.LastName) && x.Value.Any(x => x == "Last name should not be empty"));
+    }
 
-            var response = await _client.PostAsJsonAsync("api/fighters", command);
-            var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("     ")]
+    public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidNickname(string nickname)
+    {
+        await _client.Login(new Admin());
+        var command = FighterTestHelpers.GenerateCreateFighterCommand();
+        command.Nickname = nickname;
 
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            validationError.Should().NotBeNull();
-            validationError?.Errors.Should()
-                .Contain(x => x.Key == nameof(command.LastName) && x.Value.Any(x => x == "Last name should not be empty"));
-        }
+        var response = await _client.PostAsJsonAsync("api/fighters", command);
+        var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("     ")]
-        public async Task CreateFighterFeature_ShouldReturnValidationErrorOnInvalidNickname(string nickname)
-        {
-            await _client.Login(new Admin());
-            var command = FighterTestHelpers.GenerateCreateFighterCommand();
-            command.Nickname = nickname;
-
-            var response = await _client.PostAsJsonAsync("api/fighters", command);
-            var validationError = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            validationError.Should().NotBeNull();
-            validationError?.Errors.Should()
-                .Contain(x => x.Key == nameof(command.Nickname) && x.Value.Any(x => x == "Nickname should not be empty"));
-        }
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        validationError.Should().NotBeNull();
+        validationError?.Errors.Should()
+            .Contain(x => x.Key == nameof(command.Nickname) && x.Value.Any(x => x == "Nickname should not be empty"));
     }
 }

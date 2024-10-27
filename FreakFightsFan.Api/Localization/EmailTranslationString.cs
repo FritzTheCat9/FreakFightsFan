@@ -1,10 +1,9 @@
-﻿namespace FreakFightsFan.Api.Localization
+﻿namespace FreakFightsFan.Api.Localization;
+
+public enum EmailTranslationString
 {
-    public enum EmailTranslationString
-    {
-        EmailConfirmationSubject,
-        EmailConfirmationTemplateFileName,
-        EmailConfirmationSuccessfulSubject,
-        EmailConfirmationSuccessfulTemplateFileName,
-    }
+    EmailConfirmationSubject,
+    EmailConfirmationTemplateFileName,
+    EmailConfirmationSuccessfulSubject,
+    EmailConfirmationSuccessfulTemplateFileName,
 }

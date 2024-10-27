@@ -7,36 +7,35 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.DictionaryItems
+namespace FreakFightsFan.Blazor.Pages.DictionaryItems;
+
+public partial class CreateDictionaryItemDialog : ComponentBase
 {
-    public partial class CreateDictionaryItemDialog : ComponentBase
+    private CustomValidator _customValidator;
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public CreateMyDictionaryItem.Command Command { get; set; } = new();
+
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IMyDictionaryItemApiClient MyDictionaryItemApiClient { get; set; }
+
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    private async Task HandleValidSubmit()
     {
-        private CustomValidator _customValidator;
-
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public CreateMyDictionaryItem.Command Command { get; set; } = new();
-
-        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] public IMyDictionaryItemApiClient MyDictionaryItemApiClient { get; set; }
-
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        private async Task HandleValidSubmit()
+        try
         {
-            try
-            {
-                await MyDictionaryItemApiClient.CreateMyDictionaryItem(Command);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            catch (MyValidationException validationException)
-            {
-                _customValidator.DisplayErrors(validationException.Errors);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-            }
+            await MyDictionaryItemApiClient.CreateMyDictionaryItem(Command);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            _customValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
         }
     }
 }

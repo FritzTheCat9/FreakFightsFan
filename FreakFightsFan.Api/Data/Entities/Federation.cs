@@ -1,10 +1,9 @@
-namespace FreakFightsFan.Api.Data.Entities
-{
-    public class Federation : Entity
-    {
-        public string Name { get; set; }
+namespace FreakFightsFan.Api.Data.Entities;
 
-        public List<Event> Events { get; } = [];
-        public Image? Image { get; set; }
-    }
+public class Federation : Entity
+{
+    public string Name { get; set; }
+
+    public List<Event> Events { get; } = [];
+    public Image? Image { get; set; }
 }

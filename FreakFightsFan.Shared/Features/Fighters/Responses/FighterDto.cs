@@ -1,17 +1,16 @@
 ﻿using FreakFightsFan.Shared.Features.Images.Responses;
 
-namespace FreakFightsFan.Shared.Features.Fighters.Responses
-{
-    public class FighterDto
-    {
-        public int Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime Modified { get; set; }
+namespace FreakFightsFan.Shared.Features.Fighters.Responses;
 
-        public string InstagramUrl { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Nickname { get; set; }
-        public ImageDto? Image { get; set; }
-    }
+public class FighterDto
+{
+    public int Id { get; set; }
+    public DateTime Created { get; set; }
+    public DateTime Modified { get; set; }
+
+    public string InstagramUrl { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Nickname { get; set; }
+    public ImageDto? Image { get; set; }
 }

@@ -8,23 +8,22 @@ using FreakFightsFan.Api.Features.Images.Extensions;
 using FreakFightsFan.Api.Features.Teams.Extensions;
 using FreakFightsFan.Api.Features.Users.Extensions;
 
-namespace FreakFightsFan.Api.Extensions
-{
-    public static class EndpointsExtensions
-    {
-        public static WebApplication AddEndpoints(this WebApplication app)
-        {
-            app.AddMyDictionaryEndpoints()
-               .AddMyDictionaryItemEndpoints()
-               .AddEventEndpoints()
-               .AddFederationEndpoints()
-               .AddFighterEndpoints()
-               .AddFightEndpoints()
-               .AddImageEndpoints()
-               .AddTeamEndpoints()
-               .AddUserEndpoints();
+namespace FreakFightsFan.Api.Extensions;
 
-            return app;
-        }
+public static class EndpointsExtensions
+{
+    public static WebApplication AddEndpoints(this WebApplication app)
+    {
+        app.AddMyDictionaryEndpoints()
+            .AddMyDictionaryItemEndpoints()
+            .AddEventEndpoints()
+            .AddFederationEndpoints()
+            .AddFighterEndpoints()
+            .AddFightEndpoints()
+            .AddImageEndpoints()
+            .AddTeamEndpoints()
+            .AddUserEndpoints();
+
+        return app;
     }
 }

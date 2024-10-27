@@ -3,40 +3,41 @@ using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FreakFightsFan.Api.Auth
+namespace FreakFightsFan.Api.Auth;
+
+public interface IEmailConfirmationService
 {
-    public interface IEmailConfirmationService
+    public string GenerateEmailConfirmationToken(string email);
+    public string GenerateConfirmationLink(string email, string token);
+}
+
+public class EmailConfirmationService : IEmailConfirmationService
+{
+    private readonly AuthOptions _options;
+    private readonly IClock _clock;
+    private readonly string _baseUrl;
+
+    public EmailConfirmationService(
+        IOptions<AuthOptions> options,
+        IClock clock)
     {
-        public string GenerateEmailConfirmationToken(string email);
-        public string GenerateConfirmationLink(string email, string token);
+        _options = options.Value;
+        _clock = clock;
+        _baseUrl = _options.FrontendUrl;
     }
 
-    public class EmailConfirmationService : IEmailConfirmationService
+    public string GenerateEmailConfirmationToken(string email)
     {
-        private readonly AuthOptions _options;
-        private readonly IClock _clock;
-        private readonly string _baseUrl;
+        var tokenData = $"{email}_{_clock.Current().Ticks}_{_options.SigningKey}";
 
-        public EmailConfirmationService(
-            IOptions<AuthOptions> options,
-            IClock clock)
-        {
-            _options = options.Value;
-            _clock = clock;
-            _baseUrl = _options.FrontendUrl;
-        }
+        var hashedBytes = SHA256.HashData(Encoding.UTF8.GetBytes(tokenData));
+        var token = Convert.ToBase64String(hashedBytes);
 
-        public string GenerateEmailConfirmationToken(string email)
-        {
-            var tokenData = $"{email}_{_clock.Current().Ticks}_{_options.SigningKey}";
+        return token;
+    }
 
-            var hashedBytes = SHA256.HashData(Encoding.UTF8.GetBytes(tokenData));
-            var token = Convert.ToBase64String(hashedBytes);
-
-            return token;
-        }
-
-        public string GenerateConfirmationLink(string email, string token) 
-            => $"{_baseUrl}/confirmEmail?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
+    public string GenerateConfirmationLink(string email, string token)
+    {
+        return $"{_baseUrl}/confirmEmail?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
     }
 }

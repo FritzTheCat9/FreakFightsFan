@@ -1,18 +1,17 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Federations.Commands
+namespace FreakFightsFan.Shared.Features.Federations.Commands;
+
+public static class DeleteFederation
 {
-    public class DeleteFederation
+    public class Command : IRequest<Unit>
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Command>
-        {
+    public class Validator : AbstractValidator<Command>
+    {
 
-        }
     }
 }

@@ -1,19 +1,18 @@
-﻿namespace FreakFightsFan.Api.Localization
+﻿namespace FreakFightsFan.Api.Localization;
+
+public enum ApiValidationMessageString
 {
-    public enum ApiValidationMessageString
-    {
-        CodeMustBeUnique,
-        DictionaryItemMustBeInDictionary,
-        EventIdMaxFightsInOneEvent,
-        DirectionFightIsOnTheTop,
-        DirectionFightIsOnTheBottom,
-        EmailUserWithGivenEmailDoesNotExist,
-        EmailAlreadyConfirmed,
-        TokenIsNotAssignedToThisUser,
-        EmailIsNotConfirmed,
-        PasswordIsIncorrect,
-        EmailIsAlreadyTaken,
-        UserNameIsAlreadyTaken,
-        RefreshTokenIsNotValid,
-    }
+    CodeMustBeUnique,
+    DictionaryItemMustBeInDictionary,
+    EventIdMaxFightsInOneEvent,
+    DirectionFightIsOnTheTop,
+    DirectionFightIsOnTheBottom,
+    EmailUserWithGivenEmailDoesNotExist,
+    EmailAlreadyConfirmed,
+    TokenIsNotAssignedToThisUser,
+    EmailIsNotConfirmed,
+    PasswordIsIncorrect,
+    EmailIsAlreadyTaken,
+    UserNameIsAlreadyTaken,
+    RefreshTokenIsNotValid,
 }

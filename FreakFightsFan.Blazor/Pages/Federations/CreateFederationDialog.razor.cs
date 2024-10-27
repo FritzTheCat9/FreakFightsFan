@@ -7,36 +7,35 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.Federations
+namespace FreakFightsFan.Blazor.Pages.Federations;
+
+public partial class CreateFederationDialog : ComponentBase
 {
-    public partial class CreateFederationDialog : ComponentBase
+    private CustomValidator _customValidator;
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public CreateFederation.FormModel FormModel { get; set; } = new();
+
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IFederationApiClient FederationApiClient { get; set; }
+
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    private async Task HandleValidSubmit()
     {
-        private CustomValidator _customValidator;
-
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public CreateFederation.FormModel FormModel { get; set; } = new();
-
-        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] public IFederationApiClient FederationApiClient { get; set; }
-
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        private async Task HandleValidSubmit()
+        try
         {
-            try
-            {
-                await FederationApiClient.CreateFederation(FormModel);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            catch (MyValidationException validationException)
-            {
-                _customValidator.DisplayErrors(validationException.Errors);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-            }
+            await FederationApiClient.CreateFederation(FormModel);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            _customValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
         }
     }
 }

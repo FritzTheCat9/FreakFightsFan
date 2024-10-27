@@ -3,48 +3,55 @@ using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Fights.Queries;
 using FreakFightsFan.Shared.Features.Fights.Responses;
 
-namespace FreakFightsFan.Blazor.Clients
+namespace FreakFightsFan.Blazor.Clients;
+
+public interface IFightApiClient
 {
-    public interface IFightApiClient
+    Task<PagedList<FightDto>> GetAllFights(GetAllFights.Query query);
+    Task<FighterProfileDto> GetFighterProfile(int id);
+    Task<FightDto> GetFight(int id);
+    Task CreateFight(CreateFight.Command command);
+    Task UpdateFight(UpdateFight.Command command);
+    Task DeleteFight(int id);
+    Task MoveFight(MoveFight.Command command);
+}
+
+public class FightApiClient(IApiClient apiClient) : IFightApiClient
+{
+    private const string _url = "api/fights";
+
+    public async Task<PagedList<FightDto>> GetAllFights(GetAllFights.Query query)
     {
-        Task<PagedList<FightDto>> GetAllFights(GetAllFights.Query query);
-        Task<FighterProfileDto> GetFighterProfile(int id);
-        Task<FightDto> GetFight(int id);
-        Task CreateFight(CreateFight.Command command);
-        Task UpdateFight(UpdateFight.Command command);
-        Task DeleteFight(int id);
-        Task MoveFight(MoveFight.Command command);
+        return await apiClient.Post<GetAllFights.Query, PagedList<FightDto>>($"{_url}/all", query);
     }
 
-    public class FightApiClient : IFightApiClient
+    public async Task<FighterProfileDto> GetFighterProfile(int id)
     {
-        private readonly IApiClient _apiClient;
-        private readonly string _url = "api/fights";
+        return await apiClient.Get<FighterProfileDto>($"{_url}/fighter/{id}");
+    }
 
-        public FightApiClient(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public async Task<FightDto> GetFight(int id)
+    {
+        return await apiClient.Get<FightDto>($"{_url}/{id}");
+    }
 
-        public async Task<PagedList<FightDto>> GetAllFights(GetAllFights.Query query)
-            => await _apiClient.Post<GetAllFights.Query, PagedList<FightDto>>($"{_url}/all", query);
+    public async Task CreateFight(CreateFight.Command command)
+    {
+        await apiClient.Post(_url, command);
+    }
 
-        public async Task<FighterProfileDto> GetFighterProfile(int id)
-            => await _apiClient.Get<FighterProfileDto>($"{_url}/fighter/{id}");
+    public async Task UpdateFight(UpdateFight.Command command)
+    {
+        await apiClient.Put($"{_url}/{command.Id}", command);
+    }
 
-        public async Task<FightDto> GetFight(int id)
-            => await _apiClient.Get<FightDto>($"{_url}/{id}");
+    public async Task DeleteFight(int id)
+    {
+        await apiClient.Delete($"{_url}/{id}");
+    }
 
-        public async Task CreateFight(CreateFight.Command command)
-            => await _apiClient.Post(_url, command);
-
-        public async Task UpdateFight(UpdateFight.Command command)
-            => await _apiClient.Put($"{_url}/{command.Id}", command);
-
-        public async Task DeleteFight(int id)
-            => await _apiClient.Delete($"{_url}/{id}");
-
-        public async Task MoveFight(MoveFight.Command command)
-            => await _apiClient.Put($"{_url}/move/{command.Id}", command);
+    public async Task MoveFight(MoveFight.Command command)
+    {
+        await apiClient.Put($"{_url}/move/{command.Id}", command);
     }
 }

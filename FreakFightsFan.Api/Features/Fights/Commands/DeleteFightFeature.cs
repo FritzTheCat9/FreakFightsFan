@@ -5,44 +5,36 @@ using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Fights.Commands
+namespace FreakFightsFan.Api.Features.Fights.Commands;
+
+public static class DeleteFightFeature
 {
-    public static class DeleteFightFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapDelete("/api/fights/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteFight.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.Fights)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<DeleteFight.Command, Unit>
-        {
-            private readonly IFightRepository _fightRepository;
-
-            public Handler(IFightRepository fightRepository)
+        app.MapDelete("/api/fights/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _fightRepository = fightRepository;
-            }
+                var command = new DeleteFight.Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.Fights)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<Unit> Handle(
-                DeleteFight.Command command,
-                CancellationToken cancellationToken)
-            {
-                var fight = await _fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
+    public class Handler(IFightRepository fightRepository) : IRequestHandler<DeleteFight.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            DeleteFight.Command command,
+            CancellationToken cancellationToken)
+        {
+            var fight = await fightRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                await _fightRepository.OrderFights(fight.EventId, fight.OrderNumber);
-                await _fightRepository.Delete(fight);
+            await fightRepository.OrderFights(fight.EventId, fight.OrderNumber);
+            await fightRepository.Delete(fight);
 
-                return Unit.Value;
-            }
+            return Unit.Value;
         }
     }
 }

@@ -5,43 +5,36 @@ using FreakFightsFan.Shared.Features.DictionaryItems.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.DictionaryItems.Commands
+namespace FreakFightsFan.Api.Features.DictionaryItems.Commands;
+
+public static class DeleteMyDictionaryItemFeature
 {
-    public static class DeleteMyDictionaryItemFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapDelete("/api/myDictionaryItems/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteMyDictionaryItem.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.DictionaryItems)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<DeleteMyDictionaryItem.Command, Unit>
-        {
-            private readonly IMyDictionaryItemRepository _myDictionaryItemRepository;
-
-            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository)
+        app.MapDelete("/api/myDictionaryItems/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _myDictionaryItemRepository = myDictionaryItemRepository;
-            }
+                var command = new DeleteMyDictionaryItem.Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.DictionaryItems)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<Unit> Handle(
-                DeleteMyDictionaryItem.Command command,
-                CancellationToken cancellationToken)
-            {
-                var dictionaryItem = await _myDictionaryItemRepository.Get(command.Id) ??
-                                     throw new MyNotFoundException();
+    public class Handler(IMyDictionaryItemRepository myDictionaryItemRepository)
+        : IRequestHandler<DeleteMyDictionaryItem.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            DeleteMyDictionaryItem.Command command,
+            CancellationToken cancellationToken)
+        {
+            var dictionaryItem = await myDictionaryItemRepository.Get(command.Id) ??
+                                 throw new MyNotFoundException();
 
-                await _myDictionaryItemRepository.Delete(dictionaryItem);
-                return Unit.Value;
-            }
+            await myDictionaryItemRepository.Delete(dictionaryItem);
+            return Unit.Value;
         }
     }
 }

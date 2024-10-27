@@ -7,45 +7,40 @@ using FreakFightsFan.Shared.Features.Events.Queries;
 using FreakFightsFan.Shared.Features.Events.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Events.Queries
+namespace FreakFightsFan.Api.Features.Events.Queries;
+
+public static class GetAllEventsFeature
 {
-    public static class GetAllEventsFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/events/all", async (
-                        GetAllEvents.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.Events)
-                .AllowAnonymous();
-        }
-
-        public class Handler : IRequestHandler<GetAllEvents.Query, PagedList<EventDto>>
-        {
-            private readonly IEventRepository _eventRepository;
-
-            public Handler(IEventRepository eventRepository)
-            {
-                _eventRepository = eventRepository;
-            }
-
-            public async Task<PagedList<EventDto>> Handle(
+        app.MapPost("/api/events/all", async (
                 GetAllEvents.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var eventsQuery = _eventRepository.AsQueryable(query.FederationId);
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.Events)
+            .AllowAnonymous();
+    }
 
-                eventsQuery = eventsQuery.FilterEvents(query);
-                eventsQuery = eventsQuery.SortEvents(query);
+    public class Handler(IEventRepository eventRepository)
+        : IRequestHandler<GetAllEvents.Query, PagedList<EventDto>>
+    {
+        public async Task<PagedList<EventDto>> Handle(
+            GetAllEvents.Query query,
+            CancellationToken cancellationToken)
+        {
+            var eventsQuery = eventRepository.AsQueryable(query.FederationId);
 
-                var eventsPagedList = PageListExtensions<EventDto>.Create(eventsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+            eventsQuery = eventsQuery.FilterEvents(query);
+            eventsQuery = eventsQuery.SortEvents(query);
 
-                return await Task.FromResult(eventsPagedList);
-            }
+            var eventsPagedList = PageListExtensions<EventDto>.Create(eventsQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return await Task.FromResult(eventsPagedList);
         }
     }
 }

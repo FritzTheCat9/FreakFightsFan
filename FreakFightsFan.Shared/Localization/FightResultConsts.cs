@@ -1,7 +1,6 @@
-﻿namespace FreakFightsFan.Shared
-{
-    public class FightResultConsts
-    {
+﻿namespace FreakFightsFan.Shared;
 
-    }
+public class FightResultConsts
+{
+
 }

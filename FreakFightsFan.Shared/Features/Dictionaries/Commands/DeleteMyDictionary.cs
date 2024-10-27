@@ -1,18 +1,17 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Dictionaries.Commands
+namespace FreakFightsFan.Shared.Features.Dictionaries.Commands;
+
+public static class DeleteMyDictionary
 {
-    public static class DeleteMyDictionary
+    public class Command : IRequest<Unit>
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Command>
-        {
+    public class Validator : AbstractValidator<Command>
+    {
 
-        }
     }
 }

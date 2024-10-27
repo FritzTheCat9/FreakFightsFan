@@ -1,38 +1,37 @@
 ﻿using FreakFightsFan.Api.Auth;
 using FreakFightsFan.Shared.Extensions;
 
-namespace FreakFightsFan.Api.Extensions
+namespace FreakFightsFan.Api.Extensions;
+
+public static class CorsExtensions
 {
-    public static class CORSExtensions
+    private const string _policyName = "MyCorsPolicy";
+    private const string _sectionName = "Auth";
+
+    public static IServiceCollection AddMyCors(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        private const string _policyName = "MyCorsPolicy";
-        private const string _sectionName = "Auth";
+        services.Configure<AuthOptions>(configuration.GetRequiredSection(_sectionName));
+        var authOptions = configuration.GetOptions<AuthOptions>(_sectionName);
 
-        public static IServiceCollection AddCORS(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        services.AddCors(options =>
         {
-            services.Configure<AuthOptions>(configuration.GetRequiredSection(_sectionName));
-            var authOptions = configuration.GetOptions<AuthOptions>(_sectionName);
-
-            services.AddCors(options =>
+            options.AddPolicy(_policyName, policy =>
             {
-                options.AddPolicy(_policyName, policy =>
-                {
-                    policy.WithOrigins(authOptions.FrontendUrl)
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                policy.WithOrigins(authOptions.FrontendUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             });
+        });
 
-            return services;
-        }
+        return services;
+    }
 
-        public static WebApplication UseCORS(this WebApplication app)
-        {
-            app.UseCors(_policyName);
+    public static WebApplication UseMyCors(this WebApplication app)
+    {
+        app.UseCors(_policyName);
 
-            return app;
-        }
+        return app;
     }
 }

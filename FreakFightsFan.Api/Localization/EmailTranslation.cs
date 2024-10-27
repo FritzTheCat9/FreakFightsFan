@@ -1,7 +1,6 @@
-﻿namespace FreakFightsFan.Api
-{
-    public class EmailTranslation
-    {
+﻿namespace FreakFightsFan.Api;
 
-    }
+public class EmailTranslation
+{
+
 }

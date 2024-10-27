@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Components
+namespace FreakFightsFan.Blazor.Components;
+
+public partial class FritzBreadcrumbs : ComponentBase
 {
-    public partial class FritzBreadcrumbs : ComponentBase
-    {
-        [Parameter] public List<BreadcrumbItem> Items { get; set; }
-    }
+    [Parameter] public List<BreadcrumbItem> Items { get; set; }
 }

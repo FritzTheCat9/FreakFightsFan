@@ -7,36 +7,35 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.Fighters
+namespace FreakFightsFan.Blazor.Pages.Fighters;
+
+public partial class CreateFighterDialog : ComponentBase
 {
-    public partial class CreateFighterDialog : ComponentBase
+    private CustomValidator _customValidator;
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public CreateFighter.FormModel FormModel { get; set; } = new();
+
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IFighterApiClient FighterApiClient { get; set; }
+
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    private async Task HandleValidSubmit()
     {
-        private CustomValidator _customValidator;
-
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public CreateFighter.FormModel FormModel { get; set; } = new();
-
-        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        private async Task HandleValidSubmit()
+        try
         {
-            try
-            {
-                await FighterApiClient.CreateFighter(FormModel);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            catch (MyValidationException validationException)
-            {
-                _customValidator.DisplayErrors(validationException.Errors);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-            }
+            await FighterApiClient.CreateFighter(FormModel);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            _customValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
         }
     }
 }

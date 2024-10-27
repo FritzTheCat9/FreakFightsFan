@@ -1,18 +1,17 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Events.Commands
+namespace FreakFightsFan.Shared.Features.Events.Commands;
+
+public static class DeleteEvent
 {
-    public class DeleteEvent
+    public class Command : IRequest<Unit>
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Command>
-        {
+    public class Validator : AbstractValidator<Command>
+    {
 
-        }
     }
 }

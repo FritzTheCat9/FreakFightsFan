@@ -1,36 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data.Database
+namespace FreakFightsFan.Api.Data.Database;
+
+public class DatabaseInitializer(
+    IServiceProvider serviceProvider,
+    ILogger<DatabaseInitializer> logger)
+    : IHostedService
 {
-    public class DatabaseInitializer : IHostedService
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<DatabaseInitializer> _logger;
+        using var scope = serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        public DatabaseInitializer(
-            IServiceProvider serviceProvider,
-            ILogger<DatabaseInitializer> logger)
+        try
         {
-            _serviceProvider = serviceProvider;
-            _logger = logger;
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }
-
-        public async Task StartAsync(CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            using var scope = _serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-            try
-            {
-                await dbContext.Database.MigrateAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("[DatabaseInitializer] Error while creating and migrationg the database: {0}", ex.Message);
-            }
+            logger.LogError("[DatabaseInitializer] Error while creating and migrating the database: {0}", ex.Message);
         }
+    }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-            => Task.CompletedTask;
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 }

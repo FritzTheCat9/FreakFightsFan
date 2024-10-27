@@ -2,69 +2,72 @@
 using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data.Repositories
+namespace FreakFightsFan.Api.Data.Repositories;
+
+public interface IFighterRepository
 {
-    public interface IFighterRepository
+    IQueryable<Fighter> AsQueryable();
+    Task<IEnumerable<Fighter>> GetAll();
+    Task<Fighter> Get(int id);
+    Task<int> Create(Fighter fighter);
+    Task Update(Fighter fighter);
+    Task Delete(Fighter fighter);
+    Task SaveChanges();
+}
+
+public class FighterRepository(AppDbContext dbContext) : IFighterRepository
+{
+    public IQueryable<Fighter> AsQueryable()
     {
-        IQueryable<Fighter> AsQueryable();
-        Task<IEnumerable<Fighter>> GetAll();
-        Task<Fighter> Get(int id);
-        Task<int> Create(Fighter fighter);
-        Task Update(Fighter fighter);
-        Task Delete(Fighter fighter);
-        Task SaveChanges();
+        return dbContext.Fighters
+            .Include(x => x.Image)
+            .Include(x => x.Teams)
+            .Include(x => x.TeamFighters)
+            .AsSplitQuery()
+            .AsQueryable();
     }
 
-    public class FighterRepository : IFighterRepository
+    public async Task<IEnumerable<Fighter>> GetAll()
     {
-        private readonly AppDbContext _dbContext;
+        return await dbContext.Fighters
+            .Include(x => x.Image)
+            .Include(x => x.Teams)
+            .Include(x => x.TeamFighters)
+            .AsSplitQuery()
+            .ToListAsync();
+    }
 
-        public FighterRepository(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public async Task<Fighter> Get(int id)
+    {
+        return await dbContext.Fighters
+            .Include(x => x.Image)
+            .Include(x => x.Teams)
+            .Include(x => x.TeamFighters)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
-        public IQueryable<Fighter> AsQueryable() 
-            => _dbContext.Fighters.Include(x => x.Image)
-                                  .Include(x => x.Teams)
-                                  .Include(x => x.TeamFighters)
-                                  .AsSplitQuery()
-                                  .AsQueryable();
+    public async Task<int> Create(Fighter fighter)
+    {
+        await dbContext.AddAsync(fighter);
+        await dbContext.SaveChangesAsync();
+        return fighter.Id;
+    }
 
-        public async Task<IEnumerable<Fighter>> GetAll() 
-            => await _dbContext.Fighters.Include(x => x.Image)
-                                        .Include(x => x.Teams)
-                                        .Include(x => x.TeamFighters)
-                                        .AsSplitQuery()
-                                        .ToListAsync();
+    public Task Update(Fighter fighter)
+    {
+        dbContext.Update(fighter);
+        return Task.CompletedTask;
+    }
 
-        public async Task<Fighter> Get(int id) 
-            => await _dbContext.Fighters.Include(x => x.Image)
-                                        .Include(x => x.Teams)
-                                        .Include(x => x.TeamFighters)
-                                        .AsSplitQuery()
-                                        .FirstOrDefaultAsync(x => x.Id == id);
+    public Task Delete(Fighter fighter)
+    {
+        dbContext.Remove(fighter);
+        return Task.CompletedTask;
+    }
 
-        public async Task<int> Create(Fighter fighter)
-        {
-            await _dbContext.AddAsync(fighter);
-            await _dbContext.SaveChangesAsync();
-            return fighter.Id;
-        }
-
-        public Task Update(Fighter fighter)
-        {
-            _dbContext.Update(fighter);
-            return Task.CompletedTask;
-        }
-
-        public Task Delete(Fighter fighter)
-        {
-            _dbContext.Remove(fighter);
-            return Task.CompletedTask;
-        }
-
-        public async Task SaveChanges() 
-            => await _dbContext.SaveChangesAsync();
+    public async Task SaveChanges()
+    {
+        await dbContext.SaveChangesAsync();
     }
 }

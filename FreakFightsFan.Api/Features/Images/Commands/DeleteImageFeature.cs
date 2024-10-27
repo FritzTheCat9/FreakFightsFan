@@ -6,48 +6,39 @@ using FreakFightsFan.Shared.Features.Images.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Images.Commands
+namespace FreakFightsFan.Api.Features.Images.Commands;
+
+public static class DeleteImageFeature
 {
-    public static class DeleteImageFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapDelete("/api/images/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteImage.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.Images)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<DeleteImage.Command, Unit>
-        {
-            private readonly IImageRepository _imageRepository;
-            private readonly IImageService _imageService;
-
-            public Handler(
-                IImageRepository imageRepository,
-                IImageService imageService)
+        app.MapDelete("/api/images/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _imageRepository = imageRepository;
-                _imageService = imageService;
-            }
+                var command = new DeleteImage.Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.Images)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<Unit> Handle(
-                DeleteImage.Command command,
-                CancellationToken cancellationToken)
-            {
-                var image = await _imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
+    public class Handler(
+        IImageRepository imageRepository,
+        IImageService imageService)
+        : IRequestHandler<DeleteImage.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            DeleteImage.Command command,
+            CancellationToken cancellationToken)
+        {
+            var image = await imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                _imageService.DeleteImage(image.Name);
+            imageService.DeleteImage(image.Name);
 
-                await _imageRepository.Delete(image);
-                return Unit.Value;
-            }
+            await imageRepository.Delete(image);
+            return Unit.Value;
         }
     }
 }

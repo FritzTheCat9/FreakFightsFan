@@ -8,68 +8,69 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.Fights
+namespace FreakFightsFan.Blazor.Pages.Fights;
+
+public partial class CreateFightDialog : ComponentBase
 {
-    public partial class CreateFightDialog : ComponentBase
+    private CustomValidator _customValidator;
+
+    private readonly List<int> _allowedTeamSizes = [2, 3, 4, 5];
+    private int _selectedTeam;
+
+    private List<CreateFight.TeamHelperModel> _teams = [];
+    private MyDictionaryItemDto FightType { get; set; }
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public CreateFight.Command Command { get; set; } = new();
+    [Parameter] public int NumberOfTeams { get; set; }
+
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IFightApiClient FightApiClient { get; set; }
+    [Inject] public IFighterApiClient FighterApiClient { get; set; }
+
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    protected override void OnInitialized()
     {
-        private CustomValidator _customValidator;
+        ResetTeams(NumberOfTeams);
+    }
 
-        private readonly List<int> _allowedTeamSizes = [2, 3, 4, 5];
-        private int _selectedTeam;
+    private void OnTeamsCountSelect(int teamsCount)
+    {
+        ResetTeams(teamsCount);
+    }
 
-        private List<CreateFight.TeamHelperModel> _teams = [];
-        private MyDictionaryItemDto FightType { get; set; }
+    private void ResetTeams(int teamsCount)
+    {
+        _teams = [];
 
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public CreateFight.Command Command { get; set; } = new();
-        [Parameter] public int NumberOfTeams { get; set; }
-
-        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] public IFightApiClient FightApiClient { get; set; }
-        [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        protected override void OnInitialized()
+        for (var i = 0; i < teamsCount; i++)
         {
-            ResetTeams(NumberOfTeams);
+            _teams.Add(new CreateFight.TeamHelperModel
+            {
+                Number = i,
+                Fighters = [],
+            });
         }
 
-        private void OnTeamsCountSelect(int teamsCount) 
-            => ResetTeams(teamsCount);
+        _selectedTeam = 0;
+    }
 
-        private void ResetTeams(int teamsCount)
+    private async Task HandleValidSubmit()
+    {
+        try
         {
-            _teams = [];
-
-            for (int i = 0; i < teamsCount; i++)
-            {
-                _teams.Add(new()
-                {
-                    Number = i,
-                    Fighters = [],
-                });
-            }
-
-            _selectedTeam = 0;
+            await FightApiClient.CreateFight(Command);
+            MudDialog.Close(DialogResult.Ok(true));
         }
-
-        private async Task HandleValidSubmit()
+        catch (MyValidationException validationException)
         {
-            try
-            {
-                await FightApiClient.CreateFight(Command);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            catch (MyValidationException validationException)
-            {
-                _customValidator.DisplayErrors(validationException.Errors);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-            }
+            _customValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
         }
     }
 }

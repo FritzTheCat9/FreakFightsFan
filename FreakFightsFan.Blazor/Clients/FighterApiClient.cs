@@ -3,40 +3,43 @@ using FreakFightsFan.Shared.Features.Fighters.Commands;
 using FreakFightsFan.Shared.Features.Fighters.Queries;
 using FreakFightsFan.Shared.Features.Fighters.Responses;
 
-namespace FreakFightsFan.Blazor.Clients
+namespace FreakFightsFan.Blazor.Clients;
+
+public interface IFighterApiClient
 {
-    public interface IFighterApiClient
+    Task<PagedList<FighterDto>> GetAllFighters(GetAllFighters.Query query);
+    Task<FighterDto> GetFighter(int id);
+    Task CreateFighter(CreateFighter.Command command);
+    Task UpdateFighter(UpdateFighter.Command command);
+    Task DeleteFighter(int id);
+}
+
+public class FighterApiClient(IApiClient apiClient) : IFighterApiClient
+{
+    private const string _url = "api/fighters";
+
+    public async Task<PagedList<FighterDto>> GetAllFighters(GetAllFighters.Query query)
     {
-        Task<PagedList<FighterDto>> GetAllFighters(GetAllFighters.Query query);
-        Task<FighterDto> GetFighter(int id);
-        Task CreateFighter(CreateFighter.Command command);
-        Task UpdateFighter(UpdateFighter.Command command);
-        Task DeleteFighter(int id);
+        return await apiClient.Post<GetAllFighters.Query, PagedList<FighterDto>>($"{_url}/all", query);
     }
 
-    public class FighterApiClient : IFighterApiClient
+    public async Task<FighterDto> GetFighter(int id)
     {
-        private readonly IApiClient _apiClient;
-        private readonly string _url = "api/fighters";
+        return await apiClient.Get<FighterDto>($"{_url}/{id}");
+    }
 
-        public FighterApiClient(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public async Task CreateFighter(CreateFighter.Command command)
+    {
+        await apiClient.Post(_url, command);
+    }
 
-        public async Task<PagedList<FighterDto>> GetAllFighters(GetAllFighters.Query query)
-            => await _apiClient.Post<GetAllFighters.Query, PagedList<FighterDto>>($"{_url}/all", query);
+    public async Task UpdateFighter(UpdateFighter.Command command)
+    {
+        await apiClient.Put($"{_url}/{command.Id}", command);
+    }
 
-        public async Task<FighterDto> GetFighter(int id)
-            => await _apiClient.Get<FighterDto>($"{_url}/{id}");
-
-        public async Task CreateFighter(CreateFighter.Command command)
-            => await _apiClient.Post(_url, command);
-
-        public async Task UpdateFighter(UpdateFighter.Command command)
-            => await _apiClient.Put($"{_url}/{command.Id}", command);
-
-        public async Task DeleteFighter(int id)
-            => await _apiClient.Delete($"{_url}/{id}");
+    public async Task DeleteFighter(int id)
+    {
+        await apiClient.Delete($"{_url}/{id}");
     }
 }

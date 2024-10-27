@@ -6,48 +6,39 @@ using FreakFightsFan.Shared.Features.Fighters.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Fighters.Commands
+namespace FreakFightsFan.Api.Features.Fighters.Commands;
+
+public static class DeleteFighterFeature
 {
-    public static class DeleteFighterFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapDelete("/api/fighters/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var command = new DeleteFighter.Command() { Id = id };
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.Fighters)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<DeleteFighter.Command, Unit>
-        {
-            private readonly IFighterRepository _fighterRepository;
-            private readonly IImageService _imageService;
-
-            public Handler(
-                IFighterRepository fighterRepository,
-                IImageService imageService)
+        app.MapDelete("/api/fighters/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _fighterRepository = fighterRepository;
-                _imageService = imageService;
-            }
+                var command = new DeleteFighter.Command() { Id = id };
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.Fighters)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<Unit> Handle(
-                DeleteFighter.Command command,
-                CancellationToken cancellationToken)
-            {
-                var fighter = await _fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
+    public class Handler(
+        IFighterRepository fighterRepository,
+        IImageService imageService)
+        : IRequestHandler<DeleteFighter.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            DeleteFighter.Command command,
+            CancellationToken cancellationToken)
+        {
+            var fighter = await fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                _imageService.DeleteEntityImage(fighter.Image);
+            imageService.DeleteEntityImage(fighter.Image);
 
-                await _fighterRepository.Delete(fighter);
-                return Unit.Value;
-            }
+            await fighterRepository.Delete(fighter);
+            return Unit.Value;
         }
     }
 }
