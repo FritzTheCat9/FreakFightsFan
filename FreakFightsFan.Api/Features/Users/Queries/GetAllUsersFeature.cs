@@ -8,45 +8,39 @@ using FreakFightsFan.Shared.Features.Users.Queries;
 using FreakFightsFan.Shared.Features.Users.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Users.Queries
+namespace FreakFightsFan.Api.Features.Users.Queries;
+
+public static class GetAllUsersFeature
 {
-    public static class GetAllUsersFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/users/all", async (
-                        GetAllUsers.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.Users)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<GetAllUsers.Query, PagedList<UserDto>>
-        {
-            private readonly IUserRepository _userRepository;
-
-            public Handler(IUserRepository userRepository)
-            {
-                _userRepository = userRepository;
-            }
-
-            public async Task<PagedList<UserDto>> Handle(
+        app.MapPost("/api/users/all", async (
                 GetAllUsers.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var usersQuery = _userRepository.AsQueryable();
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.Users)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                usersQuery = usersQuery.FilterMyUsers(query);
-                usersQuery = usersQuery.SortMyUsers(query);
+    public class Handler(IUserRepository userRepository) : IRequestHandler<GetAllUsers.Query, PagedList<UserDto>>
+    {
+        public async Task<PagedList<UserDto>> Handle(
+            GetAllUsers.Query query,
+            CancellationToken cancellationToken)
+        {
+            var usersQuery = userRepository.AsQueryable();
 
-                var usersPagedList = PageListExtensions<UserDto>.Create(usersQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+            usersQuery = usersQuery.FilterMyUsers(query);
+            usersQuery = usersQuery.SortMyUsers(query);
 
-                return await Task.FromResult(usersPagedList);
-            }
+            var usersPagedList = PageListExtensions<UserDto>.Create(usersQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return await Task.FromResult(usersPagedList);
         }
     }
 }

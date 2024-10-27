@@ -9,49 +9,44 @@ using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
+namespace FreakFightsFan.Api.Features.DictionaryItems.Queries;
+
+public static class GetAllMyDictionaryItemsFeature
 {
-    public static class GetAllMyDictionaryItemsFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/myDictionaryItems/all", async (
-                        GetAllMyDictionaryItems.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.DictionaryItems)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<GetAllMyDictionaryItems.Query, PagedList<MyDictionaryItemDto>>
-        {
-            private readonly IMyDictionaryRepository _myDictionaryRepository;
-
-            public Handler(IMyDictionaryRepository myDictionaryRepository)
-            {
-                _myDictionaryRepository = myDictionaryRepository;
-            }
-
-            public async Task<PagedList<MyDictionaryItemDto>> Handle(
+        app.MapPost("/api/myDictionaryItems/all", async (
                 GetAllMyDictionaryItems.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var dictionary = await _myDictionaryRepository.Get(query.DictionaryId) ??
-                                 throw new MyNotFoundException();
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.DictionaryItems)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                var dictionaryItemsQuery = dictionary.DictionaryItems.AsQueryable();
+    public class Handler(IMyDictionaryRepository myDictionaryRepository)
+        : IRequestHandler<GetAllMyDictionaryItems.Query, PagedList<MyDictionaryItemDto>>
+    {
+        public async Task<PagedList<MyDictionaryItemDto>> Handle(
+            GetAllMyDictionaryItems.Query query,
+            CancellationToken cancellationToken)
+        {
+            var dictionary = await myDictionaryRepository.Get(query.DictionaryId) ??
+                             throw new MyNotFoundException();
 
-                dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
-                dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
+            var dictionaryItemsQuery = dictionary.DictionaryItems.AsQueryable();
 
-                var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
-                    dictionaryItemsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+            dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
+            dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-                return dictionaryItemsPagedList;
-            }
+            var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
+                dictionaryItemsQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return dictionaryItemsPagedList;
         }
     }
 }

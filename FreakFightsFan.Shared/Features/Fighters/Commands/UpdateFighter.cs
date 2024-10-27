@@ -5,122 +5,117 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Localization;
 
-namespace FreakFightsFan.Shared.Features.Fighters.Commands
+namespace FreakFightsFan.Shared.Features.Fighters.Commands;
+
+public static class UpdateFighter
 {
-    public class UpdateFighter
+    public class Command : IRequest<Unit>
     {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string Nickname { get; set; }
-            public string InstagramUrl { get; set; }
-            public string ImageBase64 { get; set; }
-        }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Nickname { get; set; }
+        public string InstagramUrl { get; set; }
+        public string ImageBase64 { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Command>
+    public class Validator : AbstractValidator<Command>
+    {
+        public Validator(IStringLocalizer<ValidationMessage> localizer)
         {
-            private readonly string _allowedFileTypesString;
+            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
-            public Validator(IStringLocalizer<ValidationMessage> localizer)
+            RuleFor(x => x.FirstName)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameMaximumLength)]);
+
+            RuleFor(x => x.LastName)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameMaximumLength)]);
+
+            RuleFor(x => x.Nickname)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameMaximumLength)]);
+
+            When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
             {
-                _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
-                RuleFor(x => x.FirstName)
+                RuleFor(x => x.InstagramUrl)
                     .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameMaximumLength)]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlNotEmpty)])
+                    .Matches(ValidationConsts.InstagramUrlRegex)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlMatchesRegex)]);
+            });
 
-                RuleFor(x => x.LastName)
-                    .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameMaximumLength)]);
-
-                RuleFor(x => x.Nickname)
-                    .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameMaximumLength)]);
-
-                When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
-                {
-                    RuleFor(x => x.InstagramUrl)
-                        .NotEmpty()
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlNotEmpty)])
-                        .Matches(ValidationConsts.InstagramUrlRegex)
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlMatchesRegex)]);
-                });
-
-                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
-                {
-                    RuleFor(x => x.ImageBase64)
-                        .NotEmpty()
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
-                        .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
-                        .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), _allowedFileTypesString]);
-                });
-            }
-        }
-
-        public class FormModel : Command
-        {
-            public IBrowserFile File { get; set; }
-        }
-
-        public class FormModelValidator : AbstractValidator<FormModel>
-        {
-            private readonly string _allowedFileTypesString;
-
-            public FormModelValidator(IStringLocalizer<ValidationMessage> localizer)
+            When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
             {
-                _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
-                RuleFor(x => x.FirstName)
+                RuleFor(x => x.ImageBase64)
                     .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameMaximumLength)]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
+                    .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
+                    .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+            });
+        }
+    }
 
-                RuleFor(x => x.LastName)
+    public class FormModel : Command
+    {
+        public IBrowserFile File { get; set; }
+    }
+
+    public class FormModelValidator : AbstractValidator<FormModel>
+    {
+        public FormModelValidator(IStringLocalizer<ValidationMessage> localizer)
+        {
+            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
+
+            RuleFor(x => x.FirstName)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.FirstNameMaximumLength)]);
+
+            RuleFor(x => x.LastName)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameMaximumLength)]);
+
+            RuleFor(x => x.Nickname)
+                .NotEmpty()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameNotEmpty)])
+                .MaximumLength(ValidationConsts.MaximumStringLength)
+                .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameMaximumLength)]);
+
+            When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
+            {
+                RuleFor(x => x.InstagramUrl)
                     .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.LastNameMaximumLength)]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlNotEmpty)])
+                    .Matches(ValidationConsts.InstagramUrlRegex)
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlMatchesRegex)]);
+            });
 
-                RuleFor(x => x.Nickname)
+            When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
+            {
+                RuleFor(x => x.ImageBase64)
                     .NotEmpty()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameNotEmpty)])
-                    .MaximumLength(ValidationConsts.MaximumStringLength)
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.NicknameMaximumLength)]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
+                    .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
+                    .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+            });
 
-                When(x => !string.IsNullOrWhiteSpace(x.InstagramUrl), () =>
-                {
-                    RuleFor(x => x.InstagramUrl)
-                        .NotEmpty()
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlNotEmpty)])
-                        .Matches(ValidationConsts.InstagramUrlRegex)
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.InstagramUrlMatchesRegex)]);
-                });
-
-                When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
-                {
-                    RuleFor(x => x.ImageBase64)
-                        .NotEmpty()
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
-                        .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
-                        .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
-                        .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), _allowedFileTypesString]);
-                });
-
-                RuleFor(x => x.File)
-                    .SetValidator(new ImageHelpers.ImageValidator(localizer));
-            }
+            RuleFor(x => x.File)
+                .SetValidator(new ImageHelpers.ImageValidator(localizer));
         }
     }
 }

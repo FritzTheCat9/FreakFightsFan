@@ -3,40 +3,43 @@ using FreakFightsFan.Shared.Features.Dictionaries.Commands;
 using FreakFightsFan.Shared.Features.Dictionaries.Queries;
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
 
-namespace FreakFightsFan.Blazor.Clients
+namespace FreakFightsFan.Blazor.Clients;
+
+public interface IMyDictionaryApiClient
 {
-    public interface IMyDictionaryApiClient
+    Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionaries.Query query);
+    Task<MyDictionaryDto> GetMyDictionary(int id);
+    Task CreateMyDictionary(CreateMyDictionary.Command command);
+    Task UpdateMyDictionary(UpdateMyDictionary.Command command);
+    Task DeleteMyDictionary(int id);
+}
+
+public class MyDictionaryApiClient(IApiClient apiClient) : IMyDictionaryApiClient
+{
+    private const string _url = "api/myDictionaries";
+
+    public async Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionaries.Query query)
     {
-        Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionaries.Query query);
-        Task<MyDictionaryDto> GetMyDictionary(int id);
-        Task CreateMyDictionary(CreateMyDictionary.Command command);
-        Task UpdateMyDictionary(UpdateMyDictionary.Command command);
-        Task DeleteMyDictionary(int id);
+        return await apiClient.Post<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>($"{_url}/all", query);
     }
 
-    public class MyDictionaryApiClient : IMyDictionaryApiClient
+    public async Task<MyDictionaryDto> GetMyDictionary(int id)
     {
-        private readonly IApiClient _apiClient;
-        private readonly string _url = "api/myDictionaries";
+        return await apiClient.Get<MyDictionaryDto>($"{_url}/{id}");
+    }
 
-        public MyDictionaryApiClient(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public async Task CreateMyDictionary(CreateMyDictionary.Command command)
+    {
+        await apiClient.Post(_url, command);
+    }
 
-        public async Task<PagedList<MyDictionaryDto>> GetAllMyDictionaries(GetAllMyDictionaries.Query query)
-            => await _apiClient.Post<GetAllMyDictionaries.Query, PagedList<MyDictionaryDto>>($"{_url}/all", query);
+    public async Task UpdateMyDictionary(UpdateMyDictionary.Command command)
+    {
+        await apiClient.Put($"{_url}/{command.Id}", command);
+    }
 
-        public async Task<MyDictionaryDto> GetMyDictionary(int id)
-            => await _apiClient.Get<MyDictionaryDto>($"{_url}/{id}");
-
-        public async Task CreateMyDictionary(CreateMyDictionary.Command command)
-            => await _apiClient.Post(_url, command);
-
-        public async Task UpdateMyDictionary(UpdateMyDictionary.Command command)
-            => await _apiClient.Put($"{_url}/{command.Id}", command);
-
-        public async Task DeleteMyDictionary(int id)
-            => await _apiClient.Delete($"{_url}/{id}");
+    public async Task DeleteMyDictionary(int id)
+    {
+        await apiClient.Delete($"{_url}/{id}");
     }
 }

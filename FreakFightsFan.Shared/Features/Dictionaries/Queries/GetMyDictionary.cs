@@ -2,18 +2,17 @@
 using FreakFightsFan.Shared.Features.Dictionaries.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Dictionaries.Queries
+namespace FreakFightsFan.Shared.Features.Dictionaries.Queries;
+
+public static class GetMyDictionary
 {
-    public static class GetMyDictionary
+    public class Query : IRequest<MyDictionaryDto>
     {
-        public class Query : IRequest<MyDictionaryDto>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Query>
-        {
+    public class Validator : AbstractValidator<Query>
+    {
 
-        }
     }
 }

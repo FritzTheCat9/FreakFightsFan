@@ -8,44 +8,39 @@ using FreakFightsFan.Shared.Features.Images.Responses;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Images.Queries
+namespace FreakFightsFan.Api.Features.Images.Queries;
+
+public static class GetAllImagesFeature
 {
-    public static class GetAllImagesFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/images/all", async (
-                        GetAllImages.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.Images)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<GetAllImages.Query, PagedList<ImageDto>>
-        {
-            private readonly IImageRepository _imageRepository;
-
-            public Handler(IImageRepository imageRepository)
-            {
-                _imageRepository = imageRepository;
-            }
-
-            public async Task<PagedList<ImageDto>> Handle(
+        app.MapPost("/api/images/all", async (
                 GetAllImages.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var imagesQuery = _imageRepository.AsQueryable();
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.Images)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                imagesQuery = imagesQuery.SortImages(query);
+    public class Handler(IImageRepository imageRepository)
+        : IRequestHandler<GetAllImages.Query, PagedList<ImageDto>>
+    {
+        public async Task<PagedList<ImageDto>> Handle(
+            GetAllImages.Query query,
+            CancellationToken cancellationToken)
+        {
+            var imagesQuery = imageRepository.AsQueryable();
 
-                var imagesPagedList = PageListExtensions<ImageDto>.Create(imagesQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+            imagesQuery = imagesQuery.SortImages(query);
 
-                return await Task.FromResult(imagesPagedList);
-            }
+            var imagesPagedList = PageListExtensions<ImageDto>.Create(imagesQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return await Task.FromResult(imagesPagedList);
         }
     }
 }

@@ -1,36 +1,29 @@
 ﻿using MediatR;
 using System.Diagnostics;
 
-namespace FreakFightsFan.Api.Behaviors
+namespace FreakFightsFan.Api.Behaviors;
+
+public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
+    : IPipelineBehavior<TRequest, TResponse>
 {
-    public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
-        private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
+        var requestName = typeof(TRequest).FullName?.Split('.').LastOrDefault();
 
-        public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
-        {
-            _logger = logger;
-        }
+        logger.LogInformation("[MediatR] Starting request {RequestName}", requestName);
 
-        public async Task<TResponse> Handle(
-            TRequest request,
-            RequestHandlerDelegate<TResponse> next,
-            CancellationToken cancellationToken)
-        {
-            var requestName = typeof(TRequest).FullName.Split('.').LastOrDefault();
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-            _logger.LogInformation("[MediatR] Starting request {RequestName}", requestName);
+        var response = await next();
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+        stopwatch.Stop();
 
-            var response = await next();
+        logger.LogInformation("[MediatR] Completed request {RequestName} in {Elapsed}", requestName, stopwatch.Elapsed);
 
-            stopwatch.Stop();
-
-            _logger.LogInformation("[MediatR] Completed request {RequestName} in {Elapsed}", requestName, stopwatch.Elapsed);
-
-            return response;
-        }
+        return response;
     }
 }

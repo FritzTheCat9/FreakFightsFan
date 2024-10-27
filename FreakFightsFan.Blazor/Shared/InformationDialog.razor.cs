@@ -3,31 +3,38 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Shared
+namespace FreakFightsFan.Blazor.Shared;
+
+public partial class InformationDialog : ComponentBase
 {
-    public partial class InformationDialog : ComponentBase
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public string ContentText { get; set; }
+    [Parameter] public string ButtonText { get; set; }
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    protected override void OnParametersSet()
     {
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public string ContentText { get; set; }
-        [Parameter] public string ButtonText { get; set; }
-        [Parameter] public Color Color { get; set; } = Color.Primary;
-
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        protected override void OnParametersSet()
+        if (string.IsNullOrWhiteSpace(ContentText))
         {
-            if (string.IsNullOrWhiteSpace(ContentText))
-                ContentText = Localizer[nameof(AppStrings.InformationConfirmInfo)];
-
-            if (string.IsNullOrWhiteSpace(ButtonText))
-                ButtonText = Localizer[nameof(AppStrings.Yes)];
+            ContentText = Localizer[nameof(AppStrings.InformationConfirmInfo)];
         }
 
-        private void Submit() 
-            => MudDialog.Close(DialogResult.Ok(true));
+        if (string.IsNullOrWhiteSpace(ButtonText))
+        {
+            ButtonText = Localizer[nameof(AppStrings.Yes)];
+        }
+    }
 
-        private void Cancel() 
-            => MudDialog.Cancel();
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
     }
 }

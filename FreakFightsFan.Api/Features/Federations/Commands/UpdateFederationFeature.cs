@@ -7,54 +7,43 @@ using FreakFightsFan.Shared.Features.Federations.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Federations.Commands
+namespace FreakFightsFan.Api.Features.Federations.Commands;
+
+public static class UpdateFederationFeature
 {
-    public static class UpdateFederationFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPut("/api/federations/{id:int}", async (
-                    int id,
-                    UpdateFederation.Command command,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    command.Id = id;
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.Federations)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<UpdateFederation.Command, Unit>
-        {
-            private readonly IFederationRepository _federationRepository;
-            private readonly IClock _clock;
-            private readonly IImageService _imageService;
-
-            public Handler(
-                IFederationRepository federationRepository,
-                IClock clock,
-                IImageService imageService)
-            {
-                _federationRepository = federationRepository;
-                _clock = clock;
-                _imageService = imageService;
-            }
-
-            public async Task<Unit> Handle(
+        app.MapPut("/api/federations/{id:int}", async (
+                int id,
                 UpdateFederation.Command command,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var federation = await _federationRepository.Get(command.Id) ?? throw new MyNotFoundException();
+                command.Id = id;
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.Federations)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                federation.Modified = _clock.Current();
-                federation.Name = command.Name;
-                federation.Image = _imageService.UpdateEntityImage(federation.Image, command.ImageBase64);
+    public class Handler(
+        IFederationRepository federationRepository,
+        IClock clock,
+        IImageService imageService)
+        : IRequestHandler<UpdateFederation.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            UpdateFederation.Command command,
+            CancellationToken cancellationToken)
+        {
+            var federation = await federationRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-                await _federationRepository.Update(federation);
-                return Unit.Value;
-            }
+            federation.Modified = clock.Current();
+            federation.Name = command.Name;
+            federation.Image = imageService.UpdateEntityImage(federation.Image, command.ImageBase64);
+
+            await federationRepository.Update(federation);
+            return Unit.Value;
         }
     }
 }

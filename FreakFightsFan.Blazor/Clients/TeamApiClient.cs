@@ -2,28 +2,25 @@ using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.Teams.Queries;
 using FreakFightsFan.Shared.Features.Teams.Responses;
 
-namespace FreakFightsFan.Blazor.Clients
+namespace FreakFightsFan.Blazor.Clients;
+
+public interface ITeamApiClient
 {
-    public interface ITeamApiClient
+    Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query);
+    Task<TeamDto> GetTeam(int id);
+}
+
+public class TeamApiClient(IApiClient apiClient) : ITeamApiClient
+{
+    private const string _url = "api/teams";
+
+    public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query)
     {
-        Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query);
-        Task<TeamDto> GetTeam(int id);
+        return await apiClient.Post<GetAllTeams.Query, PagedList<TeamDto>>($"{_url}/all", query);
     }
 
-    public class TeamApiClient : ITeamApiClient
+    public async Task<TeamDto> GetTeam(int id)
     {
-        private readonly IApiClient _apiClient;
-        private readonly string _url = "api/teams";
-
-        public TeamApiClient(IApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
-
-        public async Task<PagedList<TeamDto>> GetAllTeams(GetAllTeams.Query query)
-            => await _apiClient.Post<GetAllTeams.Query, PagedList<TeamDto>>($"{_url}/all", query);
-
-        public async Task<TeamDto> GetTeam(int id)
-            => await _apiClient.Get<TeamDto>($"{_url}/{id}");
+        return await apiClient.Get<TeamDto>($"{_url}/{id}");
     }
 }

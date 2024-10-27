@@ -7,46 +7,41 @@ using FreakFightsFan.Shared.Features.Federations.Queries;
 using FreakFightsFan.Shared.Features.Federations.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Federations.Queries
+namespace FreakFightsFan.Api.Features.Federations.Queries;
+
+public static class GetAllFederationsFeature
 {
-    public static class GetAllFederationsFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/federations/all", async (
-                        GetAllFederations.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.Federations)
-                .AllowAnonymous();
-        }
-
-        public class Handler : IRequestHandler<GetAllFederations.Query, PagedList<FederationDto>>
-        {
-            private readonly IFederationRepository _federationRepository;
-
-            public Handler(IFederationRepository federationRepository)
-            {
-                _federationRepository = federationRepository;
-            }
-
-            public async Task<PagedList<FederationDto>> Handle(
+        app.MapPost("/api/federations/all", async (
                 GetAllFederations.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var federationsQuery = _federationRepository.AsQueryable();
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.Federations)
+            .AllowAnonymous();
+    }
 
-                federationsQuery = federationsQuery.FilterFederations(query);
-                federationsQuery = federationsQuery.SortFederations(query);
+    public class Handler(IFederationRepository federationRepository)
+        : IRequestHandler<GetAllFederations.Query, PagedList<FederationDto>>
+    {
+        public async Task<PagedList<FederationDto>> Handle(
+            GetAllFederations.Query query,
+            CancellationToken cancellationToken)
+        {
+            var federationsQuery = federationRepository.AsQueryable();
 
-                var federationsPagedList = PageListExtensions<FederationDto>.Create(
-                    federationsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+            federationsQuery = federationsQuery.FilterFederations(query);
+            federationsQuery = federationsQuery.SortFederations(query);
 
-                return await Task.FromResult(federationsPagedList);
-            }
+            var federationsPagedList = PageListExtensions<FederationDto>.Create(
+                federationsQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return await Task.FromResult(federationsPagedList);
         }
     }
 }

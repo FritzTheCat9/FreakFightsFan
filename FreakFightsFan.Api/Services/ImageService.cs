@@ -3,117 +3,122 @@ using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Shared.Features.Images.Helpers;
 using Microsoft.Extensions.Options;
 
-namespace FreakFightsFan.Api.Services
+namespace FreakFightsFan.Api.Services;
+
+public interface IImageService
 {
-    public interface IImageService
+    string SaveImage(string imageBase64);
+    void DeleteImage(string name);
+    string GetImageUrl(string name);
+    Image CreateEntityImage(string imageBase64);
+    void DeleteEntityImage(Image image);
+    Image UpdateEntityImage(Image image, string imageBase64);
+}
+
+public class ImageService : IImageService
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IClock _clock;
+    private readonly ImageOptions _options;
+    private readonly string _folderPath;
+
+    public ImageService(
+        IWebHostEnvironment webHostEnvironment,
+        IHttpContextAccessor httpContextAccessor,
+        IOptions<ImageOptions> options,
+        IClock clock)
     {
-        string SaveImage(string imageBase64);
-        void DeleteImage(string name);
-        string GetImageUrl(string name);
-        Image CreateEntityImage(string imageBase64);
-        void DeleteEntityImage(Image image);
-        Image UpdateEntityImage(Image image, string imageBase64);
+        _httpContextAccessor = httpContextAccessor;
+        _clock = clock;
+        _options = options.Value;
+        _folderPath = Path.Combine(Path.GetFullPath(webHostEnvironment.WebRootPath), _options.FolderName);
     }
 
-    public class ImageService : IImageService
+    public string SaveImage(string imageBase64)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IClock _clock;
-        private readonly ImageOptions _options;
-        private readonly string _folderPath;
+        var name = ImageHelpers.GenerateNameWithExtension(imageBase64);
+        var imagePath = Path.Combine(_folderPath, name);
 
-        public ImageService(
-            IWebHostEnvironment webHostEnvironment,
-            IHttpContextAccessor httpContextAccessor,
-            IOptions<ImageOptions> options,
-            IClock clock)
+        Directory.CreateDirectory(_folderPath);
+
+        var bytes = ImageHelpers.GetImageData(imageBase64);
+        using var fs = File.OpenWrite(imagePath);
+        fs.Write(bytes, 0, bytes.Length);
+
+        return name;
+    }
+
+    public void DeleteImage(string name)
+    {
+        var imagePath = Path.Combine(_folderPath, name);
+
+        File.Delete(imagePath);
+    }
+
+    public string GetImageUrl(string name)
+    {
+        var url = $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host}";
+        return $"{url}/{_options.FolderName}/{name}";
+    }
+
+    public Image CreateEntityImage(string imageBase64)
+    {
+        if (string.IsNullOrEmpty(imageBase64))
         {
-            _httpContextAccessor = httpContextAccessor;
-            _clock = clock;
-            _options = options.Value;
-            _folderPath = Path.Combine(Path.GetFullPath(webHostEnvironment.WebRootPath), _options.FolderName);
+            return null;
         }
 
-        public string SaveImage(string imageBase64)
+        var name = SaveImage(imageBase64);
+
+        var image = new Image
         {
-            var name = ImageHelpers.GenerateNameWithExtension(imageBase64);
-            var imagePath = Path.Combine(_folderPath, name);
+            Id = 0,
+            Created = _clock.Current(),
+            Modified = _clock.Current(),
+            Name = name,
+            Url = GetImageUrl(name)
+        };
 
-            Directory.CreateDirectory(_folderPath);
+        return image;
+    }
 
-            var bytes = ImageHelpers.GetImageData(imageBase64);
-            using var fs = File.OpenWrite(imagePath);
-            fs.Write(bytes, 0, bytes.Length);
+    public void DeleteEntityImage(Image image)
+    {
+        if (image is not null)
+        {
+            DeleteImage(image.Name);
+        }
+    }
 
-            return name;
+    public Image UpdateEntityImage(Image image, string imageBase64)
+    {
+        if (string.IsNullOrEmpty(imageBase64))
+        {
+            return image;
         }
 
-        public void DeleteImage(string name)
-        {
-            var imagePath = Path.Combine(_folderPath, name);
+        var imageName = SaveImage(imageBase64);
 
-            File.Delete(imagePath);
+        if (image is not null)
+        {
+            DeleteImage(image.Name);
+
+            image.Modified = _clock.Current();
+            image.Name = imageName;
+            image.Url = GetImageUrl(imageName);
         }
-
-        public string GetImageUrl(string name)
+        else
         {
-            var url = $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host}";
-            return $"{url}/{_options.FolderName}/{name}";
-        }
-
-        public Image CreateEntityImage(string imageBase64)
-        {
-            if (string.IsNullOrEmpty(imageBase64))
-                return null;
-
-            string name = SaveImage(imageBase64);
-
-            var image = new Image
+            image = new Image
             {
                 Id = 0,
                 Created = _clock.Current(),
                 Modified = _clock.Current(),
-                Name = name,
-                Url = GetImageUrl(name)
+                Name = imageName,
+                Url = GetImageUrl(imageName)
             };
-
-            return image;
         }
 
-        public void DeleteEntityImage(Image image)
-        {
-            if (image is not null)
-                DeleteImage(image.Name);
-        }
-
-        public Image UpdateEntityImage(Image image, string imageBase64)
-        {
-            if (string.IsNullOrEmpty(imageBase64))
-                return image;
-
-            string imageName = SaveImage(imageBase64);
-
-            if (image is not null)
-            {
-                DeleteImage(image.Name);
-
-                image.Modified = _clock.Current();
-                image.Name = imageName;
-                image.Url = GetImageUrl(imageName);
-            }
-            else
-            {
-                image = new Image
-                {
-                    Id = 0,
-                    Created = _clock.Current(),
-                    Modified = _clock.Current(),
-                    Name = imageName,
-                    Url = GetImageUrl(imageName)
-                };
-            }
-
-            return image;
-        }
+        return image;
     }
 }

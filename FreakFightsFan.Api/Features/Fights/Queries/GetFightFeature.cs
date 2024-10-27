@@ -6,41 +6,33 @@ using FreakFightsFan.Shared.Features.Fights.Queries;
 using FreakFightsFan.Shared.Features.Fights.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Fights.Queries
+namespace FreakFightsFan.Api.Features.Fights.Queries;
+
+public static class GetFightFeature
 {
-    public static class GetFightFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapGet("/api/fights/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var query = new GetFight.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
-                .WithName("GetFight")
-                .WithTags(Tags.Fights)
-                .AllowAnonymous();
-        }
-
-        public class Handler : IRequestHandler<GetFight.Query, FightDto>
-        {
-            private readonly IFightRepository _fightRepository;
-
-            public Handler(IFightRepository fightRepository)
+        app.MapGet("/api/fights/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _fightRepository = fightRepository;
-            }
+                var query = new GetFight.Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithName("GetFight")
+            .WithTags(Tags.Fights)
+            .AllowAnonymous();
+    }
 
-            public async Task<FightDto> Handle(
-                GetFight.Query query,
-                CancellationToken cancellationToken)
-            {
-                var fight = await _fightRepository.Get(query.Id) ?? throw new MyNotFoundException();
-                return fight.ToDto();
-            }
+    public class Handler(IFightRepository fightRepository) : IRequestHandler<GetFight.Query, FightDto>
+    {
+        public async Task<FightDto> Handle(
+            GetFight.Query query,
+            CancellationToken cancellationToken)
+        {
+            var fight = await fightRepository.Get(query.Id) ?? throw new MyNotFoundException();
+            return fight.ToDto();
         }
     }
 }

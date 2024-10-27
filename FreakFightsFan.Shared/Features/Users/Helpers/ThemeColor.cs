@@ -1,9 +1,8 @@
-﻿namespace FreakFightsFan.Shared.Features.Users.Helpers
+﻿namespace FreakFightsFan.Shared.Features.Users.Helpers;
+
+public enum ThemeColor
 {
-    public enum ThemeColor
-    {
-        System,
-        Light,
-        Dark,
-    }
+    System,
+    Light,
+    Dark,
 }

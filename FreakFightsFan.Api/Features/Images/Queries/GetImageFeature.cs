@@ -7,41 +7,33 @@ using FreakFightsFan.Shared.Features.Images.Responses;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Images.Queries
+namespace FreakFightsFan.Api.Features.Images.Queries;
+
+public static class GetImageFeature
 {
-    public static class GetImageFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapGet("/api/images/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var query = new GetImage.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
-                .WithName("GetImage")
-                .WithTags(Tags.Images)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<GetImage.Query, ImageDto>
-        {
-            private readonly IImageRepository _imageRepository;
-
-            public Handler(IImageRepository imageRepository)
+        app.MapGet("/api/images/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _imageRepository = imageRepository;
-            }
+                var query = new GetImage.Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithName("GetImage")
+            .WithTags(Tags.Images)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<ImageDto> Handle(
-                GetImage.Query query,
-                CancellationToken cancellationToken)
-            {
-                var image = await _imageRepository.Get(query.Id) ?? throw new MyNotFoundException();
-                return image.ToDto();
-            }
+    public class Handler(IImageRepository imageRepository) : IRequestHandler<GetImage.Query, ImageDto>
+    {
+        public async Task<ImageDto> Handle(
+            GetImage.Query query,
+            CancellationToken cancellationToken)
+        {
+            var image = await imageRepository.Get(query.Id) ?? throw new MyNotFoundException();
+            return image.ToDto();
         }
     }
 }

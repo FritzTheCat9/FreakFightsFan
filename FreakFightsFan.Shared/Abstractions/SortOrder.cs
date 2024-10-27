@@ -1,9 +1,8 @@
-﻿namespace FreakFightsFan.Shared.Abstractions
+﻿namespace FreakFightsFan.Shared.Abstractions;
+
+public enum SortOrder
 {
-    public enum SortOrder
-    {
-        None = 0,
-        Ascending = 1,
-        Descending = 2,
-    }
+    None = 0,
+    Ascending = 1,
+    Descending = 2,
 }

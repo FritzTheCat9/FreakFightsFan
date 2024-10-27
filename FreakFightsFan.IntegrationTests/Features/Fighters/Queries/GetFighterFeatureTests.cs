@@ -1,45 +1,39 @@
-﻿using System.Net.Http.Json;
-using System.Net;
-using Xunit;
-using FluentAssertions;
-using FreakFightsFan.Shared.Exceptions;
+﻿using FluentAssertions;
 using FreakFightsFan.IntegrationTests.Features.Fighters.Helpers;
+using FreakFightsFan.Shared.Exceptions;
+using System.Net;
+using System.Net.Http.Json;
+using Xunit;
 
-namespace FreakFightsFan.IntegrationTests.Features.Fighters.Queries
+namespace FreakFightsFan.IntegrationTests.Features.Fighters.Queries;
+
+public class GetFighterFeatureTests(FreakFightsFanApiFactory apiFactory) : IClassFixture<FreakFightsFanApiFactory>
 {
-    public class GetFighterFeatureTests : IClassFixture<FreakFightsFanApiFactory>
+    private readonly HttpClient _client = apiFactory.CreateClient();
+
+    [Fact]
+    public async Task GetFighterFeature_ShouldReturnFighter()
     {
-        private readonly HttpClient _client;
+        await _client.Login(new TestUsers.Admin());
+        var id = await FighterTestHelpers.CreateFighter(_client);
+        _client.Logout();
 
-        public GetFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
-        {
-            _client = apiFactory.CreateClient();
-        }
+        var fighter = await FighterTestHelpers.GetFighter(_client, id);
+        fighter.Should().NotBeNull();
 
-        [Fact]
-        public async Task GetFighterFeature_ShouldReturnFighter()
-        {
-            await _client.Login(new TestUsers.Admin());
-            var id = await FighterTestHelpers.CreateFighter(_client);
-            _client.Logout();
+        await _client.Login(new TestUsers.Admin());
+        await FighterTestHelpers.DeleteFighter(_client, id);
+        _client.Logout();
+    }
 
-            var fighter = await FighterTestHelpers.GetFighter(_client, id);
-            fighter.Should().NotBeNull();
+    [Fact]
+    public async Task GetFighterFeature_ShouldReturnNotFoundErrorIfFighterDoesNotExist()
+    {
+        var id = int.MaxValue;
+        var response = await _client.GetAsync($"api/fighters/{id}");
+        var notFoundError = await response.Content.ReadFromJsonAsync<NotFoundErrorResponse>();
 
-            await _client.Login(new TestUsers.Admin());
-            await FighterTestHelpers.DeleteFighter(_client, id);
-            _client.Logout();
-        }
-
-        [Fact]
-        public async Task GetFighterFeature_ShouldReturnNotFoundErrorIfFighterDoesNotExist()
-        {
-            int id = int.MaxValue;
-            var response = await _client.GetAsync($"api/fighters/{id}");
-            var notFoundError = await response.Content.ReadFromJsonAsync<NotFoundErrorResponse>();
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            notFoundError.Should().NotBeNull();
-        }
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        notFoundError.Should().NotBeNull();
     }
 }

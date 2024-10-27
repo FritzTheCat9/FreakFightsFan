@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 
-namespace FreakFightsFan.Blazor.Pages
+namespace FreakFightsFan.Blazor.Pages;
+
+public partial class IndexPage : ComponentBase
 {
-    public partial class IndexPage : ComponentBase
-    {
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    }
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 }

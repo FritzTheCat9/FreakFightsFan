@@ -1,27 +1,23 @@
 ﻿using Blazored.LocalStorage;
 using FreakFightsFan.Shared.Localization;
 
-namespace FreakFightsFan.Blazor.Localization
+namespace FreakFightsFan.Blazor.Localization;
+
+public interface ILocalizationProvider
 {
-    public interface ILocalizationProvider
+    Task<string> GetCulture();
+    Task SetCulture(string culture);
+}
+
+public class LocalizationProvider(ILocalStorageService localStorage) : ILocalizationProvider
+{
+    public async Task<string> GetCulture()
     {
-        Task<string> GetCulture();
-        Task SetCulture(string culture);
+        return await localStorage.GetItemAsync<string>(LocalizationConsts.CultureKey);
     }
 
-    public class LocalizationProvider : ILocalizationProvider
+    public async Task SetCulture(string culture)
     {
-        private readonly ILocalStorageService _localStorage;
-
-        public LocalizationProvider(ILocalStorageService localStorage)
-        {
-            _localStorage = localStorage;
-        }
-
-        public async Task<string> GetCulture()
-            => await _localStorage.GetItemAsync<string>(LocalizationConsts.CultureKey);
-
-        public async Task SetCulture(string culture)
-            => await _localStorage.SetItemAsync(LocalizationConsts.CultureKey, culture);
+        await localStorage.SetItemAsync(LocalizationConsts.CultureKey, culture);
     }
 }

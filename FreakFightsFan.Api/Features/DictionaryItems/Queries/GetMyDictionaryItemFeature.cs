@@ -7,43 +7,34 @@ using FreakFightsFan.Shared.Features.DictionaryItems.Responses;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.DictionaryItems.Queries
+namespace FreakFightsFan.Api.Features.DictionaryItems.Queries;
+
+public static class GetMyDictionaryItemFeature
 {
-    public static class GetMyDictionaryItemFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapGet("/api/myDictionaryItems/{id}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var query = new GetMyDictionaryItem.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
-                .WithName("GetMyDictionaryItem")
-                .WithTags(Tags.DictionaryItems)
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
-        }
-
-        public class Handler : IRequestHandler<GetMyDictionaryItem.Query, MyDictionaryItemDto>
-        {
-            private readonly IMyDictionaryItemRepository _myDictionaryItemRepository;
-
-            public Handler(IMyDictionaryItemRepository myDictionaryItemRepository)
+        app.MapGet("/api/myDictionaryItems/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _myDictionaryItemRepository = myDictionaryItemRepository;
-            }
+                var query = new GetMyDictionaryItem.Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithName("GetMyDictionaryItem")
+            .WithTags(Tags.DictionaryItems)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-            public async Task<MyDictionaryItemDto> Handle(
-                GetMyDictionaryItem.Query query,
-                CancellationToken cancellationToken)
-            {
-                var dictionaryItem = await _myDictionaryItemRepository.Get(query.Id) ?? throw new MyNotFoundException();
-                return dictionaryItem.ToDto();
-            }
+    public class Handler(IMyDictionaryItemRepository myDictionaryItemRepository)
+        : IRequestHandler<GetMyDictionaryItem.Query, MyDictionaryItemDto>
+    {
+        public async Task<MyDictionaryItemDto> Handle(
+            GetMyDictionaryItem.Query query,
+            CancellationToken cancellationToken)
+        {
+            var dictionaryItem = await myDictionaryItemRepository.Get(query.Id) ?? throw new MyNotFoundException();
+            return dictionaryItem.ToDto();
         }
     }
 }

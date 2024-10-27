@@ -6,13 +6,13 @@ using FreakFightsFan.Shared.Features.Users.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Users.Commands
+namespace FreakFightsFan.Api.Features.Users.Commands;
+
+public static class PromoteUserFeature
 {
-    public static class PromoteUserFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPut("/api/users/promote/{id:int}", async (
+        app.MapPut("/api/users/promote/{id:int}", async (
                 int id,
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
@@ -20,35 +20,25 @@ namespace FreakFightsFan.Api.Features.Users.Commands
                 var command = new PromoteUser.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags(Tags.Users)
-                .RequireAuthorization(Policy.SuperAdmin);
-        }
+            .WithTags(Tags.Users)
+            .RequireAuthorization(Policy.SuperAdmin);
+    }
 
-        public class Handler : IRequestHandler<PromoteUser.Command, Unit>
+    public class Handler(
+        IUserRepository userRepository,
+        IClock clock) : IRequestHandler<PromoteUser.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            PromoteUser.Command command,
+            CancellationToken cancellationToken)
         {
-            private readonly IUserRepository _userRepository;
-            private readonly IClock _clock;
+            var user = await userRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-            public Handler(
-                IUserRepository userRepository,
-                IClock clock)
-            {
-                _userRepository = userRepository;
-                _clock = clock;
-            }
+            user.Modified = clock.Current();
+            user.IsAdmin = true;
 
-            public async Task<Unit> Handle(
-                PromoteUser.Command command,
-                CancellationToken cancellationToken)
-            {
-                var user = await _userRepository.Get(command.Id) ?? throw new MyNotFoundException();
-
-                user.Modified = _clock.Current();
-                user.IsAdmin = true;
-
-                await _userRepository.Update(user);
-                return Unit.Value;
-            }
+            await userRepository.Update(user);
+            return Unit.Value;
         }
     }
 }

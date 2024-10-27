@@ -2,66 +2,67 @@ using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data.Repositories
+namespace FreakFightsFan.Api.Data.Repositories;
+
+public interface ITeamRepository
 {
-    public interface ITeamRepository
+    IQueryable<Team> AsQueryable();
+    Task<IEnumerable<Team>> GetAll();
+    Task<Team> Get(int id);
+    Task<int> Create(Team team);
+    Task Update(Team team);
+    Task Delete(Team team);
+}
+
+public class TeamRepository(AppDbContext dbContext) : ITeamRepository
+{
+    public IQueryable<Team> AsQueryable()
     {
-        IQueryable<Team> AsQueryable();
-        Task<IEnumerable<Team>> GetAll();
-        Task<Team> Get(int id);
-        Task<int> Create(Team team);
-        Task Update(Team team);
-        Task Delete(Team team);
+        return dbContext.Teams
+            .Include(x => x.Fight)
+            .Include(x => x.Fighters)
+            .Include(x => x.TeamFighters)
+            .OrderBy(x => x.Id)
+            .AsSplitQuery()
+            .AsQueryable();
     }
 
-    public class TeamRepository : ITeamRepository
+    public async Task<IEnumerable<Team>> GetAll()
     {
-        private readonly AppDbContext _dbContext;
+        return await dbContext.Teams
+            .Include(x => x.Fight)
+            .Include(x => x.Fighters)
+            .Include(x => x.TeamFighters)
+            .AsSplitQuery()
+            .ToListAsync();
+    }
 
-        public TeamRepository(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public async Task<Team> Get(int id)
+    {
+        return await dbContext.Teams
+            .Include(x => x.Fight)
+            .Include(x => x.Fighters)
+            .Include(x => x.TeamFighters)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
-        public IQueryable<Team> AsQueryable() 
-            => _dbContext.Teams.Include(x => x.Fight)
-                               .Include(x => x.Fighters)
-                               .Include(x => x.TeamFighters)
-                               .OrderBy(x => x.Id)
-                               .AsSplitQuery()
-                               .AsQueryable();
+    public async Task<int> Create(Team team)
+    {
+        await dbContext.AddAsync(team);
+        await dbContext.SaveChangesAsync();
+        return team.Id;
+    }
 
-        public async Task<IEnumerable<Team>> GetAll() 
-            => await _dbContext.Teams.Include(x => x.Fight)
-                                     .Include(x => x.Fighters)
-                                     .Include(x => x.TeamFighters)
-                                     .AsSplitQuery()
-                                     .ToListAsync();
+    public Task Update(Team team)
+    {
+        dbContext.Update(team);
+        return Task.CompletedTask;
+    }
 
-        public async Task<Team> Get(int id) 
-            => await _dbContext.Teams.Include(x => x.Fight)
-                                     .Include(x => x.Fighters)
-                                     .Include(x => x.TeamFighters)
-                                     .AsSplitQuery()
-                                     .FirstOrDefaultAsync(x => x.Id == id);
-
-        public async Task<int> Create(Team team)
-        {
-            await _dbContext.AddAsync(team);
-            await _dbContext.SaveChangesAsync();
-            return team.Id;
-        }
-
-        public Task Update(Team team)
-        {
-            _dbContext.Update(team);
-            return Task.CompletedTask;
-        }
-
-        public Task Delete(Team team)
-        {
-            _dbContext.Remove(team);
-            return Task.CompletedTask;
-        }
+    public Task Delete(Team team)
+    {
+        dbContext.Remove(team);
+        return Task.CompletedTask;
     }
 }

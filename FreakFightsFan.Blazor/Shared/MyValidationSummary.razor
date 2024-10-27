@@ -1,11 +1,11 @@
-﻿@if (validationErrors.Errors.Count > 0)
+﻿@if (ValidationErrors.Errors.Count > 0)
 {
     <div class="mud-input-control-helper-container">
-        @foreach (var prop in validationErrors.Errors.Keys)
+        @foreach (var prop in ValidationErrors.Errors.Keys)
         {
             <p class="mud-input-helper-text mud-input-error">
                 <div class="d-flex">
-                    @foreach (var error in validationErrors.Errors[prop])
+                    @foreach (var error in ValidationErrors.Errors[prop])
                     {
                         <div class="me-auto">
                             @error

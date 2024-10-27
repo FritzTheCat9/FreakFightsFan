@@ -2,18 +2,17 @@
 using FreakFightsFan.Shared.Features.Events.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Events.Queries
+namespace FreakFightsFan.Shared.Features.Events.Queries;
+
+public static class GetEvent
 {
-    public class GetEvent
+    public class Query : IRequest<EventDto>
     {
-        public class Query : IRequest<EventDto>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Query>
-        {
+    public class Validator : AbstractValidator<Query>
+    {
 
-        }
     }
 }

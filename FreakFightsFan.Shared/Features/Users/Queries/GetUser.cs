@@ -2,18 +2,17 @@
 using FreakFightsFan.Shared.Features.Users.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Users.Queries
+namespace FreakFightsFan.Shared.Features.Users.Queries;
+
+public static class GetUser
 {
-    public class GetUser
+    public class Query : IRequest<UserDto>
     {
-        public class Query : IRequest<UserDto>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Query>
-        {
+    public class Validator : AbstractValidator<Query>
+    {
 
-        }
     }
 }

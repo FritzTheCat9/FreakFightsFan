@@ -2,70 +2,80 @@
 using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data.Repositories
+namespace FreakFightsFan.Api.Data.Repositories;
+
+public interface IMyDictionaryRepository
 {
-    public interface IMyDictionaryRepository
+    IQueryable<MyDictionary> AsQueryable();
+    Task<IEnumerable<MyDictionary>> GetAll();
+    Task<MyDictionary> Get(int id);
+    Task<MyDictionary> Get(string code);
+    Task<bool> DictionaryCodeExists(string code);
+    Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId);
+    Task<int> Create(MyDictionary dictionary);
+    Task Update(MyDictionary dictionary);
+    Task Delete(MyDictionary dictionary);
+}
+
+public class MyDictionaryRepository(AppDbContext dbContext) : IMyDictionaryRepository
+{
+    public IQueryable<MyDictionary> AsQueryable()
     {
-        IQueryable<MyDictionary> AsQueryable();
-        Task<IEnumerable<MyDictionary>> GetAll();
-        Task<MyDictionary> Get(int id);
-        Task<MyDictionary> Get(string code);
-        Task<bool> DictionaryCodeExists(string code);
-        Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId);
-        Task<int> Create(MyDictionary dictionary);
-        Task Update(MyDictionary dictionary);
-        Task Delete(MyDictionary dictionary);
+        return dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .AsQueryable();
     }
 
-    public class MyDictionaryRepository : IMyDictionaryRepository
+    public async Task<IEnumerable<MyDictionary>> GetAll()
     {
-        private readonly AppDbContext _dbContext;
+        return await dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .ToListAsync();
+    }
 
-        public MyDictionaryRepository(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public async Task<MyDictionary> Get(int id)
+    {
+        return await dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
-        public IQueryable<MyDictionary> AsQueryable() 
-            => _dbContext.MyDictionaries.Include(x => x.DictionaryItems)
-                                        .AsQueryable();
+    public async Task<MyDictionary> Get(string code)
+    {
+        return await dbContext.MyDictionaries
+            .Include(x => x.DictionaryItems)
+            .FirstOrDefaultAsync(x => x.Code == code);
+    }
 
-        public async Task<IEnumerable<MyDictionary>> GetAll() 
-            => await _dbContext.MyDictionaries.Include(x => x.DictionaryItems)
-                                              .ToListAsync();
+    public async Task<bool> DictionaryCodeExists(string code)
+    {
+        return await dbContext.MyDictionaries
+            .AnyAsync(x => x.Code == code);
+    }
 
-        public async Task<MyDictionary> Get(int id)
-            => await _dbContext.MyDictionaries.Include(x => x.DictionaryItems)
-                                              .FirstOrDefaultAsync(x => x.Id == id);
+    public async Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId)
+    {
+        return await dbContext.MyDictionaries
+            .Where(x => x.Id != dictionaryId)
+            .AnyAsync(x => x.Code == code);
+    }
 
-        public async Task<MyDictionary> Get(string code) 
-            => await _dbContext.MyDictionaries.Include(x => x.DictionaryItems)
-                                              .FirstOrDefaultAsync(x => x.Code == code);
+    public async Task<int> Create(MyDictionary dictionary)
+    {
+        await dbContext.AddAsync(dictionary);
+        await dbContext.SaveChangesAsync();
+        return dictionary.Id;
+    }
 
-        public async Task<bool> DictionaryCodeExists(string code)
-            => await _dbContext.MyDictionaries.AnyAsync(x => x.Code == code);
+    public Task Update(MyDictionary dictionary)
+    {
+        dbContext.Update(dictionary);
+        return Task.CompletedTask;
+    }
 
-        public async Task<bool> DictionaryCodeExistsInOtherDictionariesThan(string code, int dictionaryId) 
-            => await _dbContext.MyDictionaries.Where(x => x.Id != dictionaryId)
-                                              .AnyAsync(x => x.Code == code);
-
-        public async Task<int> Create(MyDictionary dictionary)
-        {
-            await _dbContext.AddAsync(dictionary);
-            await _dbContext.SaveChangesAsync();
-            return dictionary.Id;
-        }
-
-        public Task Update(MyDictionary dictionary)
-        {
-            _dbContext.Update(dictionary);
-            return Task.CompletedTask;
-        }
-
-        public Task Delete(MyDictionary dictionary)
-        {
-            _dbContext.Remove(dictionary);
-            return Task.CompletedTask;
-        }
+    public Task Delete(MyDictionary dictionary)
+    {
+        dbContext.Remove(dictionary);
+        return Task.CompletedTask;
     }
 }

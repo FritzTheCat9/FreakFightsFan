@@ -1,14 +1,14 @@
 using Blazored.LocalStorage;
+using FreakFightsFan.Blazor;
 using FreakFightsFan.Blazor.Auth;
+using FreakFightsFan.Blazor.Clients;
+using FreakFightsFan.Blazor.Exceptions;
+using FreakFightsFan.Blazor.Extensions;
+using FreakFightsFan.Blazor.Localization;
+using FreakFightsFan.Blazor.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
-using FreakFightsFan.Blazor.Extensions;
-using FreakFightsFan.Blazor.Clients;
-using FreakFightsFan.Blazor.Exceptions;
-using FreakFightsFan.Blazor.Localization;
-using FreakFightsFan.Blazor;
-using FreakFightsFan.Blazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

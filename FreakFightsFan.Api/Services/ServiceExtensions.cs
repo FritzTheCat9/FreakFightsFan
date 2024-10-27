@@ -1,22 +1,21 @@
-﻿namespace FreakFightsFan.Api.Services
+﻿namespace FreakFightsFan.Api.Services;
+
+public static class ServiceExtensions
 {
-    public static class ServiceExtensions
+    private const string _sectionName = "Image";
+
+    public static IServiceCollection AddServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        private const string _sectionName = "Image";
+        services.AddScoped<IFightService, FightService>();
+        services.AddScoped<IMyDictionaryService, MyDictionaryService>();
+        services.AddScoped<ITeamService, TeamService>();
 
-        public static IServiceCollection AddServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddScoped<IFightService, FightService>();
-            services.AddScoped<IMyDictionaryService, MyDictionaryService>();
-            services.AddScoped<ITeamService, TeamService>();
+        services.AddScoped<IImageService, ImageService>();
+        services.Configure<ImageOptions>(configuration.GetRequiredSection(_sectionName));
+        services.AddHttpContextAccessor();
 
-            services.AddScoped<IImageService, ImageService>();
-            services.Configure<ImageOptions>(configuration.GetRequiredSection(_sectionName));
-            services.AddHttpContextAccessor();
-
-            return services;
-        }
+        return services;
     }
 }

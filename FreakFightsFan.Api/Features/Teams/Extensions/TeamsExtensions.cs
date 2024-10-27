@@ -1,31 +1,30 @@
 using FreakFightsFan.Api.Data.Entities;
+using FreakFightsFan.Api.Features.TeamFighters.Extensions;
 using FreakFightsFan.Api.Features.Teams.Queries;
 using FreakFightsFan.Shared.Features.Teams.Responses;
-using FreakFightsFan.Api.Features.TeamFighters.Extensions;
 
-namespace FreakFightsFan.Api.Features.Teams.Extensions
+namespace FreakFightsFan.Api.Features.Teams.Extensions;
+
+public static class TeamsExtensions
 {
-    public static class TeamsExtensions
+    public static IEndpointRouteBuilder AddTeamEndpoints(this IEndpointRouteBuilder app)
     {
-        public static IEndpointRouteBuilder AddTeamEndpoints(this IEndpointRouteBuilder app)
-        {
-            GetAllTeamsFeature.Endpoint(app);
-            GetTeamFeature.Endpoint(app);
+        GetAllTeamsFeature.Endpoint(app);
+        GetTeamFeature.Endpoint(app);
 
-            return app;
-        }
+        return app;
+    }
 
-        public static TeamDto ToDto(this Team team)
+    public static TeamDto ToDto(this Team team)
+    {
+        return new TeamDto
         {
-            return new TeamDto
-            {
-                Id = team.Id,
-                Created = team.Created,
-                Modified = team.Modified, 
-                Number = team.Number,
-                FightId = team.FightId,
-                FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList(),
-            };
-        }
+            Id = team.Id,
+            Created = team.Created,
+            Modified = team.Modified, 
+            Number = team.Number,
+            FightId = team.FightId,
+            FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList(),
+        };
     }
 }

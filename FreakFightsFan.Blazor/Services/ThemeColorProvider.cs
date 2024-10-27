@@ -1,28 +1,25 @@
 ﻿using Blazored.LocalStorage;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 
-namespace FreakFightsFan.Blazor.Services
+namespace FreakFightsFan.Blazor.Services;
+
+public interface IThemeColorProvider
 {
-    public interface IThemeColorProvider
+    Task<ThemeColor> GetThemeColor();
+    Task SetThemeColor(ThemeColor themeColor);
+}
+
+public class ThemeColorProvider(ILocalStorageService localStorageService) : IThemeColorProvider
+{
+    private const string _themeColor = "ThemeColor";
+
+    public async Task<ThemeColor> GetThemeColor()
     {
-        Task<ThemeColor> GetThemeColor();
-        Task SetThemeColor(ThemeColor themeColor);
+        return await localStorageService.GetItemAsync<ThemeColor?>(_themeColor) ?? ThemeColor.System;
     }
 
-    public class ThemeColorProvider : IThemeColorProvider
+    public async Task SetThemeColor(ThemeColor value)
     {
-        private readonly ILocalStorageService _localStorageService;
-        private readonly string _themeColor = "ThemeColor";
-
-        public ThemeColorProvider(ILocalStorageService localStorageService)
-        {
-            _localStorageService = localStorageService;
-        }
-
-        public async Task<ThemeColor> GetThemeColor()
-            => await _localStorageService.GetItemAsync<ThemeColor?>(_themeColor) ?? ThemeColor.System;
-
-        public async Task SetThemeColor(ThemeColor value)
-            => await _localStorageService.SetItemAsync(_themeColor, value);
+        await localStorageService.SetItemAsync(_themeColor, value);
     }
 }

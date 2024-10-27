@@ -1,8 +1,7 @@
-﻿namespace FreakFightsFan.Shared.Abstractions
+﻿namespace FreakFightsFan.Shared.Abstractions;
+
+public enum MoveDirection
 {
-    public enum MoveDirection
-    {
-        Upwards = 0, 
-        Downwards = 1,
-    }
+    Upwards = 0, 
+    Downwards = 1,
 }

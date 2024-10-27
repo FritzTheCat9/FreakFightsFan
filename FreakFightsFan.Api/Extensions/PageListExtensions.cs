@@ -1,46 +1,51 @@
 ﻿using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Exceptions;
 
-namespace FreakFightsFan.Api.Extensions
+namespace FreakFightsFan.Api.Extensions;
+
+public static class PageListExtensions<T>
 {
-    public static class PageListExtensions<T>
+    private const int _minPage = 0;
+    private const int _minPageSize = 0;
+    private const int _maxPageSize = 100;
+
+    public static PagedList<T> Create(
+        IQueryable<T> source,
+        int page,
+        int pageSize)
     {
-        private static readonly int _minPage = 0;
-        private static readonly int _minPageSize = 0;
-        private static readonly int _maxPageSize = 100;
+        Validate(page, pageSize);
 
-        public static PagedList<T> Create(
-            IQueryable<T> source,
-            int Page,
-            int PageSize)
+        var totalCount = source.Count();
+        var items = source.Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return new PagedList<T>(items, page, pageSize, totalCount);
+    }
+
+    public static PagedList<T> CreateEmpty(
+        int page,
+        int pageSize)
+    {
+        Validate(page, pageSize);
+
+        return new PagedList<T>([], page, pageSize, 0);
+    }
+
+    private static void Validate(int page, int pageSize)
+    {
+        if (page <= _minPage)
         {
-            Validate(Page, PageSize);
-
-            var totalCount = source.Count();
-            var items = source.Skip((Page - 1) * PageSize)
-                              .Take(PageSize)
-                              .ToList();
-
-            return new PagedList<T>(items, Page, PageSize, totalCount);
+            throw new MyValidationException(nameof(page), $"{nameof(page)} should be greater than {_minPage}");
         }
 
-        public static PagedList<T> CreateEmpty(
-            int Page,
-            int PageSize)
+        switch (pageSize)
         {
-            Validate(Page, PageSize);
-
-            return new PagedList<T>([], Page, PageSize, 0);
-        }
-
-        private static void Validate(int Page, int PageSize)
-        {
-            if (Page <= _minPage)
-                throw new MyValidationException(nameof(Page), $"{nameof(Page)} should be greater than {_minPage}");
-            if (PageSize <= _minPageSize)
-                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be greater than {_minPageSize}");
-            if (PageSize > _maxPageSize)
-                throw new MyValidationException(nameof(PageSize), $"{nameof(PageSize)} should be less than or equal to {_maxPageSize}");
+            case <= _minPageSize:
+                throw new MyValidationException(nameof(pageSize), $"{nameof(pageSize)} should be greater than {_minPageSize}");
+            case > _maxPageSize:
+                throw new MyValidationException(nameof(pageSize), $"{nameof(pageSize)} should be less than or equal to {_maxPageSize}");
         }
     }
 }

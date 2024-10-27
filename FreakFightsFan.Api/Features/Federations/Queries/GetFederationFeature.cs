@@ -6,41 +6,34 @@ using FreakFightsFan.Shared.Features.Federations.Queries;
 using FreakFightsFan.Shared.Features.Federations.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Federations.Queries
+namespace FreakFightsFan.Api.Features.Federations.Queries;
+
+public static class GetFederationFeature
 {
-    public static class GetFederationFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapGet("/api/federations/{id:int}", async (
-                    int id,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    var query = new GetFederation.Query() { Id = id };
-                    return Results.Ok(await mediator.Send(query, cancellationToken));
-                })
-                .WithName("GetFederation")
-                .WithTags(Tags.Federations)
-                .AllowAnonymous();
-        }
-
-        public class Handler : IRequestHandler<GetFederation.Query, FederationDto>
-        {
-            private readonly IFederationRepository _federationRepository;
-
-            public Handler(IFederationRepository federationRepository)
+        app.MapGet("/api/federations/{id:int}", async (
+                int id,
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                _federationRepository = federationRepository;
-            }
+                var query = new GetFederation.Query() { Id = id };
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithName("GetFederation")
+            .WithTags(Tags.Federations)
+            .AllowAnonymous();
+    }
 
-            public async Task<FederationDto> Handle(
-                GetFederation.Query query,
-                CancellationToken cancellationToken)
-            {
-                var federation = await _federationRepository.Get(query.Id) ?? throw new MyNotFoundException();
-                return federation.ToDto();
-            }
+    public class Handler(IFederationRepository federationRepository)
+        : IRequestHandler<GetFederation.Query, FederationDto>
+    {
+        public async Task<FederationDto> Handle(
+            GetFederation.Query query,
+            CancellationToken cancellationToken)
+        {
+            var federation = await federationRepository.Get(query.Id) ?? throw new MyNotFoundException();
+            return federation.ToDto();
         }
     }
 }

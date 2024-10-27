@@ -1,8 +1,7 @@
-﻿namespace FreakFightsFan.Api.Logging
+﻿namespace FreakFightsFan.Api.Logging;
+
+public class LogOptions
 {
-    public class LogOptions
-    {
-        public string FilePath { get; set; }
-        public string SeqUrl { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string SeqUrl { get; set; }
 }

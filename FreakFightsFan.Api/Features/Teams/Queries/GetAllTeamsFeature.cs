@@ -8,42 +8,36 @@ using FreakFightsFan.Shared.Features.Teams.Responses;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Teams.Queries
+namespace FreakFightsFan.Api.Features.Teams.Queries;
+
+public static class GetAllTeamsFeature
 {
-    public static class GetAllTeamsFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPost("/api/teams/all", async (
-                        GetAllTeams.Query query,
-                        IMediator mediator,
-                        CancellationToken cancellationToken)
-                    => Results.Ok(await mediator.Send(query, cancellationToken)))
-                .WithTags(Tags.Teams)
-                .RequireAuthorization(Policy.Admin);
-        }
-
-        public class Handler : IRequestHandler<GetAllTeams.Query, PagedList<TeamDto>>
-        {
-            private readonly ITeamRepository _teamRepository;
-
-            public Handler(ITeamRepository teamRepository)
-            {
-                _teamRepository = teamRepository;
-            }
-
-            public async Task<PagedList<TeamDto>> Handle(
+        app.MapPost("/api/teams/all", async (
                 GetAllTeams.Query query,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var teamsQuery = _teamRepository.AsQueryable();
+                return Results.Ok(await mediator.Send(query, cancellationToken));
+            })
+            .WithTags(Tags.Teams)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                var teamsPagedList = PageListExtensions<TeamDto>.Create(teamsQuery.Select(x => x.ToDto()),
-                    query.Page,
-                    query.PageSize);
+    public class Handler(ITeamRepository teamRepository) : IRequestHandler<GetAllTeams.Query, PagedList<TeamDto>>
+    {
+        public async Task<PagedList<TeamDto>> Handle(
+            GetAllTeams.Query query,
+            CancellationToken cancellationToken)
+        {
+            var teamsQuery = teamRepository.AsQueryable();
 
-                return await Task.FromResult(teamsPagedList);
-            }
+            var teamsPagedList = PageListExtensions<TeamDto>.Create(teamsQuery.Select(x => x.ToDto()),
+                query.Page,
+                query.PageSize);
+
+            return await Task.FromResult(teamsPagedList);
         }
     }
 }

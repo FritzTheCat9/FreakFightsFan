@@ -2,18 +2,17 @@
 using FreakFightsFan.Shared.Features.Federations.Responses;
 using MediatR;
 
-namespace FreakFightsFan.Shared.Features.Federations.Queries
+namespace FreakFightsFan.Shared.Features.Federations.Queries;
+
+public static class GetFederation
 {
-    public class GetFederation
+    public class Query : IRequest<FederationDto>
     {
-        public class Query : IRequest<FederationDto>
-        {
-            public int Id { get; set; }
-        }
+        public int Id { get; set; }
+    }
 
-        public class Validator : AbstractValidator<Query>
-        {
+    public class Validator : AbstractValidator<Query>
+    {
 
-        }
     }
 }
