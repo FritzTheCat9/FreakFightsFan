@@ -4,24 +4,23 @@ using FreakFightsFan.Shared.Localization;
 using MediatR;
 using Microsoft.Extensions.Localization;
 
-namespace FreakFightsFan.Shared.Features.Users.Commands
-{
-    public class UpdateUserTheme
-    {
-        public class Command : IRequest<Unit>
-        {
-            public int Id { get; set; }
-            public ThemeColor ThemeColor { get; set; }
-        }
+namespace FreakFightsFan.Shared.Features.Users.Commands;
 
-        public class Validator : AbstractValidator<Command>
+public static class UpdateUserTheme
+{
+    public class Command : IRequest<Unit>
+    {
+        public int Id { get; set; }
+        public ThemeColor ThemeColor { get; set; }
+    }
+
+    public class Validator : AbstractValidator<Command>
+    {
+        public Validator(IStringLocalizer<ValidationMessage> localizer)
         {
-            public Validator(IStringLocalizer<ValidationMessage> localizer)
-            {
-                RuleFor(x => x.ThemeColor)
-                    .IsInEnum()
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.ThemeColorIsInEnum)]);
-            }
+            RuleFor(x => x.ThemeColor)
+                .IsInEnum()
+                .WithMessage(x => localizer[nameof(ValidationMessageString.ThemeColorIsInEnum)]);
         }
     }
 }

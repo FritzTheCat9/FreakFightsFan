@@ -10,103 +10,96 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
 
-namespace FreakFightsFan.UnitTests.Features.Dictionaries.Commands
+namespace FreakFightsFan.UnitTests.Features.Dictionaries.Commands;
+
+public class UpdateMyDictionaryFeatureTests
 {
-    public class UpdateMyDictionaryFeatureTests
+    private readonly IClock _clock = Substitute.For<IClock>();
+    private readonly IStringLocalizer<ApiValidationMessage> _localizer = Substitute.For<IStringLocalizer<ApiValidationMessage>>();
+
+    [Fact]
+    public async Task UpdateMyDictionaryHandler_ThrowsNotFoundException_IfDictionaryNotFound()
     {
-        private readonly IClock _clock;
-        private readonly IStringLocalizer<ApiValidationMessage> _localizer;
-
-        public UpdateMyDictionaryFeatureTests()
+        var command = new UpdateMyDictionary.Command
         {
-            _clock = Substitute.For<IClock>();
-            _localizer = Substitute.For<IStringLocalizer<ApiValidationMessage>>();
-        }
+            Id = 1,
+            Name = "Test Name",
+            Code = "TEST_CODE",
+        };
 
-        [Fact]
-        public async Task UpdateMyDictionaryHandler_ThrowsNotFoundException_IfDictionaryNotFound()
-        {
-            var command = new UpdateMyDictionary.Command
+        var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
+        var mediator = Substitute.For<IMediator>();
+
+        myDictionaryRepository.Get(Arg.Any<int>()).Returns(Task.FromResult<MyDictionary>(null));
+
+        mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
+            .Returns(callInfo =>
             {
-                Id = 1,
-                Name = "Test Name",
-                Code = "TEST_CODE",
-            };
+                var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
+                return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
+            });
 
-            var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
-            var mediator = Substitute.For<IMediator>();
+        var action = async () => await mediator.Send(command, CancellationToken.None);
 
-            myDictionaryRepository.Get(Arg.Any<int>()).Returns(Task.FromResult<MyDictionary>(null));
+        await Assert.ThrowsAsync<MyNotFoundException>(action);
+        await myDictionaryRepository.DidNotReceive().Update(Arg.Any<MyDictionary>());
+    }
 
-            mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
-                .Returns(callInfo =>
-                {
-                    var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
-                    return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
-                });
-
-            var action = async () => await mediator.Send(command, CancellationToken.None);
-
-            await Assert.ThrowsAsync<MyNotFoundException>(action);
-            await myDictionaryRepository.DidNotReceive().Update(Arg.Any<MyDictionary>());
-        }
-
-        [Fact]
-        public async Task UpdateMyDictionaryHandler_ThrowsValidationException_IfCodeExistsInOtherDictionaries()
+    [Fact]
+    public async Task UpdateMyDictionaryHandler_ThrowsValidationException_IfCodeExistsInOtherDictionaries()
+    {
+        var command = new UpdateMyDictionary.Command
         {
-            var command = new UpdateMyDictionary.Command
+            Id = 1,
+            Name = "Test Name",
+            Code = "TEST_CODE",
+        };
+
+        var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
+        var mediator = Substitute.For<IMediator>();
+
+        myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
+        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(true);
+
+        mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
+            .Returns(callInfo =>
             {
-                Id = 1,
-                Name = "Test Name",
-                Code = "TEST_CODE",
-            };
+                var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
+                return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
+            });
 
-            var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
-            var mediator = Substitute.For<IMediator>();
+        var action = async () => await mediator.Send(command, CancellationToken.None);
 
-            myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
-            myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(true);
+        await Assert.ThrowsAsync<MyValidationException>(action);
+        await myDictionaryRepository.DidNotReceive().Update(Arg.Any<MyDictionary>());
+    }
 
-            mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
-                .Returns(callInfo =>
-                {
-                    var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
-                    return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
-                });
-
-            var action = async () => await mediator.Send(command, CancellationToken.None);
-
-            await Assert.ThrowsAsync<MyValidationException>(action);
-            await myDictionaryRepository.DidNotReceive().Update(Arg.Any<MyDictionary>());
-        }
-
-        [Fact]
-        public async Task UpdateMyDictionaryHandler_UpdatesValidDictionary()
+    [Fact]
+    public async Task UpdateMyDictionaryHandler_UpdatesValidDictionary()
+    {
+        var command = new UpdateMyDictionary.Command
         {
-            var command = new UpdateMyDictionary.Command
+            Id = 1,
+            Name = "Test Name",
+            Code = "TEST_CODE",
+        };
+
+        var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
+        var mediator = Substitute.For<IMediator>();
+
+        myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
+        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(false);
+
+        mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
+            .Returns(callInfo =>
             {
-                Id = 1,
-                Name = "Test Name",
-                Code = "TEST_CODE",
-            };
+                var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
+                return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
+            });
 
-            var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
-            var mediator = Substitute.For<IMediator>();
+        var result = await mediator.Send(command, CancellationToken.None);
 
-            myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
-            myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(false);
-
-            mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
-                .Returns(callInfo =>
-                {
-                    var handler = new UpdateMyDictionaryFeature.Handler(myDictionaryRepository, _clock, _localizer);
-                    return handler.Handle(callInfo.Arg<UpdateMyDictionary.Command>(), CancellationToken.None);
-                });
-
-            var result = await mediator.Send(command, CancellationToken.None);
-
-            result.Should().Be(Unit.Value);
-            await myDictionaryRepository.Received().Update(Arg.Any<MyDictionary>());
-        }
+        result.Should().Be(Unit.Value);
+        await myDictionaryRepository.Received().Update(Arg.Any<MyDictionary>());
     }
 }

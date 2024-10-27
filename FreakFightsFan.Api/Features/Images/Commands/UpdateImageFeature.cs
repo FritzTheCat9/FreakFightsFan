@@ -7,13 +7,13 @@ using FreakFightsFan.Shared.Features.Images.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Images.Commands
+namespace FreakFightsFan.Api.Features.Images.Commands;
+
+public static class UpdateImageFeature
 {
-    public static class UpdateImageFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static void Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPut("/api/images/{id:int}", async (
+        app.MapPut("/api/images/{id:int}", async (
                 int id,
                 UpdateImage.Command command,
                 IMediator mediator,
@@ -22,42 +22,31 @@ namespace FreakFightsFan.Api.Features.Images.Commands
                 command.Id = id;
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
-                .WithTags(Tags.Images)
-                .RequireAuthorization(Policy.Admin);
-        }
+            .WithTags(Tags.Images)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-        public class Handler : IRequestHandler<UpdateImage.Command, Unit>
+    public class Handler(
+        IImageRepository imageRepository,
+        IClock clock,
+        IImageService imageService)
+        : IRequestHandler<UpdateImage.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            UpdateImage.Command command,
+            CancellationToken cancellationToken)
         {
-            private readonly IImageRepository _imageRepository;
-            private readonly IClock _clock;
-            private readonly IImageService _imageService;
+            var image = await imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
-            public Handler(
-                IImageRepository imageRepository,
-                IClock clock,
-                IImageService imageService)
-            {
-                _imageRepository = imageRepository;
-                _clock = clock;
-                _imageService = imageService;
-            }
+            var name = imageService.SaveImage(command.ImageBase64);
+            imageService.DeleteImage(image.Name);
 
-            public async Task<Unit> Handle(
-                UpdateImage.Command command,
-                CancellationToken cancellationToken)
-            {
-                var image = await _imageRepository.Get(command.Id) ?? throw new MyNotFoundException();
+            image.Modified = clock.Current();
+            image.Name = name;
+            image.Url = imageService.GetImageUrl(name);
 
-                string name = _imageService.SaveImage(command.ImageBase64);
-                _imageService.DeleteImage(image.Name);
-
-                image.Modified = _clock.Current();
-                image.Name = name;
-                image.Url = _imageService.GetImageUrl(name);
-
-                await _imageRepository.Update(image);
-                return Unit.Value;
-            }
+            await imageRepository.Update(image);
+            return Unit.Value;
         }
     }
 }

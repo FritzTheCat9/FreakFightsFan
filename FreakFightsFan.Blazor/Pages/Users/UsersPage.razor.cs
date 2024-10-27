@@ -10,118 +10,125 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.Users
+namespace FreakFightsFan.Blazor.Pages.Users;
+
+public partial class UsersPage : ComponentBase
 {
-    public partial class UsersPage : ComponentBase
+    private List<BreadcrumbItem> _items;
+    private MudTable<UserDto> _table;
+
+    private string _searchString = "";
+    private PagedList<UserDto> _myUsers;
+
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IUserApiClient UserApiClient { get; set; }
+
+    [Inject] public IDialogService DialogService { get; set; }
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    protected override void OnInitialized()
     {
-        private List<BreadcrumbItem> _items;
-        private MudTable<UserDto> _table;
+        _items =
+        [
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Users)], href: null, disabled: true),
+        ];
+    }
 
-        private string _searchString = "";
-        private PagedList<UserDto> _myUsers;
-
-        [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] public IUserApiClient UserApiClient { get; set; }
-
-        [Inject] public IDialogService DialogService { get; set; }
-        [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-        protected override void OnInitialized()
+    private async Task<TableData<UserDto>> ServerReload(TableState state, CancellationToken token)
+    {
+        var query = new GetAllUsers.Query
         {
-            _items =
-            [
-                new(Localizer[nameof(AppStrings.Users)], href: null, disabled: true),
-            ];
+            Page = state.Page + 1,
+            PageSize = state.PageSize,
+            SortColumn = state.SortLabel,
+            SortOrder = ((SortOrder)state.SortDirection),
+            SearchTerm = _searchString,
+        };
+
+        try
+        {
+            _myUsers = await UserApiClient.GetAllUsers(query);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
+            return new TableData<UserDto> { TotalItems = 0, Items = [] };
         }
 
-        private async Task<TableData<UserDto>> ServerReload(TableState state, CancellationToken token)
+        return new TableData<UserDto>
         {
-            var query = new GetAllUsers.Query
-            {
-                Page = state.Page + 1,
-                PageSize = state.PageSize,
-                SortColumn = state.SortLabel,
-                SortOrder = ((SortOrder)state.SortDirection),
-                SearchTerm = _searchString,
-            };
+            TotalItems = _myUsers.TotalCount,
+            Items = _myUsers.Items
+        };
+    }
 
-            try
-            {
-                _myUsers = await UserApiClient.GetAllUsers(query);
+    private async Task PromoteUser(int id)
+    {
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<InformationDialog>
+        {
+            { 
+                x => x.ContentText, 
+                Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] 
             }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-                return new() { TotalItems = 0, Items = [] };
+        };
+
+        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)], parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            await UserApiClient.PromoteUser(id);
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task DegradeUser(int id)
+    {
+        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<InformationDialog>
+        {
+            { 
+                x => x.ContentText, 
+                Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] 
             }
+        };
 
-            return new()
-            {
-                TotalItems = _myUsers.TotalCount,
-                Items = _myUsers.Items
-            };
-        }
-
-        private async Task PromoteUser(int id)
+        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)], parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
         {
-            var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-            var parameters = new DialogParameters<InformationDialog>
-            {
-                { 
-                    x => x.ContentText, 
-                    Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] 
-                }
-            };
-
-            var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)], parameters, options);
-            var result = await dialog.Result;
-            if (!result.Canceled)
-            {
-                await UserApiClient.PromoteUser(id);
-                await _table.ReloadServerData();
-            }
+            await UserApiClient.DegradeUser(id);
+            await _table.ReloadServerData();
         }
+    }
 
-        private async Task DegradeUser(int id)
+    private static string GetUserHighestPolicy(UserDto user)
+    {
+        if (user.IsSuperAdmin)
         {
-            var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-            var parameters = new DialogParameters<InformationDialog>
-            {
-                { 
-                    x => x.ContentText, 
-                    Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] 
-                }
-            };
-
-            var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)], parameters, options);
-            var result = await dialog.Result;
-            if (!result.Canceled)
-            {
-                await UserApiClient.DegradeUser(id);
-                await _table.ReloadServerData();
-            }
+            return Policy.SuperAdmin;
         }
 
-        private static string GetUserHighestPolicy(UserDto user)
+        if (user.IsAdmin)
         {
-            if (user.IsSuperAdmin)
-                return Policy.SuperAdmin;
-
-            if (user.IsAdmin)
-                return Policy.Admin;
-
-            return Policy.User;
+            return Policy.Admin;
         }
 
-        private static Color GetColorBasedOnPolicy(string policy)
+        return Policy.User;
+    }
+
+    private static Color GetColorBasedOnPolicy(string policy)
+    {
+        if (policy == Policy.SuperAdmin)
         {
-            if (policy == Policy.SuperAdmin)
-                return Color.Info;
-
-            if (policy == Policy.Admin)
-                return Color.Error;
-
-            return Color.Success;
+            return Color.Info;
         }
+
+        if (policy == Policy.Admin)
+        {
+            return Color.Error;
+        }
+
+        return Color.Success;
     }
 }

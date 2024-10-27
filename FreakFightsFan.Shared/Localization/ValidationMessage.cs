@@ -1,7 +1,6 @@
-﻿namespace FreakFightsFan.Shared
-{
-    public class ValidationMessage
-    {
+﻿namespace FreakFightsFan.Shared;
 
-    }
+public class ValidationMessage
+{
+
 }

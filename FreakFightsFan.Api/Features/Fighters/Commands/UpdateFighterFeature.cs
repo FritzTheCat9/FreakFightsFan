@@ -7,58 +7,45 @@ using FreakFightsFan.Shared.Features.Fighters.Commands;
 using FreakFightsFan.Shared.Features.Users.Helpers;
 using MediatR;
 
-namespace FreakFightsFan.Api.Features.Fighters.Commands
+namespace FreakFightsFan.Api.Features.Fighters.Commands;
+
+public static class UpdateFighterFeature
 {
-    public static class UpdateFighterFeature
+    public static void Endpoint(this IEndpointRouteBuilder app)
     {
-        public static IEndpointRouteBuilder Endpoint(this IEndpointRouteBuilder app)
-        {
-            app.MapPut("/api/fighters/{id:int}", async (
-                    int id,
-                    UpdateFighter.Command command,
-                    IMediator mediator,
-                    CancellationToken cancellationToken) =>
-                {
-                    command.Id = id;
-                    return Results.Ok(await mediator.Send(command, cancellationToken));
-                })
-                .WithTags(Tags.Fighters)
-                .RequireAuthorization(Policy.Admin);
-
-            return app;
-        }
-
-        public class Handler : IRequestHandler<UpdateFighter.Command, Unit>
-        {
-            private readonly IFighterRepository _fighterRepository;
-            private readonly IClock _clock;
-            private readonly IImageService _imageService;
-
-            public Handler(
-                IFighterRepository fighterRepository,
-                IClock clock,
-                IImageService imageService)
-            {
-                _fighterRepository = fighterRepository;
-                _clock = clock;
-                _imageService = imageService;
-            }
-
-            public async Task<Unit> Handle(
+        app.MapPut("/api/fighters/{id:int}", async (
+                int id,
                 UpdateFighter.Command command,
-                CancellationToken cancellationToken)
+                IMediator mediator,
+                CancellationToken cancellationToken) =>
             {
-                var fighter = await _fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
-                fighter.FirstName = command.FirstName;
-                fighter.LastName = command.LastName;
-                fighter.Nickname = command.Nickname;
-                fighter.InstagramUrl = command.InstagramUrl;
-                fighter.Modified = _clock.Current();
-                fighter.Image = _imageService.UpdateEntityImage(fighter.Image, command.ImageBase64);
+                command.Id = id;
+                return Results.Ok(await mediator.Send(command, cancellationToken));
+            })
+            .WithTags(Tags.Fighters)
+            .RequireAuthorization(Policy.Admin);
+    }
 
-                await _fighterRepository.Update(fighter);
-                return Unit.Value;
-            }
+    public class Handler(
+        IFighterRepository fighterRepository,
+        IClock clock,
+        IImageService imageService)
+        : IRequestHandler<UpdateFighter.Command, Unit>
+    {
+        public async Task<Unit> Handle(
+            UpdateFighter.Command command,
+            CancellationToken cancellationToken)
+        {
+            var fighter = await fighterRepository.Get(command.Id) ?? throw new MyNotFoundException();
+            fighter.FirstName = command.FirstName;
+            fighter.LastName = command.LastName;
+            fighter.Nickname = command.Nickname;
+            fighter.InstagramUrl = command.InstagramUrl;
+            fighter.Modified = clock.Current();
+            fighter.Image = imageService.UpdateEntityImage(fighter.Image, command.ImageBase64);
+
+            await fighterRepository.Update(fighter);
+            return Unit.Value;
         }
     }
 }

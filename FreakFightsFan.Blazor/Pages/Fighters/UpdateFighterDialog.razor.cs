@@ -7,36 +7,35 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
-namespace FreakFightsFan.Blazor.Pages.Fighters
+namespace FreakFightsFan.Blazor.Pages.Fighters;
+
+public partial class UpdateFighterDialog : ComponentBase
 {
-    public partial class UpdateFighterDialog : ComponentBase
+    private CustomValidator _customValidator;
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public UpdateFighter.FormModel FormModel { get; set; } = new();
+    [Parameter] public string Url { get; set; }
+
+    [Inject] public IFighterApiClient FighterApiClient { get; set; }
+    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
+    [Inject] public IStringLocalizer<App> Localizer { get; set; }
+
+    private async Task HandleValidSubmit()
     {
-        private CustomValidator _customValidator;
-
-        [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
-        [Parameter] public UpdateFighter.FormModel FormModel { get; set; } = new();
-        [Parameter] public string Url { get; set; }
-
-        [Inject] IFighterApiClient FighterApiClient { get; set; }
-        [Inject] IExceptionHandler ExceptionHandler { get; set; }
-        [Inject] IStringLocalizer<App> Localizer { get; set; }
-
-        private async Task HandleValidSubmit()
+        try
         {
-            try
-            {
-                await FighterApiClient.UpdateFighter(FormModel);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            catch (MyValidationException validationException)
-            {
-                _customValidator.DisplayErrors(validationException.Errors);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleExceptions(ex);
-            }
+            await FighterApiClient.UpdateFighter(FormModel);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (MyValidationException validationException)
+        {
+            _customValidator.DisplayErrors(validationException.Errors);
+        }
+        catch (Exception ex)
+        {
+            ExceptionHandler.HandleExceptions(ex);
         }
     }
 }
