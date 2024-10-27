@@ -50,8 +50,8 @@ namespace FreakFightsFan.Api.Features.Users.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 users = users.Where(x =>
-                    x.UserName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.Email.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                    x.UserName.ToLower().Contains(searchTerm.ToLower())
+                    || x.Email.ToLower().Contains(searchTerm.ToLower()));
             }
 
             return users;

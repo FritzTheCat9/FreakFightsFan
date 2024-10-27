@@ -45,8 +45,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
-                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                    x.Name.ToLower().Contains(searchTerm.ToLower())
+                    || x.Code.ToLower().Contains(searchTerm.ToLower()));
 
             return dictionaryItems;
         }
@@ -85,8 +85,8 @@ namespace FreakFightsFan.Api.Features.DictionaryItems.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 dictionaryItems = dictionaryItems.Where(x =>
-                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                    x.Name.ToLower().Contains(searchTerm.ToLower())
+                    || x.Code.ToLower().Contains(searchTerm.ToLower()));
 
             return dictionaryItems;
         }

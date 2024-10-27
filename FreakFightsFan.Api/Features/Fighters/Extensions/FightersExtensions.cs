@@ -46,9 +46,9 @@ namespace FreakFightsFan.Api.Features.Fighters.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 fighters = fighters.Where(x =>
-                    x.Nickname.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.FirstName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.LastName.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                    x.Nickname.ToLower().Contains(searchTerm.ToLower())
+                    || x.FirstName.ToLower().Contains(searchTerm.ToLower())
+                    || x.LastName.ToLower().Contains(searchTerm.ToLower()));
             }
 
             return fighters;

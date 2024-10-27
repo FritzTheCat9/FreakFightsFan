@@ -42,7 +42,7 @@ namespace FreakFightsFan.Api.Features.Federations.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                federations = federations.Where(x => x.Name.ToLower().Contains(searchTerm));
+                federations = federations.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()));
             }
 
             return federations;

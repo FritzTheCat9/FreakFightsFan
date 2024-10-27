@@ -45,7 +45,7 @@ namespace FreakFightsFan.Api.Features.Events.Extensions
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                events = events.Where(x => x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                events = events.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()));
             }
 
             return events;

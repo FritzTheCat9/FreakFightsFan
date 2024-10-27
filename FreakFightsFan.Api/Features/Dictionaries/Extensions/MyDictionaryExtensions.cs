@@ -41,8 +41,8 @@ namespace FreakFightsFan.Api.Features.Dictionaries.Extensions
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 dictionaries = dictionaries.Where(x =>
-                    x.Name.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase)
-                    || x.Code.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
+                    x.Name.ToLower().Contains(searchTerm.ToLower())
+                    || x.Code.ToLower().Contains(searchTerm.ToLower()));
             }
 
             return dictionaries;
