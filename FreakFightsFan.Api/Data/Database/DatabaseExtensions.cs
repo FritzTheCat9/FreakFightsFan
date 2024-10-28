@@ -1,43 +1,41 @@
 ﻿using FreakFightsFan.Api.Abstractions;
-using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreakFightsFan.Api.Data
+namespace FreakFightsFan.Api.Data.Database;
+
+public static class DatabaseExtensions
 {
-    public static class DatabaseExtensions
+    private const string _sectionName = "Database";
+
+    public static IServiceCollection AddDatabase(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        private const string _sectionName = "Database";
+        services.Configure<DatabaseOptions>(configuration.GetRequiredSection(_sectionName));
+        var options = configuration.GetOptions<DatabaseOptions>(_sectionName);
 
-        public static IServiceCollection AddDatabase(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        services.AddSingleton<IClock, Clock>();
+
+        services.AddDbContext<AppDbContext>(x =>
         {
-            services.Configure<DatabaseOptions>(configuration.GetRequiredSection(_sectionName));
-            var options = configuration.GetOptions<DatabaseOptions>(_sectionName);
+            x.UseSqlServer(options.ConnectionString);
+            //x.EnableSensitiveDataLogging();
+        });
 
-            services.AddSingleton<IClock, Clock>();
+        services.AddScoped<IFederationRepository, FederationRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<IFightRepository, FightRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IFighterRepository, FighterRepository>();
+        services.AddScoped<IImageRepository, ImageRepository>();
+        services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
+        services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
-            services.AddDbContext<AppDbContext>(x =>
-            {
-                x.UseSqlServer(options.ConnectionString);
-                //x.EnableSensitiveDataLogging();
-            });
+        services.AddHostedService<DatabaseInitializer>();
 
-            services.AddScoped<IFederationRepository, FederationRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IFightRepository, FightRepository>();
-            services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<IFighterRepository, FighterRepository>();
-            services.AddScoped<IImageRepository, ImageRepository>();
-            services.AddScoped<IMyDictionaryRepository, MyDictionaryRepository>();
-            services.AddScoped<IMyDictionaryItemRepository, MyDictionaryItemRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-
-            services.AddHostedService<DatabaseInitializer>();
-
-            return services;
-        }
+        return services;
     }
 }

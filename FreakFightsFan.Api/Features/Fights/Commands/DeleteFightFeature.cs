@@ -16,7 +16,7 @@ public static class DeleteFightFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new DeleteFight.Command() { Id = id };
+                var command = new DeleteFight.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
             .WithTags(Tags.Fights)

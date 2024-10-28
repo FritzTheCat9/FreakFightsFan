@@ -33,7 +33,8 @@ public static class GetAllTeamsFeature
         {
             var teamsQuery = teamRepository.AsQueryable();
 
-            var teamsPagedList = PageListExtensions<TeamDto>.Create(teamsQuery.Select(x => x.ToDto()),
+            var teamsPagedList = PageListExtensions<TeamDto>.Create(
+                teamsQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

@@ -14,13 +14,12 @@ namespace FreakFightsFan.Blazor.Pages.Events;
 
 public partial class EventsPage : ComponentBase
 {
-    [Parameter] public int FederationId { get; set; }
-
     private List<BreadcrumbItem> _items;
-    private MudTable<EventDto> _table;
+    private PagedList<EventDto> _myEvents;
 
     private string _searchString = "";
-    private PagedList<EventDto> _myEvents;
+    private MudTable<EventDto> _table;
+    [Parameter] public int FederationId { get; set; }
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IEventApiClient EventApiClient { get; set; }
@@ -34,8 +33,8 @@ public partial class EventsPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], href: "/federations"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], "/federations"),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], null, true)
         ];
     }
 
@@ -46,9 +45,9 @@ public partial class EventsPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
+            SortOrder = (SortOrder)state.SortDirection,
             SearchTerm = _searchString,
-            FederationId = FederationId,
+            FederationId = FederationId
         };
 
         try
@@ -61,11 +60,7 @@ public partial class EventsPage : ComponentBase
             return new TableData<EventDto> { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<EventDto>
-        {
-            TotalItems = _myEvents.TotalCount,
-            Items = _myEvents.Items
-        };
+        return new TableData<EventDto> { TotalItems = _myEvents.TotalCount, Items = _myEvents.Items };
     }
 
     private void RedirectToFightsPage(int eventId)
@@ -75,8 +70,9 @@ public partial class EventsPage : ComponentBase
 
     private async Task DeleteEvent(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -95,7 +91,7 @@ public partial class EventsPage : ComponentBase
 
     private async Task UpdateEvent(EventDto eventDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateEventDialog>
         {
             {
@@ -109,17 +105,13 @@ public partial class EventsPage : ComponentBase
                     HallId = eventDto.Hall?.Id
                 }
             },
-            {
-                x => x.City,
-                eventDto.City
-            },
-            {
-                x => x.Hall,
-                eventDto.Hall
-            }
+            { x => x.City, eventDto.City },
+            { x => x.Hall, eventDto.Hall }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateEventDialog>(Localizer[nameof(AppStrings.UpdateEvent)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateEventDialog>(Localizer[nameof(AppStrings.UpdateEvent)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -129,7 +121,7 @@ public partial class EventsPage : ComponentBase
 
     private async Task CreateEvent()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateEventDialog>
         {
             {
@@ -140,12 +132,14 @@ public partial class EventsPage : ComponentBase
                     Date = DateTime.UtcNow,
                     FederationId = FederationId,
                     CityId = null,
-                    HallId = null,
+                    HallId = null
                 }
             }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateEventDialog>(Localizer[nameof(AppStrings.CreateEvent)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateEventDialog>(Localizer[nameof(AppStrings.CreateEvent)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

@@ -10,11 +10,5 @@ public static class DegradeUser
         public int Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
-    {
-        public Validator()
-        {
-
-        }
-    }
+    public class Validator : AbstractValidator<Command> { }
 }

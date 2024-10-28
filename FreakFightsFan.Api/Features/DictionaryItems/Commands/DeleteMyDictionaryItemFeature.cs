@@ -16,7 +16,7 @@ public static class DeleteMyDictionaryItemFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new DeleteMyDictionaryItem.Command() { Id = id };
+                var command = new DeleteMyDictionaryItem.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
             .WithTags(Tags.DictionaryItems)

@@ -5,5 +5,5 @@ public enum EmailTranslationString
     EmailConfirmationSubject,
     EmailConfirmationTemplateFileName,
     EmailConfirmationSuccessfulSubject,
-    EmailConfirmationSuccessfulTemplateFileName,
+    EmailConfirmationSuccessfulTemplateFileName
 }

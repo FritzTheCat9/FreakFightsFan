@@ -12,14 +12,9 @@ namespace FreakFightsFan.Blazor.Pages.Fighters;
 
 public partial class FighterProfilePage : ComponentBase
 {
-    private FighterProfileDto _profile;
-    private FighterDto _fighter;
-
-    private string[] _labels;
-    private double[] _data = [];
     private readonly ChartOptions _chartOptions = new()
     {
-        ChartPalette = 
+        ChartPalette =
         [
             Colors.Green.Default,
             Colors.Red.Default,
@@ -27,6 +22,12 @@ public partial class FighterProfilePage : ComponentBase
             Colors.Blue.Default
         ]
     };
+
+    private double[] _data = [];
+    private FighterDto _fighter;
+
+    private string[] _labels;
+    private FighterProfileDto _profile;
 
     [Parameter] public int FighterId { get; set; }
 
@@ -45,7 +46,7 @@ public partial class FighterProfilePage : ComponentBase
             Localizer[nameof(AppStrings.Wins)],
             Localizer[nameof(AppStrings.Losses)],
             Localizer[nameof(AppStrings.Draws)],
-            Localizer[nameof(AppStrings.NoContest)],
+            Localizer[nameof(AppStrings.NoContest)]
         ];
     }
 

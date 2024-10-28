@@ -30,7 +30,8 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : IMiddlew
             MyValidationException validationException =>
                 new ErrorHelperModel(
                     StatusCodes.Status400BadRequest,
-                    new ValidationErrorResponse(validationException.Type, validationException.Message, validationException.Errors)),
+                    new ValidationErrorResponse(validationException.Type, validationException.Message,
+                        validationException.Errors)),
             MyServerException serverException =>
                 new ErrorHelperModel(
                     StatusCodes.Status500InternalServerError,
@@ -50,7 +51,7 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : IMiddlew
             _ =>
                 new ErrorHelperModel(
                     StatusCodes.Status500InternalServerError,
-                    new ServerErrorResponse(ExceptionType.Server, "Server Error")),
+                    new ServerErrorResponse(ExceptionType.Server, "Server Error"))
         };
 
         context.Response.StatusCode = errorHelperModel.StatusCode;
@@ -58,12 +59,9 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : IMiddlew
 
         var settings = new JsonSerializerSettings
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ContractResolver = new CamelCasePropertyNamesContractResolver
             {
-                NamingStrategy = new CamelCaseNamingStrategy
-                {
-                    ProcessDictionaryKeys = false,
-                }
+                NamingStrategy = new CamelCaseNamingStrategy { ProcessDictionaryKeys = false }
             }
         };
 
@@ -73,7 +71,7 @@ public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) : IMiddlew
 
     private class ErrorHelperModel(int statusCode, ErrorResponse errorResponse)
     {
-        public int StatusCode { get; set; } = statusCode;
-        public ErrorResponse ErrorResponse { get; set; } = errorResponse;
+        public int StatusCode { get; } = statusCode;
+        public ErrorResponse ErrorResponse { get; } = errorResponse;
     }
 }

@@ -1,5 +1,4 @@
 using FreakFightsFan.Shared.Features.Fighters.Responses;
-using FreakFightsFan.Shared.Features.Fights.Commands;
 using FreakFightsFan.Shared.Features.Fights.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
@@ -43,12 +42,13 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
         SelectedTeam = number;
     }
 
-    private async Task DeleteFighterListItem(CreateFight.TeamHelperModel team, CreateFight.FighterHelperModel fighter)
+    private async Task DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
     {
         var pickedTeam = TeamHelperModel.FirstOrDefault(x => x.Number == team.Number);
         if (pickedTeam is not null)
         {
-            var fighterToRemove = pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
+            var fighterToRemove =
+                pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
             if (fighterToRemove is not null)
             {
                 pickedTeam.Fighters.Remove(fighterToRemove);
@@ -64,8 +64,7 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
         {
             TeamHelperModel[SelectedTeam].Fighters.Add(new FighterHelperModel
             {
-                Fighter = _fighter,
-                FightResult = FightResult.Upcoming
+                Fighter = _fighter, FightResult = FightResult.Upcoming
             });
             _fighter = null;
             SelectedTeam = (SelectedTeam + 1) % NumberOfTeams;
@@ -84,10 +83,9 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
             var teamFighters = new List<TeamFighterModel>();
             foreach (var fighter in team.Fighters)
             {
-                var teamFighterModel = new TeamFighterModel()
+                var teamFighterModel = new TeamFighterModel
                 {
-                    FighterId = fighter.Fighter.Id,
-                    FightResult = fighter.FightResult,
+                    FighterId = fighter.Fighter.Id, FightResult = fighter.FightResult
                 };
 
                 teamFighters.Add(teamFighterModel);

@@ -36,7 +36,8 @@ public static class GetAllImagesFeature
 
             imagesQuery = imagesQuery.SortImages(query);
 
-            var imagesPagedList = PageListExtensions<ImageDto>.Create(imagesQuery.Select(x => x.ToDto()),
+            var imagesPagedList = PageListExtensions<ImageDto>.Create(
+                imagesQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

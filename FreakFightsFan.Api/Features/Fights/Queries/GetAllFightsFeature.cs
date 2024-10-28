@@ -33,7 +33,8 @@ public static class GetAllFightsFeature
         {
             var fightsQuery = fightRepository.AsQueryable(query.EventId);
 
-            var fightsPagedList = PageListExtensions<FightDto>.Create(fightsQuery.Select(x => x.ToDto()),
+            var fightsPagedList = PageListExtensions<FightDto>.Create(
+                fightsQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

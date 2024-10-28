@@ -15,10 +15,10 @@ namespace FreakFightsFan.Blazor.Pages.Fighters;
 public partial class FightersPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<FighterDto> _table;
+    private PagedList<FighterDto> _myFighters;
 
     private string _searchString = "";
-    private PagedList<FighterDto> _myFighters;
+    private MudTable<FighterDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFighterApiClient FighterApiClient { get; set; }
@@ -32,7 +32,7 @@ public partial class FightersPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Fighters)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Fighters)], null, true)
         ];
     }
 
@@ -43,8 +43,8 @@ public partial class FightersPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = _searchString,
+            SortOrder = (SortOrder)state.SortDirection,
+            SearchTerm = _searchString
         };
 
         try
@@ -57,17 +57,14 @@ public partial class FightersPage : ComponentBase
             return new TableData<FighterDto> { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<FighterDto>
-        {
-            TotalItems = _myFighters.TotalCount,
-            Items = _myFighters.Items
-        };
+        return new TableData<FighterDto> { TotalItems = _myFighters.TotalCount, Items = _myFighters.Items };
     }
 
     private async Task DeleteFighter(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(@Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -86,7 +83,7 @@ public partial class FightersPage : ComponentBase
 
     private async Task UpdateFighter(FighterDto fighterDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFighterDialog>
         {
             {
@@ -101,13 +98,12 @@ public partial class FightersPage : ComponentBase
                     ImageBase64 = ""
                 }
             },
-            {
-                x => x.Url,
-                fighterDto.Image?.Url
-            }
+            { x => x.Url, fighterDto.Image?.Url }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateFighterDialog>(Localizer[nameof(AppStrings.UpdateFighter)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateFighterDialog>(Localizer[nameof(AppStrings.UpdateFighter)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -117,16 +113,15 @@ public partial class FightersPage : ComponentBase
 
     private async Task CreateFighter()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFighterDialog>
         {
-            { 
-                x => x.FormModel, 
-                new CreateFighter.FormModel() 
-            }
+            { x => x.FormModel, new CreateFighter.FormModel() }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateFighterDialog>(Localizer[nameof(AppStrings.CreateFighter)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateFighterDialog>(Localizer[nameof(AppStrings.CreateFighter)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

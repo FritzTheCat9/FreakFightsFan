@@ -21,9 +21,9 @@ public class ApiClient(
     HttpClient client,
     IJwtProvider jwtProvider) : IApiClient
 {
-    private readonly string _baseUrl = client.BaseAddress?.ToString();
     private const string _authScheme = "Bearer";
     private const string _languageHeader = "Accept-Language";
+    private readonly string _baseUrl = client.BaseAddress?.ToString();
 
     public async Task<TResponse> Get<TResponse>(string url)
     {
@@ -100,7 +100,9 @@ public class ApiClient(
     private async Task AddHeaderValues()
     {
         var token = await jwtProvider.GetJwtDto();
-        client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue(_authScheme, token.AccessToken) : null;
+        client.DefaultRequestHeaders.Authorization = token is not null
+            ? new AuthenticationHeaderValue(_authScheme, token.AccessToken)
+            : null;
 
         var currentCultureName = CultureInfo.CurrentCulture.Name;
         client.DefaultRequestHeaders.Add(_languageHeader, currentCultureName);

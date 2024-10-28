@@ -9,11 +9,14 @@ namespace FreakFightsFan.Blazor.Components;
 
 public partial class FritzFileInput
 {
+    private readonly string _allowedFileTypesString =
+        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
+
     private readonly int _maxFileSize = ImageConsts.MaxFileSize;
-    private readonly string _allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
     private FieldIdentifier _fileFieldIdentifier;
     private FieldIdentifier _imageBase64FieldIdentifier;
+    private bool _isImageValid;
 
     [CascadingParameter] public EditContext EditContext { get; set; }
 
@@ -26,7 +29,6 @@ public partial class FritzFileInput
     [Parameter] public Expression<Func<string>> ForImageBase64 { get; set; }
 
     [Parameter] public string Url { get; set; }
-    private bool _isImageValid;
 
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
     [Inject] public IStringLocalizer<ValidationMessage> SharedLocalizer { get; set; }

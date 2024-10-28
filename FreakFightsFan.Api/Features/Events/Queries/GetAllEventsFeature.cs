@@ -36,7 +36,8 @@ public static class GetAllEventsFeature
             eventsQuery = eventsQuery.FilterEvents(query);
             eventsQuery = eventsQuery.SortEvents(query);
 
-            var eventsPagedList = PageListExtensions<EventDto>.Create(eventsQuery.Select(x => x.ToDto()),
+            var eventsPagedList = PageListExtensions<EventDto>.Create(
+                eventsQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

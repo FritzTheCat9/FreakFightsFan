@@ -18,7 +18,8 @@ public class DatabaseInitializer(
         }
         catch (Exception ex)
         {
-            logger.LogError("[DatabaseInitializer] Error while creating and migrating the database: {0}", ex.Message);
+            logger.LogError("[DatabaseInitializer] Error while creating and migrating the database: {0}",
+                ex.Message);
         }
     }
 

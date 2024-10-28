@@ -51,7 +51,7 @@ public class ExceptionHandler(
 
         validationMessageStore.Clear();
 
-        foreach ((string fieldName, List<string> errors) in validationException.Errors)
+        foreach (var (fieldName, errors) in validationException.Errors)
         {
             var fieldIdentifier = new FieldIdentifier(editContext.Model, fieldName);
             foreach (var error in errors)

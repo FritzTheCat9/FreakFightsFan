@@ -1,6 +1,3 @@
 ﻿namespace FreakFightsFan.Api;
 
-public class ApiValidationMessage
-{
-
-}
+public class ApiValidationMessage { }

@@ -8,7 +8,6 @@ public abstract class CustomException(string message) : Exception(message)
 public class MyValidationException : CustomException
 {
     private const string _errorMessage = "Validation Error";
-    public Dictionary<string, List<string>> Errors { get; set; } = [];
 
     public MyValidationException(Dictionary<string, List<string>> errors) : base(_errorMessage)
     {
@@ -21,6 +20,8 @@ public class MyValidationException : CustomException
         Type = ExceptionType.Validation;
         Errors.Add(propertyName, [error]);
     }
+
+    public Dictionary<string, List<string>> Errors { get; set; } = [];
 }
 
 public class MyServerException : CustomException
@@ -59,7 +60,7 @@ public class MyNotFoundException : CustomException
 
     //public string Details { get; set; }
 
-    public MyNotFoundException(/*string details*/) : base(_errorMessage)
+    public MyNotFoundException( /*string details*/) : base(_errorMessage)
     {
         Type = ExceptionType.NotFound;
         //Details = details;

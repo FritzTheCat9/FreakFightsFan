@@ -14,7 +14,7 @@ public static class FighterHelpers
             FightResult.Loss => Colors.Red.Default,
             FightResult.Draw => Colors.Gray.Default,
             FightResult.NoContest => Colors.Blue.Default,
-            _ => Colors.Gray.Default,
+            _ => Colors.Gray.Default
         };
     }
 }

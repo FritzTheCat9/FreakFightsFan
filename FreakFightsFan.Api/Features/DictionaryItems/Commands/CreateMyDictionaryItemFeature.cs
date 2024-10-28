@@ -47,7 +47,7 @@ public static class CreateMyDictionaryItemFeature
                 Modified = clock.Current(),
                 Name = command.Name,
                 Code = command.Code,
-                DictionaryId = command.DictionaryId,
+                DictionaryId = command.DictionaryId
             };
 
             return await myDictionaryItemRepository.Create(dictionaryItem);

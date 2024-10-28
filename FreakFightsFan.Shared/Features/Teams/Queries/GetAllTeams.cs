@@ -13,8 +13,5 @@ public static class GetAllTeams
         public int PageSize { get; set; }
     }
 
-    public class Validator : AbstractValidator<Query>
-    {
-
-    }
+    public class Validator : AbstractValidator<Query> { }
 }

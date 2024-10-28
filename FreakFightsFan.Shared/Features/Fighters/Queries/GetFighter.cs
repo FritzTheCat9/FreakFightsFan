@@ -11,8 +11,5 @@ public static class GetFighter
         public int Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Query>
-    {
-
-    }
+    public class Validator : AbstractValidator<Query> { }
 }

@@ -14,6 +14,16 @@ public class FreakFightsFanApiFactory : WebApplicationFactory<Program>, IAsyncLi
 {
     private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder().Build();
 
+    public Task InitializeAsync()
+    {
+        return _msSqlContainer.StartAsync();
+    }
+
+    Task IAsyncLifetime.DisposeAsync()
+    {
+        return _msSqlContainer.DisposeAsync().AsTask();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
@@ -24,15 +34,5 @@ public class FreakFightsFanApiFactory : WebApplicationFactory<Program>, IAsyncLi
                 x.UseSqlServer(_msSqlContainer.GetConnectionString());
             });
         });
-    }
-
-    public Task InitializeAsync()
-    {
-        return _msSqlContainer.StartAsync();
-    }
-
-    Task IAsyncLifetime.DisposeAsync()
-    {
-        return _msSqlContainer.DisposeAsync().AsTask();
     }
 }

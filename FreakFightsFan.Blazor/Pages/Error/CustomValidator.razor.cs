@@ -5,9 +5,8 @@ namespace FreakFightsFan.Blazor.Pages.Error;
 
 public partial class CustomValidator : ComponentBase
 {
-    [CascadingParameter] private EditContext EditContext { get; set; }
-
     private ValidationMessageStore _validationMessageStore;
+    [CascadingParameter] private EditContext EditContext { get; set; }
 
     protected override void OnInitialized()
     {

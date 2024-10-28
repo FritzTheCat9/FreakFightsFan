@@ -15,10 +15,7 @@ public class GetMyDictionaryFeatureTests
     [Fact]
     public async Task GetMyDictionaryHandler_ThrowsNotFoundException_IfDictionaryNotFound()
     {
-        var command = new GetMyDictionary.Query
-        {
-            Id = 1,
-        };
+        var command = new GetMyDictionary.Query { Id = 1 };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
@@ -40,10 +37,7 @@ public class GetMyDictionaryFeatureTests
     [Fact]
     public async Task GetMyDictionaryHandler_ReturnsValidDictionary()
     {
-        var command = new GetMyDictionary.Query
-        {
-            Id = 1,
-        };
+        var command = new GetMyDictionary.Query { Id = 1 };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();

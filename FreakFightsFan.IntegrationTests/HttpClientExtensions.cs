@@ -11,25 +11,29 @@ public static class HttpClientExtensions
     public static async Task Login(this HttpClient client, UserBase user)
     {
         var token = await GetJwtForUser(client, user);
-        client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
+        client.DefaultRequestHeaders.Authorization =
+            token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
     }
 
     public static async Task LoginAsUserAsync(this HttpClient client)
     {
         var token = await GetJwtForUser(client, new User());
-        client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
+        client.DefaultRequestHeaders.Authorization =
+            token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
     }
 
     public static async Task LoginAsAdminAsync(this HttpClient client)
     {
         var token = await GetJwtForUser(client, new Admin());
-        client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
+        client.DefaultRequestHeaders.Authorization =
+            token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
     }
 
     public static async Task LoginAsSuperAdminAsync(this HttpClient client)
     {
         var token = await GetJwtForUser(client, new SuperAdmin());
-        client.DefaultRequestHeaders.Authorization = token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
+        client.DefaultRequestHeaders.Authorization =
+            token is not null ? new AuthenticationHeaderValue("Bearer", token.AccessToken) : null;
     }
 
     public static void Logout(this HttpClient client)
@@ -39,11 +43,7 @@ public static class HttpClientExtensions
 
     private static async Task<JwtDto> GetJwtForUser(HttpClient client, UserBase user)
     {
-        var command = new Login.Command
-        {
-            Email = user.Email,
-            Password = user.Password,
-        };
+        var command = new Login.Command { Email = user.Email, Password = user.Password };
 
         var response = await client.PostAsJsonAsync("api/users/login", command);
         var jwt = await response.Content.ReadFromJsonAsync<JwtDto>();

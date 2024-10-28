@@ -9,17 +9,14 @@ public static class GetAllMyDictionaryItems
 {
     public class Query : IRequest<PagedList<MyDictionaryItemDto>>, IPagedQuery, ISortedQuery
     {
+        public string SearchTerm { get; set; }
+
+        public int DictionaryId { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public string SortColumn { get; set; }
         public SortOrder SortOrder { get; set; }
-        public string SearchTerm { get; set; }
-
-        public int DictionaryId { get; set; }
     }
 
-    public class Validator : AbstractValidator<Query>
-    {
-
-    }
+    public class Validator : AbstractValidator<Query> { }
 }

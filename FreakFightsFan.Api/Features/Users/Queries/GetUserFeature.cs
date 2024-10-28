@@ -17,7 +17,7 @@ public static class GetUserFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetUser.Query() { Id = id };
+                var query = new GetUser.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetUser")

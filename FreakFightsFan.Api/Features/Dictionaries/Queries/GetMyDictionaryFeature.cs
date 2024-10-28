@@ -18,7 +18,7 @@ public static class GetMyDictionaryFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetMyDictionary.Query() { Id = id };
+                var query = new GetMyDictionary.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetMyDictionary")

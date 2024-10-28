@@ -35,7 +35,7 @@ public static class FightsExtensions
             EventId = fight.EventId,
             Event = fight.Event.ToDto(),
             Teams = fight.Teams.Select(x => x.ToDto()).ToList(),
-            Type = fight.Type?.ToDto(),
+            Type = fight.Type?.ToDto()
         };
     }
 }

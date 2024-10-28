@@ -17,10 +17,10 @@ namespace FreakFightsFan.Blazor.Pages.Fights;
 
 public partial class FightsPage : ComponentBase
 {
+    private EventDto _event;
     private List<BreadcrumbItem> _items = [];
 
     private List<FightDto> _myFights;
-    private EventDto _event;
 
     [Parameter] public int FederationId { get; set; }
     [Parameter] public int EventId { get; set; }
@@ -39,9 +39,9 @@ public partial class FightsPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], href: "/federations"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], href: $"/events/{FederationId}"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Fights)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], "/federations"),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], $"/events/{FederationId}"),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Fights)], null, true)
         ];
     }
 
@@ -67,12 +67,7 @@ public partial class FightsPage : ComponentBase
 
     private async Task GetAllFights()
     {
-        var query = new GetAllFights.Query
-        {
-            Page = 1,
-            PageSize = FightsConsts.MaxFightsInOneEvent,
-            EventId = EventId
-        };
+        var query = new GetAllFights.Query { Page = 1, PageSize = FightsConsts.MaxFightsInOneEvent, EventId = EventId };
 
         try
         {
@@ -87,8 +82,9 @@ public partial class FightsPage : ComponentBase
 
     private async Task DeleteFight(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -109,7 +105,7 @@ public partial class FightsPage : ComponentBase
     {
         try
         {
-            var command = new MoveFight.Command() { Id = id, Direction = direction };
+            var command = new MoveFight.Command { Id = id, Direction = direction };
             await FightApiClient.MoveFight(command);
             await GetAllFights();
         }
@@ -129,34 +125,24 @@ public partial class FightsPage : ComponentBase
 
     private async Task UpdateFight(FightDto fightDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFightDialog>
         {
             {
                 x => x.Command,
                 new UpdateFight.Command
                 {
-                    Id = fightDto.Id,
-                    Teams = [],
-                    VideoUrl = fightDto.VideoUrl,
-                    TypeId = fightDto.Type?.Id
+                    Id = fightDto.Id, Teams = [], VideoUrl = fightDto.VideoUrl, TypeId = fightDto.Type?.Id
                 }
             },
-            {
-                x => x.Teams,
-                fightDto.Teams
-            },
-            {
-                x => x.NumberOfTeams,
-                fightDto.Teams.Count
-            },
-            {
-                x => x.FightType,
-                fightDto.Type
-            }
+            { x => x.Teams, fightDto.Teams },
+            { x => x.NumberOfTeams, fightDto.Teams.Count },
+            { x => x.FightType, fightDto.Type }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateFightDialog>(Localizer[nameof(AppStrings.UpdateFight)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateFightDialog>(Localizer[nameof(AppStrings.UpdateFight)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -166,26 +152,19 @@ public partial class FightsPage : ComponentBase
 
     private async Task CreateFight()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFightDialog>
         {
             {
                 x => x.Command,
-                new CreateFight.Command
-                {
-                    EventId = EventId,
-                    Teams = [],
-                    VideoUrl = null,
-                    TypeId = null,
-                }
+                new CreateFight.Command { EventId = EventId, Teams = [], VideoUrl = null, TypeId = null }
             },
-            {
-                x => x.NumberOfTeams,
-                2
-            }
+            { x => x.NumberOfTeams, 2 }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateFightDialog>(Localizer[nameof(AppStrings.CreateFight)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateFightDialog>(Localizer[nameof(AppStrings.CreateFight)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

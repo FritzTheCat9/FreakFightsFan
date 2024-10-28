@@ -42,7 +42,8 @@ public static class GetAllMyDictionaryItemsByCodeFeature
                     "[Dictionary Code] Field on frontend tried to access a non-existent dictionary with code: {DictionaryCode}",
                     query.DictionaryCode);
 
-                var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(query.Page,
+                var emptyPagedList = PageListExtensions<MyDictionaryItemDto>.CreateEmpty(
+                    query.Page,
                     query.PageSize);
 
                 return emptyPagedList;
@@ -53,10 +54,11 @@ public static class GetAllMyDictionaryItemsByCodeFeature
             dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
             dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-            var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
-                dictionaryItemsQuery.Select(x => x.ToDto()),
-                query.Page,
-                query.PageSize);
+            var dictionaryItemsPagedList =
+                PageListExtensions<MyDictionaryItemDto>.Create(
+                    dictionaryItemsQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
 
             return dictionaryItemsPagedList;
         }

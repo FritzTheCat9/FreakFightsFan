@@ -13,12 +13,14 @@ namespace FreakFightsFan.Blazor.Components;
 
 public partial class FritzFighterPicker : ComponentBase
 {
-    private MudAutocomplete<FighterDto> _autocomplete;
-
     private readonly Func<FighterDto, string> _displayFighter = fighter
-        => fighter is null ? null : $"""
-                                     {fighter.FirstName} {fighter.LastName} - "{fighter.Nickname}"
-                                     """;
+        => fighter is null
+            ? null
+            : $"""
+               {fighter.FirstName} {fighter.LastName} - "{fighter.Nickname}"
+               """;
+
+    private MudAutocomplete<FighterDto> _autocomplete;
 
     [Parameter] public List<CreateFight.TeamHelperModel> Teams { get; set; } = [];
     [Parameter] public string Label { get; set; }
@@ -53,7 +55,7 @@ public partial class FritzFighterPicker : ComponentBase
             SortColumn = "name",
             SortOrder = SortOrder.Ascending,
             SearchTerm = value ?? "",
-            HiddenFightersIds = GetHiddenFightersIds(),
+            HiddenFightersIds = GetHiddenFightersIds()
         };
 
         PagedList<FighterDto> fightersPagedList;

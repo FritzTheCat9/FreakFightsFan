@@ -33,7 +33,7 @@ public static class FightersExtensions
             LastName = fighter.LastName,
             Nickname = fighter.Nickname,
             InstagramUrl = fighter.InstagramUrl,
-            Image = fighter.Image?.ToDto(),
+            Image = fighter.Image?.ToDto()
         };
     }
 
@@ -63,7 +63,7 @@ public static class FightersExtensions
             SortOrder.Ascending => fighters.OrderBy(GetFighterSortProperty(query)),
             SortOrder.Descending => fighters.OrderByDescending(GetFighterSortProperty(query)),
             SortOrder.None => fighters.OrderBy(x => x.LastName),
-            _ => fighters.OrderBy(x => x.LastName),
+            _ => fighters.OrderBy(x => x.LastName)
         };
     }
 
@@ -74,7 +74,7 @@ public static class FightersExtensions
             "firstname" => fighter => fighter.FirstName,
             "lastname" => fighter => fighter.LastName,
             "nickname" => fighter => fighter.Nickname,
-            _ => fighter => fighter.Nickname,
+            _ => fighter => fighter.Nickname
         };
     }
 }

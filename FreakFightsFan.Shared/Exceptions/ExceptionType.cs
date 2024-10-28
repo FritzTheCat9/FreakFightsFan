@@ -6,5 +6,5 @@ public enum ExceptionType
     Unauthorized = 401,
     Forbidden = 403,
     NotFound = 404,
-    Server = 500,
+    Server = 500
 }

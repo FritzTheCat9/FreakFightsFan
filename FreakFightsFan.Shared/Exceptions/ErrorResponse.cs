@@ -8,8 +8,6 @@ public class ErrorResponse(ExceptionType type, string message)
 
 public class ValidationErrorResponse : ErrorResponse
 {
-    public Dictionary<string, List<string>> Errors { get; set; } = [];
-
     public ValidationErrorResponse(
         ExceptionType type,
         string message,
@@ -18,6 +16,8 @@ public class ValidationErrorResponse : ErrorResponse
     {
         Errors = errors;
     }
+
+    public Dictionary<string, List<string>> Errors { get; set; } = [];
 }
 
 public class ServerErrorResponse(ExceptionType type, string message) : ErrorResponse(type, message);

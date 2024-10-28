@@ -17,10 +17,10 @@ public interface IImageService
 
 public class ImageService : IImageService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IClock _clock;
-    private readonly ImageOptions _options;
     private readonly string _folderPath;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ImageOptions _options;
 
     public ImageService(
         IWebHostEnvironment webHostEnvironment,
@@ -57,7 +57,8 @@ public class ImageService : IImageService
 
     public string GetImageUrl(string name)
     {
-        var url = $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host}";
+        var url =
+            $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host}";
         return $"{url}/{_options.FolderName}/{name}";
     }
 

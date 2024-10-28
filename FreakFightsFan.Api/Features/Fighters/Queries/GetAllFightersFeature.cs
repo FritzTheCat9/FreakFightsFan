@@ -41,7 +41,8 @@ public static class GetAllFightersFeature
             fightersQuery = fightersQuery.FilterFighters(query);
             fightersQuery = fightersQuery.SortFighters(query);
 
-            var fightersPagedList = PageListExtensions<FighterDto>.Create(fightersQuery.Select(x => x.ToDto()),
+            var fightersPagedList = PageListExtensions<FighterDto>.Create(
+                fightersQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

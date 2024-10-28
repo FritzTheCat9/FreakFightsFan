@@ -17,7 +17,7 @@ public static class DeleteImageFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new DeleteImage.Command() { Id = id };
+                var command = new DeleteImage.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
             .WithTags(Tags.Images)

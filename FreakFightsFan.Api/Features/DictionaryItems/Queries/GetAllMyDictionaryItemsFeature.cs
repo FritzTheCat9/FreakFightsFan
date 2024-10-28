@@ -41,10 +41,11 @@ public static class GetAllMyDictionaryItemsFeature
             dictionaryItemsQuery = dictionaryItemsQuery.FilterMyDictionaryItems(query);
             dictionaryItemsQuery = dictionaryItemsQuery.SortMyDictionaryItems(query);
 
-            var dictionaryItemsPagedList = PageListExtensions<MyDictionaryItemDto>.Create(
-                dictionaryItemsQuery.Select(x => x.ToDto()),
-                query.Page,
-                query.PageSize);
+            var dictionaryItemsPagedList =
+                PageListExtensions<MyDictionaryItemDto>.Create(
+                    dictionaryItemsQuery.Select(x => x.ToDto()),
+                    query.Page,
+                    query.PageSize);
 
             return dictionaryItemsPagedList;
         }

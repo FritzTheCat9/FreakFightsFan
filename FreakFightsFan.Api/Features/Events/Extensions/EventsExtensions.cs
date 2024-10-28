@@ -33,7 +33,7 @@ public static class EventsExtensions
             Date = myEvent.Date,
             FederationId = myEvent.FederationId,
             City = myEvent.City?.ToDto(),
-            Hall = myEvent.Hall?.ToDto(),
+            Hall = myEvent.Hall?.ToDto()
         };
     }
 
@@ -60,7 +60,7 @@ public static class EventsExtensions
             SortOrder.Ascending => events.OrderBy(GetEventSortProperty(query)),
             SortOrder.Descending => events.OrderByDescending(GetEventSortProperty(query)),
             SortOrder.None => events.OrderByDescending(myEvent => myEvent.Date),
-            _ => events.OrderByDescending(myEvent => myEvent.Date),
+            _ => events.OrderByDescending(myEvent => myEvent.Date)
         };
     }
 
@@ -72,7 +72,7 @@ public static class EventsExtensions
             "date" => myEvent => myEvent.Date,
             "city" => myEvent => myEvent.City.Name,
             "hall" => myEvent => myEvent.Hall.Name,
-            _ => myEvent => myEvent.Date,
+            _ => myEvent => myEvent.Date
         };
     }
 }

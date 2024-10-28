@@ -15,8 +15,5 @@ public static class GetAllImages
         public SortOrder SortOrder { get; set; }
     }
 
-    public class Validator : AbstractValidator<Query>
-    {
-
-    }
+    public class Validator : AbstractValidator<Query> { }
 }

@@ -17,7 +17,7 @@ public static class GetFighterFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetFighter.Query() { Id = id };
+                var query = new GetFighter.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetFighter")

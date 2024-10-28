@@ -18,7 +18,7 @@ public static class GetImageFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetImage.Query() { Id = id };
+                var query = new GetImage.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetImage")

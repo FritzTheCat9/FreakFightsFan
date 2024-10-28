@@ -17,7 +17,7 @@ public static class GetEventFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetEvent.Query() { Id = id };
+                var query = new GetEvent.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetEvent")

@@ -55,9 +55,9 @@ public static class CreateFightFeature
                 EventId = command.EventId,
                 OrderNumber = myEvent.Fights.Count + 1,
                 VideoUrl = command.VideoUrl,
-                Type = (command.TypeId is not null)
+                Type = command.TypeId is not null
                     ? await dictionaryItemRepository.Get(command.TypeId.Value)
-                    : null,
+                    : null
             };
 
             fight.Teams.AddRange(teamsInFight);

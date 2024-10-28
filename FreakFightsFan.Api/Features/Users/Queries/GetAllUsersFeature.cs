@@ -36,7 +36,8 @@ public static class GetAllUsersFeature
             usersQuery = usersQuery.FilterMyUsers(query);
             usersQuery = usersQuery.SortMyUsers(query);
 
-            var usersPagedList = PageListExtensions<UserDto>.Create(usersQuery.Select(x => x.ToDto()),
+            var usersPagedList = PageListExtensions<UserDto>.Create(
+                usersQuery.Select(x => x.ToDto()),
                 query.Page,
                 query.PageSize);
 

@@ -14,5 +14,5 @@ public enum ApiValidationMessageString
     PasswordIsIncorrect,
     EmailIsAlreadyTaken,
     UserNameIsAlreadyTaken,
-    RefreshTokenIsNotValid,
+    RefreshTokenIsNotValid
 }

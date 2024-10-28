@@ -18,7 +18,7 @@ public static class GetMyDictionaryItemFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetMyDictionaryItem.Query() { Id = id };
+                var query = new GetMyDictionaryItem.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetMyDictionaryItem")
@@ -33,7 +33,8 @@ public static class GetMyDictionaryItemFeature
             GetMyDictionaryItem.Query query,
             CancellationToken cancellationToken)
         {
-            var dictionaryItem = await myDictionaryItemRepository.Get(query.Id) ?? throw new MyNotFoundException();
+            var dictionaryItem =
+                await myDictionaryItemRepository.Get(query.Id) ?? throw new MyNotFoundException();
             return dictionaryItem.ToDto();
         }
     }

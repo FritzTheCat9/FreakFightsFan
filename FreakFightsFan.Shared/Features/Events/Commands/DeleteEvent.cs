@@ -10,8 +10,5 @@ public static class DeleteEvent
         public int Id { get; set; }
     }
 
-    public class Validator : AbstractValidator<Command>
-    {
-
-    }
+    public class Validator : AbstractValidator<Command> { }
 }

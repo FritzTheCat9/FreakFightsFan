@@ -30,7 +30,7 @@ public static class FederationsExtensions
             Created = federation.Created,
             Modified = federation.Modified,
             Name = federation.Name,
-            Image = federation.Image?.ToDto(),
+            Image = federation.Image?.ToDto()
         };
     }
 
@@ -57,7 +57,7 @@ public static class FederationsExtensions
             SortOrder.Ascending => federations.OrderBy(GetFederationSortProperty(query)),
             SortOrder.Descending => federations.OrderByDescending(GetFederationSortProperty(query)),
             SortOrder.None => federations.OrderByDescending(x => x.Events.Count),
-            _ => federations.OrderByDescending(x => x.Events.Count),
+            _ => federations.OrderByDescending(x => x.Events.Count)
         };
     }
 
@@ -66,7 +66,7 @@ public static class FederationsExtensions
         return query.SortColumn.ToLowerInvariant() switch
         {
             "name" => federation => federation.Name,
-            _ => federation => federation.Name,
+            _ => federation => federation.Name
         };
     }
 }

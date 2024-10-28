@@ -16,13 +16,16 @@ public class EmailService(
     : IEmailService
 {
     private readonly EmailOptions _options = options.Value;
-    private readonly string _templatesFolder = Path.Combine(Path.GetFullPath(webHostEnvironment.ContentRootPath), "Emails", "Templates");
+
+    private readonly string _templatesFolder =
+        Path.Combine(Path.GetFullPath(webHostEnvironment.ContentRootPath), "Emails", "Templates");
 
     public async Task SendEmail<T>(string to, T model) where T : BaseTemplateModel
     {
         if (!_options.SendEmails)
         {
-            logger.LogError("[Email Service] Sending emails is disabled in appsettings.json {SendEmails}", _options.SendEmails);
+            logger.LogError("[Email Service] Sending emails is disabled in appsettings.json {SendEmails}",
+                _options.SendEmails);
 
             return;
         }
@@ -34,7 +37,8 @@ public class EmailService(
 
         await email.SendAsync();
 
-        logger.LogInformation("[Email Service] {Subject} email successfully sent to: {To}, ({TemplateFileName})", model.Subject,  to, model.TemplateFileName);
+        logger.LogInformation("[Email Service] {Subject} email successfully sent to: {To}, ({TemplateFileName})",
+            model.Subject, to, model.TemplateFileName);
     }
 }
 

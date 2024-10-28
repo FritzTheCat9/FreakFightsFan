@@ -18,7 +18,7 @@ public static class GetTeamFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetTeam.Query() { Id = id };
+                var query = new GetTeam.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetTeam")

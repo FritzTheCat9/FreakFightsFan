@@ -15,10 +15,10 @@ namespace FreakFightsFan.Blazor.Pages.Federations;
 public partial class FederationsPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<FederationDto> _table;
+    private PagedList<FederationDto> _myFederations;
 
     private string _searchString = "";
-    private PagedList<FederationDto> _myFederations;
+    private MudTable<FederationDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFederationApiClient FederationApiClient { get; set; }
@@ -32,7 +32,7 @@ public partial class FederationsPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], null, true)
         ];
     }
 
@@ -43,8 +43,8 @@ public partial class FederationsPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = _searchString,
+            SortOrder = (SortOrder)state.SortDirection,
+            SearchTerm = _searchString
         };
 
         try
@@ -57,11 +57,7 @@ public partial class FederationsPage : ComponentBase
             return new TableData<FederationDto> { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<FederationDto>
-        {
-            TotalItems = _myFederations.TotalCount,
-            Items = _myFederations.Items
-        };
+        return new TableData<FederationDto> { TotalItems = _myFederations.TotalCount, Items = _myFederations.Items };
     }
 
     private void RedirectToEventsPage(int id)
@@ -71,8 +67,9 @@ public partial class FederationsPage : ComponentBase
 
     private async Task DeleteFederation(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -91,25 +88,19 @@ public partial class FederationsPage : ComponentBase
 
     private async Task UpdateFederation(FederationDto federationDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateFederationDialog>
         {
             {
                 x => x.FormModel,
-                new UpdateFederation.FormModel
-                {
-                    Id = federationDto.Id,
-                    Name = federationDto.Name,
-                    ImageBase64 = "",
-                }
+                new UpdateFederation.FormModel { Id = federationDto.Id, Name = federationDto.Name, ImageBase64 = "" }
             },
-            {
-                x => x.Url,
-                federationDto.Image?.Url
-            }
+            { x => x.Url, federationDto.Image?.Url }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -119,16 +110,15 @@ public partial class FederationsPage : ComponentBase
 
     private async Task CreateFederation()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateFederationDialog>
         {
-            {
-                x => x.FormModel,
-                new CreateFederation.FormModel()
-            }
+            { x => x.FormModel, new CreateFederation.FormModel() }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateFederationDialog>(Localizer[nameof(AppStrings.CreateFederation)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateFederationDialog>(Localizer[nameof(AppStrings.CreateFederation)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

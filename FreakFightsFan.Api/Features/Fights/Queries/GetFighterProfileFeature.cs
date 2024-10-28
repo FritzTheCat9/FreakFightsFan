@@ -19,7 +19,7 @@ public static class GetFighterProfileFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetFighterProfile.Query() { Id = id };
+                var query = new GetFighterProfile.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithTags(Tags.Fights)
@@ -35,7 +35,8 @@ public static class GetFighterProfileFeature
             GetFighterProfile.Query query,
             CancellationToken cancellationToken)
         {
-            var fights = await fightRepository.GetFighterFights(query.Id) ?? throw new MyNotFoundException();
+            var fights = await fightRepository.GetFighterFights(query.Id) ??
+                         throw new MyNotFoundException();
 
             var profileFights = new List<ProfileFightDto>();
             foreach (var fight in fights)
@@ -44,7 +45,7 @@ public static class GetFighterProfileFeature
                 profileFights.Add(new ProfileFightDto { Fight = fight.ToDto(), FightResult = fightResult });
             }
 
-            var fighterProfileDto = new FighterProfileDto()
+            var fighterProfileDto = new FighterProfileDto
             {
                 ProfileFights = profileFights, Stats = GetFighterStats(profileFights)
             };
@@ -79,18 +80,16 @@ public static class GetFighterProfileFeature
                     case FightResult.NoContest:
                         noContest++;
                         break;
-                    default:
-                        break;
                 }
             }
 
-            var stats = new FighterFightsStats()
+            var stats = new FighterFightsStats
             {
                 Upcoming = upcoming,
                 Win = win,
                 Loss = loss,
                 Draw = draw,
-                NoContest = noContest,
+                NoContest = noContest
             };
 
             return stats;

@@ -16,7 +16,7 @@ public static class DeleteMyDictionaryFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var command = new DeleteMyDictionary.Command() { Id = id };
+                var command = new DeleteMyDictionary.Command { Id = id };
                 return Results.Ok(await mediator.Send(command, cancellationToken));
             })
             .WithTags(Tags.Dictionaries)
@@ -30,7 +30,8 @@ public static class DeleteMyDictionaryFeature
             DeleteMyDictionary.Command command,
             CancellationToken cancellationToken)
         {
-            var dictionary = await myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
+            var dictionary =
+                await myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
             await myDictionaryRepository.Delete(dictionary);
             return Unit.Value;
         }

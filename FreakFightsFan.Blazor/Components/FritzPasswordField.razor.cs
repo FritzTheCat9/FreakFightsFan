@@ -6,9 +6,9 @@ namespace FreakFightsFan.Blazor.Components;
 
 public partial class FritzPasswordField : ComponentBase
 {
-    private bool _passwordShown;
-    private InputType _passwordInputType = InputType.Password;
     private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+    private InputType _passwordInputType = InputType.Password;
+    private bool _passwordShown;
 
     [Parameter] public string Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }

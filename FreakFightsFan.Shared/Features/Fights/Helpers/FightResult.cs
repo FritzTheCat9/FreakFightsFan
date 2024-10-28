@@ -9,14 +9,16 @@ public enum FightResult
     Win = 1,
     Loss = 2,
     Draw = 3,
-    NoContest = 4,
+    NoContest = 4
 }
 
 public static class FightResultExtensions
 {
     private const string _resourceFileNamespace = "FreakFightsFan.Shared.Localization.Resources.FightResultConsts";
-    private static readonly ResourceManager _resourceManager = new(_resourceFileNamespace, typeof(FightResultExtensions).Assembly);
-        
+
+    private static readonly ResourceManager _resourceManager =
+        new(_resourceFileNamespace, typeof(FightResultExtensions).Assembly);
+
     public static string ToText(this FightResult fightResult)
     {
         return fightResult switch
@@ -26,7 +28,7 @@ public static class FightResultExtensions
             FightResult.Loss => _resourceManager.GetString("Loss", CultureInfo.CurrentCulture),
             FightResult.Draw => _resourceManager.GetString("Draw", CultureInfo.CurrentCulture),
             FightResult.NoContest => _resourceManager.GetString("NoContest", CultureInfo.CurrentCulture),
-            _ => _resourceManager.GetString("Upcoming", CultureInfo.CurrentCulture),
+            _ => _resourceManager.GetString("Upcoming", CultureInfo.CurrentCulture)
         };
     }
 }

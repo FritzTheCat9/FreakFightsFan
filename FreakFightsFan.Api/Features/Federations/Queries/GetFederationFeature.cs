@@ -17,7 +17,7 @@ public static class GetFederationFeature
                 IMediator mediator,
                 CancellationToken cancellationToken) =>
             {
-                var query = new GetFederation.Query() { Id = id };
+                var query = new GetFederation.Query { Id = id };
                 return Results.Ok(await mediator.Send(query, cancellationToken));
             })
             .WithName("GetFederation")

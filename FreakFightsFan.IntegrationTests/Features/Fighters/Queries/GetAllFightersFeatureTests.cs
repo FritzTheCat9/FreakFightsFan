@@ -54,7 +54,8 @@ public class GetAllFightersFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(query.Page) && x.Value.Any(x => x == $"{nameof(query.Page)} should be greater than {minPage}"));
+            .Contain(x => x.Key == nameof(query.Page) &&
+                          x.Value.Any(x => x == $"{nameof(query.Page)} should be greater than {minPage}"));
     }
 
     [Fact]
@@ -77,6 +78,7 @@ public class GetAllFightersFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(query.PageSize) && x.Value.Any(x => x == $"{nameof(query.PageSize)} should be greater than {minPageSize}"));
+            .Contain(x => x.Key == nameof(query.PageSize) && x.Value.Any(x
+                => x == $"{nameof(query.PageSize)} should be greater than {minPageSize}"));
     }
 }
