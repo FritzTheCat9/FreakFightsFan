@@ -1,50 +1,49 @@
-<EditForm Model=Command
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <TitleContent>
-            <MudStack Row=true
-                      Justify=Justify.SpaceBetween>
-                <MudText Typo=Typo.h6>
+            <MudStack Justify="Justify.SpaceBetween"
+                      Row="true">
+                <MudText Typo="Typo.h6">
                     @Localizer[nameof(AppStrings.UpdateFight)]
                 </MudText>
             </MudStack>
         </TitleContent>
         <DialogContent>
-            <MudTabs Rounded=true>
-                <MudTabPanel Text=@Localizer[nameof(AppStrings.Fight)]>
-                    <FritzTeamMaker @bind-Teams=Command.Teams
+            <MudTabs Rounded="true">
+                <MudTabPanel Text="@Localizer[nameof(AppStrings.Fight)]">
+                    <FritzTeamMaker @bind-Teams="Command.Teams"
                                     For="() => Command.Teams"
-                                    TeamHelperModel=_teams
-                                    SelectedTeam=_selectedTeam
-                                    NumberOfTeams=NumberOfTeams />
+                                    NumberOfTeams="NumberOfTeams"
+                                    SelectedTeam="_selectedTeam"
+                                    TeamHelperModel="_teams" />
                 </MudTabPanel>
-                <MudTabPanel Text=@Localizer[nameof(AppStrings.Options)]
-                             Icon=@Icons.Material.Filled.Settings>
-                    <MudGrid Spacing=1
-                             Justify=Justify.FlexStart>
-                        <MudItem xs=12>
-                            <FritzSelect T=int
-                                         Label=@Localizer[nameof(AppStrings.NumberOfTeams)]
-                                         @bind-Value=NumberOfTeams
+                <MudTabPanel Icon="@Icons.Material.Filled.Settings"
+                             Text="@Localizer[nameof(AppStrings.Options)]">
+                    <MudGrid Justify="Justify.FlexStart"
+                             Spacing="1">
+                        <MudItem xs="12">
+                            <FritzSelect @bind-Value="NumberOfTeams"
                                          For="() => NumberOfTeams"
-                                         OnSelect=OnTeamsCountSelect
-                                         ItemsToSelect=_allowedTeamSizes />
+                                         ItemsToSelect="_allowedTeamSizes"
+                                         Label="@Localizer[nameof(AppStrings.NumberOfTeams)]"
+                                         OnSelect="OnTeamsCountSelect"
+                                         T="int" />
                         </MudItem>
-                        <MudItem xs=12>
-                            <FritzDictionaryItemPicker Label=@Localizer[nameof(AppStrings.FightType)]
-                                                       @bind-Value=Command.TypeId
-                                                       For="() => Command.TypeId"
-                                                       DictionaryCode=@DictionaryCode.FightType
-                                                       @bind-DictionaryItemDto=FightType />
+                        <MudItem xs="12">
+                            <FritzDictionaryItemPicker @bind-DictionaryItemDto="FightType"
+                                                       @bind-Value="Command.TypeId"
+                                                       DictionaryCode="@DictionaryCode.FightType"
+                                                       For="() => Command.TypeId"Label="@Localizer[nameof(AppStrings.FightType)]" />
                             <FritzValidationMessage For="() => Command.TypeId" />
                         </MudItem>
-                        <MudItem xs=12>
-                            <FritzTextField Label=@Localizer[nameof(AppStrings.YoutubeVideoUrl)]
-                                            @bind-Value=Command.VideoUrl
-                                            For="() => Command.VideoUrl" />
+                        <MudItem xs="12">
+                            <FritzTextField @bind-Value="Command.VideoUrl"
+                                            For="() => Command.VideoUrl"
+                                            Label="@Localizer[nameof(AppStrings.YoutubeVideoUrl)]" />
                             <FritzValidationMessage For="() => Command.VideoUrl" />
                         </MudItem>
                     </MudGrid>
@@ -52,8 +51,8 @@
             </MudTabs>
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType=ButtonType.Submit
-                       Color=Color.Primary>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
                 @Localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>

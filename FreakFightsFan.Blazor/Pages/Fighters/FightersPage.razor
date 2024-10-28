@@ -5,25 +5,25 @@
     @Localizer[nameof(AppStrings.Fighters)]
 </PageTitle>
 
-<FritzBreadcrumbs Items=_items />
+<FritzBreadcrumbs Items="_items" />
 
-<MudTable ServerData=ServerReload
-          Dense=true
-          Hover=true
-          Elevation=3
-          @ref=_table
-          Context="fighter">
+<MudTable Context="fighter"
+          Dense="true"
+          Elevation="3"
+          Hover="true"
+          @ref="_table"
+          ServerData="ServerReload">
     <ToolBarContent>
-        <MudText Typo=Typo.h6>
+        <MudText Typo="Typo.h6">
             @Localizer[nameof(AppStrings.Fighters)]
         </MudText>
-        <AuthorizeView Policy=@Policy.Admin>
-            <MudIconButton Icon=@Icons.Material.Filled.Add
-                           Size=Size.Small
-                           OnClick=CreateFighter />
+        <AuthorizeView Policy="@Policy.Admin">
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           OnClick="CreateFighter"
+                           Size="Size.Small" />
         </AuthorizeView>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value=_searchString
+        <FritzSearchTextField @bind-Value="_searchString"
                               OnSearch="() => _table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
@@ -32,19 +32,19 @@
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="firstname"
-                               T=FighterDto>
+                               T="FighterDto">
                 @Localizer[nameof(AppStrings.FirstName)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="lastname"
-                               T=FighterDto>
+                               T="FighterDto">
                 @Localizer[nameof(AppStrings.LastName)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="nickname"
-                               T=FighterDto>
+                               T="FighterDto">
                 @Localizer[nameof(AppStrings.Nickname)]
             </MudTableSortLabel>
         </MudTh>
@@ -53,47 +53,47 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Image)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Image)]">
             @if (fighter.Image is not null)
             {
                 <MudLink Href=@fighter.Image.Url
                          Target="_blank">
-                    <MudImage Src=@fighter.Image.Url
-                              ObjectFit=ObjectFit.Contain
-                              Width=200
+                    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
                               Height=150
-                              Alt=@Localizer[nameof(AppStrings.Image)] />
+                              ObjectFit=ObjectFit.Contain
+                              Src=@fighter.Image.Url
+                              Width=200 />
                 </MudLink>
             }
             else
             {
-                <MudImage Src="images_default/default_user_image.png"
-                          ObjectFit=ObjectFit.Contain
-                          Width=200
+                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
                           Height=150
-                          Alt=@Localizer[nameof(AppStrings.Image)] />
+                          ObjectFit=ObjectFit.Contain
+                          Src="images_default/default_user_image.png"
+                          Width=200 />
             }
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.FirstName)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.FirstName)]">
             @fighter.FirstName
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.LastName)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.LastName)]">
             @fighter.LastName
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Nickname)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Nickname)]">
             @fighter.Nickname
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
-            <MudIconButton Icon=@Icons.Material.Filled.AccountCircle
-                           Size=Size.Small
-                           OnClick="() => RedirectToFighterProfile(fighter.Id)" />
-            <AuthorizeView Policy=@Policy.Admin>
-                <MudIconButton Icon=@Icons.Material.Filled.Edit
-                               Size=Size.Small
-                               OnClick="() => UpdateFighter(fighter)" />
-                <MudIconButton Icon=@Icons.Material.Filled.Delete
-                               Size=Size.Small
-                               OnClick="() => DeleteFighter(fighter.Id)" />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
+                           OnClick="() => RedirectToFighterProfile(fighter.Id)"
+                           Size="Size.Small" />
+            <AuthorizeView Policy="@Policy.Admin">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               OnClick="() => UpdateFighter(fighter)"
+                               Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => DeleteFighter(fighter.Id)"
+                               Size="Size.Small" />
             </AuthorizeView>
         </MudTd>
     </RowTemplate>
@@ -108,7 +108,7 @@
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
-                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

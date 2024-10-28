@@ -1,12 +1,14 @@
-<EditForm Model=FormModel
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+<EditForm Model="FormModel"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzFileInput @bind-File=FormModel.File ForFile="() => FormModel.File"
-                            @bind-ImageBase64=FormModel.ImageBase64 ForImageBase64="() => FormModel.ImageBase64" />
+            <FritzFileInput @bind-File="FormModel.File"
+                            @bind-ImageBase64="FormModel.ImageBase64"
+                            ForFile="() => FormModel.File"
+                            ForImageBase64="() => FormModel.ImageBase64" />
             <FritzValidationMessage For="() => FormModel.ImageBase64" />
             <FritzValidationMessage For="() => FormModel.File" />
             @if (FormModel?.File is not null)
@@ -15,14 +17,14 @@
                 <FritzValidationMessage For="() => FormModel.File.ContentType" />
             }
 
-            <FritzTextField Label=@Localizer[nameof(AppStrings.Name)]
-                            @bind-Value=FormModel.Name
-                            For="() => FormModel.Name" />
+            <FritzTextField @bind-Value="FormModel.Name"
+                            For="() => FormModel.Name"
+                            Label="@Localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => FormModel.Name" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType=ButtonType.Submit
-                       Color=Color.Primary>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
                 @Localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>

@@ -8,45 +8,46 @@
               OnlyValidateIfDirty=OnlyValidateIfDirty
               Style="display: none;" /> *@
 
-<MudGrid Spacing=1
-         Justify=Justify.FlexStart>
-    <MudItem xs=10>
-        <FritzFighterPicker @ref=_addFighterField
-                            @bind-Value=_fighter
+<MudGrid Justify="Justify.FlexStart"
+         Spacing="1">
+    <MudItem xs="10">
+        <FritzFighterPicker @bind-Value="_fighter"
                             For="() => _fighter"
-                            Label=@Localizer[nameof(AppStrings.Fighter)]
-                            Teams=TeamHelperModel />
-        <FritzValidationMessage For=For />
+                            Label="@Localizer[nameof(AppStrings.Fighter)]"
+                            @ref="_addFighterField"
+                            Teams="TeamHelperModel" />
+        <FritzValidationMessage For="For" />
         @if (ForEventId is not null)
         {
             <FritzValidationMessage For=ForEventId />
         }
     </MudItem>
-    <MudItem xs=2
-             Class="d-flex">
-        <MudButton OnClick=AddFighterToSelectedTeam
-                   Class="align-self-end"
-                   Color=Color.Primary
-                   Variant=Variant.Filled>
+    <MudItem Class="d-flex"
+             xs="2">
+        <MudButton Class="align-self-end"
+                   Color="Color.Primary"
+                   OnClick="AddFighterToSelectedTeam"
+                   Variant="Variant.Filled">
             @Localizer[nameof(AppStrings.Add)]
         </MudButton>
     </MudItem>
     @foreach (var team in TeamHelperModel)
     {
-        <MudItem xs=12
-                 md=6
+        <MudItem md=6
                  @onclick="() => SelectTeam(team.Number)"
-                 Style="cursor: pointer;">
-            <MudText Typo=Typo.h6
-                     Color="(SelectedTeam == team.Number) ? Color.Primary : Color.Default"
-                     GutterBottom=true>
+                 Style="cursor: pointer;"
+                 xs=12>
+            <MudText Color="SelectedTeam == team.Number ? Color.Primary : Color.Default"
+                     GutterBottom=true
+                     Typo=Typo.h6>
                 @Localizer[nameof(AppStrings.Team)] @($"{team.Number + 1}")
             </MudText>
             @if (team.Fighters.Any())
             {
-                <MudPaper Width="100%"
-                          Class=@((SelectedTeam == team.Number) ? "mud-theme-primary" : "")>
-                    <MudList T=FighterHelperModel Style="cursor: auto;">
+                <MudPaper Class=@(SelectedTeam == team.Number ? "mud-theme-primary" : "")
+                          Width="100%">
+                    <MudList Style="cursor: auto;"
+                             T=FighterHelperModel>
                         @foreach (var fighter in team.Fighters)
                         {
                             <MudListItem>

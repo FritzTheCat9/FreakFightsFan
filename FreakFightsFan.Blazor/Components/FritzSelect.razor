@@ -1,11 +1,11 @@
 ﻿@typeparam T
 
-<MudSelect T=T
-           Value=Value
-           SelectedValuesChanged=OnSelectedValuesChanged
-           For=For
-           Label=@Label
-           MultiSelection=false>
+<MudSelect For="For"
+           Label="@Label"
+           MultiSelection="false"
+           SelectedValuesChanged="OnSelectedValuesChanged"
+           T="T"
+           Value="Value">
     @if (ItemsToSelect is not null)
     {
         @foreach (var item in ItemsToSelect)

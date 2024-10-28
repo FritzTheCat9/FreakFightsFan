@@ -1,23 +1,23 @@
 ﻿@inherits FritzFormInputBase<int?>
 
-<InputNumber TValue=int?
-             Value=Value
-             ValueChanged=OnValueChanged
-             ValueExpression=For
-             hidden />
+<InputNumber hidden
+             TValue="int?"
+             Value="Value"
+             ValueChanged="OnValueChanged"
+             ValueExpression="For" />
 
-<MudAutocomplete T=MyDictionaryItemDto
-                 Value=DictionaryItemDto
-                 ValueChanged=OnDictionaryItemDtoChanged
-                 Label=@Label
-                 SearchFunc=Search
-                 ToStringFunc=DisplayDictionaryItem
-                 Variant=Variant.Text
-                 ShowProgressIndicator=true
-                 SelectValueOnTab=true
-                 ResetValueOnEmptyText=true
-                 FullWidth=true
-                 OnlyValidateIfDirty=true>
+<MudAutocomplete FullWidth="true"
+                 Label="@Label"
+                 OnlyValidateIfDirty="true"
+                 ResetValueOnEmptyText="true"
+                 SearchFunc="Search"
+                 SelectValueOnTab="true"
+                 ShowProgressIndicator="true"
+                 T="MyDictionaryItemDto"
+                 ToStringFunc="DisplayDictionaryItem"
+                 Value="DictionaryItemDto"
+                 ValueChanged="OnDictionaryItemDtoChanged"
+                 Variant="Variant.Text">
     <NoItemsTemplate>
         <MudText>
             @Localizer[nameof(AppStrings.NoDictionaryItemsFound), DictionaryCode]

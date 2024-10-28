@@ -51,7 +51,7 @@ public static class UpdateFightFeature
 
             fight.Modified = clock.Current();
             fight.VideoUrl = command.VideoUrl;
-            fight.Type = (command.TypeId is not null)
+            fight.Type = command.TypeId is not null
                 ? await dictionaryItemRepository.Get(command.TypeId.Value)
                 : null;
             fight.Teams.AddRange(teamsToAdd);

@@ -3,7 +3,7 @@
     <div class="mud-input-control-helper-container">
         @foreach (var prop in ValidationErrors.Errors.Keys)
         {
-            <p class="mud-input-helper-text mud-input-error">
+            <p class="mud-input-error mud-input-helper-text">
                 <div class="d-flex">
                     @foreach (var error in ValidationErrors.Errors[prop])
                     {

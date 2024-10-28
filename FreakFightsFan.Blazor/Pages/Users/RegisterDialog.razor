@@ -1,35 +1,35 @@
-﻿<EditForm Model=Command
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+﻿<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label=@Localizer[nameof(AppStrings.Email)]
-                            @bind-Value=Command.Email
-                            For="() => Command.Email" />
+            <FritzTextField @bind-Value="Command.Email"
+                            For="() => Command.Email"
+                            Label="@Localizer[nameof(AppStrings.Email)]" />
             <FritzValidationMessage For="() => Command.Email" />
 
-            <FritzTextField Label=@Localizer[nameof(AppStrings.UserName)]
-                            @bind-Value=Command.UserName
-                            For="() => Command.UserName" />
+            <FritzTextField @bind-Value="Command.UserName"
+                            For="() => Command.UserName"
+                            Label="@Localizer[nameof(AppStrings.UserName)]" />
             <FritzValidationMessage For="() => Command.UserName" />
 
-            <FritzPasswordField Label=@Localizer[nameof(AppStrings.Password)]
-                                @bind-Value=Command.Password
-                                For="() => Command.Password" />
+            <FritzPasswordField @bind-Value="Command.Password"
+                                For="() => Command.Password"
+                                Label="@Localizer[nameof(AppStrings.Password)]" />
             <FritzValidationMessage For="() => Command.Password" />
 
-            <FritzPasswordField Label=@Localizer[nameof(AppStrings.RepeatPassword)]
-                                @bind-Value=Command.RepeatPassword
-                                For="() => Command.RepeatPassword" />
+            <FritzPasswordField @bind-Value="Command.RepeatPassword"
+                                For="() => Command.RepeatPassword"
+                                Label="@Localizer[nameof(AppStrings.RepeatPassword)]" />
             <FritzValidationMessage For="() => Command.RepeatPassword" />
         </DialogContent>
         <DialogActions>
-            <FritzProcessingButton @ref=_processingButton
-                                   ButtonType=ButtonType.Submit
-                                   Color=Color.Primary
-                                   ButtonText=@Localizer[nameof(AppStrings.Register)] />
+            <FritzProcessingButton ButtonText="@Localizer[nameof(AppStrings.Register)]"
+                                   ButtonType="ButtonType.Submit"
+                                   Color="Color.Primary"
+                                   @ref="_processingButton" />
         </DialogActions>
     </MudDialog>
 </EditForm>

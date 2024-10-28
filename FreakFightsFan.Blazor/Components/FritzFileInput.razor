@@ -1,14 +1,14 @@
 ﻿@if (_isImageValid && !string.IsNullOrEmpty(ImageBase64))
 {
-    <MudImage Src=@ImageBase64
-              Width=400
-              Alt=@Localizer[nameof(AppStrings.Image)] />
+    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+              Src=@ImageBase64
+              Width=400 />
 }
 else if (!string.IsNullOrEmpty(Url))
 {
-    <MudImage Src=@Url
-              Width=400
-              Alt=@Localizer[nameof(AppStrings.Image)] />
+    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+              Src=@Url
+              Width=400 />
 }
 else
 {
@@ -17,16 +17,16 @@ else
     </MudItem>
 }
 
-<MudFileUpload T=IBrowserFile
-               @bind-Files=File
-               OnFilesChanged=UploadFiles
-               For=ForFile
-               Accept=@_allowedFileTypesString
-               AppendMultipleFiles=false>
+<MudFileUpload Accept="@_allowedFileTypesString"
+               AppendMultipleFiles="false"
+               @bind-Files="File"
+               For="ForFile"
+               OnFilesChanged="UploadFiles"
+               T="IBrowserFile">
     <ActivatorContent>
-        <MudButton Variant=Variant.Filled
-                   Color=Color.Primary
-                   StartIcon=@Icons.Material.Filled.AttachFile>
+        <MudButton Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.AttachFile"
+                   Variant="Variant.Filled">
             @Localizer[nameof(AppStrings.UploadImage)]
         </MudButton>
     </ActivatorContent>

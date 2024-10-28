@@ -1,7 +1,7 @@
-﻿<MudSelect Label=@Localizer[nameof(AppStrings.SelectLanguage)]
-           T=Culture
-           Value=CurrentCulture
-           ValueChanged=OnValueChanged
+﻿<MudSelect Label="@Localizer[nameof(AppStrings.SelectLanguage)]"
+           T="Culture"
+           Value="CurrentCulture"
+           ValueChanged="OnValueChanged"
            Variant="Variant.Outlined">
     @foreach (var culture in LocalizationConsts.SupportedCultures)
     {

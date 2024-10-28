@@ -36,11 +36,18 @@ public static class ImportFighterImagesFeature
         ILogger<Handler> logger)
         : IRequestHandler<ImportFighterImages.ImportFighterImagesCommand, Unit>
     {
-        private readonly ImageOptions _options = options.Value;
-        private const string _textFieldCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > div > input[type=text]";
-        private const string _searchButtonCssSelector = "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > button";
+        private const string _textFieldCssSelector =
+            "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > div > input[type=text]";
+
+        private const string _searchButtonCssSelector =
+            "#__layout > div > div > div.page > div.dinamic-wrapper > div.search > div > form > div > button";
+
         private const string _downloadButtonCssSelector = "div > div:nth-child(1) > div > div.sf-downloadbtn";
-        private const string _cookieDialog = "body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button > p";
+
+        private const string _cookieDialog =
+            "body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button > p";
+
+        private readonly ImageOptions _options = options.Value;
 
         public async Task<Unit> Handle(
             ImportFighterImages.ImportFighterImagesCommand command,
@@ -48,7 +55,7 @@ public static class ImportFighterImagesFeature
         {
             var fighters = await fighterRepository.GetAll();
             var fullDriverPath = Path.Combine(
-                Path.GetFullPath(webHostEnvironment.ContentRootPath), 
+                Path.GetFullPath(webHostEnvironment.ContentRootPath),
                 "chromedriver",
                 OperatingSystem.IsLinux() ? "linux64" : "win64");
 
@@ -65,14 +72,18 @@ public static class ImportFighterImagesFeature
 
                 foreach (var fighter in fighters)
                 {
-                    logger.LogInformation("[IMPORT FIGHTERS - START] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                    logger.LogInformation(
+                        "[IMPORT FIGHTERS - START] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
                         fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
 
                     if (fighter.Image is not null)
                     {
-                        logger.LogInformation("[IMPORT FIGHTERS - IMAGE EXISTS] - Image for fighter: {FighterId} - Fighter already have image", fighter.Id);
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - IMAGE EXISTS] - Image for fighter: {FighterId} - Fighter already have image",
+                            fighter.Id);
 
-                        logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
                             fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
 
                         continue;
@@ -82,10 +93,12 @@ public static class ImportFighterImagesFeature
 
                     if (string.IsNullOrEmpty(nick))
                     {
-                        logger.LogInformation("[IMPORT FIGHTERS - NO INSTAGRAM] - Image for fighter: {FighterId} - Fighter instagram nick is null or empty: '{Nick}'",
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - NO INSTAGRAM] - Image for fighter: {FighterId} - Fighter instagram nick is null or empty: '{Nick}'",
                             fighter.Id, fighter.Nickname);
 
-                        logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
                             fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
 
                         continue;
@@ -120,15 +133,19 @@ public static class ImportFighterImagesFeature
                     }
                     catch (Exception)
                     {
-                        logger.LogInformation("[IMPORT FIGHTERS - NO BUTTON] - Image for fighter: {FighterId} - Button error", fighter.Id);
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - NO BUTTON] - Image for fighter: {FighterId} - Button error",
+                            fighter.Id);
 
-                        logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
                             fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
 
                         continue;
                     }
 
-                    var downloadsFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                    var downloadsFolderPath =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
                     var targetDirectory = new DirectoryInfo(downloadsFolderPath);
                     var files = targetDirectory.GetFiles();
 
@@ -141,7 +158,8 @@ public static class ImportFighterImagesFeature
                         if (newestFile is not null && newestFile.CreationTime >= clock.Current()
                                 .AddMinutes(-1))
                         {
-                            logger.LogInformation("[IMPORT FIGHTERS - FILE] - Image for fighter: {FighterId} - Downloaded profile image with name {NewestFileName}",
+                            logger.LogInformation(
+                                "[IMPORT FIGHTERS - FILE] - Image for fighter: {FighterId} - Downloaded profile image with name {NewestFileName}",
                                 fighter.Id, newestFile.Name);
 
                             var fileBytes = await File.ReadAllBytesAsync(newestFile.FullName, cancellationToken);
@@ -153,23 +171,32 @@ public static class ImportFighterImagesFeature
                             await fighterRepository.Update(fighter);
                             await fighterRepository.SaveChanges();
 
-                            logger.LogInformation("[IMPORT FIGHTERS - UPDATED] - Image for fighter: {FighterId} - Updated fighter image", fighter.Id);
+                            logger.LogInformation(
+                                "[IMPORT FIGHTERS - UPDATED] - Image for fighter: {FighterId} - Updated fighter image",
+                                fighter.Id);
 
                             newestFile.Delete();
 
-                            logger.LogInformation("[IMPORT FIGHTERS - DELETED] - Image for fighter: {FighterId} - Deleted downloaded image", fighter.Id);
+                            logger.LogInformation(
+                                "[IMPORT FIGHTERS - DELETED] - Image for fighter: {FighterId} - Deleted downloaded image",
+                                fighter.Id);
                         }
                         else
                         {
-                            logger.LogInformation("[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded", fighter.Id);
+                            logger.LogInformation(
+                                "[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded",
+                                fighter.Id);
                         }
                     }
                     else
                     {
-                        logger.LogInformation("[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded", fighter.Id);
+                        logger.LogInformation(
+                            "[IMPORT FIGHTERS - NO FILE] - Image for fighter: {FighterId} - No profile image downloaded",
+                            fighter.Id);
                     }
 
-                    logger.LogInformation("[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
+                    logger.LogInformation(
+                        "[IMPORT FIGHTERS - END] - Image for fighter: {FighterId} - {FighterFirstName} {FighterLastName} {FighterNickname}",
                         fighter.Id, fighter.FirstName, fighter.LastName, fighter.Nickname);
                 }
             }

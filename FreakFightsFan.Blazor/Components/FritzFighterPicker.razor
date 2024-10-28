@@ -1,23 +1,23 @@
-﻿<MudAutocomplete @ref=_autocomplete
-                 T=FighterDto
-                 Value=Value
-                 ValueChanged=OnValueChanged
-                 For=For
-                 Label=@Label
-                 SearchFunc=Search
-                 ToStringFunc=_displayFighter
-                 Variant=Variant.Text
-                 ShowProgressIndicator=true
-                 SelectValueOnTab=true
-                 ResetValueOnEmptyText=true
-                 FullWidth=true
-                 OnlyValidateIfDirty=OnlyValidateIfDirty>
+﻿<MudAutocomplete For="For"
+                 FullWidth="true"
+                 Label="@Label"
+                 OnlyValidateIfDirty="OnlyValidateIfDirty"
+                 @ref="_autocomplete"
+                 ResetValueOnEmptyText="true"
+                 SearchFunc="Search"
+                 SelectValueOnTab="true"
+                 ShowProgressIndicator="true"
+                 T="FighterDto"
+                 ToStringFunc="_displayFighter"
+                 Value="Value"
+                 ValueChanged="OnValueChanged"
+                 Variant="Variant.Text">
     <NoItemsTemplate>
         <MudText>
             @Localizer[nameof(AppStrings.NoFightersFound)]
         </MudText>
     </NoItemsTemplate>
     <ItemTemplate Context="item">
-        <DisplayFighterListItem Fighter=item />
+        <DisplayFighterListItem Fighter="item" />
     </ItemTemplate>
 </MudAutocomplete>

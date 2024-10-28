@@ -6,15 +6,15 @@
                 <ChildContent>
                     @if (!string.IsNullOrEmpty(Fighter.Image?.Url))
                     {
-                        <MudImage Src=@Fighter.Image.Url
-                                  Alt=@Localizer[nameof(AppStrings.Image)] />
+                        <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                                  Src=@Fighter.Image.Url />
                     }
                     else
                     {
-                        <MudImage Src="images_default/default_user_image.png"
-                                  ObjectFit=ObjectFit.Contain
+                        <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
                                   Fluid=true
-                                  Alt=@Localizer[nameof(AppStrings.Image)]
+                                  ObjectFit=ObjectFit.Contain
+                                  Src="images_default/default_user_image.png"
                                   Style="max-height: 250px;" />
                     }
                 </ChildContent>

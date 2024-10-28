@@ -5,87 +5,87 @@
     @Localizer[nameof(AppStrings.Events)]
 </PageTitle>
 
-<FritzBreadcrumbs Items=_items />
+<FritzBreadcrumbs Items="_items" />
 
-<MudTable ServerData=ServerReload
-          Dense=true
-          Hover=true
-          Elevation=3
-          @ref=_table
-          Context="myEvent">
+<MudTable Context="myEvent"
+          Dense="true"
+          Elevation="3"
+          Hover="true"
+          @ref="_table"
+          ServerData="ServerReload">
     <ToolBarContent>
-        <MudText Typo=Typo.h6>
+        <MudText Typo="Typo.h6">
             @Localizer[nameof(AppStrings.Events)]
         </MudText>
-        <AuthorizeView Policy=@Policy.Admin>
-            <MudIconButton Icon=@Icons.Material.Filled.Add
-                           Size=Size.Small
-                           OnClick=CreateEvent />
+        <AuthorizeView Policy="@Policy.Admin">
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           OnClick="CreateEvent"
+                           Size="Size.Small" />
         </AuthorizeView>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value=_searchString
+        <FritzSearchTextField @bind-Value="_searchString"
                               OnSearch="() => _table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel SortLabel="name"
-                               T=EventDto>
+                               T="EventDto">
                 @Localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="date"
-                               T=EventDto>
+                               T="EventDto">
                 @Localizer[nameof(AppStrings.Date)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="city"
-                               T=EventDto>
+                               T="EventDto">
                 @Localizer[nameof(AppStrings.City)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="hall"
-                               T=EventDto>
+                               T="EventDto">
                 @Localizer[nameof(AppStrings.Hall)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             @Localizer[nameof(AppStrings.Fights)]
         </MudTh>
-        <AuthorizeView Policy=@Policy.Admin>
+        <AuthorizeView Policy="@Policy.Admin">
             <MudTh>
                 @Localizer[nameof(AppStrings.Actions)]
             </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
             @myEvent.Name
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Date)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Date)]">
             @myEvent.Date.ToString("dd/MM/yyyy")
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.City)]>
-            <DisplayDictionaryItemDto DictionaryItemDto=myEvent.City />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.City)]">
+            <DisplayDictionaryItemDto DictionaryItemDto="myEvent.City" />
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Hall)]>
-            <DisplayDictionaryItemDto DictionaryItemDto=myEvent.Hall />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Hall)]">
+            <DisplayDictionaryItemDto DictionaryItemDto="myEvent.Hall" />
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Fights)]>
-            <MudIconButton Icon=@Icons.Material.Filled.List
-                           Size=Size.Small
-                           OnClick="() => RedirectToFightsPage(myEvent.Id)" />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Fights)]">
+            <MudIconButton Icon="@Icons.Material.Filled.List"
+                           OnClick="() => RedirectToFightsPage(myEvent.Id)"
+                           Size="Size.Small" />
         </MudTd>
-        <AuthorizeView Policy=@Policy.Admin>
-            <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
-                <MudIconButton Icon=@Icons.Material.Filled.Edit
-                               Size=Size.Small
-                               OnClick="() => UpdateEvent(myEvent)" />
-                <MudIconButton Icon=@Icons.Material.Filled.Delete
-                               Size=Size.Small
-                               OnClick="() => DeleteEvent(myEvent.Id)" />
+        <AuthorizeView Policy="@Policy.Admin">
+            <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               OnClick="() => UpdateEvent(myEvent)"
+                               Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               OnClick="() => DeleteEvent(myEvent.Id)"
+                               Size="Size.Small" />
             </MudTd>
         </AuthorizeView>
     </RowTemplate>
@@ -100,7 +100,7 @@
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
-                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

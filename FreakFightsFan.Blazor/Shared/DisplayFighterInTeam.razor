@@ -7,39 +7,39 @@
             <MudLink Class="align-self-center"
                      Href=@FighterInTeam.Fighter.Image.Url
                      Target="_blank">
-                <MudImage Src=@FighterInTeam.Fighter.Image.Url
-                          ObjectFit=ObjectFit.Contain
+                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
                           Fluid=true
-                          Alt=@Localizer[nameof(AppStrings.Image)]
+                          ObjectFit=ObjectFit.Contain
+                          Src=@FighterInTeam.Fighter.Image.Url
                           Style="max-height: 250px;" />
             </MudLink>
         }
         else
         {
-            <MudImage Src="images_default/default_user_image.png"
-                      ObjectFit=ObjectFit.Contain
+            <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
                       Fluid=true
-                      Alt=@Localizer[nameof(AppStrings.Image)]
+                      ObjectFit=ObjectFit.Contain
+                      Src="images_default/default_user_image.png"
                       Style="max-height: 250px;" />
         }
         <div onclick=@(() => RedirectToFighterProfile(FighterInTeam.Fighter.Id))
              style="cursor: pointer;">
-            <MudText Typo=Typo.subtitle1
-                     Class="align-self-center"
-                     Style="font-weight: bold; text-align: center;">
+            <MudText Class="align-self-center"
+                     Style="font-weight: bold; text-align: center;"
+                     Typo=Typo.subtitle1>
                 @FighterInTeam.Fighter.Nickname.ToUpper()
             </MudText>
-            <MudText Typo=Typo.subtitle2
-                     Class="align-self-center"
-                     Style="text-align: center;">
+            <MudText Class="align-self-center"
+                     Style="text-align: center;"
+                     Typo=Typo.subtitle2>
                 @FighterInTeam.Fighter.FirstName.ToUpper() @FighterInTeam.Fighter.LastName.ToUpper()
             </MudText>
         </div>
-        <MudPaper Style=@($"background:{FighterHelpers.GetFightResultColor(FighterInTeam.FightResult)};")
-                  Square=true>
-            <MudText Typo=Typo.subtitle2
-                     Class="align-self-center"
-                     Style="text-align: center;">
+        <MudPaper Square=true
+                  Style=@($"background:{FighterHelpers.GetFightResultColor(FighterInTeam.FightResult)};")>
+            <MudText Class="align-self-center"
+                     Style="text-align: center;"
+                     Typo=Typo.subtitle2>
                 @FighterInTeam.FightResult.ToText().ToUpper()
             </MudText>
         </MudPaper>

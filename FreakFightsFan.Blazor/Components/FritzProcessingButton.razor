@@ -1,11 +1,11 @@
-﻿<MudButton ButtonType=ButtonType
-           Color=Color
-           Variant=Variant
-           Disabled=_processing>
+﻿<MudButton ButtonType="ButtonType"
+           Color="Color"
+           Disabled="_processing"
+           Variant="Variant">
     @if (_processing)
     {
-        <MudProgressCircular Size=Size.Small
-                             Indeterminate=true />
+        <MudProgressCircular Indeterminate=true
+                             Size=Size.Small />
         <MudText>
             @ProcessingButtonText
         </MudText>

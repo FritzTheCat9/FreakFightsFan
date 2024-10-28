@@ -5,34 +5,34 @@
     @Localizer[nameof(AppStrings.Dictionaries)]
 </PageTitle>
 
-<FritzBreadcrumbs Items=_items />
+<FritzBreadcrumbs Items="_items" />
 
-<MudTable ServerData=ServerReload
-          @ref=_table
-          Dense=true
-          Hover=true
-          Elevation=3>
+<MudTable Dense="true"
+          Elevation="3"
+          Hover="true"
+          @ref="_table"
+          ServerData="ServerReload">
     <ToolBarContent>
-        <MudText Typo=Typo.h6>
+        <MudText Typo="Typo.h6">
             @Localizer[nameof(AppStrings.Dictionaries)]
         </MudText>
-        <MudIconButton Icon=@Icons.Material.Filled.Add
-                       Size=Size.Small
-                       OnClick=CreateDictionary />
+        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       OnClick="CreateDictionary"
+                       Size="Size.Small" />
         <MudSpacer />
-        <FritzSearchTextField @bind-Value=_searchString
+        <FritzSearchTextField @bind-Value="_searchString"
                               OnSearch="() => _table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel SortLabel="name"
-                               T=MyDictionaryDto>
+                               T="MyDictionaryDto">
                 @Localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="code"
-                               T=MyDictionaryDto>
+                               T="MyDictionaryDto">
                 @Localizer[nameof(AppStrings.Code)]
             </MudTableSortLabel>
         </MudTh>
@@ -44,24 +44,24 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Name)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
             @context.Name
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Code)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Code)]">
             @context.Code
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.DictionaryItems)]>
-            <MudIconButton Icon=@Icons.Material.Filled.List
-                           Size=Size.Small
-                           OnClick="() => RedirectToDictionaryItemsPage(context.Id)" />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.DictionaryItems)]">
+            <MudIconButton Icon="@Icons.Material.Filled.List"
+                           OnClick="() => RedirectToDictionaryItemsPage(context.Id)"
+                           Size="Size.Small" />
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
-            <MudIconButton Icon=@Icons.Material.Filled.Edit
-                           Size=Size.Small
-                           OnClick="() => UpdateDictionary(context)" />
-            <MudIconButton Icon=@Icons.Material.Filled.Delete
-                           Size=Size.Small
-                           OnClick="() => DeleteDictionary(context.Id)" />
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           OnClick="() => UpdateDictionary(context)"
+                           Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           OnClick="() => DeleteDictionary(context.Id)"
+                           Size="Size.Small" />
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -75,7 +75,7 @@
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
-                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

@@ -1,13 +1,15 @@
-<EditForm Model=FormModel
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+<EditForm Model="FormModel"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzFileInput @bind-File=FormModel.File ForFile="() => FormModel.File"
-                            @bind-ImageBase64=FormModel.ImageBase64 ForImageBase64="() => FormModel.ImageBase64"
-                            Url=@Url />
+            <FritzFileInput @bind-File="FormModel.File"
+                            @bind-ImageBase64="FormModel.ImageBase64"
+                            ForFile="() => FormModel.File"
+                            ForImageBase64="() => FormModel.ImageBase64"
+                            Url="@Url" />
             <FritzValidationMessage For="() => FormModel.ImageBase64" />
             <FritzValidationMessage For="() => FormModel.File" />
             @if (FormModel?.File is not null)
@@ -17,8 +19,8 @@
             }
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType=ButtonType.Submit
-                       Color=Color.Primary>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
                 @Localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>

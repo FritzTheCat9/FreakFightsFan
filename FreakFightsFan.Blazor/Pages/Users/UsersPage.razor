@@ -5,40 +5,40 @@
     @Localizer[nameof(AppStrings.Users)]
 </PageTitle>
 
-<FritzBreadcrumbs Items=_items />
+<FritzBreadcrumbs Items="_items" />
 
-<MudTable ServerData=ServerReload
-          Dense=true
-          Hover=true
-          Elevation=3
-          @ref=_table
-          Context="user">
+<MudTable Context="user"
+          Dense="true"
+          Elevation="3"
+          Hover="true"
+          @ref="_table"
+          ServerData="ServerReload">
     <ToolBarContent>
-        <MudText Typo=Typo.h6>
+        <MudText Typo="Typo.h6">
             @Localizer[nameof(AppStrings.Users)]
         </MudText>
         <MudSpacer />
-        <FritzSearchTextField @bind-Value=_searchString
+        <FritzSearchTextField @bind-Value="_searchString"
                               OnSearch="() => _table.ReloadServerData()" />
     </ToolBarContent>
     <HeaderContent>
         @* <MudTh>Image</MudTh> *@
         <MudTh>
             <MudTableSortLabel SortLabel="username"
-                               T=UserDto>
+                               T="UserDto">
                 @Localizer[nameof(AppStrings.UserName)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="email"
-                               T=UserDto>
+                               T="UserDto">
                 @Localizer[nameof(AppStrings.Email)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             @Localizer[nameof(AppStrings.Role)]
         </MudTh>
-        <AuthorizeView Policy=@Policy.SuperAdmin>
+        <AuthorizeView Policy="@Policy.SuperAdmin">
             <MudTh>
                 @Localizer[nameof(AppStrings.Actions)]
             </MudTh>
@@ -57,35 +57,35 @@
         <MudText>-</MudText>
         }
         </MudTd> *@
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.UserName)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.UserName)]">
             @user.UserName
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Email)]>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Email)]">
             @user.Email
         </MudTd>
-        <MudTd DataLabel=@Localizer[nameof(AppStrings.Role)]>
-            <MudChip T=string
-                     Variant=Variant.Outlined
-                     Color=GetColorBasedOnPolicy(GetUserHighestPolicy(user))>
+        <MudTd DataLabel="@Localizer[nameof(AppStrings.Role)]">
+            <MudChip Color="GetColorBasedOnPolicy(GetUserHighestPolicy(user))"
+                     T="string"
+                     Variant="Variant.Outlined">
                 @GetUserHighestPolicy(user)
             </MudChip>
         </MudTd>
-        <AuthorizeView Policy=@Policy.SuperAdmin>
-            <MudTd DataLabel=@Localizer[nameof(AppStrings.Actions)]>
+        <AuthorizeView Policy="@Policy.SuperAdmin">
+            <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
                 @if (!user.IsSuperAdmin && user.IsAdmin)
                 {
                     <MudTooltip Text=@Localizer[nameof(AppStrings.Degrade)]>
                         <MudIconButton Icon=@Icons.Material.Filled.ArrowDownward
-                                       Size=Size.Small
-                                       OnClick="() => DegradeUser(user.Id)" />
+                                       OnClick="() => DegradeUser(user.Id)"
+                                       Size=Size.Small />
                     </MudTooltip>
                 }
                 else if (!user.IsSuperAdmin && !user.IsAdmin)
                 {
                     <MudTooltip Text=@Localizer[nameof(AppStrings.Promote)]>
                         <MudIconButton Icon=@Icons.Material.Filled.ArrowUpward
-                                       Size=Size.Small
-                                       OnClick="() => PromoteUser(user.Id)" />
+                                       OnClick="() => PromoteUser(user.Id)"
+                                       Size=Size.Small />
                     </MudTooltip>
                 }
 
@@ -103,7 +103,7 @@
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager RowsPerPageString=@Localizer[nameof(AppStrings.RowsPerPage)]
-                       InfoFormat=@Localizer[nameof(AppStrings.PaginationInfoFormat)] />
+        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

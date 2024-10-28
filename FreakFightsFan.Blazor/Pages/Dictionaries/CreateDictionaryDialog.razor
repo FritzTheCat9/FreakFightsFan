@@ -1,23 +1,23 @@
-﻿<EditForm Model=Command
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+﻿<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
 
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label=@Localizer[nameof(AppStrings.Name)]
-                            @bind-Value=Command.Name
-                            For="() => Command.Name" />
+            <FritzTextField @bind-Value="Command.Name"
+                            For="() => Command.Name"
+                            Label="@Localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => Command.Name" />
 
-            <FritzTextField Label=@Localizer[nameof(AppStrings.Code)]
-                            @bind-Value=Command.Code
-                            For="() => Command.Code" />
+            <FritzTextField @bind-Value="Command.Code"
+                            For="() => Command.Code"
+                            Label="@Localizer[nameof(AppStrings.Code)]" />
             <FritzValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType=ButtonType.Submit
-                       Color=Color.Primary>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
                 @Localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>

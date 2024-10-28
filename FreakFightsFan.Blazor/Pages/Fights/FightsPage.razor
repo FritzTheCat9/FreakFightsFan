@@ -5,17 +5,17 @@
     @Localizer[nameof(AppStrings.Fights)]
 </PageTitle>
 
-<FritzBreadcrumbs Items=_items />
+<FritzBreadcrumbs Items="_items" />
 
-<AuthorizeView Policy=@Policy.Admin>
-    <MudPaper Style="margin: 0px 0px 40px 0px; padding: 10px 10px;"
-              Class="rounded-0"
-              Elevation=3>
-        <MudStack Row=true
-                  Justify=Justify.FlexStart>
-            <MudIconButton Icon=@Icons.Material.Filled.Add
-                           Size=Size.Small
-                           OnClick=CreateFight />
+<AuthorizeView Policy="@Policy.Admin">
+    <MudPaper Class="rounded-0"
+              Elevation="3"
+              Style="margin: 0 0 40px 0; padding: 10px 10px;">
+        <MudStack Justify="Justify.FlexStart"
+                  Row="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           OnClick="CreateFight"
+                           Size="Size.Small" />
         </MudStack>
     </MudPaper>
 </AuthorizeView>
@@ -23,7 +23,7 @@
 @if (_event is not null)
 {
     <MudStack AlignItems=AlignItems.Center
-              Style="margin: 0px 0px 40px 0px;">
+              Style="margin: 0 0 40px 0;">
         <MudText Typo=Typo.h4>
             @_event.Name
         </MudText>
@@ -54,38 +54,39 @@ else
               Spacing=0>
         @foreach (var fight in _myFights)
         {
-            <MudPaper Class="rounded-0" Style="margin: 0px 0px 20px 0px;"
-                      Elevation=3>
-                <MudPaper Style="padding: 10px 10px 0px 0px;"
-                          Class="rounded-0"
-                          Elevation=0>
-                    <MudStack Row=true
-                              Justify=Justify.FlexEnd>
-                        <MudIconButton Icon=@Icons.Material.Filled.OndemandVideo
-                                       Size=Size.Small
+            <MudPaper Class="rounded-0"
+                      Elevation=3
+                      Style="margin: 0 0 20px 0;">
+                <MudPaper Class="rounded-0"
+                          Elevation=0
+                          Style="padding: 10px 10px 0 0;">
+                    <MudStack Justify=Justify.FlexEnd
+                              Row=true>
+                        <MudIconButton Disabled=string.IsNullOrEmpty(fight.VideoUrl)
+                                       Icon=@Icons.Material.Filled.OndemandVideo
                                        OnClick="() => RedirectToVideo(fight)"
-                                       Disabled=string.IsNullOrEmpty(fight.VideoUrl) />
+                                       Size=Size.Small />
                         <AuthorizeView Policy=@Policy.Admin>
                             <MudIconButton Icon=@Icons.Material.Filled.Edit
-                                           Size=Size.Small
-                                           OnClick="() => UpdateFight(fight)" />
+                                           OnClick="() => UpdateFight(fight)"
+                                           Size=Size.Small />
                             <MudIconButton Icon=@Icons.Material.Filled.Delete
-                                           Size=Size.Small
-                                           OnClick="() => DeleteFight(fight.Id)" />
-                            <MudIconButton Icon=@Icons.Material.Filled.ArrowDownward
-                                           Size=Size.Small
+                                           OnClick="() => DeleteFight(fight.Id)"
+                                           Size=Size.Small />
+                            <MudIconButton Disabled=@(fight.OrderNumber <= 1)
+                                           Icon=@Icons.Material.Filled.ArrowDownward
                                            OnClick="() => MoveFight(fight.Id, MoveDirection.Downwards)"
-                                           Disabled=@(fight.OrderNumber <= 1) />
-                            <MudIconButton Icon=@Icons.Material.Filled.ArrowUpward
-                                           Size=Size.Small
+                                           Size=Size.Small />
+                            <MudIconButton Disabled=@(fight.OrderNumber >= _myFights.Count())
+                                           Icon=@Icons.Material.Filled.ArrowUpward
                                            OnClick="() => MoveFight(fight.Id, MoveDirection.Upwards)"
-                                           Disabled=@(fight.OrderNumber >= _myFights.Count()) />
+                                           Size=Size.Small />
                         </AuthorizeView>
                     </MudStack>
                 </MudPaper>
-                <MudPaper Style="margin: 0px 0px 0px 0px; padding: 10px 20px 20px 20px;"
-                          Class="rounded-0"
-                          Elevation=0>
+                <MudPaper Class="rounded-0"
+                          Elevation=0
+                          Style="margin: 0 0 0 0; padding: 10px 20px 20px 20px;">
                     <MudStack AlignItems=AlignItems.Center
                               Style="margin-bottom: 10px;">
                         <MudText Typo=Typo.h5>
@@ -93,8 +94,8 @@ else
                             @(" ")
                         </MudText>
                     </MudStack>
-                    <MudStack Row=true
-                              Justify=Justify.SpaceEvenly>
+                    <MudStack Justify=Justify.SpaceEvenly
+                              Row=true>
                         @foreach (var team in fight.Teams)
                         {
                             <MudPaper Class="rounded-0"

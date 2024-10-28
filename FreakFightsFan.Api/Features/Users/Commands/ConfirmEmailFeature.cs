@@ -59,7 +59,7 @@ public static class ConfirmEmailFeature
             await userRepository.Update(user);
 
             await emailService.SendEmail(user.Email,
-                new EmailConfirmationSuccessfulTemplateModel(emailLocalizer) { UserName = user.UserName, });
+                new EmailConfirmationSuccessfulTemplateModel(emailLocalizer) { UserName = user.UserName });
 
             return true;
         }

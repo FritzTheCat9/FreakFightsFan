@@ -1,37 +1,37 @@
-<EditForm Model=Command
-          OnValidSubmit=HandleValidSubmit>
-    <CustomValidator @ref=_customValidator />
+<EditForm Model="Command"
+          OnValidSubmit="HandleValidSubmit">
+    <CustomValidator @ref="_customValidator" />
     <FluentValidationValidator />
-    
-    <MudDialog DefaultFocus=DefaultFocus.LastChild>
+
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
         <DialogContent>
-            <FritzTextField Label=@Localizer[nameof(AppStrings.Name)]
-                            @bind-Value=Command.Name
-                            For="() => Command.Name" />
+            <FritzTextField @bind-Value="Command.Name"
+                            For="() => Command.Name"
+                            Label="@Localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => Command.Name" />
 
-            <FritzDatePicker Label=@Localizer[nameof(AppStrings.Date)]
-                             @bind-Date=Command.Date
-                             For="() => Command.Date" />
+            <FritzDatePicker @bind-Date="Command.Date"
+                             For="() => Command.Date"
+                             Label="@Localizer[nameof(AppStrings.Date)]" />
             <FritzValidationMessage For="() => Command.Date" />
 
-            <FritzDictionaryItemPicker Label=@Localizer[nameof(AppStrings.City)]
-                                       @bind-Value=Command.CityId
+            <FritzDictionaryItemPicker @bind-DictionaryItemDto="City"
+                                       @bind-Value="Command.CityId"
+                                       DictionaryCode="@DictionaryCode.City"
                                        For="() => Command.CityId"
-                                       DictionaryCode=@DictionaryCode.City
-                                       @bind-DictionaryItemDto=City />
+                                       Label="@Localizer[nameof(AppStrings.City)]" />
             <FritzValidationMessage For="() => Command.CityId" />
 
-            <FritzDictionaryItemPicker Label=@Localizer[nameof(AppStrings.Hall)]
-                                       @bind-Value=Command.HallId
+            <FritzDictionaryItemPicker @bind-DictionaryItemDto="Hall"
+                                       @bind-Value="Command.HallId"
+                                       DictionaryCode="@DictionaryCode.Hall"
                                        For="() => Command.HallId"
-                                       DictionaryCode=@DictionaryCode.Hall
-                                       @bind-DictionaryItemDto=Hall />
+                                       Label="@Localizer[nameof(AppStrings.Hall)]" />
             <FritzValidationMessage For="() => Command.HallId" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType=ButtonType.Submit
-                       Color=Color.Primary>
+            <MudButton ButtonType="ButtonType.Submit"
+                       Color="Color.Primary">
                 @Localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>

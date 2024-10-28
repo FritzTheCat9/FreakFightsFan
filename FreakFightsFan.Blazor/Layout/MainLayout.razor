@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider @ref=@_mudThemeProvider
-                  @bind-IsDarkMode=@_isDarkMode
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode"
+                  @ref="@_mudThemeProvider"
                   Theme="_customTheme" />
 <MudDialogProvider FullWidth="true" />
 <MudSnackbarProvider />
@@ -24,44 +24,44 @@
 
 <MudLayout>
     <MudAppBar>
-        <MudIconButton Icon=@Icons.Material.Filled.Menu
-                       Color=Color.Inherit
-                       Edge=Edge.Start
-                       OnClick=DrawerToggle />
+        <MudIconButton Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Icon="@Icons.Material.Filled.Menu"
+                       OnClick="DrawerToggle" />
         @Localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
-        <MudTooltip Text=@_text>
-            <MudIconButton Icon=@_icon
-                           Color=Color.Inherit
-                           OnClick=OnThemeChange
+        <MudTooltip Text="@_text">
+            <MudIconButton Color="Color.Inherit"
+                           Icon="@_icon"
+                           OnClick="OnThemeChange"
                            Style="margin-right: 5px;" />
         </MudTooltip>
-        <MudTooltip Text=@Localizer[nameof(AppStrings.CheckProjectOnGithubText)]>
-            <MudIconButton Icon=@Icons.Custom.Brands.GitHub
-                           Color=Color.Inherit
-                           Href=https://github.com/FritzTheCat9/FreakFightsFan
-                           Target=_blank
-                           Style="margin-right: 5px;" />
+        <MudTooltip Text="@Localizer[nameof(AppStrings.CheckProjectOnGithubText)]">
+            <MudIconButton Color="Color.Inherit"
+                           Href="https://github.com/FritzTheCat9/FreakFightsFan"
+                           Icon="@Icons.Custom.Brands.GitHub"
+                           Style="margin-right: 5px;"
+                           Target="_blank" />
         </MudTooltip>
         <Auth ChangeThemeColor="ChangeThemeColor" />
     </MudAppBar>
-    <MudDrawer @bind-Open=_drawerOpen
-               Variant=DrawerVariant.Mini>
+    <MudDrawer @bind-Open="_drawerOpen"
+               Variant="DrawerVariant.Mini">
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth=MaxWidth.Large
+        <MudContainer MaxWidth="MaxWidth.Large"
                       Style="margin-top: 20px; margin-bottom: 80px">
             @Body
         </MudContainer>
     </MudMainContent>
-    <MudAppBar Bottom=true
-               Dense=true
+    <MudAppBar Bottom="true"
                Color="Color.Transparent"
+               Dense="true"
                Elevation="0">
-        <MudPaper Class="pa-4 mb-4"
-                  Outlined="true"
-                  Elevation="5">
+        <MudPaper Class="mb-4 pa-4"
+                  Elevation="5"
+                  Outlined="true">
             <MudText Typo="Typo.body1">
                 @Localizer[nameof(AppStrings.CreatedByText)]
             </MudText>
