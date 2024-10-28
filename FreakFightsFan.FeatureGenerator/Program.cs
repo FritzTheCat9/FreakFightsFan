@@ -10,10 +10,10 @@ Console.WriteLine($"[Info] - '{featureName}' CRUD files have been successfully g
 
 void GenerateFiles(string featureName)
 {
-    var ConfigurationsPath = $"../../../../FreakFightsFan.Api/Data/Configurations";
-    Directory.SetCurrentDirectory(ConfigurationsPath);
-    string configText = 
-$@"using FreakFightsFan.Api.Data.Entities;
+    var configurationsPath = "../../../../FreakFightsFan.Api/Data/Configurations";
+    Directory.SetCurrentDirectory(configurationsPath);
+    var configText =
+        $@"using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,10 +31,10 @@ namespace FreakFightsFan.Api.Data.Configurations
     var filePath = $"{featureName}Configuration.cs";
     File.WriteAllText(filePath, configText);
 
-    var EntitiesPath = $"../Entities";
-    Directory.SetCurrentDirectory(EntitiesPath);
-    string entitiesText = 
-$@"namespace FreakFightsFan.Api.Data.Entities
+    var entitiesPath = "../Entities";
+    Directory.SetCurrentDirectory(entitiesPath);
+    var entitiesText =
+        $@"namespace FreakFightsFan.Api.Data.Entities
 {{
     public class {featureName} : Entity
     {{
@@ -44,10 +44,10 @@ $@"namespace FreakFightsFan.Api.Data.Entities
 ";
     File.WriteAllText($"{featureName}.cs", entitiesText);
 
-    var RepositoriesPath = $"../Repositories";
-    Directory.SetCurrentDirectory(RepositoriesPath);
-    string repositoryText = 
-$@"using FreakFightsFan.Api.Data.Database;
+    var repositoriesPath = "../Repositories";
+    Directory.SetCurrentDirectory(repositoriesPath);
+    var repositoryText =
+        $@"using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -101,22 +101,22 @@ namespace FreakFightsFan.Api.Data.Repositories
 ";
     File.WriteAllText($"{featureName}Repository.cs", repositoryText);
 
-    var featuresPath = $"../../Features";
+    var featuresPath = "../../Features";
     Directory.SetCurrentDirectory(featuresPath);
     Directory.CreateDirectory($"{featureName}s");
 
-    var commandsPath = $"Commands";
+    var commandsPath = "Commands";
     Directory.CreateDirectory($"{featureName}s/{commandsPath}");
 
-    var extensionsPath = $"Extensions";
+    var extensionsPath = "Extensions";
     Directory.CreateDirectory($"{featureName}s/{extensionsPath}");
 
-    var queriesPath = $"Queries";
+    var queriesPath = "Queries";
     Directory.CreateDirectory($"{featureName}s/{queriesPath}");
 
     Directory.SetCurrentDirectory($"{featureName}s/{commandsPath}");
-    string createText = 
-$@"using Carter;
+    var createText =
+        $@"using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Entities;
@@ -192,8 +192,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Commands
 ";
     File.WriteAllText($"Create{featureName}.cs", createText);
 
-    string deleteText = 
-$@"using Carter;
+    var deleteText =
+        $@"using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Shared.Exceptions;
@@ -250,8 +250,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Commands
 ";
     File.WriteAllText($"Delete{featureName}.cs", deleteText);
 
-    string updateText = 
-$@"using Carter;
+    var updateText =
+        $@"using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
@@ -327,8 +327,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Commands
     File.WriteAllText($"Update{featureName}.cs", updateText);
 
     Directory.SetCurrentDirectory($"../{extensionsPath}");
-    string extensionsText = 
-$@"using FreakFightsFan.Api.Data.Entities;
+    var extensionsText =
+        $@"using FreakFightsFan.Api.Data.Entities;
 using FreakFightsFan.Api.Features.{featureName}s.Queries;
 using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.{featureName}s.Responses;
@@ -385,8 +385,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Extensions
     File.WriteAllText($"{featureName}sExtensions.cs", extensionsText);
 
     Directory.SetCurrentDirectory($"../{queriesPath}");
-    string getAllText = 
-$@"using Carter;
+    var getAllText =
+        $@"using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Abstractions;
 using FreakFightsFan.Api.Data.Repositories;
@@ -467,8 +467,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Queries
 ";
     File.WriteAllText($"GetAll{featureName}s.cs", getAllText);
 
-    string getText = 
-$@"using Carter;
+    var getText =
+        $@"using Carter;
 using FluentValidation;
 using FreakFightsFan.Api.Data.Repositories;
 using FreakFightsFan.Api.Features.{featureName}s.Extensions;
@@ -530,8 +530,8 @@ namespace FreakFightsFan.Api.Features.{featureName}s.Queries
     var servicesPath = "../../../../FreakFightsFan.Blazor/Services";
     Directory.SetCurrentDirectory(servicesPath);
 
-    string httpServiceText =   
-$@"using FreakFightsFan.Shared.Abstractions;
+    var httpServiceText =
+        $@"using FreakFightsFan.Shared.Abstractions;
 using FreakFightsFan.Shared.Features.{featureName}s.Requests;
 using FreakFightsFan.Shared.Features.{featureName}s.Responses;
 
@@ -585,14 +585,14 @@ namespace FreakFightsFan.Blazor.Services
 ";
     File.WriteAllText($"{featureName}HttpService.cs", httpServiceText);
 
-    var pagesPath = $"../Pages";
+    var pagesPath = "../Pages";
     Directory.SetCurrentDirectory(pagesPath);
     Directory.CreateDirectory($"{featureName}");
 
     Directory.SetCurrentDirectory($"{featureName}");
 
-    string createDialogText = 
-$@"@inject I{featureName}HttpService {featureName}HttpService
+    var createDialogText =
+        $@"@inject I{featureName}HttpService {featureName}HttpService
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model=""Create{featureName}Request"" @ref=""@form"" Validation=""ValidateValue"">
@@ -645,8 +645,8 @@ $@"@inject I{featureName}HttpService {featureName}HttpService
 ";
     File.WriteAllText($"Create{featureName}Dialog.razor", createDialogText);
 
-    string featurePageText = 
-$@"@page ""/{featureName.ToLower()}s""
+    var featurePageText =
+        $@"@page ""/{featureName.ToLower()}s""
 @inject IExceptionHandler ExceptionHandler
 @inject I{featureName}HttpService {featureName}HttpService
 @inject IDialogService DialogService
@@ -768,8 +768,8 @@ $@"@page ""/{featureName.ToLower()}s""
 ";
     File.WriteAllText($"{featureName}.razor", featurePageText);
 
-    string updateDialogText = 
-$@"@inject I{featureName}HttpService {featureName}HttpService
+    var updateDialogText =
+        $@"@inject I{featureName}HttpService {featureName}HttpService
 @inject IExceptionHandler ExceptionHandler
 
 <MudForm Model=""Update{featureName}Request"" @ref=""@form"" Validation=""ValidateValue"">
@@ -822,14 +822,14 @@ $@"@inject I{featureName}HttpService {featureName}HttpService
 ";
     File.WriteAllText($"Update{featureName}Dialog.razor", updateDialogText);
 
-    var sharedFeaturesPath = $"../../../FreakFightsFan.Shared/Features";
+    var sharedFeaturesPath = "../../../FreakFightsFan.Shared/Features";
     Directory.SetCurrentDirectory(sharedFeaturesPath);
     Directory.CreateDirectory($"{featureName}s");
     Directory.CreateDirectory($"{featureName}s/Requests");
     Directory.CreateDirectory($"{featureName}s/Responses");
 
-    string createRequestText = 
-$@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
+    var createRequestText =
+        $@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 {{
     public class Create{featureName}Request
     {{
@@ -839,8 +839,8 @@ $@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 ";
     File.WriteAllText($"{featureName}s/Requests/Create{featureName}Request.cs", createRequestText);
 
-    string getAllRequestText = 
-$@"using FreakFightsFan.Shared.Abstractions;
+    var getAllRequestText =
+        $@"using FreakFightsFan.Shared.Abstractions;
 
 namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 {{
@@ -856,8 +856,8 @@ namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 ";
     File.WriteAllText($"{featureName}s/Requests/GetAll{featureName}sRequest.cs", getAllRequestText);
 
-    string updateRequestText = 
-$@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
+    var updateRequestText =
+        $@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 {{
     public class Update{featureName}Request
     {{
@@ -869,8 +869,8 @@ $@"namespace FreakFightsFan.Shared.Features.{featureName}s.Requests
 ";
     File.WriteAllText($"{featureName}s/Requests/Update{featureName}Request.cs", updateRequestText);
 
-    string dtoText = 
-$@"namespace FreakFightsFan.Shared.Features.{featureName}s.Responses
+    var dtoText =
+        $@"namespace FreakFightsFan.Shared.Features.{featureName}s.Responses
 {{
     public class {featureName}Dto
     {{
