@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
-  <PropertyGroup Label="Globals">
-    <ProjectVersion>2.1</ProjectVersion>
-    <DockerTargetOS>Linux</DockerTargetOS>
-    <DockerPublishLocally>True</DockerPublishLocally>
-    <ProjectGuid>f7b58955-fa6d-4539-a3e0-2f4159b5f238</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>freakfightsfan.api</DockerServiceName>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
-  </ItemGroup>
+    <PropertyGroup Label="Globals">
+        <ProjectVersion>2.1</ProjectVersion>
+        <DockerTargetOS>Linux</DockerTargetOS>
+        <DockerPublishLocally>True</DockerPublishLocally>
+        <ProjectGuid>f7b58955-fa6d-4539-a3e0-2f4159b5f238</ProjectGuid>
+        <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+        <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+        <DockerServiceName>freakfightsfan.api</DockerServiceName>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="docker-compose.yml"/>
+        <None Include=".dockerignore"/>
+    </ItemGroup>
 </Project>
