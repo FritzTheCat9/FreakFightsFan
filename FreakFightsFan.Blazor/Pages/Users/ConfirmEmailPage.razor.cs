@@ -12,12 +12,12 @@ namespace FreakFightsFan.Blazor.Pages.Users;
 public partial class ConfirmEmailPage : ComponentBase
 {
     private CustomValidator _customValidator;
+    private bool _parsingError;
     private FritzProcessingButton _processingButton;
 
     private bool _success;
-    private bool _parsingError;
 
-    private ConfirmEmail.Command Command { get; set; } = new();
+    private ConfirmEmail.Command Command { get; } = new();
 
     [SupplyParameterFromQuery] public string Email { get; set; }
     [SupplyParameterFromQuery] public string Token { get; set; }

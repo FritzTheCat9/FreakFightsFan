@@ -13,48 +13,42 @@ namespace FreakFightsFan.Blazor.Layout;
 
 public partial class MainLayout : LayoutComponentBase
 {
-    private bool _drawerOpen = true;
-
-    private MudThemeProvider _mudThemeProvider;
-    private ThemeColor _themeColor = ThemeColor.System;
-    private bool _isDarkMode = false;
-    private string _icon = Icons.Material.Rounded.LightMode;
-    private string _text;
-
     private readonly MudTheme _customTheme = new()
     {
-        LayoutProperties = new LayoutProperties()
-        {
-            DefaultBorderRadius = "10px",
-        },
-        PaletteLight = new PaletteLight()
+        LayoutProperties = new LayoutProperties { DefaultBorderRadius = "10px" },
+        PaletteLight = new PaletteLight
         {
             Error = Colors.Red.Default,
             ErrorContrastText = Colors.Red.Default,
             ErrorDarken = Colors.Red.Default,
             ErrorLighten = Colors.Red.Default,
-
             AppbarBackground = "00A9FF",
             DrawerBackground = "89CFF3",
             Background = "A0E9FF",
             TableLines = "A0E9FF",
             Surface = "CDF5FD",
             Warning = Colors.Yellow.Darken4,
-
             AppbarText = Colors.Gray.Darken4,
             DrawerIcon = Colors.Gray.Darken3,
-
             TextPrimary = Colors.Gray.Darken3,
-            TextSecondary = Colors.Gray.Darken2,
+            TextSecondary = Colors.Gray.Darken2
         },
-        PaletteDark = new PaletteDark()
+        PaletteDark = new PaletteDark
         {
             Error = Colors.Red.Default,
             ErrorContrastText = Colors.Red.Default,
             ErrorDarken = Colors.Red.Default,
-            ErrorLighten = Colors.Red.Default,
-        },
+            ErrorLighten = Colors.Red.Default
+        }
     };
+
+    private bool _drawerOpen = true;
+    private string _icon = Icons.Material.Rounded.LightMode;
+    private bool _isDarkMode;
+
+    private MudThemeProvider _mudThemeProvider;
+    private string _text;
+    private ThemeColor _themeColor = ThemeColor.System;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
@@ -148,11 +142,7 @@ public partial class MainLayout : LayoutComponentBase
 
         try
         {
-            var command = new UpdateUserTheme.Command()
-            {
-                Id = userId.Value,
-                ThemeColor = _themeColor,
-            };
+            var command = new UpdateUserTheme.Command { Id = userId.Value, ThemeColor = _themeColor };
 
             await UserApiClient.UpdateUserTheme(command);
         }

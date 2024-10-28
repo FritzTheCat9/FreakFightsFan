@@ -28,7 +28,7 @@ public static class MyDictionaryExtensions
             Created = dictionary.Created,
             Modified = dictionary.Modified,
             Name = dictionary.Name,
-            Code = dictionary.Code,
+            Code = dictionary.Code
         };
     }
 
@@ -57,7 +57,7 @@ public static class MyDictionaryExtensions
             SortOrder.Ascending => dictionaries.OrderBy(GetMyDictionarySortProperty(query)),
             SortOrder.Descending => dictionaries.OrderByDescending(GetMyDictionarySortProperty(query)),
             SortOrder.None => dictionaries.OrderBy(x => x.Code),
-            _ => dictionaries.OrderBy(x => x.Code),
+            _ => dictionaries.OrderBy(x => x.Code)
         };
     }
 
@@ -68,7 +68,7 @@ public static class MyDictionaryExtensions
         {
             "name" => dictionary => dictionary.Name,
             "code" => dictionary => dictionary.Code,
-            _ => dictionary => dictionary.Code,
+            _ => dictionary => dictionary.Code
         };
     }
 }

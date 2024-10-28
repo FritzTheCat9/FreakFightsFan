@@ -15,7 +15,7 @@ public class GetFighterFeatureTests(FreakFightsFanApiFactory apiFactory) : IClas
     public async Task GetFighterFeature_ShouldReturnFighter()
     {
         await _client.Login(new TestUsers.Admin());
-        var id = await FighterTestHelpers.CreateFighter(_client);
+        var id = await _client.CreateFighter();
         _client.Logout();
 
         var fighter = await FighterTestHelpers.GetFighter(_client, id);

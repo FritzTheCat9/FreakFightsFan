@@ -8,10 +8,6 @@ public static class TeamFightersExtensions
 {
     public static FighterInTeamDto ToFighterInTeamDto(this TeamFighter teamFighter)
     {
-        return new FighterInTeamDto
-        {
-            Fighter = teamFighter.Fighter.ToDto(),
-            FightResult = teamFighter.FightResult,
-        };
+        return new FighterInTeamDto { Fighter = teamFighter.Fighter.ToDto(), FightResult = teamFighter.FightResult };
     }
 }

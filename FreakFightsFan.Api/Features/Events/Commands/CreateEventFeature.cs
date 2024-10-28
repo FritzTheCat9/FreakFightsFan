@@ -52,12 +52,12 @@ public static class CreateEventFeature
                 Name = command.Name,
                 Date = command.Date.GetValueOrDefault(clock.Current()),
                 FederationId = command.FederationId,
-                City = (command.CityId is not null)
+                City = command.CityId is not null
                     ? await dictionaryItemRepository.Get(command.CityId.Value)
                     : null,
-                Hall = (command.HallId is not null)
+                Hall = command.HallId is not null
                     ? await dictionaryItemRepository.Get(command.HallId.Value)
-                    : null,
+                    : null
             };
 
             return await eventRepository.Create(myEvent);

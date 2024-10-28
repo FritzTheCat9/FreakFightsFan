@@ -15,10 +15,10 @@ namespace FreakFightsFan.Blazor.Pages.Users;
 public partial class UsersPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<UserDto> _table;
+    private PagedList<UserDto> _myUsers;
 
     private string _searchString = "";
-    private PagedList<UserDto> _myUsers;
+    private MudTable<UserDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
@@ -30,7 +30,7 @@ public partial class UsersPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Users)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Users)], null, true)
         ];
     }
 
@@ -41,8 +41,8 @@ public partial class UsersPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = _searchString,
+            SortOrder = (SortOrder)state.SortDirection,
+            SearchTerm = _searchString
         };
 
         try
@@ -55,25 +55,20 @@ public partial class UsersPage : ComponentBase
             return new TableData<UserDto> { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<UserDto>
-        {
-            TotalItems = _myUsers.TotalCount,
-            Items = _myUsers.Items
-        };
+        return new TableData<UserDto> { TotalItems = _myUsers.TotalCount, Items = _myUsers.Items };
     }
 
     private async Task PromoteUser(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>
         {
-            { 
-                x => x.ContentText, 
-                Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] 
-            }
+            { x => x.ContentText, Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] }
         };
 
-        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -84,16 +79,15 @@ public partial class UsersPage : ComponentBase
 
     private async Task DegradeUser(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>
         {
-            { 
-                x => x.ContentText, 
-                Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] 
-            }
+            { x => x.ContentText, Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] }
         };
 
-        var dialog = await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

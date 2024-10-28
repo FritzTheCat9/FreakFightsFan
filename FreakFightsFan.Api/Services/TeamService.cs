@@ -21,25 +21,21 @@ public class TeamService(
         var teamNumber = 0;
         foreach (var createTeamModel in teams)
         {
-            var team = new Team
-            {
-                Created = clock.Current(),
-                Modified = clock.Current(),
-                Number = teamNumber,
-            };
+            var team = new Team { Created = clock.Current(), Modified = clock.Current(), Number = teamNumber };
 
             var teamFighters = new List<TeamFighter>();
             foreach (var teamFighterModel in createTeamModel.Fighters)
             {
-                var fighter = await fighterRepository.Get(teamFighterModel.FighterId) ?? throw new MyNotFoundException();
-                var teamFighter = new TeamFighter()
+                var fighter = await fighterRepository.Get(teamFighterModel.FighterId) ??
+                              throw new MyNotFoundException();
+                var teamFighter = new TeamFighter
                 {
-                    Fighter = fighter,
-                    Team = team,
-                    FightResult = teamFighterModel.FightResult
+                    Fighter = fighter, Team = team, FightResult = teamFighterModel.FightResult
                 };
                 teamFighters.Add(teamFighter);
-            };
+            }
+
+            ;
 
             team.TeamFighters.AddRange(teamFighters);
 

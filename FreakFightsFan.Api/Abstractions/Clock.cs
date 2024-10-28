@@ -1,13 +1,14 @@
-﻿namespace FreakFightsFan.Api.Abstractions
-{
-    public interface IClock
-    {
-        DateTime Current();
-    }
+﻿namespace FreakFightsFan.Api.Abstractions;
 
-    public class Clock : IClock
+public interface IClock
+{
+    DateTime Current();
+}
+
+public class Clock : IClock
+{
+    public DateTime Current()
     {
-        public DateTime Current() 
-            => DateTime.UtcNow;
+        return DateTime.UtcNow;
     }
 }

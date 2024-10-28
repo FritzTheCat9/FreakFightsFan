@@ -22,7 +22,8 @@ public class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TReque
 
         stopwatch.Stop();
 
-        logger.LogInformation("[MediatR] Completed request {RequestName} in {Elapsed}", requestName, stopwatch.Elapsed);
+        logger.LogInformation("[MediatR] Completed request {RequestName} in {Elapsed}", requestName,
+            stopwatch.Elapsed);
 
         return response;
     }

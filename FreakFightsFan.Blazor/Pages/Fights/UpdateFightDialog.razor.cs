@@ -13,11 +13,10 @@ namespace FreakFightsFan.Blazor.Pages.Fights;
 
 public partial class UpdateFightDialog : ComponentBase
 {
-    private CustomValidator _customValidator;
-
     private readonly List<int> _allowedTeamSizes = [2, 3, 4, 5];
-    private List<CreateFight.TeamHelperModel> _teams = [];
+    private CustomValidator _customValidator;
     private int _selectedTeam;
+    private List<CreateFight.TeamHelperModel> _teams = [];
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
 
@@ -48,16 +47,11 @@ public partial class UpdateFightDialog : ComponentBase
             {
                 fighters.Add(new CreateFight.FighterHelperModel
                 {
-                    Fighter = teamFighters.Fighter,
-                    FightResult = teamFighters.FightResult,
+                    Fighter = teamFighters.Fighter, FightResult = teamFighters.FightResult
                 });
             }
 
-            var teamHelperModel = new CreateFight.TeamHelperModel()
-            {
-                Number = team.Number,
-                Fighters = fighters,
-            };
+            var teamHelperModel = new CreateFight.TeamHelperModel { Number = team.Number, Fighters = fighters };
 
             _teams.Add(teamHelperModel);
         }
@@ -74,11 +68,7 @@ public partial class UpdateFightDialog : ComponentBase
 
         for (var i = 0; i < teamsCount; i++)
         {
-            _teams.Add(new CreateFight.TeamHelperModel
-            {
-                Number = i,
-                Fighters = [],
-            });
+            _teams.Add(new CreateFight.TeamHelperModel { Number = i, Fighters = [] });
         }
 
         _selectedTeam = 0;

@@ -33,9 +33,11 @@ public static class CreateFederation
                     .NotEmpty()
                     .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
                     .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize),
+                        ImageConsts.MaxFileSize])
                     .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
+                        allowedFileTypesString]);
             });
         }
     }
@@ -63,9 +65,11 @@ public static class CreateFederation
                     .NotEmpty()
                     .WithMessage(x => localizer[nameof(ValidationMessageString.ImageNotEmpty)])
                     .Must(x => ImageHelpers.HaveValidSize(x, ImageConsts.MaxFileSize))
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageMaximumFileSize),
+                        ImageConsts.MaxFileSize])
                     .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
-                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+                    .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
+                        allowedFileTypesString]);
             });
 
             RuleFor(x => x.File)

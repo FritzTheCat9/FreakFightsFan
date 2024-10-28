@@ -14,10 +14,7 @@ public class DeleteMyDictionaryFeatureTests
     [Fact]
     public async Task DeleteMyDictionaryHandler_ThrowsNotFoundException_IfDictionaryNotFound()
     {
-        var command = new DeleteMyDictionary.Command
-        {
-            Id = 1,
-        };
+        var command = new DeleteMyDictionary.Command { Id = 1 };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
@@ -40,10 +37,7 @@ public class DeleteMyDictionaryFeatureTests
     [Fact]
     public async Task DeleteMyDictionaryHandler_DeletesValidDictionary()
     {
-        var command = new DeleteMyDictionary.Command
-        {
-            Id = 1,
-        };
+        var command = new DeleteMyDictionary.Command { Id = 1 };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();

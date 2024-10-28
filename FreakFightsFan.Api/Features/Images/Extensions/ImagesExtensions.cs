@@ -44,7 +44,7 @@ public static class ImagesExtensions
             SortOrder.Ascending => images.OrderBy(GetImageSortProperty(query)),
             SortOrder.Descending => images.OrderByDescending(GetImageSortProperty(query)),
             SortOrder.None => images.OrderByDescending(image => image.Created),
-            _ => images.OrderByDescending(image => image.Created),
+            _ => images.OrderByDescending(image => image.Created)
         };
     }
 
@@ -56,7 +56,7 @@ public static class ImagesExtensions
             "modified" => image => image.Modified,
             "name" => image => image.Name,
             "url" => image => image.Url,
-            _ => image => image.Created,
+            _ => image => image.Created
         };
     }
 }

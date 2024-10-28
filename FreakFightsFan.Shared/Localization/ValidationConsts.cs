@@ -14,8 +14,10 @@ public static class ValidationConsts
     public const string UserNameRegex = "^[a-zA-Z0-9_]+$";
 
     [StringSyntax(StringSyntaxAttribute.Regex)]
-    public const string InstagramUrlRegex = "^(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/([a-zA-Z0-9_\\.]{1,30})\\/?$";
+    public const string InstagramUrlRegex =
+        "^(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/([a-zA-Z0-9_\\.]{1,30})\\/?$";
 
     [StringSyntax(StringSyntaxAttribute.Regex)]
-    public const string YoutubeVideoUrlRegex = "^(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?)\\/|\\S*?[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})";
+    public const string YoutubeVideoUrlRegex =
+        "^(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?)\\/|\\S*?[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})";
 }

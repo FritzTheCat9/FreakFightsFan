@@ -21,7 +21,7 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
     {
         await _client.Login(user);
 
-        var id = await FighterTestHelpers.CreateFighter(_client);
+        var id = await _client.CreateFighter();
         var fighter = await FighterTestHelpers.GetFighter(_client, id);
 
         fighter.Should().NotBeNull();
@@ -71,7 +71,8 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(command.FirstName) && x.Value.Any(x => x == "First name should not be empty"));
+            .Contain(x => x.Key == nameof(command.FirstName) &&
+                          x.Value.Any(x => x == "First name should not be empty"));
     }
 
     [Theory]
@@ -91,7 +92,8 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(command.LastName) && x.Value.Any(x => x == "Last name should not be empty"));
+            .Contain(x => x.Key == nameof(command.LastName) &&
+                          x.Value.Any(x => x == "Last name should not be empty"));
     }
 
     [Theory]
@@ -111,6 +113,7 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(command.Nickname) && x.Value.Any(x => x == "Nickname should not be empty"));
+            .Contain(
+                x => x.Key == nameof(command.Nickname) && x.Value.Any(x => x == "Nickname should not be empty"));
     }
 }

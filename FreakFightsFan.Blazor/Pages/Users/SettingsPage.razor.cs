@@ -15,7 +15,7 @@ public partial class SettingsPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Settings)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Settings)], null, true)
         ];
     }
 }

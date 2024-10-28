@@ -44,7 +44,7 @@ public static class CreateFighterFeature
                 LastName = command.LastName,
                 Nickname = command.Nickname,
                 InstagramUrl = command.InstagramUrl,
-                Image = imageService.CreateEntityImage(command.ImageBase64),
+                Image = imageService.CreateEntityImage(command.ImageBase64)
             };
 
             return await fighterRepository.Create(fighter);

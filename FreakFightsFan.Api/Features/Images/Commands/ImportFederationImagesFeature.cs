@@ -45,7 +45,8 @@ public static class ImportFederationImagesFeature
 
             foreach (var federation in federations)
             {
-                var federationImageName = Path.Combine(Path.GetFullPath(webHostEnvironment.WebRootPath), _options.FederationImagesFolderName, $"{federation.Id}{extension}");
+                var federationImageName = Path.Combine(Path.GetFullPath(webHostEnvironment.WebRootPath),
+                    _options.FederationImagesFolderName, $"{federation.Id}{extension}");
                 Console.WriteLine(federationImageName);
 
                 try
@@ -60,7 +61,8 @@ public static class ImportFederationImagesFeature
                 }
                 catch (Exception)
                 {
-                    logger.LogInformation("[IMPORT FEDERATIONS - NO IMAGE] - Federation (Id: {FederationId}, Name: {FederationName}) does not have image to seed", 
+                    logger.LogInformation(
+                        "[IMPORT FEDERATIONS - NO IMAGE] - Federation (Id: {FederationId}, Name: {FederationName}) does not have image to seed",
                         federation.Id, federation.Name);
                 }
             }

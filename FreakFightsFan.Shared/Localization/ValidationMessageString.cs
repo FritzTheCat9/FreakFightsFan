@@ -43,5 +43,5 @@ public enum ValidationMessageString
     UserNameMaximumLength,
     UserNameMatchesRegex,
     RepeatPasswordEqualPassword,
-    ThemeColorIsInEnum,
+    ThemeColorIsInEnum
 }

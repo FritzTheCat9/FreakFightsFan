@@ -37,7 +37,7 @@ public static class UserExtensions
             Email = user.Email,
             IsAdmin = user.IsAdmin,
             IsSuperAdmin = user.IsSuperAdmin,
-            ThemeColor = user.ThemeColor,
+            ThemeColor = user.ThemeColor
         };
     }
 
@@ -66,7 +66,7 @@ public static class UserExtensions
             SortOrder.Ascending => users.OrderBy(GetUsersSortProperty(query)),
             SortOrder.Descending => users.OrderByDescending(GetUsersSortProperty(query)),
             SortOrder.None => users.OrderBy(x => x.UserName),
-            _ => users.OrderBy(x => x.UserName),
+            _ => users.OrderBy(x => x.UserName)
         };
     }
 
@@ -76,7 +76,7 @@ public static class UserExtensions
         {
             "username" => user => user.UserName,
             "email" => user => user.Email,
-            _ => user => user.UserName,
+            _ => user => user.UserName
         };
     }
 }

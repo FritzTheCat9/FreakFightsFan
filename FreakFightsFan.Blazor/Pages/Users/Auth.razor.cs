@@ -26,16 +26,11 @@ public partial class Auth : ComponentBase
 
     private async Task Login()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<LoginDialog>
-        {
-            { 
-                x => x.Command, 
-                new Login.Command() 
-            }
-        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<LoginDialog> { { x => x.Command, new Login.Command() } };
 
-        var dialog = await DialogService.ShowAsync<LoginDialog>(Localizer[nameof(AppStrings.Login)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<LoginDialog>(Localizer[nameof(AppStrings.Login)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -70,16 +65,12 @@ public partial class Auth : ComponentBase
 
     private async Task Register()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<RegisterDialog>
-        {
-            { 
-                x => x.Command, 
-                new Register.Command() 
-            }
-        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<RegisterDialog> { { x => x.Command, new Register.Command() } };
 
-        var dialog = await DialogService.ShowAsync<RegisterDialog>(Localizer[nameof(AppStrings.Register)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<RegisterDialog>(Localizer[nameof(AppStrings.Register)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -89,16 +80,15 @@ public partial class Auth : ComponentBase
 
     private async Task OpenRegistrationSuccessDialog()
     {
-        var dialogOptions = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var dialogOptions = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<SuccessDialog>
         {
-            { 
-                x => x.ContentText, 
-                Localizer[nameof(AppStrings.AccountCreated)] 
-            }
+            { x => x.ContentText, Localizer[nameof(AppStrings.AccountCreated)] }
         };
 
-        var dialog = await DialogService.ShowAsync<SuccessDialog>(Localizer[nameof(AppStrings.Success)], parameters, dialogOptions);
+        var dialog =
+            await DialogService.ShowAsync<SuccessDialog>(Localizer[nameof(AppStrings.Success)], parameters,
+                dialogOptions);
     }
 
     private async Task Logout()

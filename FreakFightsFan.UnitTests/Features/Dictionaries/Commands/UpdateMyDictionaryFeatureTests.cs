@@ -15,17 +15,14 @@ namespace FreakFightsFan.UnitTests.Features.Dictionaries.Commands;
 public class UpdateMyDictionaryFeatureTests
 {
     private readonly IClock _clock = Substitute.For<IClock>();
-    private readonly IStringLocalizer<ApiValidationMessage> _localizer = Substitute.For<IStringLocalizer<ApiValidationMessage>>();
+
+    private readonly IStringLocalizer<ApiValidationMessage> _localizer =
+        Substitute.For<IStringLocalizer<ApiValidationMessage>>();
 
     [Fact]
     public async Task UpdateMyDictionaryHandler_ThrowsNotFoundException_IfDictionaryNotFound()
     {
-        var command = new UpdateMyDictionary.Command
-        {
-            Id = 1,
-            Name = "Test Name",
-            Code = "TEST_CODE",
-        };
+        var command = new UpdateMyDictionary.Command { Id = 1, Name = "Test Name", Code = "TEST_CODE" };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
@@ -48,18 +45,14 @@ public class UpdateMyDictionaryFeatureTests
     [Fact]
     public async Task UpdateMyDictionaryHandler_ThrowsValidationException_IfCodeExistsInOtherDictionaries()
     {
-        var command = new UpdateMyDictionary.Command
-        {
-            Id = 1,
-            Name = "Test Name",
-            Code = "TEST_CODE",
-        };
+        var command = new UpdateMyDictionary.Command { Id = 1, Name = "Test Name", Code = "TEST_CODE" };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
 
         myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
-        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(true);
+        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>())
+            .Returns(true);
 
         mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
             .Returns(callInfo =>
@@ -77,18 +70,14 @@ public class UpdateMyDictionaryFeatureTests
     [Fact]
     public async Task UpdateMyDictionaryHandler_UpdatesValidDictionary()
     {
-        var command = new UpdateMyDictionary.Command
-        {
-            Id = 1,
-            Name = "Test Name",
-            Code = "TEST_CODE",
-        };
+        var command = new UpdateMyDictionary.Command { Id = 1, Name = "Test Name", Code = "TEST_CODE" };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
 
         myDictionaryRepository.Get(Arg.Any<int>()).Returns(new MyDictionary());
-        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>()).Returns(false);
+        myDictionaryRepository.DictionaryCodeExistsInOtherDictionariesThan(Arg.Any<string>(), Arg.Any<int>())
+            .Returns(false);
 
         mediator.Send(Arg.Any<UpdateMyDictionary.Command>(), CancellationToken.None)
             .Returns(callInfo =>

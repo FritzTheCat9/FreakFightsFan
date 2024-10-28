@@ -34,9 +34,9 @@ public static class UpdateUserFeature
         IAuthService authService)
         : IRequestHandler<UpdateUser.Command, Unit>
     {
+        private readonly IAuthService _authService = authService;
         private readonly IClock _clock = clock;
         private readonly IImageService _imageService = imageService;
-        private readonly IAuthService _authService = authService;
 
         public async Task<Unit> Handle(
             UpdateUser.Command command,

@@ -20,9 +20,7 @@ public static class TestUsers
 
         public IEnumerator<object[]> GetEnumerator()
         {
-            yield return new object[] {
-                new SuperAdmin { Email = Email, Password = Password }
-            };
+            yield return [new SuperAdmin { Email = Email, Password = Password }];
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -41,9 +39,7 @@ public static class TestUsers
 
         public IEnumerator<object[]> GetEnumerator()
         {
-            yield return new object[] {
-                new Admin { Email = Email, Password = Password }
-            };
+            yield return [new Admin { Email = Email, Password = Password }];
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -62,9 +58,7 @@ public static class TestUsers
 
         public IEnumerator<object[]> GetEnumerator()
         {
-            yield return new object[] {
-                new User { Email = Email, Password = Password }
-            };
+            yield return [new User { Email = Email, Password = Password }];
         }
 
         IEnumerator IEnumerable.GetEnumerator()

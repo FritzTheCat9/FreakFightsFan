@@ -13,9 +13,9 @@ public interface IEmailConfirmationService
 
 public class EmailConfirmationService : IEmailConfirmationService
 {
-    private readonly AuthOptions _options;
-    private readonly IClock _clock;
     private readonly string _baseUrl;
+    private readonly IClock _clock;
+    private readonly AuthOptions _options;
 
     public EmailConfirmationService(
         IOptions<AuthOptions> options,

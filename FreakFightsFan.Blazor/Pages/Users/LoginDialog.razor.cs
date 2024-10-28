@@ -4,7 +4,6 @@ using FreakFightsFan.Blazor.Exceptions;
 using FreakFightsFan.Blazor.Pages.Error;
 using FreakFightsFan.Shared.Exceptions;
 using FreakFightsFan.Shared.Features.Users.Commands;
-using FreakFightsFan.Shared.Features.Users.Responses;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
@@ -32,7 +31,7 @@ public partial class LoginDialog : ComponentBase
             _processingButton.SetProcessing(true);
 
             var token = await UserApiClient.Login(Command);
-            MudDialog.Close(DialogResult.Ok<JwtDto>(token));
+            MudDialog.Close(DialogResult.Ok(token));
         }
         catch (MyValidationException validationException)
         {

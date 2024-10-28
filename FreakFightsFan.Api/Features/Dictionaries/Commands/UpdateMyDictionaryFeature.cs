@@ -37,7 +37,8 @@ public static class UpdateMyDictionaryFeature
             UpdateMyDictionary.Command command,
             CancellationToken cancellationToken)
         {
-            var dictionary = await myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
+            var dictionary =
+                await myDictionaryRepository.Get(command.Id) ?? throw new MyNotFoundException();
 
             await ValidateCommand(command, localizer);
 

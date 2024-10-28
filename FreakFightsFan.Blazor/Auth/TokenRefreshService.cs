@@ -1,4 +1,5 @@
 ﻿using FreakFightsFan.Shared.Features.Users.Helpers;
+using Timer = System.Timers.Timer;
 
 namespace FreakFightsFan.Blazor.Auth;
 
@@ -15,7 +16,7 @@ public class TokenRefreshService
 
     private void StartTokenRefreshTimer()
     {
-        var timer = new System.Timers.Timer(AuthConsts.FrontendTokenRefreshTime);
+        var timer = new Timer(AuthConsts.FrontendTokenRefreshTime);
         timer.Elapsed += async (sender, e) => await RefreshToken();
         timer.AutoReset = true;
         timer.Start();

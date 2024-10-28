@@ -36,7 +36,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(IEnumerable<IValida
 
     private class ValidationError(string propertyName, string errorMessage)
     {
-        public string PropertyName { get; set; } = propertyName;
-        public string ErrorMessage { get; set; } = errorMessage;
+        public string PropertyName { get; } = propertyName;
+        public string ErrorMessage { get; } = errorMessage;
     }
 }

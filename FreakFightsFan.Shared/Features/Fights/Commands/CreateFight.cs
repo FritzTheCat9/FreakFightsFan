@@ -50,17 +50,21 @@ public static class CreateFight
                 .NotEmpty()
                 .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsNotEmpty)])
                 .Must(teams => teams.Count >= FightsConsts.MinTeamsNumber)
-                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMinNumber), FightsConsts.MinTeamsNumber])
+                .WithMessage(x
+                    => localizer[nameof(ValidationMessageString.TeamsMinNumber), FightsConsts.MinTeamsNumber])
                 .Must(teams => teams.Count <= FightsConsts.MaxTeamsNumber)
-                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMaxNumber), FightsConsts.MaxTeamsNumber])
+                .WithMessage(x
+                    => localizer[nameof(ValidationMessageString.TeamsMaxNumber), FightsConsts.MaxTeamsNumber])
                 .Must(FightHelpers.HaveUniqueFighters)
                 .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsUniqueFighters)]);
 
             RuleForEach(x => x.Teams)
                 .Must(team => team.Fighters.Count >= FightsConsts.MinTeamFighters)
-                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMinTeamFighters), FightsConsts.MinTeamFighters])
+                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMinTeamFighters),
+                    FightsConsts.MinTeamFighters])
                 .Must(team => team.Fighters.Count <= FightsConsts.MaxTeamFighters)
-                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMaxTeamFighters), FightsConsts.MaxTeamFighters]);
+                .WithMessage(x => localizer[nameof(ValidationMessageString.TeamsMaxTeamFighters),
+                    FightsConsts.MaxTeamFighters]);
 
             When(x => !string.IsNullOrWhiteSpace(x.VideoUrl), () =>
             {

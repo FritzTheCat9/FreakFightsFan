@@ -8,9 +8,10 @@ public static class LocalizationConsts
     public const string CultureKey = "Culture";
     public const string DefaultCulture = "en";
 
-    public static readonly Culture[] SupportedCultures = [
+    public static readonly Culture[] SupportedCultures =
+    [
         new() { Country = "English", CultureInfo = new CultureInfo("en") },
-        new() { Country = "Polski", CultureInfo = new CultureInfo("pl") },
+        new() { Country = "Polski", CultureInfo = new CultureInfo("pl") }
     ];
 }
 

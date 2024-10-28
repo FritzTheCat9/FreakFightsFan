@@ -43,9 +43,11 @@ public static class PageListExtensions<T>
         switch (pageSize)
         {
             case <= _minPageSize:
-                throw new MyValidationException(nameof(pageSize), $"{nameof(pageSize)} should be greater than {_minPageSize}");
+                throw new MyValidationException(nameof(pageSize),
+                    $"{nameof(pageSize)} should be greater than {_minPageSize}");
             case > _maxPageSize:
-                throw new MyValidationException(nameof(pageSize), $"{nameof(pageSize)} should be less than or equal to {_maxPageSize}");
+                throw new MyValidationException(nameof(pageSize),
+                    $"{nameof(pageSize)} should be less than or equal to {_maxPageSize}");
         }
     }
 }

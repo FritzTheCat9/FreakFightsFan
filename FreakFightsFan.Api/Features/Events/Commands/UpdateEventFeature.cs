@@ -46,10 +46,10 @@ public static class UpdateEventFeature
             myEvent.Modified = clock.Current();
             myEvent.Name = command.Name;
             myEvent.Date = command.Date.GetValueOrDefault(clock.Current());
-            myEvent.City = (command.CityId is not null)
+            myEvent.City = command.CityId is not null
                 ? await dictionaryItemRepository.Get(command.CityId.Value)
                 : null;
-            myEvent.Hall = (command.HallId is not null)
+            myEvent.Hall = command.HallId is not null
                 ? await dictionaryItemRepository.Get(command.HallId.Value)
                 : null;
 

@@ -12,9 +12,8 @@ namespace FreakFightsFan.Blazor.Pages.Fights;
 
 public partial class CreateFightDialog : ComponentBase
 {
-    private CustomValidator _customValidator;
-
     private readonly List<int> _allowedTeamSizes = [2, 3, 4, 5];
+    private CustomValidator _customValidator;
     private int _selectedTeam;
 
     private List<CreateFight.TeamHelperModel> _teams = [];
@@ -47,11 +46,7 @@ public partial class CreateFightDialog : ComponentBase
 
         for (var i = 0; i < teamsCount; i++)
         {
-            _teams.Add(new CreateFight.TeamHelperModel
-            {
-                Number = i,
-                Fighters = [],
-            });
+            _teams.Add(new CreateFight.TeamHelperModel { Number = i, Fighters = [] });
         }
 
         _selectedTeam = 0;

@@ -1,6 +1,3 @@
 ﻿namespace FreakFightsFan.Shared;
 
-public class ValidationMessage
-{
-
-}
+public class ValidationMessage { }

@@ -15,10 +15,10 @@ namespace FreakFightsFan.Blazor.Pages.DictionaryItems;
 public partial class DictionaryItemsPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<MyDictionaryItemDto> _table;
+    private PagedList<MyDictionaryItemDto> _myDictionaryItems;
 
     private string _searchString = "";
-    private PagedList<MyDictionaryItemDto> _myDictionaryItems;
+    private MudTable<MyDictionaryItemDto> _table;
 
     [Parameter] public int DictionaryId { get; set; }
 
@@ -33,8 +33,8 @@ public partial class DictionaryItemsPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Dictionaries)], href: "/dictionaries"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.DictionaryItems)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Dictionaries)], "/dictionaries"),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.DictionaryItems)], null, true)
         ];
     }
 
@@ -45,9 +45,9 @@ public partial class DictionaryItemsPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
+            SortOrder = (SortOrder)state.SortDirection,
             SearchTerm = _searchString,
-            DictionaryId = DictionaryId,
+            DictionaryId = DictionaryId
         };
 
         try
@@ -62,15 +62,15 @@ public partial class DictionaryItemsPage : ComponentBase
 
         return new TableData<MyDictionaryItemDto>
         {
-            TotalItems = _myDictionaryItems.TotalCount,
-            Items = _myDictionaryItems.Items
+            TotalItems = _myDictionaryItems.TotalCount, Items = _myDictionaryItems.Items
         };
     }
 
     private async Task DeleteDictionaryItem(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -89,21 +89,21 @@ public partial class DictionaryItemsPage : ComponentBase
 
     private async Task UpdateDictionaryItem(MyDictionaryItemDto myDictionaryItemDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryItemDialog>
         {
             {
                 x => x.Command,
                 new UpdateMyDictionaryItem.Command
                 {
-                    Id = myDictionaryItemDto.Id,
-                    Name = myDictionaryItemDto.Name,
-                    Code = myDictionaryItemDto.Code,
+                    Id = myDictionaryItemDto.Id, Name = myDictionaryItemDto.Name, Code = myDictionaryItemDto.Code
                 }
             }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateDictionaryItemDialog>(Localizer[nameof(AppStrings.UpdateDictionaryItem)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateDictionaryItemDialog>(
+                Localizer[nameof(AppStrings.UpdateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -113,21 +113,17 @@ public partial class DictionaryItemsPage : ComponentBase
 
     private async Task CreateDictionaryItem()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryItemDialog>
         {
             {
-                x => x.Command,
-                new CreateMyDictionaryItem.Command
-                {
-                    Name = "",
-                    Code = "",
-                    DictionaryId = DictionaryId,
-                }
+                x => x.Command, new CreateMyDictionaryItem.Command { Name = "", Code = "", DictionaryId = DictionaryId }
             }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateDictionaryItemDialog>(Localizer[nameof(AppStrings.CreateDictionaryItem)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateDictionaryItemDialog>(
+                Localizer[nameof(AppStrings.CreateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

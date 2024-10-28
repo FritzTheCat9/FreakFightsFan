@@ -4,5 +4,5 @@ public enum ThemeColor
 {
     System,
     Light,
-    Dark,
+    Dark
 }

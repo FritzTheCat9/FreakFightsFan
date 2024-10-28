@@ -21,10 +21,10 @@ public static class TeamsExtensions
         {
             Id = team.Id,
             Created = team.Created,
-            Modified = team.Modified, 
+            Modified = team.Modified,
             Number = team.Number,
             FightId = team.FightId,
-            FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList(),
+            FighterInTeams = team.TeamFighters.Select(x => x.ToFighterInTeamDto()).ToList()
         };
     }
 }

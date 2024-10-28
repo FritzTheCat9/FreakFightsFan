@@ -41,7 +41,7 @@ public static class CreateFederationFeature
                 Created = clock.Current(),
                 Modified = clock.Current(),
                 Name = command.Name,
-                Image = imageService.CreateEntityImage(command.ImageBase64),
+                Image = imageService.CreateEntityImage(command.ImageBase64)
             };
 
             return await federationRepository.Create(federation);

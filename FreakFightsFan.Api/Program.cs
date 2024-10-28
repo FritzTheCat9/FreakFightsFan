@@ -1,5 +1,5 @@
 using FreakFightsFan.Api.Auth;
-using FreakFightsFan.Api.Data;
+using FreakFightsFan.Api.Data.Database;
 using FreakFightsFan.Api.Emails;
 using FreakFightsFan.Api.Exceptions;
 using FreakFightsFan.Api.Extensions;
@@ -12,15 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwagger()
-                .AddMyCors(builder.Configuration)
-                .AddMediatr()
-                .AddDatabase(builder.Configuration)
-                .AddAuth(builder.Configuration)
-                .AddServices(builder.Configuration)
-                .AddEmails(builder.Configuration)
-                .AddExceptionMiddleware()
-                .AddMyLocalization()
-                .AddLogging(builder.Configuration);
+    .AddMyCors(builder.Configuration)
+    .AddMediatr()
+    .AddDatabase(builder.Configuration)
+    .AddAuth(builder.Configuration)
+    .AddServices(builder.Configuration)
+    .AddEmails(builder.Configuration)
+    .AddExceptionMiddleware()
+    .AddMyLocalization()
+    .AddLogging(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,10 +35,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMyLocalization()
-   .UseExceptionMiddleware()
-   .AddEndpoints()
-   .UseMyCors()
-   .UseAuth();
+    .UseExceptionMiddleware()
+    .AddEndpoints()
+    .UseMyCors()
+    .UseAuth();
 
 app.UseFileServer();
 

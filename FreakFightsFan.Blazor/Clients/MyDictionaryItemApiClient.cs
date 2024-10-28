@@ -25,7 +25,8 @@ public class MyDictionaryItemApiClient(IApiClient apiClient) : IMyDictionaryItem
             query);
     }
 
-    public async Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItemsByCode(GetAllMyDictionaryItemsByCode.Query query)
+    public async Task<PagedList<MyDictionaryItemDto>> GetAllMyDictionaryItemsByCode(
+        GetAllMyDictionaryItemsByCode.Query query)
     {
         return await apiClient.Post<GetAllMyDictionaryItemsByCode.Query, PagedList<MyDictionaryItemDto>>(
             $"{_url}/allByCode", query);

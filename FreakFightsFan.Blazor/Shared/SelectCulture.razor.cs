@@ -17,13 +17,15 @@ public partial class SelectCulture : ComponentBase
 
     protected override void OnInitialized()
     {
-        var culture = LocalizationConsts.SupportedCultures.FirstOrDefault(x => x.CultureInfo.Name == CultureInfo.CurrentCulture.Name);
+        var culture =
+            LocalizationConsts.SupportedCultures.FirstOrDefault(x
+                => x.CultureInfo.Name == CultureInfo.CurrentCulture.Name);
         CurrentCulture = culture ?? LocalizationConsts.SupportedCultures[0];
     }
 
     private void OnValueChanged(Culture culture)
     {
         LocalizationProvider.SetCulture(culture.CultureInfo.Name);
-        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 }

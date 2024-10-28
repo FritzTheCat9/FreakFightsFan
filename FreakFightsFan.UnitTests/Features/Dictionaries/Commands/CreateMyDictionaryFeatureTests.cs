@@ -15,16 +15,14 @@ namespace FreakFightsFan.UnitTests.Features.Dictionaries.Commands;
 public class CreateMyDictionaryFeatureTests
 {
     private readonly IClock _clock = Substitute.For<IClock>();
-    private readonly IStringLocalizer<ApiValidationMessage> _localizer = Substitute.For<IStringLocalizer<ApiValidationMessage>>();
+
+    private readonly IStringLocalizer<ApiValidationMessage> _localizer =
+        Substitute.For<IStringLocalizer<ApiValidationMessage>>();
 
     [Fact]
     public async Task CreateMyDictionaryHandler_ThrowsValidationException_IfDictionaryCodeExists()
     {
-        var command = new CreateMyDictionary.Command
-        {
-            Name = "Test Name",
-            Code = "TEST_CODE",
-        };
+        var command = new CreateMyDictionary.Command { Name = "Test Name", Code = "TEST_CODE" };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();
@@ -47,11 +45,7 @@ public class CreateMyDictionaryFeatureTests
     [Fact]
     public async Task CreateMyDictionaryHandler_ReturnsValidId_ForValidDictionary()
     {
-        var command = new CreateMyDictionary.Command
-        {
-            Name = "Test Name",
-            Code = "TEST_CODE",
-        };
+        var command = new CreateMyDictionary.Command { Name = "Test Name", Code = "TEST_CODE" };
 
         var myDictionaryRepository = Substitute.For<IMyDictionaryRepository>();
         var mediator = Substitute.For<IMediator>();

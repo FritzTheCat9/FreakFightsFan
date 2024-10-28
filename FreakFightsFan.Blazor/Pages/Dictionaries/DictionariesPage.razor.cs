@@ -15,10 +15,10 @@ namespace FreakFightsFan.Blazor.Pages.Dictionaries;
 public partial class DictionariesPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<MyDictionaryDto> _table;
+    private PagedList<MyDictionaryDto> _myDictionaries;
 
     private string _searchString = "";
-    private PagedList<MyDictionaryDto> _myDictionaries;
+    private MudTable<MyDictionaryDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IMyDictionaryApiClient MyDictionaryApiClient { get; set; }
@@ -32,7 +32,7 @@ public partial class DictionariesPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Dictionaries)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Dictionaries)], null, true)
         ];
     }
 
@@ -43,8 +43,8 @@ public partial class DictionariesPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
-            SearchTerm = _searchString,
+            SortOrder = (SortOrder)state.SortDirection,
+            SearchTerm = _searchString
         };
 
         try
@@ -59,8 +59,7 @@ public partial class DictionariesPage : ComponentBase
 
         return new TableData<MyDictionaryDto>
         {
-            TotalItems = _myDictionaries.TotalCount,
-            Items = _myDictionaries.Items
+            TotalItems = _myDictionaries.TotalCount, Items = _myDictionaries.Items
         };
     }
 
@@ -71,8 +70,9 @@ public partial class DictionariesPage : ComponentBase
 
     private async Task DeleteDictionary(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -91,21 +91,21 @@ public partial class DictionariesPage : ComponentBase
 
     private async Task UpdateDictionary(MyDictionaryDto myDictionaryDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateDictionaryDialog>
         {
             {
                 x => x.Command,
                 new UpdateMyDictionary.Command
                 {
-                    Id = myDictionaryDto.Id,
-                    Name = myDictionaryDto.Name,
-                    Code = myDictionaryDto.Code
+                    Id = myDictionaryDto.Id, Name = myDictionaryDto.Name, Code = myDictionaryDto.Code
                 }
             }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateDictionaryDialog>(Localizer[nameof(AppStrings.UpdateDictionary)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateDictionaryDialog>(Localizer[nameof(AppStrings.UpdateDictionary)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -115,16 +115,15 @@ public partial class DictionariesPage : ComponentBase
 
     private async Task CreateDictionary()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<CreateDictionaryDialog>
         {
-            {
-                x => x.Command,
-                new CreateMyDictionary.Command()
-            }
+            { x => x.Command, new CreateMyDictionary.Command() }
         };
 
-        var dialog = await DialogService.ShowAsync<CreateDictionaryDialog>(Localizer[nameof(AppStrings.CreateDictionary)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateDictionaryDialog>(Localizer[nameof(AppStrings.CreateDictionary)],
+                parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

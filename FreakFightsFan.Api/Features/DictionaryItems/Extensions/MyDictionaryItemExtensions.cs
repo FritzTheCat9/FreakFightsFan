@@ -31,7 +31,7 @@ public static class MyDictionaryItemExtensions
             Modified = dictionaryItem.Modified,
             Name = dictionaryItem.Name,
             Code = dictionaryItem.Code,
-            DictionaryId = dictionaryItem.DictionaryId,
+            DictionaryId = dictionaryItem.DictionaryId
         };
     }
 
@@ -62,7 +62,7 @@ public static class MyDictionaryItemExtensions
             SortOrder.Ascending => dictionaryItems.OrderBy(GetMyDictionaryItemsSortProperty(query)),
             SortOrder.Descending => dictionaryItems.OrderByDescending(GetMyDictionaryItemsSortProperty(query)),
             SortOrder.None => dictionaryItems.OrderBy(x => x.Code),
-            _ => dictionaryItems.OrderBy(x => x.Code),
+            _ => dictionaryItems.OrderBy(x => x.Code)
         };
     }
 
@@ -73,7 +73,7 @@ public static class MyDictionaryItemExtensions
         {
             "name" => dictionaryItem => dictionaryItem.Name,
             "code" => dictionaryItem => dictionaryItem.Code,
-            _ => dictionaryItem => dictionaryItem.Code,
+            _ => dictionaryItem => dictionaryItem.Code
         };
     }
 
@@ -104,7 +104,7 @@ public static class MyDictionaryItemExtensions
             SortOrder.Ascending => dictionaryItems.OrderBy(GetMyDictionaryItemsSortProperty(query)),
             SortOrder.Descending => dictionaryItems.OrderByDescending(GetMyDictionaryItemsSortProperty(query)),
             SortOrder.None => dictionaryItems.OrderBy(x => x.Code),
-            _ => dictionaryItems.OrderBy(x => x.Code),
+            _ => dictionaryItems.OrderBy(x => x.Code)
         };
     }
 
@@ -115,7 +115,7 @@ public static class MyDictionaryItemExtensions
         {
             "name" => dictionaryItem => dictionaryItem.Name,
             "code" => dictionaryItem => dictionaryItem.Code,
-            _ => dictionaryItem => dictionaryItem.Code,
+            _ => dictionaryItem => dictionaryItem.Code
         };
     }
 }

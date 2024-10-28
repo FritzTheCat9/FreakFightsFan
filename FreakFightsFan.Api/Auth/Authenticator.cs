@@ -17,11 +17,11 @@ public interface IAuthenticator
 
 public class Authenticator : IAuthenticator
 {
+    private readonly string _audience;
     private readonly IClock _clock;
     private readonly string _issuer;
-    private readonly string _audience;
-    private readonly SigningCredentials _signingCredentials;
     private readonly JwtSecurityTokenHandler _jwtHandler = new();
+    private readonly SigningCredentials _signingCredentials;
 
     public Authenticator(
         IClock clock,
@@ -38,11 +38,7 @@ public class Authenticator : IAuthenticator
 
     public JwtDto CreateTokens(User user)
     {
-        return new JwtDto
-        {
-            AccessToken = GenerateAccessToken(user),
-            RefreshToken = GenerateRefreshToken(user)
-        };
+        return new JwtDto { AccessToken = GenerateAccessToken(user), RefreshToken = GenerateRefreshToken(user) };
     }
 
     private string GenerateAccessToken(User user)
@@ -50,12 +46,12 @@ public class Authenticator : IAuthenticator
         var now = _clock.Current();
         var expires = now.Add(AuthConsts.AccessTokenExpiry);
 
-        var claims = new List<Claim>()
+        var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName),
             new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.Role, Policy.User),
+            new(ClaimTypes.Role, Policy.User)
         };
 
         if (user.IsAdmin)
@@ -78,10 +74,7 @@ public class Authenticator : IAuthenticator
         var now = _clock.Current();
         var expires = now.Add(AuthConsts.RefreshTokenExpiry);
 
-        var claims = new List<Claim>()
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        };
+        var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id.ToString()) };
 
         var jwt = new JwtSecurityToken(_issuer, _audience, claims, now, expires, _signingCredentials);
         var refreshToken = _jwtHandler.WriteToken(jwt);

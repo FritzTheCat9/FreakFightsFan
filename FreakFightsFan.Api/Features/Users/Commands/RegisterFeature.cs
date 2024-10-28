@@ -56,7 +56,7 @@ public static class RegisterFeature
                 EmailConfirmed = false,
                 EmailConfirmationToken = emailConfirmationService.GenerateEmailConfirmationToken(command.Email),
                 IsAdmin = false,
-                IsSuperAdmin = false,
+                IsSuperAdmin = false
             };
 
             var userId = await userRepository.Create(user);
@@ -66,7 +66,7 @@ public static class RegisterFeature
                 {
                     UserName = command.UserName,
                     Link = emailConfirmationService.GenerateConfirmationLink(user.Email,
-                        user.EmailConfirmationToken),
+                        user.EmailConfirmationToken)
                 });
 
             return userId;

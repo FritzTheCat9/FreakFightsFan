@@ -15,9 +15,9 @@ namespace FreakFightsFan.Blazor.Pages.Images;
 public partial class ImagesPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-    private MudTable<ImageDto> _table;
 
     private PagedList<ImageDto> _myImages;
+    private MudTable<ImageDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IImageApiClient ImageApiClient { get; set; }
@@ -31,7 +31,7 @@ public partial class ImagesPage : ComponentBase
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Images)], href: null, disabled: true),
+            new BreadcrumbItem(Localizer[nameof(AppStrings.Images)], null, true)
         ];
     }
 
@@ -42,7 +42,7 @@ public partial class ImagesPage : ComponentBase
             Page = state.Page + 1,
             PageSize = state.PageSize,
             SortColumn = state.SortLabel,
-            SortOrder = ((SortOrder)state.SortDirection),
+            SortOrder = (SortOrder)state.SortDirection
         };
 
         try
@@ -55,17 +55,14 @@ public partial class ImagesPage : ComponentBase
             return new TableData<ImageDto> { TotalItems = 0, Items = [] };
         }
 
-        return new TableData<ImageDto>
-        {
-            TotalItems = _myImages.TotalCount,
-            Items = _myImages.Items
-        };
+        return new TableData<ImageDto> { TotalItems = _myImages.TotalCount, Items = _myImages.Items };
     }
 
     private async Task DeleteImage(int id)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var dialog = await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var dialog =
+            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -84,24 +81,16 @@ public partial class ImagesPage : ComponentBase
 
     private async Task UpdateImage(ImageDto imageDto)
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<UpdateImageDialog>
         {
-            {
-                x => x.FormModel,
-                new UpdateImage.FormModel
-                {
-                    Id = imageDto.Id,
-                    ImageBase64 = ""
-                }
-            },
-            {
-                x => x.Url,
-                imageDto.Url
-            }
+            { x => x.FormModel, new UpdateImage.FormModel { Id = imageDto.Id, ImageBase64 = "" } },
+            { x => x.Url, imageDto.Url }
         };
 
-        var dialog = await DialogService.ShowAsync<UpdateImageDialog>(Localizer[nameof(AppStrings.UpdateImage)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<UpdateImageDialog>(Localizer[nameof(AppStrings.UpdateImage)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -111,16 +100,12 @@ public partial class ImagesPage : ComponentBase
 
     private async Task CreateImage()
     {
-        var options = new DialogOptions() { CloseOnEscapeKey = true, CloseButton = true };
-        var parameters = new DialogParameters<CreateImageDialog>
-        {
-            { 
-                x => x.FormModel,
-                new CreateImage.FormModel()
-            }
-        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+        var parameters = new DialogParameters<CreateImageDialog> { { x => x.FormModel, new CreateImage.FormModel() } };
 
-        var dialog = await DialogService.ShowAsync<CreateImageDialog>(Localizer[nameof(AppStrings.CreateImage)], parameters, options);
+        var dialog =
+            await DialogService.ShowAsync<CreateImageDialog>(Localizer[nameof(AppStrings.CreateImage)], parameters,
+                options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

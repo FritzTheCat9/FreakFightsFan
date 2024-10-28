@@ -1,80 +1,89 @@
 ﻿using FreakFightsFan.Shared.Exceptions;
 using System.Security.Claims;
 
-namespace FreakFightsFan.Api.Auth
+namespace FreakFightsFan.Api.Auth;
+
+public interface IAuthService
 {
-    public interface IAuthService
+    bool IsInRole(string roleName);
+    bool IsInAnyRole(params string[] roleNames);
+    bool IsLoggedInUser(int userId);
+    int? GetCurrentUserId();
+}
+
+public class AuthService : IAuthService
+{
+    public AuthService(IHttpContextAccessor httpContextAccessor)
     {
-        bool IsInRole(string roleName);
-        bool IsInAnyRole(params string[] roleNames);
-        bool IsLoggedInUser(int userId);
-        int? GetCurrentUserId();
-
-        ClaimsPrincipal User { get; }
-    }
-
-    public class AuthService : IAuthService
-    {
-        private readonly ClaimsPrincipal _user;
-
-        public ClaimsPrincipal User => _user;
-
-        public AuthService(IHttpContextAccessor httpContextAccessor)
+        if (httpContextAccessor.HttpContext is null)
         {
-            if (httpContextAccessor.HttpContext is null)
-                throw new MyServerException();
-
-            _user = httpContextAccessor.HttpContext.User;
+            throw new MyServerException();
         }
 
-        public bool IsInRole(string roleName)
-            => _user.IsInRole(roleName);
+        User = httpContextAccessor.HttpContext.User;
+    }
 
-        public bool IsInAnyRole(params string[] roleNames)
+    public ClaimsPrincipal User { get; }
+
+    public bool IsInRole(string roleName)
+    {
+        return User.IsInRole(roleName);
+    }
+
+    public bool IsInAnyRole(params string[] roleNames)
+    {
+        foreach (var roleName in roleNames)
         {
-            foreach (var roleName in roleNames)
+            if (User.IsInRole(roleName))
             {
-                if (_user.IsInRole(roleName))
-                {
-                    return true;
-                }
+                return true;
             }
+        }
 
+        return false;
+    }
+
+    public bool IsLoggedInUser(int userId)
+    {
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdString == null)
+        {
             return false;
         }
 
-        public bool IsLoggedInUser(int userId)
+        if (!int.TryParse(userIdString, out var userIdInt))
         {
-            var userIdString = _user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return false;
+        }
+
+        if (userId != userIdInt)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int? GetCurrentUserId()
+    {
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userIdString == null)
-                return false;
-
-            if (!int.TryParse(userIdString, out int userIdInt))
-                return false;
-
-            if (userId != userIdInt)
-                return false;
-
-            return true;
-        }
-
-        public int? GetCurrentUserId()
-        {
-            if (_user.Identity?.IsAuthenticated ?? false)
             {
-                var userIdString = _user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (userIdString == null)
-                    return null;
-
-                if (!int.TryParse(userIdString, out int userIdInt))
-                    return null;
-
-                return userIdInt;
+                return null;
             }
 
-            return null;
+            if (!int.TryParse(userIdString, out var userIdInt))
+            {
+                return null;
+            }
+
+            return userIdInt;
         }
+
+        return null;
     }
 }
