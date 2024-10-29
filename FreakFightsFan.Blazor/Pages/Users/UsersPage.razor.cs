@@ -12,23 +12,23 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Users;
 
-public partial class UsersPage : ComponentBase
+public partial class UsersPage(
+    IExceptionHandler exceptionHandler,
+    IUserApiClient userApiClient,
+    IDialogService dialogService,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<UserDto> _myUsers;
     private string _searchString = "";
     private MudTable<UserDto> _table;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IUserApiClient UserApiClient { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Users)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Users)], null, true)
         ];
     }
 
@@ -45,11 +45,11 @@ public partial class UsersPage : ComponentBase
 
         try
         {
-            _myUsers = await UserApiClient.GetAllUsers(query);
+            _myUsers = await userApiClient.GetAllUsers(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<UserDto> { TotalItems = 0, Items = [] };
         }
 
@@ -61,16 +61,16 @@ public partial class UsersPage : ComponentBase
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>
         {
-            { x => x.ContentText, Localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] }
+            { x => x.ContentText, localizer[nameof(AppStrings.IncreaseUserPermissionsQuestion)] }
         };
 
         var dialog =
-            await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)],
+            await dialogService.ShowAsync<InformationDialog>(localizer[nameof(AppStrings.IncreaseUserPermissions)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
-            await UserApiClient.PromoteUser(id);
+            await userApiClient.PromoteUser(id);
             await _table.ReloadServerData();
         }
     }
@@ -80,16 +80,16 @@ public partial class UsersPage : ComponentBase
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var parameters = new DialogParameters<InformationDialog>
         {
-            { x => x.ContentText, Localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] }
+            { x => x.ContentText, localizer[nameof(AppStrings.DecreaseUserPermissionsQuestion)] }
         };
 
         var dialog =
-            await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)],
+            await dialogService.ShowAsync<InformationDialog>(localizer[nameof(AppStrings.DecreaseUserPermissions)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
-            await UserApiClient.DegradeUser(id);
+            await userApiClient.DegradeUser(id);
             await _table.ReloadServerData();
         }
     }

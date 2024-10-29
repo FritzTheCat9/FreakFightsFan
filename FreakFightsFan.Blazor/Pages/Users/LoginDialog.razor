@@ -7,16 +7,16 @@
         <DialogContent>
             <FritzTextField @bind-Value="Command.Email"
                             For="() => Command.Email"
-                            Label="@Localizer[nameof(AppStrings.Email)]" />
+                            Label="@localizer[nameof(AppStrings.Email)]" />
             <FritzValidationMessage For="() => Command.Email" />
 
             <FritzPasswordField @bind-Value="Command.Password"
                                 For="() => Command.Password"
-                                Label="@Localizer[nameof(AppStrings.Password)]" />
+                                Label="@localizer[nameof(AppStrings.Password)]" />
             <FritzValidationMessage For="() => Command.Password" />
         </DialogContent>
         <DialogActions>
-            <FritzProcessingButton ButtonText="@Localizer[nameof(AppStrings.Login)]"
+            <FritzProcessingButton ButtonText="@localizer[nameof(AppStrings.Login)]"
                                    ButtonType="ButtonType.Submit"
                                    Color="Color.Primary"
                                    @ref="_processingButton" />

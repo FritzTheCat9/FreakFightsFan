@@ -2,7 +2,7 @@
 @attribute [Authorize(Policy = Policy.Admin)]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.DictionaryItems)]
+    @localizer[nameof(AppStrings.DictionaryItems)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -14,7 +14,7 @@
           ServerData="ServerReload">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
-            @Localizer[nameof(AppStrings.DictionaryItems)]
+            @localizer[nameof(AppStrings.DictionaryItems)]
         </MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Add"
                        OnClick="CreateDictionaryItem"
@@ -27,27 +27,27 @@
         <MudTh>
             <MudTableSortLabel SortLabel="name"
                                T="MyDictionaryItemDto">
-                @Localizer[nameof(AppStrings.Name)]
+                @localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="code"
                                T="MyDictionaryItemDto">
-                @Localizer[nameof(AppStrings.Code)]
+                @localizer[nameof(AppStrings.Code)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            @Localizer[nameof(AppStrings.Actions)]
+            @localizer[nameof(AppStrings.Actions)]
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Name)]">
             @context.Name
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Code)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Code)]">
             @context.Code
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Actions)]">
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
                            OnClick="() => UpdateDictionaryItem(context)"
                            Size="Size.Small" />
@@ -58,16 +58,16 @@
     </RowTemplate>
     <NoRecordsContent>
         <MudText>
-            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+            @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
         </MudText>
     </NoRecordsContent>
     <LoadingContent>
         <MudText>
-            @Localizer[nameof(AppStrings.Loading)]
+            @localizer[nameof(AppStrings.Loading)]
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
-                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
+        <MudTablePager InfoFormat="@localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

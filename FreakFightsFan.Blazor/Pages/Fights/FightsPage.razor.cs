@@ -15,7 +15,14 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Fights;
 
-public partial class FightsPage : ComponentBase
+public partial class FightsPage(
+    IExceptionHandler exceptionHandler,
+    IFightApiClient fightApiClient,
+    IEventApiClient eventApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService,
+    IJSRuntime jsRuntime)
+    : ComponentBase
 {
     private EventDto _event;
     private List<BreadcrumbItem> _items = [];
@@ -25,23 +32,13 @@ public partial class FightsPage : ComponentBase
     [Parameter] public int FederationId { get; set; }
     [Parameter] public int EventId { get; set; }
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFightApiClient FightApiClient { get; set; }
-    [Inject] public IEventApiClient EventApiClient { get; set; }
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public IJSRuntime JsRuntime { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnParametersSet()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], "/federations"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], $"/events/{FederationId}"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Fights)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Federations)], "/federations"),
+            new BreadcrumbItem(localizer[nameof(AppStrings.Events)], $"/events/{FederationId}"),
+            new BreadcrumbItem(localizer[nameof(AppStrings.Fights)], null, true)
         ];
     }
 
@@ -56,11 +53,11 @@ public partial class FightsPage : ComponentBase
     {
         try
         {
-            _event = await EventApiClient.GetEvent(EventId);
+            _event = await eventApiClient.GetEvent(EventId);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             _event = null;
         }
     }
@@ -71,11 +68,11 @@ public partial class FightsPage : ComponentBase
 
         try
         {
-            _myFights = (await FightApiClient.GetAllFights(query)).Items;
+            _myFights = (await fightApiClient.GetAllFights(query)).Items;
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             _myFights = [];
         }
     }
@@ -84,19 +81,19 @@ public partial class FightsPage : ComponentBase
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
         {
             try
             {
-                await FightApiClient.DeleteFight(id);
+                await fightApiClient.DeleteFight(id);
                 await GetAllFights();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -106,12 +103,12 @@ public partial class FightsPage : ComponentBase
         try
         {
             var command = new MoveFight.Command { Id = id, Direction = direction };
-            await FightApiClient.MoveFight(command);
+            await fightApiClient.MoveFight(command);
             await GetAllFights();
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 
@@ -119,7 +116,7 @@ public partial class FightsPage : ComponentBase
     {
         if (!string.IsNullOrEmpty(fightDto.VideoUrl))
         {
-            await JsRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
+            await jsRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
         }
     }
 
@@ -141,7 +138,7 @@ public partial class FightsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateFightDialog>(Localizer[nameof(AppStrings.UpdateFight)], parameters,
+            await dialogService.ShowAsync<UpdateFightDialog>(localizer[nameof(AppStrings.UpdateFight)], parameters,
                 options);
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -163,7 +160,7 @@ public partial class FightsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<CreateFightDialog>(Localizer[nameof(AppStrings.CreateFight)], parameters,
+            await dialogService.ShowAsync<CreateFightDialog>(localizer[nameof(AppStrings.CreateFight)], parameters,
                 options);
         var result = await dialog.Result;
         if (!result.Canceled)

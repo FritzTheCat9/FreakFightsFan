@@ -6,12 +6,12 @@
                 <ChildContent>
                     @if (!string.IsNullOrEmpty(FighterHelperModel.Fighter.Image?.Url))
                     {
-                        <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                        <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                                   Src=@FighterHelperModel.Fighter.Image.Url />
                     }
                     else
                     {
-                        <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                        <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                                   Fluid=true
                                   ObjectFit=ObjectFit.Contain
                                   Src="images_default/default_user_image.png"
@@ -35,7 +35,7 @@
     <MudGrid Justify=Justify.Center
              Spacing=1>
         <MudItem xs=12>
-            <MudSelect Label=@Localizer[nameof(AppStrings.FightResult)]
+            <MudSelect Label=@localizer[nameof(AppStrings.FightResult)]
                        T=FightResult
                        Value=FighterHelperModel.FightResult
                        ValueChanged=OnFightResultChanged>

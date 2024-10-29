@@ -5,7 +5,9 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzProcessingButton
+public partial class FritzProcessingButton(
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private bool _processing;
 
@@ -15,13 +17,11 @@ public partial class FritzProcessingButton
     [Parameter] public Color Color { get; set; }
     [Parameter] public Variant Variant { get; set; }
 
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     protected override void OnParametersSet()
     {
         if (string.IsNullOrWhiteSpace(ProcessingButtonText))
         {
-            ProcessingButtonText = Localizer[nameof(AppStrings.Processing)];
+            ProcessingButtonText = localizer[nameof(AppStrings.Processing)];
         }
     }
 

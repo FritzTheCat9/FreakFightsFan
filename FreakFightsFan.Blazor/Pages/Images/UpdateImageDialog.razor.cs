@@ -9,24 +9,23 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Images;
 
-public partial class UpdateImageDialog : ComponentBase
+public partial class UpdateImageDialog(
+    IExceptionHandler exceptionHandler,
+    IImageApiClient imageApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public UpdateImage.FormModel FormModel { get; set; } = new();
     [Parameter] public string Url { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IImageApiClient ImageApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await ImageApiClient.UpdateImage(FormModel);
+            await imageApiClient.UpdateImage(FormModel);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -35,7 +34,7 @@ public partial class UpdateImageDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }

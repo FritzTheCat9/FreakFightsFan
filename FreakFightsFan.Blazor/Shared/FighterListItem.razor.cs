@@ -5,13 +5,13 @@ using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 
 namespace FreakFightsFan.Blazor.Shared;
 
-public partial class FighterListItem : ComponentBase
+public partial class FighterListItem(
+    IStringLocalizer<App> localizer) 
+    : ComponentBase
 {
     [Parameter] public FighterHelperModel FighterHelperModel { get; set; }
     [Parameter] public EventCallback OnDeleteFighter { get; set; }
     [Parameter] public EventCallback<FightResult> FightResultChanged { get; set; }
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private void DeleteFighter()
     {

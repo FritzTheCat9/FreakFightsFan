@@ -12,24 +12,24 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Federations;
 
-public partial class FederationsPage : ComponentBase
+public partial class FederationsPage(
+    IExceptionHandler exceptionHandler,
+    IFederationApiClient federationApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService,
+    NavigationManager navigationManager)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<FederationDto> _myFederations;
     private string _searchString = "";
     private MudTable<FederationDto> _table;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFederationApiClient FederationApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Federations)], null, true)
         ];
     }
 
@@ -46,11 +46,11 @@ public partial class FederationsPage : ComponentBase
 
         try
         {
-            _myFederations = await FederationApiClient.GetAllFederations(query);
+            _myFederations = await federationApiClient.GetAllFederations(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<FederationDto> { TotalItems = 0, Items = [] };
         }
 
@@ -59,26 +59,26 @@ public partial class FederationsPage : ComponentBase
 
     private void RedirectToEventsPage(int id)
     {
-        NavigationManager.NavigateTo($"/events/{id}");
+        navigationManager.NavigateTo($"/events/{id}");
     }
 
     private async Task DeleteFederation(int id)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
             try
             {
-                await FederationApiClient.DeleteFederation(id);
+                await federationApiClient.DeleteFederation(id);
                 await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -96,7 +96,7 @@ public partial class FederationsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)],
+            await dialogService.ShowAsync<UpdateFederationDialog>(localizer[nameof(AppStrings.UpdateFederation)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -114,7 +114,7 @@ public partial class FederationsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<CreateFederationDialog>(Localizer[nameof(AppStrings.CreateFederation)],
+            await dialogService.ShowAsync<CreateFederationDialog>(localizer[nameof(AppStrings.CreateFederation)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })

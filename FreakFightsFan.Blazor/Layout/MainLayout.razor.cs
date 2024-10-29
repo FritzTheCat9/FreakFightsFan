@@ -11,7 +11,14 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Layout;
 
-public partial class MainLayout : LayoutComponentBase
+public partial class MainLayout(
+    IExceptionHandler exceptionHandler,
+    IUserApiClient userApiClient,
+    IAuthService authService,
+    IStringLocalizer<App> localizer,
+    IThemeColorProvider themeColorProvider,
+    TokenRefreshService tokenRefreshService)
+    : LayoutComponentBase
 {
     private readonly MudTheme _customTheme = new()
     {
@@ -49,28 +56,21 @@ public partial class MainLayout : LayoutComponentBase
     private string _text;
     private ThemeColor _themeColor = ThemeColor.System;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IUserApiClient UserApiClient { get; set; }
-    [Inject] public IAuthService AuthService { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IThemeColorProvider ThemeColorProvider { get; set; }
-    [Inject] public TokenRefreshService TokenRefreshService { get; set; }
-
     protected override void OnParametersSet()
     {
-        _text = Localizer[nameof(AppStrings.SwitchToLightTheme)];
+        _text = localizer[nameof(AppStrings.SwitchToLightTheme)];
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await TokenRefreshService.RefreshToken();
+        await tokenRefreshService.RefreshToken();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _themeColor = await ThemeColorProvider.GetThemeColor();
+            _themeColor = await themeColorProvider.GetThemeColor();
 
             await RefreshThemeColor();
 
@@ -136,7 +136,7 @@ public partial class MainLayout : LayoutComponentBase
 
     private async Task UpdateLoggedUserTheme()
     {
-        var userId = await AuthService.GetCurrentUserId();
+        var userId = await authService.GetCurrentUserId();
         if (userId is null)
         {
             return;
@@ -146,46 +146,46 @@ public partial class MainLayout : LayoutComponentBase
         {
             var command = new UpdateUserTheme.Command { Id = userId.Value, ThemeColor = _themeColor };
 
-            await UserApiClient.UpdateUserTheme(command);
+            await userApiClient.UpdateUserTheme(command);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 
     private async Task SetLightMode()
     {
-        await ThemeColorProvider.SetThemeColor(ThemeColor.Light);
+        await themeColorProvider.SetThemeColor(ThemeColor.Light);
 
         _themeColor = ThemeColor.Light;
         _isDarkMode = false;
         _icon = Icons.Material.Rounded.DarkMode;
-        _text = Localizer[nameof(AppStrings.SwitchToDarkTheme)];
+        _text = localizer[nameof(AppStrings.SwitchToDarkTheme)];
 
         StateHasChanged();
     }
 
     private async Task SetDarkMode()
     {
-        await ThemeColorProvider.SetThemeColor(ThemeColor.Dark);
+        await themeColorProvider.SetThemeColor(ThemeColor.Dark);
 
         _themeColor = ThemeColor.Dark;
         _isDarkMode = true;
         _icon = Icons.Material.Rounded.SettingsBrightness;
-        _text = Localizer[nameof(AppStrings.SwitchToSystemTheme)];
+        _text = localizer[nameof(AppStrings.SwitchToSystemTheme)];
 
         StateHasChanged();
     }
 
     private async Task SetSystemMode()
     {
-        await ThemeColorProvider.SetThemeColor(ThemeColor.System);
+        await themeColorProvider.SetThemeColor(ThemeColor.System);
 
         _themeColor = ThemeColor.System;
         _isDarkMode = await _mudThemeProvider.GetSystemPreference();
         _icon = Icons.Material.Rounded.LightMode;
-        _text = Localizer[nameof(AppStrings.SwitchToLightTheme)];
+        _text = localizer[nameof(AppStrings.SwitchToLightTheme)];
 
         StateHasChanged();
     }

@@ -2,7 +2,7 @@
 @attribute [AllowAnonymous]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.Events)]
+    @localizer[nameof(AppStrings.Events)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -15,7 +15,7 @@
           ServerData="ServerReload">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
-            @Localizer[nameof(AppStrings.Events)]
+            @localizer[nameof(AppStrings.Events)]
         </MudText>
         <AuthorizeView Policy="@Policy.Admin">
             <MudIconButton Icon="@Icons.Material.Filled.Add"
@@ -30,56 +30,56 @@
         <MudTh>
             <MudTableSortLabel SortLabel="name"
                                T="EventDto">
-                @Localizer[nameof(AppStrings.Name)]
+                @localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="date"
                                T="EventDto">
-                @Localizer[nameof(AppStrings.Date)]
+                @localizer[nameof(AppStrings.Date)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="city"
                                T="EventDto">
-                @Localizer[nameof(AppStrings.City)]
+                @localizer[nameof(AppStrings.City)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="hall"
                                T="EventDto">
-                @Localizer[nameof(AppStrings.Hall)]
+                @localizer[nameof(AppStrings.Hall)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            @Localizer[nameof(AppStrings.Fights)]
+            @localizer[nameof(AppStrings.Fights)]
         </MudTh>
         <AuthorizeView Policy="@Policy.Admin">
             <MudTh>
-                @Localizer[nameof(AppStrings.Actions)]
+                @localizer[nameof(AppStrings.Actions)]
             </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Name)]">
             @myEvent.Name
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Date)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Date)]">
             @myEvent.Date.ToString("dd/MM/yyyy")
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.City)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.City)]">
             <DisplayDictionaryItemDto DictionaryItemDto="myEvent.City" />
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Hall)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Hall)]">
             <DisplayDictionaryItemDto DictionaryItemDto="myEvent.Hall" />
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Fights)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Fights)]">
             <MudIconButton Icon="@Icons.Material.Filled.List"
                            OnClick="() => RedirectToFightsPage(myEvent.Id)"
                            Size="Size.Small" />
         </MudTd>
         <AuthorizeView Policy="@Policy.Admin">
-            <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+            <MudTd DataLabel="@localizer[nameof(AppStrings.Actions)]">
                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                OnClick="() => UpdateEvent(myEvent)"
                                Size="Size.Small" />
@@ -91,16 +91,16 @@
     </RowTemplate>
     <NoRecordsContent>
         <MudText>
-            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+            @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
         </MudText>
     </NoRecordsContent>
     <LoadingContent>
         <MudText>
-            @Localizer[nameof(AppStrings.Loading)]
+            @localizer[nameof(AppStrings.Loading)]
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
-                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
+        <MudTablePager InfoFormat="@localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

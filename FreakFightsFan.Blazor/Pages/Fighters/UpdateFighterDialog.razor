@@ -20,28 +20,28 @@
 
             <FritzTextField @bind-Value="FormModel.FirstName"
                             For="() => FormModel.FirstName"
-                            Label="@Localizer[nameof(AppStrings.FirstName)]" />
+                            Label="@localizer[nameof(AppStrings.FirstName)]" />
             <FritzValidationMessage For="() => FormModel.FirstName" />
 
             <FritzTextField @bind-Value="FormModel.LastName"
                             For="() => FormModel.LastName"
-                            Label="@Localizer[nameof(AppStrings.LastName)]" />
+                            Label="@localizer[nameof(AppStrings.LastName)]" />
             <FritzValidationMessage For="() => FormModel.LastName" />
 
             <FritzTextField @bind-Value="FormModel.Nickname"
                             For="() => FormModel.Nickname"
-                            Label="@Localizer[nameof(AppStrings.Nickname)]" />
+                            Label="@localizer[nameof(AppStrings.Nickname)]" />
             <FritzValidationMessage For="() => FormModel.Nickname" />
 
             <FritzTextField @bind-Value="FormModel.InstagramUrl"
                             For="() => FormModel.InstagramUrl"
-                            Label="@Localizer[nameof(AppStrings.InstagramUrl)]" />
+                            Label="@localizer[nameof(AppStrings.InstagramUrl)]" />
             <FritzValidationMessage For="() => FormModel.InstagramUrl" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit"
                        Color="Color.Primary">
-                @Localizer[nameof(AppStrings.Update)]
+                @localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>
     </MudDialog>

@@ -12,24 +12,24 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Fighters;
 
-public partial class FightersPage : ComponentBase
+public partial class FightersPage(
+    IExceptionHandler exceptionHandler,
+    IFighterApiClient fighterApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService,
+    NavigationManager navigationManager)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<FighterDto> _myFighters;
     private string _searchString = "";
     private MudTable<FighterDto> _table;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFighterApiClient FighterApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Fighters)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Fighters)], null, true)
         ];
     }
 
@@ -46,11 +46,11 @@ public partial class FightersPage : ComponentBase
 
         try
         {
-            _myFighters = await FighterApiClient.GetAllFighters(query);
+            _myFighters = await fighterApiClient.GetAllFighters(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<FighterDto> { TotalItems = 0, Items = [] };
         }
 
@@ -61,19 +61,19 @@ public partial class FightersPage : ComponentBase
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
             try
             {
-                await FighterApiClient.DeleteFighter(id);
+                await fighterApiClient.DeleteFighter(id);
                 await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -99,7 +99,7 @@ public partial class FightersPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateFighterDialog>(Localizer[nameof(AppStrings.UpdateFighter)],
+            await dialogService.ShowAsync<UpdateFighterDialog>(localizer[nameof(AppStrings.UpdateFighter)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -117,7 +117,7 @@ public partial class FightersPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<CreateFighterDialog>(Localizer[nameof(AppStrings.CreateFighter)],
+            await dialogService.ShowAsync<CreateFighterDialog>(localizer[nameof(AppStrings.CreateFighter)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -128,6 +128,6 @@ public partial class FightersPage : ComponentBase
 
     private void RedirectToFighterProfile(int fighterId)
     {
-        NavigationManager.NavigateTo($"/fighter/{fighterId}");
+        navigationManager.NavigateTo($"/fighter/{fighterId}");
     }
 }

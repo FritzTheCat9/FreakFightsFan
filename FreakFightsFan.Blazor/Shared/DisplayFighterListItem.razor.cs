@@ -4,9 +4,9 @@ using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Blazor.Shared;
 
-public partial class DisplayFighterListItem : ComponentBase
+public partial class DisplayFighterListItem(
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     [Parameter] public FighterDto Fighter { get; set; }
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 }

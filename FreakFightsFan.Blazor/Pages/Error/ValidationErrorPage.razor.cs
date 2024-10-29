@@ -4,8 +4,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Blazor.Pages.Error;
 
-public partial class ValidationErrorPage : ComponentBase
-{
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public ValidationErrors ValidationErrors { get; set; }
-}
+public partial class ValidationErrorPage(
+    IStringLocalizer<App> localizer,
+    ValidationErrors validationErrors)
+    : ComponentBase { }

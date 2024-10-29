@@ -2,7 +2,7 @@
 @attribute [AllowAnonymous]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.Federations)]
+    @localizer[nameof(AppStrings.Federations)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -15,7 +15,7 @@
           ServerData="ServerReload">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
-            @Localizer[nameof(AppStrings.Federations)]
+            @localizer[nameof(AppStrings.Federations)]
         </MudText>
         <AuthorizeView Policy="@Policy.Admin">
             <MudIconButton Icon="@Icons.Material.Filled.Add"
@@ -28,30 +28,30 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            @Localizer[nameof(AppStrings.Image)]
+            @localizer[nameof(AppStrings.Image)]
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="name"
                                T="FederationDto">
-                @Localizer[nameof(AppStrings.Name)]
+                @localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            @Localizer[nameof(AppStrings.Events)]
+            @localizer[nameof(AppStrings.Events)]
         </MudTh>
         <AuthorizeView Policy="@Policy.Admin">
             <MudTh>
-                @Localizer[nameof(AppStrings.Actions)]
+                @localizer[nameof(AppStrings.Actions)]
             </MudTh>
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Image)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Image)]">
             @if (federation.Image != null)
             {
                 <MudLink Href=@federation.Image.Url
                          Target="_blank">
-                    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                    <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                               Height=150
                               ObjectFit=ObjectFit.Contain
                               Src=@federation.Image.Url
@@ -65,16 +65,16 @@
                 </MudText>
             }
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Name)]">
             @federation.Name
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Events)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Events)]">
             <MudIconButton Icon="@Icons.Material.Filled.List"
                            OnClick="() => RedirectToEventsPage(federation.Id)"
                            Size="Size.Small" />
         </MudTd>
         <AuthorizeView Policy="@Policy.Admin">
-            <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+            <MudTd DataLabel="@localizer[nameof(AppStrings.Actions)]">
                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                OnClick="() => UpdateFederation(federation)"
                                Size="Size.Small" />
@@ -86,16 +86,16 @@
     </RowTemplate>
     <NoRecordsContent>
         <MudText>
-            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+            @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
         </MudText>
     </NoRecordsContent>
     <LoadingContent>
         <MudText>
-            @Localizer[nameof(AppStrings.Loading)]
+            @localizer[nameof(AppStrings.Loading)]
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
-                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
+        <MudTablePager InfoFormat="@localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

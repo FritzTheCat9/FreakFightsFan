@@ -3,7 +3,6 @@ using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Blazor.Pages;
 
-public partial class IndexPage : ComponentBase
-{
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-}
+public partial class IndexPage(
+    IStringLocalizer<App> localizer)
+    : ComponentBase { }

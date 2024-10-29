@@ -19,13 +19,13 @@
 
             <FritzTextField @bind-Value="FormModel.Name"
                             For="() => FormModel.Name"
-                            Label="@Localizer[nameof(AppStrings.Name)]" />
+                            Label="@localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => FormModel.Name" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit"
                        Color="Color.Primary">
-                @Localizer[nameof(AppStrings.Create)]
+                @localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>
     </MudDialog>

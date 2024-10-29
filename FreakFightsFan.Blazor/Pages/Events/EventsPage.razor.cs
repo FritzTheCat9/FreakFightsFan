@@ -12,7 +12,13 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Events;
 
-public partial class EventsPage : ComponentBase
+public partial class EventsPage(
+    IExceptionHandler exceptionHandler,
+    IEventApiClient eventApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService,
+    NavigationManager navigationManager)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<EventDto> _myEvents;
@@ -21,18 +27,12 @@ public partial class EventsPage : ComponentBase
 
     [Parameter] public int FederationId { get; set; }
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IEventApiClient EventApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Federations)], "/federations"),
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Events)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Federations)], "/federations"),
+            new BreadcrumbItem(localizer[nameof(AppStrings.Events)], null, true)
         ];
     }
 
@@ -50,11 +50,11 @@ public partial class EventsPage : ComponentBase
 
         try
         {
-            _myEvents = await EventApiClient.GetAllEvents(query);
+            _myEvents = await eventApiClient.GetAllEvents(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<EventDto> { TotalItems = 0, Items = [] };
         }
 
@@ -63,26 +63,26 @@ public partial class EventsPage : ComponentBase
 
     private void RedirectToFightsPage(int eventId)
     {
-        NavigationManager.NavigateTo($"/fights/{FederationId}/{eventId}");
+        navigationManager.NavigateTo($"/fights/{FederationId}/{eventId}");
     }
 
     private async Task DeleteEvent(int id)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
             try
             {
-                await EventApiClient.DeleteEvent(id);
+                await eventApiClient.DeleteEvent(id);
                 await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -108,7 +108,7 @@ public partial class EventsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateEventDialog>(Localizer[nameof(AppStrings.UpdateEvent)], parameters,
+            await dialogService.ShowAsync<UpdateEventDialog>(localizer[nameof(AppStrings.UpdateEvent)], parameters,
                 options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -136,7 +136,7 @@ public partial class EventsPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<CreateEventDialog>(Localizer[nameof(AppStrings.CreateEvent)], parameters,
+            await dialogService.ShowAsync<CreateEventDialog>(localizer[nameof(AppStrings.CreateEvent)], parameters,
                 options);
         var result = await dialog.Result;
         if (result is { Canceled: false })

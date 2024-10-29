@@ -12,23 +12,22 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Images;
 
-public partial class ImagesPage : ComponentBase
+public partial class ImagesPage(
+    IExceptionHandler exceptionHandler,
+    IImageApiClient imageApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<ImageDto> _myImages;
     private MudTable<ImageDto> _table;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IImageApiClient ImageApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Images)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Images)], null, true)
         ];
     }
 
@@ -44,11 +43,11 @@ public partial class ImagesPage : ComponentBase
 
         try
         {
-            _myImages = await ImageApiClient.GetAllImages(query);
+            _myImages = await imageApiClient.GetAllImages(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<ImageDto> { TotalItems = 0, Items = [] };
         }
 
@@ -59,19 +58,19 @@ public partial class ImagesPage : ComponentBase
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
             try
             {
-                await ImageApiClient.DeleteImage(id);
+                await imageApiClient.DeleteImage(id);
                 await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -86,7 +85,7 @@ public partial class ImagesPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateImageDialog>(Localizer[nameof(AppStrings.UpdateImage)], parameters,
+            await dialogService.ShowAsync<UpdateImageDialog>(localizer[nameof(AppStrings.UpdateImage)], parameters,
                 options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -101,7 +100,7 @@ public partial class ImagesPage : ComponentBase
         var parameters = new DialogParameters<CreateImageDialog> { { x => x.FormModel, new CreateImage.FormModel() } };
 
         var dialog =
-            await DialogService.ShowAsync<CreateImageDialog>(Localizer[nameof(AppStrings.CreateImage)], parameters,
+            await dialogService.ShowAsync<CreateImageDialog>(localizer[nameof(AppStrings.CreateImage)], parameters,
                 options);
         var result = await dialog.Result;
         if (result is { Canceled: false })

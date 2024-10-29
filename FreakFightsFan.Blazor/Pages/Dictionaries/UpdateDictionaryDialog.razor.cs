@@ -9,23 +9,22 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Dictionaries;
 
-public partial class UpdateDictionaryDialog : ComponentBase
+public partial class UpdateDictionaryDialog(
+    IExceptionHandler exceptionHandler,
+    IMyDictionaryApiClient myDictionaryApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public UpdateMyDictionary.Command Command { get; set; } = new();
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IMyDictionaryApiClient MyDictionaryApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await MyDictionaryApiClient.UpdateMyDictionary(Command);
+            await myDictionaryApiClient.UpdateMyDictionary(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -34,7 +33,7 @@ public partial class UpdateDictionaryDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }

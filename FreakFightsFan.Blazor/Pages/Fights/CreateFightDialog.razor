@@ -8,13 +8,13 @@
             <MudStack Justify="Justify.SpaceBetween"
                       Row="true">
                 <MudText Typo="Typo.h6">
-                    @Localizer[nameof(AppStrings.CreateFight)]
+                    @localizer[nameof(AppStrings.CreateFight)]
                 </MudText>
             </MudStack>
         </TitleContent>
         <DialogContent>
             <MudTabs Rounded="true">
-                <MudTabPanel Text="@Localizer[nameof(AppStrings.Fight)]">
+                <MudTabPanel Text="@localizer[nameof(AppStrings.Fight)]">
                     <FritzTeamMaker @bind-Teams="Command.Teams"
                                     For="() => Command.Teams"
                                     ForEventId="() => Command.EventId"
@@ -23,14 +23,14 @@
                                     TeamHelperModel="_teams" />
                 </MudTabPanel>
                 <MudTabPanel Icon="@Icons.Material.Filled.Settings"
-                             Text="@Localizer[nameof(AppStrings.Options)]">
+                             Text="@localizer[nameof(AppStrings.Options)]">
                     <MudGrid Justify="Justify.FlexStart"
                              Spacing="1">
                         <MudItem xs="12">
                             <FritzSelect @bind-Value="NumberOfTeams"
                                          For="() => NumberOfTeams"
                                          ItemsToSelect="_allowedTeamSizes"
-                                         Label="@Localizer[nameof(AppStrings.NumberOfTeams)]"
+                                         Label="@localizer[nameof(AppStrings.NumberOfTeams)]"
                                          OnSelect="OnTeamsCountSelect"
                                          T="int" />
                         </MudItem>
@@ -39,13 +39,13 @@
                                                        @bind-Value="Command.TypeId"
                                                        DictionaryCode="@DictionaryCode.FightType"
                                                        For="() => Command.TypeId"
-                                                       Label="@Localizer[nameof(AppStrings.FightType)]" />
+                                                       Label="@localizer[nameof(AppStrings.FightType)]" />
                             <FritzValidationMessage For="() => Command.TypeId" />
                         </MudItem>
                         <MudItem xs="12">
                             <FritzTextField @bind-Value="Command.VideoUrl"
                                             For="() => Command.VideoUrl"
-                                            Label="@Localizer[nameof(AppStrings.YoutubeVideoUrl)]" />
+                                            Label="@localizer[nameof(AppStrings.YoutubeVideoUrl)]" />
                             <FritzValidationMessage For="() => Command.VideoUrl" />
                         </MudItem>
                     </MudGrid>
@@ -55,7 +55,7 @@
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit"
                        Color="Color.Primary">
-                @Localizer[nameof(AppStrings.Create)]
+                @localizer[nameof(AppStrings.Create)]
             </MudButton>
         </DialogActions>
     </MudDialog>

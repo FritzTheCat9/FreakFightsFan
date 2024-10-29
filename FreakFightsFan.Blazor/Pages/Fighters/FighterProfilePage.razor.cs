@@ -10,7 +10,13 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Fighters;
 
-public partial class FighterProfilePage : ComponentBase
+public partial class FighterProfilePage(
+    IExceptionHandler exceptionHandler,
+    IFightApiClient fightApiClient,
+    IFighterApiClient fighterApiClient,
+    IStringLocalizer<App> localizer,
+    IJSRuntime jsRuntime)
+    : ComponentBase
 {
     private readonly ChartOptions _chartOptions = new()
     {
@@ -30,20 +36,14 @@ public partial class FighterProfilePage : ComponentBase
 
     [Parameter] public int FighterId { get; set; }
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFightApiClient FightApiClient { get; set; }
-    [Inject] public IFighterApiClient FighterApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IJSRuntime JsRuntime { get; set; }
-
     protected override void OnInitialized()
     {
         _labels =
         [
-            Localizer[nameof(AppStrings.Wins)],
-            Localizer[nameof(AppStrings.Losses)],
-            Localizer[nameof(AppStrings.Draws)],
-            Localizer[nameof(AppStrings.NoContest)]
+            localizer[nameof(AppStrings.Wins)],
+            localizer[nameof(AppStrings.Losses)],
+            localizer[nameof(AppStrings.Draws)],
+            localizer[nameof(AppStrings.NoContest)]
         ];
     }
 
@@ -58,12 +58,12 @@ public partial class FighterProfilePage : ComponentBase
     {
         try
         {
-            _profile = await FightApiClient.GetFighterProfile(FighterId);
+            _profile = await fightApiClient.GetFighterProfile(FighterId);
             _data = [_profile.Stats.Win, _profile.Stats.Loss, _profile.Stats.Draw, _profile.Stats.NoContest];
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             _profile = null;
         }
     }
@@ -72,11 +72,11 @@ public partial class FighterProfilePage : ComponentBase
     {
         try
         {
-            _fighter = await FighterApiClient.GetFighter(FighterId);
+            _fighter = await fighterApiClient.GetFighter(FighterId);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             _fighter = null;
         }
     }
@@ -85,7 +85,7 @@ public partial class FighterProfilePage : ComponentBase
     {
         if (!string.IsNullOrEmpty(fightDto.VideoUrl))
         {
-            await JsRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
+            await jsRuntime.InvokeVoidAsync("open", fightDto.VideoUrl, "_blank");
         }
     }
 

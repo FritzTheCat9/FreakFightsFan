@@ -2,7 +2,7 @@
 @attribute [Authorize(Policy = Policy.Admin)]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.Images)]
+    @localizer[nameof(AppStrings.Images)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -14,7 +14,7 @@
           ServerData="ServerReload">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
-            @Localizer[nameof(AppStrings.Images)]
+            @localizer[nameof(AppStrings.Images)]
         </MudText>
         <MudIconButton Icon="@Icons.Material.Filled.Add"
                        OnClick="CreateImage"
@@ -22,37 +22,37 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            @Localizer[nameof(AppStrings.Image)]
+            @localizer[nameof(AppStrings.Image)]
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="created"
                                T="ImageDto">
-                @Localizer[nameof(AppStrings.Created)]
+                @localizer[nameof(AppStrings.Created)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="modified"
                                T="ImageDto">
-                @Localizer[nameof(AppStrings.Modified)]
+                @localizer[nameof(AppStrings.Modified)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="name"
                                T="ImageDto">
-                @Localizer[nameof(AppStrings.Name)]
+                @localizer[nameof(AppStrings.Name)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            @Localizer[nameof(AppStrings.Actions)]
+            @localizer[nameof(AppStrings.Actions)]
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Image)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Image)]">
             @if (!string.IsNullOrEmpty(context.Url))
             {
                 <MudLink Href=@context.Url
                          Target="_blank">
-                    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                    <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                               Height=150
                               ObjectFit=ObjectFit.Contain
                               Src=@context.Url
@@ -66,16 +66,16 @@
                 </MudText>
             }
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Created)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Created)]">
             @context.Created
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Modified)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Modified)]">
             @context.Modified
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Name)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Name)]">
             @context.Name
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Actions)]">
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
                            OnClick="() => UpdateImage(context)"
                            Size="Size.Small" />
@@ -86,16 +86,16 @@
     </RowTemplate>
     <NoRecordsContent>
         <MudText>
-            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+            @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
         </MudText>
     </NoRecordsContent>
     <LoadingContent>
         <MudText>
-            @Localizer[nameof(AppStrings.Loading)]
+            @localizer[nameof(AppStrings.Loading)]
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
-                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
+        <MudTablePager InfoFormat="@localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

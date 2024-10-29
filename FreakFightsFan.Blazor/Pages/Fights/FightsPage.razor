@@ -2,7 +2,7 @@
 @attribute [AllowAnonymous]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.Fights)]
+    @localizer[nameof(AppStrings.Fights)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -39,13 +39,13 @@
 @if (_myFights == null)
 {
     <MudText>
-        @Localizer[nameof(AppStrings.Loading)]
+        @localizer[nameof(AppStrings.Loading)]
     </MudText>
 }
 else if (_myFights.Count == 0)
 {
     <MudText>
-        @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
     </MudText>
 }
 else

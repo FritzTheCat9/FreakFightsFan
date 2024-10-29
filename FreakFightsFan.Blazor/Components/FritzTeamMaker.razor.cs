@@ -7,7 +7,9 @@ using static FreakFightsFan.Shared.Features.Fights.Commands.CreateFight;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
+public partial class FritzTeamMaker(
+    IStringLocalizer<App> localizer)
+    : FritzFormInputBase<List<CreateTeamModel>>
 {
     private FritzFighterPicker _addFighterField;
     private FighterDto _fighter;
@@ -20,8 +22,6 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
     [Parameter] public Expression<Func<int>> ForEventId { get; set; }
 
     [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

@@ -9,7 +9,11 @@ using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Blazor.Pages.Users;
 
-public partial class ConfirmEmailPage : ComponentBase
+public partial class ConfirmEmailPage(
+    IExceptionHandler exceptionHandler,
+    IUserApiClient userApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
     private bool _parsingError;
@@ -19,10 +23,6 @@ public partial class ConfirmEmailPage : ComponentBase
 
     [SupplyParameterFromQuery] public string Email { get; set; }
     [SupplyParameterFromQuery] public string Token { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IUserApiClient UserApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -43,7 +43,7 @@ public partial class ConfirmEmailPage : ComponentBase
         {
             _processingButton.SetProcessing(true);
 
-            _success = await UserApiClient.ConfirmEmail(Command);
+            _success = await userApiClient.ConfirmEmail(Command);
         }
         catch (MyValidationException validationException)
         {
@@ -51,7 +51,7 @@ public partial class ConfirmEmailPage : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
         finally
         {

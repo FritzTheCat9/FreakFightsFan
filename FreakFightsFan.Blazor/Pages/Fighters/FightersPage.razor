@@ -2,7 +2,7 @@
 @attribute [AllowAnonymous]
 
 <PageTitle>
-    @Localizer[nameof(AppStrings.Fighters)]
+    @localizer[nameof(AppStrings.Fighters)]
 </PageTitle>
 
 <FritzBreadcrumbs Items="_items" />
@@ -15,7 +15,7 @@
           ServerData="ServerReload">
     <ToolBarContent>
         <MudText Typo="Typo.h6">
-            @Localizer[nameof(AppStrings.Fighters)]
+            @localizer[nameof(AppStrings.Fighters)]
         </MudText>
         <AuthorizeView Policy="@Policy.Admin">
             <MudIconButton Icon="@Icons.Material.Filled.Add"
@@ -28,37 +28,37 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            @Localizer[nameof(AppStrings.Image)]
+            @localizer[nameof(AppStrings.Image)]
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="firstname"
                                T="FighterDto">
-                @Localizer[nameof(AppStrings.FirstName)]
+                @localizer[nameof(AppStrings.FirstName)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="lastname"
                                T="FighterDto">
-                @Localizer[nameof(AppStrings.LastName)]
+                @localizer[nameof(AppStrings.LastName)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="nickname"
                                T="FighterDto">
-                @Localizer[nameof(AppStrings.Nickname)]
+                @localizer[nameof(AppStrings.Nickname)]
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            @Localizer[nameof(AppStrings.Actions)]
+            @localizer[nameof(AppStrings.Actions)]
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Image)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Image)]">
             @if (fighter.Image is not null)
             {
                 <MudLink Href=@fighter.Image.Url
                          Target="_blank">
-                    <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                    <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                               Height=150
                               ObjectFit=ObjectFit.Contain
                               Src=@fighter.Image.Url
@@ -67,23 +67,23 @@
             }
             else
             {
-                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                           Height=150
                           ObjectFit=ObjectFit.Contain
                           Src="images_default/default_user_image.png"
                           Width=200 />
             }
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.FirstName)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.FirstName)]">
             @fighter.FirstName
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.LastName)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.LastName)]">
             @fighter.LastName
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Nickname)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Nickname)]">
             @fighter.Nickname
         </MudTd>
-        <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
+        <MudTd DataLabel="@localizer[nameof(AppStrings.Actions)]">
             <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
                            OnClick="() => RedirectToFighterProfile(fighter.Id)"
                            Size="Size.Small" />
@@ -99,16 +99,16 @@
     </RowTemplate>
     <NoRecordsContent>
         <MudText>
-            @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+            @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
         </MudText>
     </NoRecordsContent>
     <LoadingContent>
         <MudText>
-            @Localizer[nameof(AppStrings.Loading)]
+            @localizer[nameof(AppStrings.Loading)]
         </MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager InfoFormat="@Localizer[nameof(AppStrings.PaginationInfoFormat)]"
-                       RowsPerPageString="@Localizer[nameof(AppStrings.RowsPerPage)]" />
+        <MudTablePager InfoFormat="@localizer[nameof(AppStrings.PaginationInfoFormat)]"
+                       RowsPerPageString="@localizer[nameof(AppStrings.RowsPerPage)]" />
     </PagerContent>
 </MudTable>

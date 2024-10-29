@@ -7,32 +7,32 @@
         <DialogContent>
             <FritzTextField @bind-Value="Command.Name"
                             For="() => Command.Name"
-                            Label="@Localizer[nameof(AppStrings.Name)]" />
+                            Label="@localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => Command.Name" />
 
             <FritzDatePicker @bind-Date="Command.Date"
                              For="() => Command.Date"
-                             Label="@Localizer[nameof(AppStrings.Date)]" />
+                             Label="@localizer[nameof(AppStrings.Date)]" />
             <FritzValidationMessage For="() => Command.Date" />
 
             <FritzDictionaryItemPicker @bind-DictionaryItemDto="City"
                                        @bind-Value="Command.CityId"
                                        DictionaryCode="@DictionaryCode.City"
                                        For="() => Command.CityId"
-                                       Label="@Localizer[nameof(AppStrings.City)]" />
+                                       Label="@localizer[nameof(AppStrings.City)]" />
             <FritzValidationMessage For="() => Command.CityId" />
 
             <FritzDictionaryItemPicker @bind-DictionaryItemDto="Hall"
                                        @bind-Value="Command.HallId"
                                        DictionaryCode="@DictionaryCode.Hall"
                                        For="() => Command.HallId"
-                                       Label="@Localizer[nameof(AppStrings.Hall)]" />
+                                       Label="@localizer[nameof(AppStrings.Hall)]" />
             <FritzValidationMessage For="() => Command.HallId" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit"
                        Color="Color.Primary">
-                @Localizer[nameof(AppStrings.Update)]
+                @localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>
     </MudDialog>

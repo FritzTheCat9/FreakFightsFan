@@ -5,17 +5,17 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Users;
 
-public partial class SettingsPage : ComponentBase
+public partial class SettingsPage(
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Settings)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Settings)], null, true)
         ];
     }
 }

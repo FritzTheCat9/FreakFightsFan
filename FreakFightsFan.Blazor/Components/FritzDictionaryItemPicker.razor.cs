@@ -8,7 +8,11 @@ using Microsoft.Extensions.Localization;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzDictionaryItemPicker : FritzFormInputBase<int?>
+public partial class FritzDictionaryItemPicker(
+    IExceptionHandler exceptionHandler,
+    IMyDictionaryItemApiClient myDictionaryItemApiClient,
+    IStringLocalizer<App> localizer)
+    : FritzFormInputBase<int?>
 {
     private static Func<MyDictionaryItemDto, string> DisplayDictionaryItem => item => item?.Name;
 
@@ -18,10 +22,6 @@ public partial class FritzDictionaryItemPicker : FritzFormInputBase<int?>
     [Parameter] [EditorRequired] public string DictionaryCode { get; set; }
     [Parameter] public MyDictionaryItemDto DictionaryItemDto { get; set; }
     [Parameter] public EventCallback<MyDictionaryItemDto> DictionaryItemDtoChanged { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IMyDictionaryItemApiClient MyDictionaryItemApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task OnValueChanged(int? newValue)
     {
@@ -59,11 +59,11 @@ public partial class FritzDictionaryItemPicker : FritzFormInputBase<int?>
 
         try
         {
-            dictionaryItemsPagedList = await MyDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(query);
+            dictionaryItemsPagedList = await myDictionaryItemApiClient.GetAllMyDictionaryItemsByCode(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return [];
         }
 

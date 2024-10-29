@@ -9,23 +9,22 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Federations;
 
-public partial class CreateFederationDialog : ComponentBase
+public partial class CreateFederationDialog(
+    IExceptionHandler exceptionHandler,
+    IFederationApiClient federationApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public CreateFederation.FormModel FormModel { get; set; } = new();
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFederationApiClient FederationApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await FederationApiClient.CreateFederation(FormModel);
+            await federationApiClient.CreateFederation(FormModel);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -34,7 +33,7 @@ public partial class CreateFederationDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }

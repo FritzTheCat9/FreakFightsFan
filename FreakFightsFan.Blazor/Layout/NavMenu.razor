@@ -4,41 +4,41 @@
     <MudNavLink Href="/"
                 Icon="@Icons.Material.Filled.Home"
                 Match="NavLinkMatch.All">
-        @Localizer[nameof(AppStrings.Home)]
+        @localizer[nameof(AppStrings.Home)]
     </MudNavLink>
     <MudNavLink Href="/fighters"
                 Icon="@Icons.Material.Filled.Groups3"
                 Match="NavLinkMatch.Prefix">
-        @Localizer[nameof(AppStrings.Fighters)]
+        @localizer[nameof(AppStrings.Fighters)]
     </MudNavLink>
     <MudNavLink Href="/federations"
                 Icon="@Icons.Material.Filled.CorporateFare"
                 Match="NavLinkMatch.Prefix">
-        @Localizer[nameof(AppStrings.Federations)]
+        @localizer[nameof(AppStrings.Federations)]
     </MudNavLink>
     <MudNavLink Href="/settings"
                 Icon="@Icons.Material.Filled.Settings"
                 Match="NavLinkMatch.Prefix">
-        @Localizer[nameof(AppStrings.Settings)]
+        @localizer[nameof(AppStrings.Settings)]
     </MudNavLink>
     <AuthorizeView Policy="@Policy.Admin">
         <MudNavGroup Expanded="true"
                      Icon="@Icons.Material.Filled.AdminPanelSettings"
-                     Title="@Localizer[nameof(AppStrings.AdminPanel)]">
+                     Title="@localizer[nameof(AppStrings.AdminPanel)]">
             <MudNavLink Href="/images"
                         Icon="@Icons.Material.Filled.PhotoLibrary"
                         Match="NavLinkMatch.Prefix">
-                @Localizer[nameof(AppStrings.Images)]
+                @localizer[nameof(AppStrings.Images)]
             </MudNavLink>
             <MudNavLink Href="/dictionaries"
                         Icon="@Icons.Material.Filled.LibraryBooks"
                         Match="NavLinkMatch.Prefix">
-                @Localizer[nameof(AppStrings.Dictionaries)]
+                @localizer[nameof(AppStrings.Dictionaries)]
             </MudNavLink>
             <MudNavLink Href="/users"
                         Icon="@Icons.Material.Filled.Group"
                         Match="NavLinkMatch.Prefix">
-                @Localizer[nameof(AppStrings.Users)]
+                @localizer[nameof(AppStrings.Users)]
             </MudNavLink>
         </MudNavGroup>
     </AuthorizeView>

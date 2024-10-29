@@ -7,18 +7,18 @@
         <DialogContent>
             <FritzTextField @bind-Value="Command.Name"
                             For="() => Command.Name"
-                            Label="@Localizer[nameof(AppStrings.Name)]" />
+                            Label="@localizer[nameof(AppStrings.Name)]" />
             <FritzValidationMessage For="() => Command.Name" />
 
             <FritzTextField @bind-Value="Command.Code"
                             For="() => Command.Code"
-                            Label="@Localizer[nameof(AppStrings.Code)]" />
+                            Label="@localizer[nameof(AppStrings.Code)]" />
             <FritzValidationMessage For="() => Command.Code" />
         </DialogContent>
         <DialogActions>
             <MudButton ButtonType="ButtonType.Submit"
                        Color="Color.Primary">
-                @Localizer[nameof(AppStrings.Update)]
+                @localizer[nameof(AppStrings.Update)]
             </MudButton>
         </DialogActions>
     </MudDialog>

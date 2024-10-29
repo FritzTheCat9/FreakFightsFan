@@ -11,7 +11,11 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Fights;
 
-public partial class UpdateFightDialog : ComponentBase
+public partial class UpdateFightDialog(
+    IExceptionHandler exceptionHandler,
+    IFightApiClient fightApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private readonly List<int> _allowedTeamSizes = [2, 3, 4, 5];
     private CustomValidator _customValidator;
@@ -19,17 +23,10 @@ public partial class UpdateFightDialog : ComponentBase
     private List<CreateFight.TeamHelperModel> _teams = [];
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public UpdateFight.Command Command { get; set; } = new();
     [Parameter] public List<TeamDto> Teams { get; set; } = [];
     [Parameter] public int NumberOfTeams { get; set; }
     [Parameter] public MyDictionaryItemDto FightType { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFightApiClient FightApiClient { get; set; }
-    [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     protected override void OnInitialized()
     {
@@ -78,7 +75,7 @@ public partial class UpdateFightDialog : ComponentBase
     {
         try
         {
-            await FightApiClient.UpdateFight(Command);
+            await fightApiClient.UpdateFight(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -87,7 +84,7 @@ public partial class UpdateFightDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }

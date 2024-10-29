@@ -10,25 +10,24 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Events;
 
-public partial class UpdateEventDialog : ComponentBase
+public partial class UpdateEventDialog(
+    IExceptionHandler exceptionHandler,
+    IEventApiClient eventApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public UpdateEvent.Command Command { get; set; } = new();
     [Parameter] public MyDictionaryItemDto City { get; set; }
     [Parameter] public MyDictionaryItemDto Hall { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IEventApiClient EventApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await EventApiClient.UpdateEvent(Command);
+            await eventApiClient.UpdateEvent(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -37,7 +36,7 @@ public partial class UpdateEventDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }

@@ -5,7 +5,9 @@ using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzSearchTextField : ComponentBase
+public partial class FritzSearchTextField(
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     [Parameter] public EventCallback<string> OnSearch { get; set; }
     [Parameter] public string Value { get; set; }
@@ -13,13 +15,11 @@ public partial class FritzSearchTextField : ComponentBase
     [Parameter] public Expression<Func<string>> For { get; set; }
     [Parameter] public string Placeholder { get; set; }
 
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     protected override void OnParametersSet()
     {
         if (string.IsNullOrWhiteSpace(Placeholder))
         {
-            Placeholder = Localizer[nameof(AppStrings.Search)];
+            Placeholder = localizer[nameof(AppStrings.Search)];
         }
     }
 

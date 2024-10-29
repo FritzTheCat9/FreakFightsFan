@@ -7,7 +7,7 @@
             <MudLink Class="align-self-center"
                      Href=@Fighter.Image.Url
                      Target="_blank">
-                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+                <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                           Fluid=true
                           ObjectFit=ObjectFit.Contain
                           Src=@Fighter.Image.Url
@@ -16,7 +16,7 @@
         }
         else
         {
-            <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+            <MudImage Alt=@localizer[nameof(AppStrings.Image)]
                       Fluid=true
                       ObjectFit=ObjectFit.Contain
                       Src="images_default/default_user_image.png"

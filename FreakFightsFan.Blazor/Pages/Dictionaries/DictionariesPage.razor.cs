@@ -12,24 +12,24 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Dictionaries;
 
-public partial class DictionariesPage : ComponentBase
+public partial class DictionariesPage(
+    IExceptionHandler exceptionHandler,
+    IMyDictionaryApiClient myDictionaryApiClient,
+    IStringLocalizer<App> localizer,
+    IDialogService dialogService,
+    NavigationManager navigationManager)
+    : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<MyDictionaryDto> _myDictionaries;
     private string _searchString = "";
     private MudTable<MyDictionaryDto> _table;
 
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IMyDictionaryApiClient MyDictionaryApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IDialogService DialogService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
     protected override void OnInitialized()
     {
         _items =
         [
-            new BreadcrumbItem(Localizer[nameof(AppStrings.Dictionaries)], null, true)
+            new BreadcrumbItem(localizer[nameof(AppStrings.Dictionaries)], null, true)
         ];
     }
 
@@ -46,11 +46,11 @@ public partial class DictionariesPage : ComponentBase
 
         try
         {
-            _myDictionaries = await MyDictionaryApiClient.GetAllMyDictionaries(query);
+            _myDictionaries = await myDictionaryApiClient.GetAllMyDictionaries(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return new TableData<MyDictionaryDto> { TotalItems = 0, Items = [] };
         }
 
@@ -62,26 +62,26 @@ public partial class DictionariesPage : ComponentBase
 
     private void RedirectToDictionaryItemsPage(int id)
     {
-        NavigationManager.NavigateTo($"/dictionary/{id}");
+        navigationManager.NavigateTo($"/dictionary/{id}");
     }
 
     private async Task DeleteDictionary(int id)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
         var dialog =
-            await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
+            await dialogService.ShowAsync<DeleteDialog>(localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
         if (result is { Canceled: false })
         {
             try
             {
-                await MyDictionaryApiClient.DeleteMyDictionary(id);
+                await myDictionaryApiClient.DeleteMyDictionary(id);
                 await _table.ReloadServerData();
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleExceptions(ex);
+                exceptionHandler.HandleExceptions(ex);
             }
         }
     }
@@ -101,7 +101,7 @@ public partial class DictionariesPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<UpdateDictionaryDialog>(Localizer[nameof(AppStrings.UpdateDictionary)],
+            await dialogService.ShowAsync<UpdateDictionaryDialog>(localizer[nameof(AppStrings.UpdateDictionary)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })
@@ -119,7 +119,7 @@ public partial class DictionariesPage : ComponentBase
         };
 
         var dialog =
-            await DialogService.ShowAsync<CreateDictionaryDialog>(Localizer[nameof(AppStrings.CreateDictionary)],
+            await dialogService.ShowAsync<CreateDictionaryDialog>(localizer[nameof(AppStrings.CreateDictionary)],
                 parameters, options);
         var result = await dialog.Result;
         if (result is { Canceled: false })

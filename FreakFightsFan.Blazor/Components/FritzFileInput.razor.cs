@@ -7,7 +7,10 @@ using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzFileInput
+public partial class FritzFileInput(
+    IStringLocalizer<App> localizer,
+    IStringLocalizer<ValidationMessage> sharedLocalizer)
+    : ComponentBase
 {
     private readonly string _allowedFileTypesString =
         ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
@@ -18,7 +21,6 @@ public partial class FritzFileInput
     private bool _isImageValid;
 
     [CascadingParameter] public EditContext EditContext { get; set; }
-
     [Parameter] public IBrowserFile File { get; set; }
     [Parameter] public EventCallback<IBrowserFile> FileChanged { get; set; }
     [Parameter] public Expression<Func<IBrowserFile>> ForFile { get; set; }
@@ -26,9 +28,6 @@ public partial class FritzFileInput
     [Parameter] public EventCallback<string> ImageBase64Changed { get; set; }
     [Parameter] public Expression<Func<string>> ForImageBase64 { get; set; }
     [Parameter] public string Url { get; set; }
-
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-    [Inject] public IStringLocalizer<ValidationMessage> SharedLocalizer { get; set; }
 
     protected override void OnInitialized()
     {
@@ -95,7 +94,7 @@ public partial class FritzFileInput
             await OnFileChanged(file);
             await OnImageBase64Changed(null);
 
-            var fileValidator = new ImageHelpers.ImageValidator(SharedLocalizer);
+            var fileValidator = new ImageHelpers.ImageValidator(sharedLocalizer);
             var validationResult = await fileValidator.ValidateAsync(e.File);
             if (!validationResult.IsValid)
             {

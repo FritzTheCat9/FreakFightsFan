@@ -10,18 +10,17 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Users;
 
-public partial class RegisterDialog : ComponentBase
+public partial class RegisterDialog(
+    IExceptionHandler exceptionHandler,
+    IUserApiClient userApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
     private FritzProcessingButton _processingButton;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public Register.Command Command { get; set; } = new();
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IUserApiClient UserApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
@@ -29,7 +28,7 @@ public partial class RegisterDialog : ComponentBase
         {
             _processingButton.SetProcessing(true);
 
-            await UserApiClient.Register(Command);
+            await userApiClient.Register(Command);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -38,7 +37,7 @@ public partial class RegisterDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
         finally
         {

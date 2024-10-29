@@ -11,7 +11,11 @@ using System.Linq.Expressions;
 
 namespace FreakFightsFan.Blazor.Components;
 
-public partial class FritzFighterPicker : ComponentBase
+public partial class FritzFighterPicker(
+    IExceptionHandler exceptionHandler,
+    IFighterApiClient fighterApiClient,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private readonly Func<FighterDto, string> _displayFighter = fighter
         => fighter is null
@@ -28,10 +32,6 @@ public partial class FritzFighterPicker : ComponentBase
     [Parameter] public FighterDto Value { get; set; }
     [Parameter] public EventCallback<FighterDto> ValueChanged { get; set; }
     [Parameter] public Expression<Func<FighterDto>> For { get; set; }
-
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IFighterApiClient FighterApiClient { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     public async Task Focus()
     {
@@ -59,11 +59,11 @@ public partial class FritzFighterPicker : ComponentBase
         PagedList<FighterDto> fightersPagedList;
         try
         {
-            fightersPagedList = await FighterApiClient.GetAllFighters(query);
+            fightersPagedList = await fighterApiClient.GetAllFighters(query);
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
             return [];
         }
 

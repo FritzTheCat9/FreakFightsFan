@@ -13,7 +13,7 @@
     <MudItem xs="10">
         <FritzFighterPicker @bind-Value="_fighter"
                             For="() => _fighter"
-                            Label="@Localizer[nameof(AppStrings.Fighter)]"
+                            Label="@localizer[nameof(AppStrings.Fighter)]"
                             @ref="_addFighterField"
                             Teams="TeamHelperModel" />
         <FritzValidationMessage For="For" />
@@ -28,7 +28,7 @@
                    Color="Color.Primary"
                    OnClick="AddFighterToSelectedTeam"
                    Variant="Variant.Filled">
-            @Localizer[nameof(AppStrings.Add)]
+            @localizer[nameof(AppStrings.Add)]
         </MudButton>
     </MudItem>
     @foreach (var team in TeamHelperModel)
@@ -40,7 +40,7 @@
             <MudText Color="SelectedTeam == team.Number ? Color.Primary : Color.Default"
                      GutterBottom=true
                      Typo=Typo.h6>
-                @Localizer[nameof(AppStrings.Team)] @($"{team.Number + 1}")
+                @localizer[nameof(AppStrings.Team)] @($"{team.Number + 1}")
             </MudText>
             @if (team.Fighters.Any())
             {

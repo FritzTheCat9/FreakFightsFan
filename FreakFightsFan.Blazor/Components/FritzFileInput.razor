@@ -1,19 +1,19 @@
 ﻿@if (_isImageValid && !string.IsNullOrEmpty(ImageBase64))
 {
-    <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+    <MudImage Alt="@localizer[nameof(AppStrings.Image)]"
               Src="@ImageBase64"
               Width="400" />
 }
 else if (!string.IsNullOrEmpty(Url))
 {
-    <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+    <MudImage Alt="@localizer[nameof(AppStrings.Image)]"
               Src="@Url"
               Width="400" />
 }
 else
 {
     <MudItem>
-        @Localizer[nameof(AppStrings.NoImageLoaded)]
+        @localizer[nameof(AppStrings.NoImageLoaded)]
     </MudItem>
 }
 
@@ -27,7 +27,7 @@ else
         <MudButton Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.AttachFile"
                    Variant="Variant.Filled">
-            @Localizer[nameof(AppStrings.UploadImage)]
+            @localizer[nameof(AppStrings.UploadImage)]
         </MudButton>
     </ActivatorContent>
 </MudFileUpload>

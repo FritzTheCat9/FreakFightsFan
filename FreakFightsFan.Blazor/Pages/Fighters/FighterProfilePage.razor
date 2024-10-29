@@ -10,7 +10,7 @@
             <MudLink Class="align-self-center"
                      Href=@_fighter.Image.Url
                      Target="_blank">
-                <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+                <MudImage Alt="@localizer[nameof(AppStrings.Image)]"
                           Fluid="true"
                           ObjectFit="ObjectFit.Contain"
                           Src="@_fighter.Image.Url"
@@ -19,7 +19,7 @@
         }
         else
         {
-            <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+            <MudImage Alt="@localizer[nameof(AppStrings.Image)]"
                       Fluid="true"
                       ObjectFit="ObjectFit.Contain"
                       Src="images_default/default_user_image.png"
@@ -35,7 +35,7 @@
         {
             <MudStack Row="true"
                       Spacing="2">
-                <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+                <MudImage Alt="@localizer[nameof(AppStrings.Image)]"
                           Src="images_default/instagram.png"
                           Style="height: 30px; width: 30px" />
                 <MudLink Color="Color.Primary"
@@ -58,19 +58,19 @@
         <MudStack Spacing="1">
             <MudText Style="@("font-weight: 500;")"
                      Typo="Typo.subtitle1">
-                @Localizer[nameof(AppStrings.Wins)]: @_profile.Stats.Win
+                @localizer[nameof(AppStrings.Wins)]: @_profile.Stats.Win
             </MudText>
             <MudText Style="@("font-weight: 500;")"
                      Typo="Typo.subtitle1">
-                @Localizer[nameof(AppStrings.Losses)]: @_profile.Stats.Loss
+                @localizer[nameof(AppStrings.Losses)]: @_profile.Stats.Loss
             </MudText>
             <MudText Style="@("font-weight: 500;")"
                      Typo="Typo.subtitle1">
-                @Localizer[nameof(AppStrings.Draws)]: @_profile.Stats.Draw
+                @localizer[nameof(AppStrings.Draws)]: @_profile.Stats.Draw
             </MudText>
             <MudText Style="@("font-weight: 500;")"
                      Typo="Typo.subtitle1">
-                @Localizer[nameof(AppStrings.NoContest)]: @_profile.Stats.NoContest
+                @localizer[nameof(AppStrings.NoContest)]: @_profile.Stats.NoContest
             </MudText>
         </MudStack>
         <MudChart ChartOptions="_chartOptions"
@@ -86,13 +86,13 @@
 @if (_profile?.ProfileFights is null)
 {
     <MudText>
-        @Localizer[nameof(AppStrings.Loading)]
+        @localizer[nameof(AppStrings.Loading)]
     </MudText>
 }
 else if (_profile?.ProfileFights.Count == 0)
 {
     <MudText>
-        @Localizer[nameof(AppStrings.NoMatchingRecordsFound)]
+        @localizer[nameof(AppStrings.NoMatchingRecordsFound)]
     </MudText>
 }
 else

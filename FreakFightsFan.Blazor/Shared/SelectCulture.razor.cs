@@ -6,14 +6,13 @@ using System.Globalization;
 
 namespace FreakFightsFan.Blazor.Shared;
 
-public partial class SelectCulture : ComponentBase
+public partial class SelectCulture(
+    ILocalizationProvider localizationProvider,
+    IStringLocalizer<App> localizer,
+    NavigationManager navigationManager)
+    : ComponentBase
 {
     private Culture CurrentCulture { get; set; }
-
-    [Inject] public ILocalizationProvider LocalizationProvider { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
-    [Inject] public NavigationManager NavigationManager { get; set; }
 
     protected override void OnInitialized()
     {
@@ -25,7 +24,7 @@ public partial class SelectCulture : ComponentBase
 
     private void OnValueChanged(Culture culture)
     {
-        LocalizationProvider.SetCulture(culture.CultureInfo.Name);
-        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        localizationProvider.SetCulture(culture.CultureInfo.Name);
+        navigationManager.NavigateTo(navigationManager.Uri, true);
     }
 }

@@ -28,7 +28,7 @@
                        Edge="Edge.Start"
                        Icon="@Icons.Material.Filled.Menu"
                        OnClick="DrawerToggle" />
-        @Localizer[nameof(AppStrings.AppName)]
+        @localizer[nameof(AppStrings.AppName)]
         <MudSpacer />
         <MudTooltip Text="@_text">
             <MudIconButton Color="Color.Inherit"
@@ -36,7 +36,7 @@
                            OnClick="OnThemeChange"
                            Style="margin-right: 5px;" />
         </MudTooltip>
-        <MudTooltip Text="@Localizer[nameof(AppStrings.CheckProjectOnGithubText)]">
+        <MudTooltip Text="@localizer[nameof(AppStrings.CheckProjectOnGithubText)]">
             <MudIconButton Color="Color.Inherit"
                            Href="https://github.com/FritzTheCat9/FreakFightsFan"
                            Icon="@Icons.Custom.Brands.GitHub"
@@ -63,7 +63,7 @@
                   Elevation="5"
                   Outlined="true">
             <MudText Typo="Typo.body1">
-                @Localizer[nameof(AppStrings.CreatedByText)]
+                @localizer[nameof(AppStrings.CreatedByText)]
             </MudText>
         </MudPaper>
     </MudAppBar>

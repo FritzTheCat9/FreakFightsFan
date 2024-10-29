@@ -9,24 +9,23 @@ using MudBlazor;
 
 namespace FreakFightsFan.Blazor.Pages.Fighters;
 
-public partial class UpdateFighterDialog : ComponentBase
+public partial class UpdateFighterDialog(
+    IFighterApiClient fighterApiClient,
+    IExceptionHandler exceptionHandler,
+    IStringLocalizer<App> localizer)
+    : ComponentBase
 {
     private CustomValidator _customValidator;
 
     [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
-
     [Parameter] public UpdateFighter.FormModel FormModel { get; set; } = new();
     [Parameter] public string Url { get; set; }
-
-    [Inject] public IFighterApiClient FighterApiClient { get; set; }
-    [Inject] public IExceptionHandler ExceptionHandler { get; set; }
-    [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            await FighterApiClient.UpdateFighter(FormModel);
+            await fighterApiClient.UpdateFighter(FormModel);
             MudDialog.Close(DialogResult.Ok(true));
         }
         catch (MyValidationException validationException)
@@ -35,7 +34,7 @@ public partial class UpdateFighterDialog : ComponentBase
         }
         catch (Exception ex)
         {
-            ExceptionHandler.HandleExceptions(ex);
+            exceptionHandler.HandleExceptions(ex);
         }
     }
 }
