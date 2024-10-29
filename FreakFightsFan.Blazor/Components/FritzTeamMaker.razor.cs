@@ -14,11 +14,9 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
 
     [Parameter] public List<CreateTeamModel> Teams { get; set; }
     [Parameter] public EventCallback<List<CreateTeamModel>> TeamsChanged { get; set; }
-
     [Parameter] public List<TeamHelperModel> TeamHelperModel { get; set; } = [];
     [Parameter] public int SelectedTeam { get; set; }
     [Parameter] public int NumberOfTeams { get; set; }
-
     [Parameter] public Expression<Func<int>> ForEventId { get; set; }
 
     [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
@@ -45,14 +43,13 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
     private async Task DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
     {
         var pickedTeam = TeamHelperModel.FirstOrDefault(x => x.Number == team.Number);
-        if (pickedTeam is not null)
+        
+        var fighterToRemove =
+            pickedTeam?.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
+        
+        if (fighterToRemove is not null)
         {
-            var fighterToRemove =
-                pickedTeam.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
-            if (fighterToRemove is not null)
-            {
-                pickedTeam.Fighters.Remove(fighterToRemove);
-            }
+            pickedTeam.Fighters.Remove(fighterToRemove);
         }
 
         await UpdateTeams();
@@ -78,19 +75,15 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
     {
         Teams = [];
 
-        foreach (var team in TeamHelperModel)
+        foreach (var teamFighters in TeamHelperModel
+                     .Select(team => team.Fighters
+                         .Select(fighter
+                             => new TeamFighterModel
+                             {
+                                 FighterId = fighter.Fighter.Id, FightResult = fighter.FightResult
+                             })
+                         .ToList()))
         {
-            var teamFighters = new List<TeamFighterModel>();
-            foreach (var fighter in team.Fighters)
-            {
-                var teamFighterModel = new TeamFighterModel
-                {
-                    FighterId = fighter.Fighter.Id, FightResult = fighter.FightResult
-                };
-
-                teamFighters.Add(teamFighterModel);
-            }
-
             Teams.Add(new CreateTeamModel { Fighters = teamFighters });
         }
 

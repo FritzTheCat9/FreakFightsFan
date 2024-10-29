@@ -2,6 +2,6 @@
 
 public class LogOptions
 {
-    public string FilePath { get; set; }
-    public string SeqUrl { get; set; }
+    public string FilePath { get; init; }
+    public string SeqUrl { get; init; }
 }

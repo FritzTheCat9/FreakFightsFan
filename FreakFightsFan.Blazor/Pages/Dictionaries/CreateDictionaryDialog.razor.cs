@@ -19,7 +19,6 @@ public partial class CreateDictionaryDialog : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IMyDictionaryApiClient MyDictionaryApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()

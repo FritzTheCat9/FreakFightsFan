@@ -16,13 +16,11 @@ public partial class UsersPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<UserDto> _myUsers;
-
     private string _searchString = "";
     private MudTable<UserDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
@@ -70,7 +68,7 @@ public partial class UsersPage : ComponentBase
             await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.IncreaseUserPermissions)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await UserApiClient.PromoteUser(id);
             await _table.ReloadServerData();
@@ -89,7 +87,7 @@ public partial class UsersPage : ComponentBase
             await DialogService.ShowAsync<InformationDialog>(Localizer[nameof(AppStrings.DecreaseUserPermissions)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await UserApiClient.DegradeUser(id);
             await _table.ReloadServerData();
@@ -98,31 +96,16 @@ public partial class UsersPage : ComponentBase
 
     private static string GetUserHighestPolicy(UserDto user)
     {
-        if (user.IsSuperAdmin)
-        {
-            return Policy.SuperAdmin;
-        }
-
-        if (user.IsAdmin)
-        {
-            return Policy.Admin;
-        }
-
-        return Policy.User;
+        return user.IsSuperAdmin ? Policy.SuperAdmin : user.IsAdmin ? Policy.Admin : Policy.User;
     }
 
     private static Color GetColorBasedOnPolicy(string policy)
     {
-        if (policy == Policy.SuperAdmin)
+        return policy switch
         {
-            return Color.Info;
-        }
-
-        if (policy == Policy.Admin)
-        {
-            return Color.Error;
-        }
-
-        return Color.Success;
+            Policy.SuperAdmin => Color.Info,
+            Policy.Admin => Color.Error,
+            _ => Color.Success
+        };
     }
 }

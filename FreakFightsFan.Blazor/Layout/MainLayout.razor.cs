@@ -45,14 +45,12 @@ public partial class MainLayout : LayoutComponentBase
     private bool _drawerOpen = true;
     private string _icon = Icons.Material.Rounded.LightMode;
     private bool _isDarkMode;
-
     private MudThemeProvider _mudThemeProvider;
     private string _text;
     private ThemeColor _themeColor = ThemeColor.System;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
-
     [Inject] public IAuthService AuthService { get; set; }
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
     [Inject] public IThemeColorProvider ThemeColorProvider { get; set; }
@@ -99,6 +97,8 @@ public partial class MainLayout : LayoutComponentBase
             case ThemeColor.Dark:
                 await SetDarkMode();
                 break;
+            default:
+                break;
         }
     }
 
@@ -126,6 +126,8 @@ public partial class MainLayout : LayoutComponentBase
                 break;
             case ThemeColor.Dark:
                 await SetSystemMode();
+                break;
+            default:
                 break;
         }
 

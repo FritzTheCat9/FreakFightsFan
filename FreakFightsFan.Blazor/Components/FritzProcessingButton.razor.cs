@@ -11,7 +11,6 @@ public partial class FritzProcessingButton
 
     [Parameter] public string ProcessingButtonText { get; set; }
     [Parameter] public string ButtonText { get; set; }
-
     [Parameter] public ButtonType ButtonType { get; set; }
     [Parameter] public Color Color { get; set; }
     [Parameter] public Variant Variant { get; set; }

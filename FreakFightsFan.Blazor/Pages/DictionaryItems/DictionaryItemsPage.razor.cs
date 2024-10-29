@@ -16,7 +16,6 @@ public partial class DictionaryItemsPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<MyDictionaryItemDto> _myDictionaryItems;
-
     private string _searchString = "";
     private MudTable<MyDictionaryItemDto> _table;
 
@@ -24,9 +23,7 @@ public partial class DictionaryItemsPage : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IMyDictionaryItemApiClient MyDictionaryItemApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
 
     protected override void OnInitialized()
@@ -73,7 +70,7 @@ public partial class DictionaryItemsPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -105,7 +102,7 @@ public partial class DictionaryItemsPage : ComponentBase
             await DialogService.ShowAsync<UpdateDictionaryItemDialog>(
                 Localizer[nameof(AppStrings.UpdateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -125,7 +122,7 @@ public partial class DictionaryItemsPage : ComponentBase
             await DialogService.ShowAsync<CreateDictionaryItemDialog>(
                 Localizer[nameof(AppStrings.CreateDictionaryItem)], parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

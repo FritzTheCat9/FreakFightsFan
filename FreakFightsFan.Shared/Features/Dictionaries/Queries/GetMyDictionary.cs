@@ -8,7 +8,7 @@ public static class GetMyDictionary
 {
     public class Query : IRequest<MyDictionaryDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

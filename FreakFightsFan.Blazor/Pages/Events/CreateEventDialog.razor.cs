@@ -13,7 +13,6 @@ namespace FreakFightsFan.Blazor.Pages.Events;
 public partial class CreateEventDialog : ComponentBase
 {
     private CustomValidator _customValidator;
-
     private MyDictionaryItemDto City { get; set; }
     private MyDictionaryItemDto Hall { get; set; }
 
@@ -23,7 +22,6 @@ public partial class CreateEventDialog : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IEventApiClient EventApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()

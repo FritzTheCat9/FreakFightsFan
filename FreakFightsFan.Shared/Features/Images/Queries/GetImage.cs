@@ -8,7 +8,7 @@ public static class GetImage
 {
     public class Query : IRequest<ImageDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

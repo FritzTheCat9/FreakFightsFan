@@ -80,6 +80,8 @@ public static class GetFighterProfileFeature
                     case FightResult.NoContest:
                         noContest++;
                         break;
+                    default:
+                        break;
                 }
             }
 

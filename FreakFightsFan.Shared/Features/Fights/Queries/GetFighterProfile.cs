@@ -8,7 +8,7 @@ public static class GetFighterProfile
 {
     public class Query : IRequest<FighterProfileDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

@@ -19,7 +19,6 @@ public partial class CreateFederationDialog : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFederationApiClient FederationApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()

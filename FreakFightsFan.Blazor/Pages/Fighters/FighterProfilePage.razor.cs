@@ -25,7 +25,6 @@ public partial class FighterProfilePage : ComponentBase
 
     private double[] _data = [];
     private FighterDto _fighter;
-
     private string[] _labels;
     private FighterProfileDto _profile;
 
@@ -34,9 +33,7 @@ public partial class FighterProfilePage : ComponentBase
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFightApiClient FightApiClient { get; set; }
     [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IJSRuntime JsRuntime { get; set; }
 
     protected override void OnInitialized()

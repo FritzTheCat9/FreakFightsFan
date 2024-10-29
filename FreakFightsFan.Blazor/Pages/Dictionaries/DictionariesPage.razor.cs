@@ -16,15 +16,12 @@ public partial class DictionariesPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<MyDictionaryDto> _myDictionaries;
-
     private string _searchString = "";
     private MudTable<MyDictionaryDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IMyDictionaryApiClient MyDictionaryApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
@@ -75,7 +72,7 @@ public partial class DictionariesPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -107,7 +104,7 @@ public partial class DictionariesPage : ComponentBase
             await DialogService.ShowAsync<UpdateDictionaryDialog>(Localizer[nameof(AppStrings.UpdateDictionary)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -125,7 +122,7 @@ public partial class DictionariesPage : ComponentBase
             await DialogService.ShowAsync<CreateDictionaryDialog>(Localizer[nameof(AppStrings.CreateDictionary)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

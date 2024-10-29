@@ -18,8 +18,6 @@ public static class CreateImage
     {
         public Validator(IStringLocalizer<ValidationMessage> localizer)
         {
-            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
             RuleFor(x => x.ImageBase64)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
@@ -29,7 +27,8 @@ public static class CreateImage
                     => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
                 .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
                 .WithMessage(x
-                    => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+                    => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
+                        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
         }
     }
 
@@ -42,8 +41,6 @@ public static class CreateImage
     {
         public FormModelValidator(IStringLocalizer<ValidationMessage> localizer)
         {
-            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
             RuleFor(x => x.ImageBase64)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
@@ -53,7 +50,8 @@ public static class CreateImage
                     => localizer[nameof(ValidationMessageString.ImageMaximumFileSize), ImageConsts.MaxFileSize])
                 .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
                 .WithMessage(x
-                    => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes), allowedFileTypesString]);
+                    => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
+                        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
 
             RuleFor(x => x.File)
                 .SetValidator(new ImageHelpers.ImageValidator(localizer));

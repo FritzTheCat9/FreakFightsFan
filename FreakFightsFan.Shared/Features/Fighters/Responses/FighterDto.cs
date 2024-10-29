@@ -4,7 +4,7 @@ namespace FreakFightsFan.Shared.Features.Fighters.Responses;
 
 public class FighterDto
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
 

@@ -6,8 +6,8 @@ public static class TestUsers
 {
     public abstract class UserBase
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; protected init; }
+        public string Password { get; protected init; }
     }
 
     public class SuperAdmin : UserBase, IEnumerable<object[]>

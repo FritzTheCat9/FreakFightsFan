@@ -16,15 +16,12 @@ public partial class FightersPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<FighterDto> _myFighters;
-
     private string _searchString = "";
     private MudTable<FighterDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
@@ -67,7 +64,7 @@ public partial class FightersPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -105,7 +102,7 @@ public partial class FightersPage : ComponentBase
             await DialogService.ShowAsync<UpdateFighterDialog>(Localizer[nameof(AppStrings.UpdateFighter)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -123,7 +120,7 @@ public partial class FightersPage : ComponentBase
             await DialogService.ShowAsync<CreateFighterDialog>(Localizer[nameof(AppStrings.CreateFighter)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

@@ -9,7 +9,7 @@ public static class GetAllFights
 {
     public class Query : IRequest<PagedList<FightDto>>, IPagedQuery
     {
-        public int EventId { get; set; }
+        public int EventId { get; init; }
         public int Page { get; set; }
         public int PageSize { get; set; }
     }

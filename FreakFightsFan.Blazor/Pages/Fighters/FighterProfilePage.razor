@@ -4,44 +4,44 @@
 @if (_fighter is not null)
 {
     <MudStack AlignItems=AlignItems.Center
-              Style="margin: 0px 0px 40px 0px;">
+              Style="margin: 0 0 40px 0;">
         @if (!string.IsNullOrEmpty(_fighter.Image?.Url))
         {
             <MudLink Class="align-self-center"
                      Href=@_fighter.Image.Url
                      Target="_blank">
-                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
-                          Fluid=true
-                          ObjectFit=ObjectFit.Contain
-                          Src=@_fighter.Image.Url
+                <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+                          Fluid="true"
+                          ObjectFit="ObjectFit.Contain"
+                          Src="@_fighter.Image.Url"
                           Style="max-height: 250px;" />
             </MudLink>
         }
         else
         {
-            <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
-                      Fluid=true
-                      ObjectFit=ObjectFit.Contain
+            <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
+                      Fluid="true"
+                      ObjectFit="ObjectFit.Contain"
                       Src="images_default/default_user_image.png"
                       Style="max-height: 250px;" />
         }
-        <MudText Typo=Typo.h4>
+        <MudText Typo="Typo.h4">
             @_fighter.FirstName @_fighter.LastName
         </MudText>
-        <MudText Typo=Typo.h4>
+        <MudText Typo="Typo.h4">
             @_fighter.Nickname
         </MudText>
         @if (!string.IsNullOrEmpty(_fighter.InstagramUrl))
         {
-            <MudStack Row=true
-                      Spacing=2>
-                <MudImage Alt=@Localizer[nameof(AppStrings.Image)]
+            <MudStack Row="true"
+                      Spacing="2">
+                <MudImage Alt="@Localizer[nameof(AppStrings.Image)]"
                           Src="images_default/instagram.png"
                           Style="height: 30px; width: 30px" />
-                <MudLink Color=Color.Primary
-                         Href=@_fighter.InstagramUrl
+                <MudLink Color="Color.Primary"
+                         Href="@_fighter.InstagramUrl"
                          Target="_blank"
-                         Typo=Typo.h5>
+                         Typo="Typo.h5">
                     @InstagramUrlToNickname(_fighter.InstagramUrl)
                 </MudLink>
             </MudStack>
@@ -51,34 +51,34 @@
 
 @if (_profile is not null)
 {
-    <MudStack AlignItems=AlignItems.Center
-              Justify=Justify.SpaceEvenly
-              Row=true
+    <MudStack AlignItems="AlignItems.Center"
+              Justify="Justify.SpaceEvenly"
+              Row="true"
               Style="padding: 30px 10px 10px 10px">
-        <MudStack Spacing=1>
-            <MudText Style=@("font-weight: 500;")
-                     Typo=Typo.subtitle1>
+        <MudStack Spacing="1">
+            <MudText Style="@("font-weight: 500;")"
+                     Typo="Typo.subtitle1">
                 @Localizer[nameof(AppStrings.Wins)]: @_profile.Stats.Win
             </MudText>
-            <MudText Style=@("font-weight: 500;")
-                     Typo=Typo.subtitle1>
+            <MudText Style="@("font-weight: 500;")"
+                     Typo="Typo.subtitle1">
                 @Localizer[nameof(AppStrings.Losses)]: @_profile.Stats.Loss
             </MudText>
-            <MudText Style=@("font-weight: 500;")
-                     Typo=Typo.subtitle1>
+            <MudText Style="@("font-weight: 500;")"
+                     Typo="Typo.subtitle1">
                 @Localizer[nameof(AppStrings.Draws)]: @_profile.Stats.Draw
             </MudText>
-            <MudText Style=@("font-weight: 500;")
-                     Typo=Typo.subtitle1>
+            <MudText Style="@("font-weight: 500;")"
+                     Typo="Typo.subtitle1">
                 @Localizer[nameof(AppStrings.NoContest)]: @_profile.Stats.NoContest
             </MudText>
         </MudStack>
-        <MudChart ChartOptions=_chartOptions
-                  ChartType=ChartType.Pie
+        <MudChart ChartOptions="_chartOptions"
+                  ChartType="ChartType.Pie"
                   Height="150px"
-                  InputData=_data
-                  InputLabels=_labels
-                  LegendPosition=Position.Bottom
+                  InputData="_data"
+                  InputLabels="_labels"
+                  LegendPosition="Position.Bottom"
                   Width="150px" />
     </MudStack>
 }
@@ -100,37 +100,37 @@ else
     @foreach (var profileFight in _profile.ProfileFights)
     {
         <MudPaper Class="rounded-0"
-                  Elevation=3
+                  Elevation="3"
                   Style="margin: 0 0 20px 0;">
             <MudPaper Class="rounded-0"
-                      Elevation=0>
-                <MudStack Row=true
-                          Spacing=2>
-                    <MudItem Style=@($"padding: 16px 16px; background:{FighterHelpers.GetFightResultColor(profileFight.FightResult)};")>
-                        <MudText Style=@("font-weight: 500;")
-                                 Typo=Typo.subtitle1>
+                      Elevation="0">
+                <MudStack Row="true"
+                          Spacing="2">
+                    <MudItem Style="@($"padding: 16px 16px; background:{FighterHelpers.GetFightResultColor(profileFight.FightResult)};")">
+                        <MudText Style="@("font-weight: 500;")"
+                                 Typo="Typo.subtitle1">
                             @profileFight.FightResult.ToText().ToUpper()
                         </MudText>
                     </MudItem>
                     <MudItem Class="flex-auto">
-                        <MudStack AlignItems=AlignItems.End
-                                  Justify=Justify.SpaceBetween
-                                  Row=true>
-                            <MudText Typo=Typo.h6>
+                        <MudStack AlignItems="AlignItems.End"
+                                  Justify="Justify.SpaceBetween"
+                                  Row="true">
+                            <MudText Typo="Typo.h6">
                                 @profileFight.Fight.Event.Name
                             </MudText>
                             <MudIconButton Class="align-self-center"
-                                           Disabled=string.IsNullOrEmpty(profileFight.Fight.VideoUrl)
-                                           Icon=@Icons.Material.Filled.OndemandVideo
+                                           Disabled="string.IsNullOrEmpty(profileFight.Fight.VideoUrl)"
+                                           Icon="@Icons.Material.Filled.OndemandVideo"
                                            OnClick="() => RedirectToVideo(profileFight.Fight)"
-                                           Size=Size.Small
+                                           Size="Size.Small"
                                            Style="margin: 0 10px;" />
                         </MudStack>
-                        <MudText Typo=Typo.subtitle1>
+                        <MudText Typo="Typo.subtitle1">
                             @(profileFight.Fight.Event.Date.ToString("dd/MM/yyyy") + ", ")
-                            <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Event.Hall />
+                            <DisplayDictionaryItemDto DictionaryItemDto="profileFight.Fight.Event.Hall" />
                             @(" ")
-                            <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Event.City />
+                            <DisplayDictionaryItemDto DictionaryItemDto="profileFight.Fight.Event.City" />
                         </MudText>
                     </MudItem>
                 </MudStack>
@@ -138,27 +138,27 @@ else
             <MudPaper Class="rounded-0"
                       Elevation=0
                       Style="margin: 0 0 0 0; padding: 20px 20px 20px 20px;">
-                <MudStack AlignItems=AlignItems.Center
+                <MudStack AlignItems="AlignItems.Center"
                           Style="margin-bottom: 20px;">
-                    <MudText Typo=Typo.h5>
-                        <DisplayDictionaryItemDto DictionaryItemDto=profileFight.Fight.Type />
+                    <MudText Typo="Typo.h5">
+                        <DisplayDictionaryItemDto DictionaryItemDto="profileFight.Fight.Type" />
                         @(" ")
                     </MudText>
                 </MudStack>
-                <MudStack Justify=Justify.SpaceEvenly
-                          Row=true>
+                <MudStack Justify="Justify.SpaceEvenly"
+                          Row="true">
                     @foreach (var team in profileFight.Fight.Teams)
                     {
                         <MudPaper Class="rounded-0"
-                                  Elevation=5
+                                  Elevation="5"
                                   Style="padding: 5px 5px 5px 5px;">
                             @if (team.FighterInTeams.Count == 1)
                             {
-                                <DisplayFighterInTeam FighterInTeam=team.FighterInTeams.FirstOrDefault() />
+                                <DisplayFighterInTeam FighterInTeam="team.FighterInTeams.FirstOrDefault()" />
                             }
                             else
                             {
-                                <DisplayTeam TeamDto=team />
+                                <DisplayTeam TeamDto="team" />
                             }
                         </MudPaper>
                     }

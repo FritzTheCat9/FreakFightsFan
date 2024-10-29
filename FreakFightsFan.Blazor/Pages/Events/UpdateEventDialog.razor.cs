@@ -22,7 +22,6 @@ public partial class UpdateEventDialog : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IEventApiClient EventApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()

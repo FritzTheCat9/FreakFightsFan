@@ -16,16 +16,14 @@ public partial class EventsPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<EventDto> _myEvents;
-
     private string _searchString = "";
     private MudTable<EventDto> _table;
+    
     [Parameter] public int FederationId { get; set; }
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IEventApiClient EventApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
@@ -75,7 +73,7 @@ public partial class EventsPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -113,7 +111,7 @@ public partial class EventsPage : ComponentBase
             await DialogService.ShowAsync<UpdateEventDialog>(Localizer[nameof(AppStrings.UpdateEvent)], parameters,
                 options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -141,7 +139,7 @@ public partial class EventsPage : ComponentBase
             await DialogService.ShowAsync<CreateEventDialog>(Localizer[nameof(AppStrings.CreateEvent)], parameters,
                 options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

@@ -20,8 +20,6 @@ public static class UpdateFederation
     {
         public Validator(IStringLocalizer<ValidationMessage> localizer)
         {
-            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage(x => localizer[nameof(ValidationMessageString.NameNotEmpty)])
@@ -38,7 +36,7 @@ public static class UpdateFederation
                         ImageConsts.MaxFileSize])
                     .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
                     .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
-                        allowedFileTypesString]);
+                        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
             });
         }
     }
@@ -52,8 +50,6 @@ public static class UpdateFederation
     {
         public FormModelValidator(IStringLocalizer<ValidationMessage> localizer)
         {
-            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage(x => localizer[nameof(ValidationMessageString.NameNotEmpty)])
@@ -70,7 +66,7 @@ public static class UpdateFederation
                         ImageConsts.MaxFileSize])
                     .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
                     .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
-                        allowedFileTypesString]);
+                        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
             });
 
             RuleFor(x => x.File)

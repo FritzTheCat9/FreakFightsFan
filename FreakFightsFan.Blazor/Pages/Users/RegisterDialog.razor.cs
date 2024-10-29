@@ -21,7 +21,6 @@ public partial class RegisterDialog : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task HandleValidSubmit()

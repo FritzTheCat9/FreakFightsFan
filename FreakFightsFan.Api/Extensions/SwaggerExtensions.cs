@@ -6,9 +6,11 @@ public static class SwaggerExtensions
 {
     public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
+        const string bearer = "Bearer";
+
         services.AddSwaggerGen(setup =>
         {
-            setup.AddSecurityDefinition("Bearer",
+            setup.AddSecurityDefinition(bearer,
                 new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -16,7 +18,7 @@ public static class SwaggerExtensions
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
-                    Scheme = "Bearer"
+                    Scheme = bearer
                 });
 
             setup.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -24,7 +26,7 @@ public static class SwaggerExtensions
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = bearer }
                     },
                     []
                 }

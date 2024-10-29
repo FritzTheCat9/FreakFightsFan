@@ -25,14 +25,12 @@ public partial class FritzFighterPicker : ComponentBase
     [Parameter] public List<CreateFight.TeamHelperModel> Teams { get; set; } = [];
     [Parameter] public string Label { get; set; }
     [Parameter] public bool OnlyValidateIfDirty { get; set; } = true;
-
     [Parameter] public FighterDto Value { get; set; }
     [Parameter] public EventCallback<FighterDto> ValueChanged { get; set; }
     [Parameter] public Expression<Func<FighterDto>> For { get; set; }
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFighterApiClient FighterApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     public async Task Focus()
@@ -76,15 +74,10 @@ public partial class FritzFighterPicker : ComponentBase
     {
         var fightersToHide = new List<int>();
 
-        foreach (var team in Teams)
+        foreach (var fighter in Teams.SelectMany(team
+                     => team.Fighters.Where(fighter => !fightersToHide.Contains(fighter.Fighter.Id))))
         {
-            foreach (var fighter in team.Fighters)
-            {
-                if (!fightersToHide.Contains(fighter.Fighter.Id))
-                {
-                    fightersToHide.Add(fighter.Fighter.Id);
-                }
-            }
+            fightersToHide.Add(fighter.Fighter.Id);
         }
 
         return fightersToHide;

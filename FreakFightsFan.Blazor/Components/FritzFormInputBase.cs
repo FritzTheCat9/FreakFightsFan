@@ -7,8 +7,9 @@ namespace FreakFightsFan.Blazor.Components;
 public abstract class FritzFormInputBase<T> : ComponentBase
 {
     private FieldIdentifier _fieldIdentifier;
+    
     [CascadingParameter] private EditContext EditContext { get; set; }
-
+    
     [Parameter] public Expression<Func<T>> For { get; set; }
 
     protected override void OnParametersSet()

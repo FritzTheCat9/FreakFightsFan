@@ -127,8 +127,9 @@ public class FightRepository(AppDbContext dbContext) : IFightRepository
 
     public async Task OrderFights(int eventId, int deletedOrderNumber)
     {
-        var fightsToUpdate = await dbContext.Fights.Where(x => x.EventId == eventId
-                                                               && x.OrderNumber > deletedOrderNumber)
+        var fightsToUpdate = await dbContext.Fights
+            .Where(x => x.EventId == eventId
+                        && x.OrderNumber > deletedOrderNumber)
             .ToListAsync();
 
         foreach (var fight in fightsToUpdate)

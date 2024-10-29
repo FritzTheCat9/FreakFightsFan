@@ -11,7 +11,7 @@ public static class CreateEvent
     {
         public string Name { get; set; }
         public DateTime? Date { get; set; }
-        public int FederationId { get; set; }
+        public int FederationId { get; init; }
         public int? CityId { get; set; }
         public int? HallId { get; set; }
     }

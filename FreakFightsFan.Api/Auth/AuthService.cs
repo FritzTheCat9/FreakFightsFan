@@ -23,7 +23,7 @@ public class AuthService : IAuthService
         User = httpContextAccessor.HttpContext.User;
     }
 
-    public ClaimsPrincipal User { get; }
+    private ClaimsPrincipal User { get; }
 
     public bool IsInRole(string roleName)
     {
@@ -32,15 +32,7 @@ public class AuthService : IAuthService
 
     public bool IsInAnyRole(params string[] roleNames)
     {
-        foreach (var roleName in roleNames)
-        {
-            if (User.IsInRole(roleName))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return roleNames.Any(roleName => User.IsInRole(roleName));
     }
 
     public bool IsLoggedInUser(int userId)
@@ -57,33 +49,29 @@ public class AuthService : IAuthService
             return false;
         }
 
-        if (userId != userIdInt)
-        {
-            return false;
-        }
-
-        return true;
+        return userId == userIdInt;
     }
 
     public int? GetCurrentUserId()
     {
-        if (User.Identity?.IsAuthenticated ?? false)
+        if (!(User.Identity?.IsAuthenticated ?? false))
         {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userIdString == null)
-            {
-                return null;
-            }
-
-            if (!int.TryParse(userIdString, out var userIdInt))
-            {
-                return null;
-            }
-
-            return userIdInt;
+            return null;
         }
 
-        return null;
+        var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdString == null)
+        {
+            return null;
+        }
+
+        if (!int.TryParse(userIdString, out var userIdInt))
+        {
+            return null;
+        }
+
+        return userIdInt;
+
     }
 }

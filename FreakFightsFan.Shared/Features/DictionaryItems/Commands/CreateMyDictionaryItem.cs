@@ -11,7 +11,7 @@ public static class CreateMyDictionaryItem
     {
         public string Name { get; set; }
         public string Code { get; set; }
-        public int DictionaryId { get; set; }
+        public int DictionaryId { get; init; }
     }
 
     public class Validator : AbstractValidator<Command>

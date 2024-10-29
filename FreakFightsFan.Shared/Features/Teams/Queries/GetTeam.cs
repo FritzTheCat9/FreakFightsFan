@@ -8,7 +8,7 @@ public static class GetTeam
 {
     public class Query : IRequest<TeamDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

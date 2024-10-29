@@ -17,6 +17,6 @@ public static class LocalizationConsts
 
 public class Culture
 {
-    public string Country { get; set; }
-    public CultureInfo CultureInfo { get; set; }
+    public string Country { get; init; }
+    public CultureInfo CultureInfo { get; init; }
 }

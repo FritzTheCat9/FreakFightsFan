@@ -37,7 +37,7 @@ public class GetAllFightersFeatureTests(FreakFightsFanApiFactory apiFactory)
     [Fact]
     public async Task GetAllFightersFeature_ShouldReturnValidationErrorOnInvalidPage()
     {
-        var minPage = 0;
+        const int minPage = 0;
         var query = new GetAllFighters.Query
         {
             Page = minPage,
@@ -55,13 +55,13 @@ public class GetAllFightersFeatureTests(FreakFightsFanApiFactory apiFactory)
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
             .Contain(x => x.Key == nameof(query.Page) &&
-                          x.Value.Any(x => x == $"{nameof(query.Page)} should be greater than {minPage}"));
+                          x.Value.Any(y => y == $"{nameof(query.Page)} should be greater than {minPage}"));
     }
 
     [Fact]
     public async Task GetAllFightersFeature_ShouldReturnValidationErrorOnInvalidPageSize()
     {
-        var minPageSize = 0;
+        const int minPageSize = 0;
         var query = new GetAllFighters.Query
         {
             Page = 1,
@@ -78,7 +78,7 @@ public class GetAllFightersFeatureTests(FreakFightsFanApiFactory apiFactory)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
-            .Contain(x => x.Key == nameof(query.PageSize) && x.Value.Any(x
-                => x == $"{nameof(query.PageSize)} should be greater than {minPageSize}"));
+            .Contain(x => x.Key == nameof(query.PageSize) && x.Value.Any(y
+                => y == $"{nameof(query.PageSize)} should be greater than {minPageSize}"));
     }
 }

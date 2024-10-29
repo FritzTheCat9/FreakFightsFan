@@ -6,18 +6,13 @@ public class ErrorResponse(ExceptionType type, string message)
     public string Message { get; set; } = message;
 }
 
-public class ValidationErrorResponse : ErrorResponse
+public class ValidationErrorResponse(
+    ExceptionType type,
+    string message,
+    Dictionary<string, List<string>> errors)
+    : ErrorResponse(type, message)
 {
-    public ValidationErrorResponse(
-        ExceptionType type,
-        string message,
-        Dictionary<string, List<string>> errors)
-        : base(type, message)
-    {
-        Errors = errors;
-    }
-
-    public Dictionary<string, List<string>> Errors { get; set; } = [];
+    public Dictionary<string, List<string>> Errors { get; set; } = errors;
 }
 
 public class ServerErrorResponse(ExceptionType type, string message) : ErrorResponse(type, message);

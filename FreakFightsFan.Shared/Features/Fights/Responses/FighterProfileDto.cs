@@ -17,8 +17,8 @@ public class ProfileFightDto
 public class FighterFightsStats
 {
     public int Upcoming { get; set; }
-    public int Win { get; set; }
-    public int Loss { get; set; }
-    public int Draw { get; set; }
-    public int NoContest { get; set; }
+    public int Win { get; init; }
+    public int Loss { get; init; }
+    public int Draw { get; init; }
+    public int NoContest { get; init; }
 }

@@ -19,9 +19,7 @@ public partial class Auth : ComponentBase
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
     [Inject] public IAuthService AuthService { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
 
     private async Task Login()
@@ -32,14 +30,10 @@ public partial class Auth : ComponentBase
         var dialog =
             await DialogService.ShowAsync<LoginDialog>(Localizer[nameof(AppStrings.Login)], parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false, Data: JwtDto token })
         {
-            if (result.Data is JwtDto token)
-            {
-                await AuthService.Login(token);
-
-                await LoadUserTheme();
-            }
+            await AuthService.Login(token);
+            await LoadUserTheme();
         }
     }
 
@@ -72,7 +66,7 @@ public partial class Auth : ComponentBase
             await DialogService.ShowAsync<RegisterDialog>(Localizer[nameof(AppStrings.Register)], parameters,
                 options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await OpenRegistrationSuccessDialog();
         }

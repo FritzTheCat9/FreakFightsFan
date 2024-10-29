@@ -13,7 +13,6 @@ public partial class FritzFileInput
         ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
 
     private readonly int _maxFileSize = ImageConsts.MaxFileSize;
-
     private FieldIdentifier _fileFieldIdentifier;
     private FieldIdentifier _imageBase64FieldIdentifier;
     private bool _isImageValid;
@@ -23,11 +22,9 @@ public partial class FritzFileInput
     [Parameter] public IBrowserFile File { get; set; }
     [Parameter] public EventCallback<IBrowserFile> FileChanged { get; set; }
     [Parameter] public Expression<Func<IBrowserFile>> ForFile { get; set; }
-
     [Parameter] public string ImageBase64 { get; set; }
     [Parameter] public EventCallback<string> ImageBase64Changed { get; set; }
     [Parameter] public Expression<Func<string>> ForImageBase64 { get; set; }
-
     [Parameter] public string Url { get; set; }
 
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
@@ -98,12 +95,6 @@ public partial class FritzFileInput
             await OnFileChanged(file);
             await OnImageBase64Changed(null);
 
-            if (file is null)
-            {
-                _isImageValid = false;
-                return;
-            }
-
             var fileValidator = new ImageHelpers.ImageValidator(SharedLocalizer);
             var validationResult = await fileValidator.ValidateAsync(e.File);
             if (!validationResult.IsValid)
@@ -126,7 +117,7 @@ public partial class FritzFileInput
     private async Task<string> GetImageBase64Url(IBrowserFile file)
     {
         var buffer = new byte[file.Size];
-        await file.OpenReadStream(_maxFileSize).ReadAsync(buffer);
+        var readAsync = await file.OpenReadStream(_maxFileSize).ReadAsync(buffer);
 
         var imageBase64 = Convert.ToBase64String(buffer);
         var url = $"data:{file.ContentType};base64,{imageBase64}";

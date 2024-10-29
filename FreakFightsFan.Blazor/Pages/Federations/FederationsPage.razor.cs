@@ -16,15 +16,12 @@ public partial class FederationsPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
     private PagedList<FederationDto> _myFederations;
-
     private string _searchString = "";
     private MudTable<FederationDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IFederationApiClient FederationApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
@@ -72,7 +69,7 @@ public partial class FederationsPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -102,7 +99,7 @@ public partial class FederationsPage : ComponentBase
             await DialogService.ShowAsync<UpdateFederationDialog>(Localizer[nameof(AppStrings.UpdateFederation)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -120,7 +117,7 @@ public partial class FederationsPage : ComponentBase
             await DialogService.ShowAsync<CreateFederationDialog>(Localizer[nameof(AppStrings.CreateFederation)],
                 parameters, options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

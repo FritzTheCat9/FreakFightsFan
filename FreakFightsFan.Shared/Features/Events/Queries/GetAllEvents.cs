@@ -11,7 +11,7 @@ public static class GetAllEvents
     {
         public string SearchTerm { get; set; }
 
-        public int FederationId { get; set; }
+        public int FederationId { get; init; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public string SortColumn { get; set; }

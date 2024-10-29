@@ -15,15 +15,12 @@ namespace FreakFightsFan.Blazor.Pages.Images;
 public partial class ImagesPage : ComponentBase
 {
     private List<BreadcrumbItem> _items;
-
     private PagedList<ImageDto> _myImages;
     private MudTable<ImageDto> _table;
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IImageApiClient ImageApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
-
     [Inject] public IDialogService DialogService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
@@ -65,7 +62,7 @@ public partial class ImagesPage : ComponentBase
             await DialogService.ShowAsync<DeleteDialog>(Localizer[nameof(AppStrings.Delete)], options);
 
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             try
             {
@@ -92,7 +89,7 @@ public partial class ImagesPage : ComponentBase
             await DialogService.ShowAsync<UpdateImageDialog>(Localizer[nameof(AppStrings.UpdateImage)], parameters,
                 options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }
@@ -107,7 +104,7 @@ public partial class ImagesPage : ComponentBase
             await DialogService.ShowAsync<CreateImageDialog>(Localizer[nameof(AppStrings.CreateImage)], parameters,
                 options);
         var result = await dialog.Result;
-        if (!result.Canceled)
+        if (result is { Canceled: false })
         {
             await _table.ReloadServerData();
         }

@@ -10,8 +10,7 @@ public static class GetAllMyDictionaryItems
     public class Query : IRequest<PagedList<MyDictionaryItemDto>>, IPagedQuery, ISortedQuery
     {
         public string SearchTerm { get; set; }
-
-        public int DictionaryId { get; set; }
+        public int DictionaryId { get; init; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public string SortColumn { get; set; }

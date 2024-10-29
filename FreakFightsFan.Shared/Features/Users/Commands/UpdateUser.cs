@@ -18,8 +18,6 @@ public static class UpdateUser
     {
         public Validator(IStringLocalizer<ValidationMessage> localizer)
         {
-            var allowedFileTypesString = ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes);
-
             When(x => !string.IsNullOrWhiteSpace(x.ImageBase64), () =>
             {
                 RuleFor(x => x.ImageBase64)
@@ -30,7 +28,7 @@ public static class UpdateUser
                         ImageConsts.MaxFileSize])
                     .Must(x => ImageHelpers.HaveValidFileType(x, ImageConsts.AllowedFileTypes))
                     .WithMessage(x => localizer[nameof(ValidationMessageString.ImageAllowedFileTypes),
-                        allowedFileTypesString]);
+                        ImageHelpers.MakeAllowedFileTypesString(ImageConsts.AllowedFileTypes)]);
             });
         }
     }

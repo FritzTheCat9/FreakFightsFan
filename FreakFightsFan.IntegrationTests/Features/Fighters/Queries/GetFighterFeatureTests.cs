@@ -29,7 +29,7 @@ public class GetFighterFeatureTests(FreakFightsFanApiFactory apiFactory) : IClas
     [Fact]
     public async Task GetFighterFeature_ShouldReturnNotFoundErrorIfFighterDoesNotExist()
     {
-        var id = int.MaxValue;
+        const int id = int.MaxValue;
         var response = await _client.GetAsync($"api/fighters/{id}");
         var notFoundError = await response.Content.ReadFromJsonAsync<NotFoundErrorResponse>();
 

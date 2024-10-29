@@ -72,7 +72,7 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
             .Contain(x => x.Key == nameof(command.FirstName) &&
-                          x.Value.Any(x => x == "First name should not be empty"));
+                          x.Value.Any(y => y == "First name should not be empty"));
     }
 
     [Theory]
@@ -93,7 +93,7 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
             .Contain(x => x.Key == nameof(command.LastName) &&
-                          x.Value.Any(x => x == "Last name should not be empty"));
+                          x.Value.Any(y => y == "Last name should not be empty"));
     }
 
     [Theory]
@@ -114,6 +114,7 @@ public class CreateFighterFeatureTests(FreakFightsFanApiFactory apiFactory)
         validationError.Should().NotBeNull();
         validationError?.Errors.Should()
             .Contain(
-                x => x.Key == nameof(command.Nickname) && x.Value.Any(x => x == "Nickname should not be empty"));
+                x => x.Key == nameof(command.Nickname) &&
+                     x.Value.Any(y => y == "Nickname should not be empty"));
     }
 }

@@ -8,11 +8,9 @@ namespace FreakFightsFan.Blazor.Components;
 public partial class FritzSearchTextField : ComponentBase
 {
     [Parameter] public EventCallback<string> OnSearch { get; set; }
-
     [Parameter] public string Value { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public Expression<Func<string>> For { get; set; }
-
     [Parameter] public string Placeholder { get; set; }
 
     [Inject] public IStringLocalizer<App> Localizer { get; set; }

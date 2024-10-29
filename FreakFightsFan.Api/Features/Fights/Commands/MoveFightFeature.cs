@@ -65,6 +65,11 @@ public static class MoveFightFeature
 
             var fightToMove = eventFights.FirstOrDefault(x => x.OrderNumber == orderNumberToMove);
 
+            if (fightToMove is null)
+            {
+                throw new MyServerException();
+            }
+
             fightToMove.OrderNumber = fight.OrderNumber;
             fight.OrderNumber = orderNumberToMove;
 

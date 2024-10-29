@@ -8,7 +8,7 @@ public static class GetEvent
 {
     public class Query : IRequest<EventDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

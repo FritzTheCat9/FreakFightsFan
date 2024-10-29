@@ -10,7 +10,6 @@ public static class GetAllMyDictionaryItemsByCode
     public class Query : IRequest<PagedList<MyDictionaryItemDto>>, IPagedQuery, ISortedQuery
     {
         public string SearchTerm { get; set; }
-
         public string DictionaryCode { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }

@@ -45,18 +45,23 @@
         </AuthorizeView>
     </HeaderContent>
     <RowTemplate>
-        @*  <MudTd>
-        @if (user.Image != null)
-        {
-        <MudLink Href="@user.Image.Url" Target="_blank">
-        <MudImage Src="@user.Image.Url" ObjectFit="ObjectFit.Contain" Width="200" Height="150" Alt="Image" />
-        </MudLink>
-        }
-        else
-        {
-        <MudText>-</MudText>
-        }
-        </MudTd> *@
+        @* <MudTd> *@
+        @*     @if (user.Image != null) *@
+        @*     { *@
+        @*         <MudLink Href="@user.Image.Url" *@
+        @*                  Target="_blank"> *@
+        @*             <MudImage Alt="Image" *@
+        @*                       Height="150" *@
+        @*                       ObjectFit="ObjectFit.Contain" *@
+        @*                       Src="@user.Image.Url" *@
+        @*                       Width="200" /> *@
+        @*         </MudLink> *@
+        @*     } *@
+        @*     else *@
+        @*     { *@
+        @*         <MudText>-</MudText> *@
+        @*     } *@
+        @* </MudTd> *@
         <MudTd DataLabel="@Localizer[nameof(AppStrings.UserName)]">
             @user.UserName
         </MudTd>
@@ -72,21 +77,22 @@
         </MudTd>
         <AuthorizeView Policy="@Policy.SuperAdmin">
             <MudTd DataLabel="@Localizer[nameof(AppStrings.Actions)]">
-                @if (!user.IsSuperAdmin && user.IsAdmin)
+                @switch (user.IsSuperAdmin)
                 {
-                    <MudTooltip Text=@Localizer[nameof(AppStrings.Degrade)]>
-                        <MudIconButton Icon=@Icons.Material.Filled.ArrowDownward
-                                       OnClick="() => DegradeUser(user.Id)"
-                                       Size=Size.Small />
-                    </MudTooltip>
-                }
-                else if (!user.IsSuperAdmin && !user.IsAdmin)
-                {
-                    <MudTooltip Text=@Localizer[nameof(AppStrings.Promote)]>
-                        <MudIconButton Icon=@Icons.Material.Filled.ArrowUpward
-                                       OnClick="() => PromoteUser(user.Id)"
-                                       Size=Size.Small />
-                    </MudTooltip>
+                    case false when user.IsAdmin:
+                        <MudTooltip Text=@Localizer[nameof(AppStrings.Degrade)]>
+                            <MudIconButton Icon=@Icons.Material.Filled.ArrowDownward
+                                           OnClick="() => DegradeUser(user.Id)"
+                                           Size=Size.Small />
+                        </MudTooltip>
+                        break;
+                    case false when !user.IsAdmin:
+                        <MudTooltip Text=@Localizer[nameof(AppStrings.Promote)]>
+                            <MudIconButton Icon=@Icons.Material.Filled.ArrowUpward
+                                           OnClick="() => PromoteUser(user.Id)"
+                                           Size=Size.Small />
+                        </MudTooltip>
+                        break;
                 }
 
             </MudTd>

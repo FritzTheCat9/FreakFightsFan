@@ -14,16 +14,13 @@ public partial class FritzDictionaryItemPicker : FritzFormInputBase<int?>
 
     [Parameter] public int? Value { get; set; }
     [Parameter] public EventCallback<int?> ValueChanged { get; set; }
-
     [Parameter] public string Label { get; set; }
-
     [Parameter] [EditorRequired] public string DictionaryCode { get; set; }
     [Parameter] public MyDictionaryItemDto DictionaryItemDto { get; set; }
     [Parameter] public EventCallback<MyDictionaryItemDto> DictionaryItemDtoChanged { get; set; }
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IMyDictionaryItemApiClient MyDictionaryItemApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     private async Task OnValueChanged(int? newValue)

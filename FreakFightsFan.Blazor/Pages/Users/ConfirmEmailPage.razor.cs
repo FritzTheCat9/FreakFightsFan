@@ -14,9 +14,7 @@ public partial class ConfirmEmailPage : ComponentBase
     private CustomValidator _customValidator;
     private bool _parsingError;
     private FritzProcessingButton _processingButton;
-
     private bool _success;
-
     private ConfirmEmail.Command Command { get; } = new();
 
     [SupplyParameterFromQuery] public string Email { get; set; }
@@ -24,7 +22,6 @@ public partial class ConfirmEmailPage : ComponentBase
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }
     [Inject] public IUserApiClient UserApiClient { get; set; }
-
     [Inject] public IStringLocalizer<App> Localizer { get; set; }
 
     protected override void OnParametersSet()

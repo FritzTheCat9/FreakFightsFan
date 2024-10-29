@@ -8,7 +8,7 @@ public static class GetFight
 {
     public class Query : IRequest<FightDto>
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 
     public class Validator : AbstractValidator<Query> { }

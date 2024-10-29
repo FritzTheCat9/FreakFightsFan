@@ -35,8 +35,6 @@ public class TeamService(
                 teamFighters.Add(teamFighter);
             }
 
-            ;
-
             team.TeamFighters.AddRange(teamFighters);
 
             teamsInFight.Add(team);

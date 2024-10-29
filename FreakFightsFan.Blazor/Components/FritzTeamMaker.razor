@@ -47,12 +47,12 @@
                 <MudPaper Class=@(SelectedTeam == team.Number ? "mud-theme-primary" : "")
                           Width="100%">
                     <MudList Style="cursor: auto;"
-                             T=FighterHelperModel>
+                             T="FighterHelperModel">
                         @foreach (var fighter in team.Fighters)
                         {
                             <MudListItem>
-                                <FighterListItem FighterHelperModel=@fighter
-                                                 FightResultChanged=UpdateTeams
+                                <FighterListItem FighterHelperModel="@fighter"
+                                                 FightResultChanged="UpdateTeams"
                                                  OnDeleteFighter="() => DeleteFighterListItem(team, fighter)" />
                             </MudListItem>
                         }

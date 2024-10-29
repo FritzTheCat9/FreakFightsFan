@@ -8,17 +8,14 @@ public static class FightHelpers
     {
         var allFightersIds = new List<int>();
 
-        foreach (var createTeamModel in teams)
+        foreach (var fighter in teams.SelectMany(createTeamModel => createTeamModel.Fighters))
         {
-            foreach (var fighter in createTeamModel.Fighters)
+            if (allFightersIds.Contains(fighter.FighterId))
             {
-                if (allFightersIds.Contains(fighter.FighterId))
-                {
-                    return false;
-                }
-
-                allFightersIds.Add(fighter.FighterId);
+                return false;
             }
+
+            allFightersIds.Add(fighter.FighterId);
         }
 
         return true;
