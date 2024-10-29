@@ -43,10 +43,10 @@ public partial class FritzTeamMaker : FritzFormInputBase<List<CreateTeamModel>>
     private async Task DeleteFighterListItem(TeamHelperModel team, FighterHelperModel fighter)
     {
         var pickedTeam = TeamHelperModel.FirstOrDefault(x => x.Number == team.Number);
-        
+
         var fighterToRemove =
             pickedTeam?.Fighters.FirstOrDefault(x => x.Fighter.Id == fighter.Fighter.Id);
-        
+
         if (fighterToRemove is not null)
         {
             pickedTeam.Fighters.Remove(fighterToRemove);

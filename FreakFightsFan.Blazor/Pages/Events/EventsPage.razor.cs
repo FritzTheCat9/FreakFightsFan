@@ -18,7 +18,7 @@ public partial class EventsPage : ComponentBase
     private PagedList<EventDto> _myEvents;
     private string _searchString = "";
     private MudTable<EventDto> _table;
-    
+
     [Parameter] public int FederationId { get; set; }
 
     [Inject] public IExceptionHandler ExceptionHandler { get; set; }

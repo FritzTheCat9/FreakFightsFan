@@ -15,7 +15,7 @@ services:
       - ./FreakFightsFan.Api/Logging/Logs:/app/Logging/Logs
       - ./FreakFightsFan.Api/wwwroot/images:/app/wwwroot/images
       - ./FreakFightsFan.Api/wwwroot/images_federations:/app/wwwroot/images_federations
-      
+  
   freakfightsfan.blazor:
     image: ${DOCKER_REGISTRY-}freakfightsfanblazor
     container_name: freakfightsfan.blazor

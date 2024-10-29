@@ -72,6 +72,5 @@ public class AuthService : IAuthService
         }
 
         return userIdInt;
-
     }
 }
