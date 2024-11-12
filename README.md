@@ -150,8 +150,8 @@ Nuget packages and libraries used in projects.
     - [MediatR](https://www.nuget.org/packages/MediatR/) - CQRS, Vertical Slices (code separated by Features)
     - [FluentValidation](https://www.nuget.org/packages/FluentValidation) - Commands, Queries and server side logic
       validation
-    - [FluentEmail](https://www.nuget.org/packages/FluentEmail.Razor) - Sending registation confirmation email and
-      registration successed email
+    - [FluentEmail](https://www.nuget.org/packages/FluentEmail.Razor) - Sending registration confirmation email and
+      registration succeeded email
     - [Serilog](https://www.nuget.org/packages/Serilog/3.1.2-dev-02097) - Logging to console, file and Seq
     - [JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer) - Jwt Token
       Authentication
@@ -246,7 +246,7 @@ Nuget packages and libraries used in projects.
 
 ## Project status
 
-Web Api and Blazor frontend are working. Im currently adding more features and improvements.
+Web Api and Blazor frontend are working. I am currently adding more features and improvements.
 
 Planned features and updates:
 
@@ -259,11 +259,11 @@ Planned features and updates:
 - Fight Result (KO, TKO, ...)
 - Fight description (special rules etc.)
 - Fighter nationality (as dictionary item)
-- Github actions
+- GitHub actions
 - App deployment
 - Update user image feature
 - Resend email confirmation email
-- Send fight card email to users before incomming event
+- Send fight card email to users before incoming event
 - Fix Feature Generator
 - More integration tests
 - Unit tests
