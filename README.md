@@ -1,10 +1,9 @@
 # FreakFightsFan
 
-Freak fights are fights between popular people.
-The FreakFightsFan application contains information and statistics about federations, events, fights and fighters of
-freak fight federations.
-I created this application because I am a fan of freak fights and I wanted to practice building fullstack application
-with .NET technologies.
+The "FreakFightsFan" application contains information and statistics about federations, events, fights and fighters of
+freak fight federations. I created this application because I wanted to practice building Full Stack applications with
+.NET technology. (C#, .NET, Minimal API, Blazor WebAssembly, MudBlazor, Entity Framework Core and Vertical Slices
+Architecture)
 
 ## Table of contents
 
