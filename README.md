@@ -111,7 +111,7 @@ Settings view:
 ## Technologies
 
 - C# 12
-- .NET 8.0
+- .NET 9.0
 - Blazor WebAssembly
 - Angular 17.1.1
 
